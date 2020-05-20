@@ -6,7 +6,7 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/auth/login',
-      key: Modular.navigatorKey,
+      navigatorKey: Modular.navigatorKey,
       onGenerateRoute: Modular.generateRoute,
       debugShowCheckedModeBanner: false,
     );
