@@ -1,4 +1,3 @@
-import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/create_account_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/login_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/password_reset_screen.dart';
