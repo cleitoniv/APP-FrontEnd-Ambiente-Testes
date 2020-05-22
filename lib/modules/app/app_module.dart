@@ -8,13 +8,22 @@ import 'package:flutter_modular/flutter_modular.dart';
 class AppModule extends MainModule {
   @override
   List<Bind> get binds => [
-        Bind((i) => ClientHttp(), singleton: true),
+        Bind(
+          (i) => ClientHttp(),
+          singleton: true,
+        ),
       ];
 
   @override
   List<Router> get routers => [
-        Router('/', module: HomeModule()),
-        Router('/auth', module: AuthModule()),
+        Router(
+          '/home',
+          module: HomeModule(),
+        ),
+        Router(
+          '/auth',
+          module: AuthModule(),
+        ),
       ];
 
   @override

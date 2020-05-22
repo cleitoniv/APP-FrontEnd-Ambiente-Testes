@@ -7,6 +7,11 @@ class HomeModule extends ChildModule {
 
   @override
   List<Router> get routers => [
-        Router('/', child: (_, args) => TabsScreen()),
+        Router(
+          '/:index',
+          child: (_, args) => TabsScreen(
+            currentIndex: int.parse(args.params['index']),
+          ),
+        ),
       ];
 }

@@ -9,8 +9,17 @@ class AuthModule extends ChildModule {
 
   @override
   List<Router> get routers => [
-        Router('/login', child: (_, args) => LoginScreen()),
-        Router('/createAccount', child: (_, args) => CreateAccountScreen()),
-        Router('/passwordReset', child: (_, args) => PasswordResetScreen()),
+        Router(
+          '/login',
+          child: (_, args) => LoginScreen(),
+        ),
+        Router(
+          '/createAccount',
+          child: (_, args) => CreateAccountScreen(),
+        ),
+        Router(
+          '/passwordReset',
+          child: (_, args) => PasswordResetScreen(),
+        ),
       ];
 }
