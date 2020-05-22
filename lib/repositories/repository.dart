@@ -3,8 +3,5 @@ abstract class Repository {
   Future delete({int id}) async {}
   Future index() async {}
   Future show({int id}) async {}
-  Future update({
-    int id,
-    Map data,
-  }) async {}
+  Future update({int id, Map data}) async {}
 }
