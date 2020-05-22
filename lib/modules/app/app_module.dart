@@ -3,8 +3,10 @@ import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/auth_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_module.dart';
+import 'package:central_oftalmica_app_cliente/modules/extracts/extracts_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/home_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/notifications/notifications_module.dart';
+import 'package:central_oftalmica_app_cliente/modules/points/points_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/profile_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_module.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -44,6 +46,14 @@ class AppModule extends MainModule {
         Router(
           '/profile',
           module: ProfileModule(),
+        ),
+        Router(
+          '/points',
+          module: PointsModule(),
+        ),
+        Router(
+          '/extracts',
+          module: ExtractsModule(),
         ),
         Router(
           '/notifications',
