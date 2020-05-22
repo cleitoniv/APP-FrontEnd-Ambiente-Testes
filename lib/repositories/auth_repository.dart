@@ -1,28 +1,6 @@
-import 'package:central_oftalmica_app_cliente/repositories/repository.dart';
-
-class AuthRepository implements Repository {
-  @override
-  Future create({Map data}) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future delete({int id}) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future index() {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future show({int id}) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future update({int id, Map data}) {
-    throw UnimplementedError();
-  }
+class AuthRepository {
+  Future login() async {}
+  Future signout() async {}
+  Future createAccount() async {}
+  Future passwordReset() async {}
 }
