@@ -1,4 +1,4 @@
-abstract class BlocBase<Model> {
+abstract class Bloc<Model> {
   Sink get indexIn => throw UnimplementedError();
   Stream<List<Model>> get indexOut => throw UnimplementedError();
 
