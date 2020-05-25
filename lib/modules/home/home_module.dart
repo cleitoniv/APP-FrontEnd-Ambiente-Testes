@@ -10,7 +10,7 @@ class HomeModule extends ChildModule {
         Router(
           '/:index',
           child: (_, args) => TabsScreen(
-            currentIndex: int.parse(args.params['index']),
+            index: int.parse(args.params['index']),
           ),
         ),
       ];
