@@ -56,59 +56,60 @@ class _IntroScreenState extends State<IntroScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('Buildou');
     return Scaffold(
-      body: StreamBuilder<int>(
-          stream: _introBloc.currentSlideOut,
-          builder: (context, snapshot) {
-            return Stack(
-              overflow: Overflow.visible,
-              children: <Widget>[
-                PageView.builder(
-                  controller: _pageController,
-                  itemCount: _slides.length,
-                  onPageChanged: (int index) {
-                    _introBloc.currentSlideIn.add(index);
-                  },
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: ExactAssetImage(
-                            _slides[index]['image'],
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: SafeArea(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Text(
-                              _slides[index]['title'],
-                              style: Theme.of(context).textTheme.headline6,
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              _slides[index]['subtitle'],
-                              style: Theme.of(context).textTheme.subtitle2,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+      body: Stack(
+        overflow: Overflow.visible,
+        children: <Widget>[
+          PageView.builder(
+            controller: _pageController,
+            itemCount: _slides.length,
+            onPageChanged: (int index) {
+              _introBloc.currentSlideIn.add(index);
+            },
+            itemBuilder: (context, index) {
+              return Container(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: ExactAssetImage(
+                      _slides[index]['image'],
+                    ),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                snapshot.data == 2
-                    ? Positioned(
-                        bottom: 25,
-                        right: 20,
-                        child: GestureDetector(
+                child: SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        _slides[index]['title'],
+                        style: Theme.of(context).textTheme.headline6,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        _slides[index]['subtitle'],
+                        style: Theme.of(context).textTheme.subtitle2,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          StreamBuilder<int>(
+              stream: _introBloc.currentSlideOut,
+              builder: (context, snapshot) {
+                return Positioned(
+                  bottom: 25,
+                  right: 20,
+                  child: snapshot.data == 2
+                      ? GestureDetector(
                           onTap: _handleContinue,
                           child: Text(
                             'Continuar',
@@ -117,34 +118,38 @@ class _IntroScreenState extends State<IntroScreen> {
                                       fontWeight: FontWeight.w900,
                                     ),
                           ),
-                        ),
-                      )
-                    : Container(),
-                Positioned(
-                  bottom: 30,
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: _slides.map(
-                      (e) {
-                        return Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 2,
-                          ),
-                          child: CircleAvatar(
+                        )
+                      : Container(),
+                );
+              }),
+          Positioned(
+            bottom: 30,
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _slides.map(
+                (e) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 2,
+                    ),
+                    child: StreamBuilder<int>(
+                        stream: _introBloc.currentSlideOut,
+                        builder: (context, snapshot) {
+                          return CircleAvatar(
                             radius: snapshot.data == e['id'] ? 5 : 4,
                             backgroundColor: snapshot.data == e['id']
                                 ? Colors.white
                                 : Colors.white54,
-                          ),
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ),
-              ],
-            );
-          }),
+                          );
+                        }),
+                  );
+                },
+              ).toList(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
