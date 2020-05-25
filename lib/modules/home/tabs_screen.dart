@@ -65,6 +65,9 @@ class _TabsScreenState extends State<TabsScreen>
   @override
   void initState() {
     super.initState();
+    _homeBloc.currentTabIndexIn.add(
+      widget.index,
+    );
 
     _tabController = TabController(
       vsync: this,
