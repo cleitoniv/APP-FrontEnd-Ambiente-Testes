@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   @override
@@ -51,7 +52,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   _handleShowTerm() {}
 
   _handleSubmit() {
-    if (_formKey.currentState.validate()) {}
+    if (_formKey.currentState.validate()) {
+      Modular.to.pushNamed(
+        '/auth/activityPerformed',
+      );
+    }
+  }
+
+  _handleAcceptTerm(bool value) {
+    setState(() {
+      _isAccepted = value;
+    });
   }
 
   @override
@@ -219,8 +230,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             Row(
               children: <Widget>[
                 Checkbox(
-                  value: true,
-                  onChanged: (value) {},
+                  value: _isAccepted,
+                  onChanged: _handleAcceptTerm,
                 ),
                 Text.rich(
                   TextSpan(
