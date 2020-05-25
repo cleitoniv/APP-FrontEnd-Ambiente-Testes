@@ -23,7 +23,12 @@ class _TabsScreenState extends State<TabsScreen>
   WidgetBloc _widgetBloc = Modular.get<WidgetBloc>();
   TabController _tabController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<String> _sightProblems = ['Todos', 'Miopía', 'Hipermetropia'];
+  List<String> _sightProblems = [
+    'Todos',
+    'Miopía',
+    'Hipermetropia',
+    'Astigmatismo',
+  ];
   List<Widget> _screens = [
     HomeScreen(),
     CreditsScreen(),
