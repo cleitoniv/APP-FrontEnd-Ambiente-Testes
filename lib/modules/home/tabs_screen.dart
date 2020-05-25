@@ -90,6 +90,7 @@ class _TabsScreenState extends State<TabsScreen>
       key: _scaffoldKey,
       drawer: Container(),
       appBar: PreferredSize(
+        preferredSize: Size.fromHeight(200),
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -154,7 +155,7 @@ class _TabsScreenState extends State<TabsScreen>
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -284,7 +285,6 @@ class _TabsScreenState extends State<TabsScreen>
             ),
           ),
         ),
-        preferredSize: Size.fromHeight(210),
       ),
       body: TabBarView(
         controller: _tabController,
