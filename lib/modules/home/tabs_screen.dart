@@ -65,6 +65,7 @@ class _TabsScreenState extends State<TabsScreen>
   @override
   void initState() {
     super.initState();
+
     _tabController = TabController(
       vsync: this,
       initialIndex: widget.index,
@@ -72,9 +73,9 @@ class _TabsScreenState extends State<TabsScreen>
     );
 
     _tabController.addListener(() {
-      setState(() {
-        widget.index = _tabController.index;
-      });
+      _homeBloc.currentTabIndexIn.add(
+        _tabController.index,
+      );
     });
   }
 
@@ -241,43 +242,44 @@ class _TabsScreenState extends State<TabsScreen>
                       width: 10,
                     ),
                     itemBuilder: (context, index) {
-                      return StreamBuilder<Object>(
-                          stream: _homeBloc.sightProblemOut,
-                          builder: (context, snapshot) {
-                            return GestureDetector(
-                              onTap: () => _handleChangeSightProblem(
+                      return StreamBuilder<String>(
+                        stream: _homeBloc.sightProblemOut,
+                        builder: (context, snapshot) {
+                          return GestureDetector(
+                            onTap: () => _handleChangeSightProblem(
+                              _sightProblems[index],
+                            ),
+                            child: AnimatedContainer(
+                              duration: Duration(
+                                milliseconds: 150,
+                              ),
+                              height: 36,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: _sightProblems[index] == snapshot.data
+                                    ? Theme.of(context).accentColor
+                                    : Color(0xffF1F1F1),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
                                 _sightProblems[index],
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    .copyWith(
+                                      color:
+                                          _sightProblems[index] == snapshot.data
+                                              ? Color(0xffF1F1F1)
+                                              : Theme.of(context).accentColor,
+                                    ),
                               ),
-                              child: AnimatedContainer(
-                                duration: Duration(
-                                  milliseconds: 150,
-                                ),
-                                height: 36,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: _sightProblems[index] == snapshot.data
-                                      ? Theme.of(context).accentColor
-                                      : Color(0xffF1F1F1),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Text(
-                                  _sightProblems[index],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2
-                                      .copyWith(
-                                        color: _sightProblems[index] ==
-                                                snapshot.data
-                                            ? Color(0xffF1F1F1)
-                                            : Theme.of(context).accentColor,
-                                      ),
-                                ),
-                              ),
-                            );
-                          });
+                            ),
+                          );
+                        },
+                      );
                     },
                   ),
                 )
@@ -296,25 +298,29 @@ class _TabsScreenState extends State<TabsScreen>
           controller: _tabController,
           tabs: _tabs.map(
             (e) {
-              return Tab(
-                child: Text(
-                  e['title'],
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: e['id'] == widget.index
+              return StreamBuilder<int>(
+                  stream: _homeBloc.currentTabIndexOut,
+                  builder: (context, snapshot) {
+                    return Tab(
+                      child: Text(
+                        e['title'],
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: e['id'] == snapshot.data
+                                  ? Theme.of(context).accentColor
+                                  : Color(0xffBFBFBF),
+                              fontSize: 12,
+                            ),
+                      ),
+                      icon: Image.asset(
+                        'assets/icons/${e['iconName']}',
+                        width: 20,
+                        height: 20,
+                        color: e['id'] == snapshot.data
                             ? Theme.of(context).accentColor
                             : Color(0xffBFBFBF),
-                        fontSize: 12,
                       ),
-                ),
-                icon: Image.asset(
-                  'assets/icons/${e['iconName']}',
-                  width: 20,
-                  height: 20,
-                  color: e['id'] == widget.index
-                      ? Theme.of(context).accentColor
-                      : Color(0xffBFBFBF),
-                ),
-              );
+                    );
+                  });
             },
           ).toList(),
         ),

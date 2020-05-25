@@ -6,4 +6,10 @@ class HomeBloc {
   Stream<String> get sightProblemOut => _sightProblemController.stream.map(
         (event) => event,
       );
+
+  BehaviorSubject _currentTabIndexController = BehaviorSubject.seeded(0);
+  Sink get currentTabIndexIn => _currentTabIndexController.sink;
+  Stream<int> get currentTabIndexOut => _currentTabIndexController.stream.map(
+        (event) => event,
+      );
 }
