@@ -1,11 +1,11 @@
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
+import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/auth_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/extracts/extracts_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/home_module.dart';
-import 'package:central_oftalmica_app_cliente/modules/intro/intro_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/notifications/notifications_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/points/points_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/profile_module.dart';
@@ -26,7 +26,7 @@ class AppModule extends MainModule {
   List<Router> get routers => [
         Router(
           '/intro',
-          module: IntroModule(),
+          child: (_, args) => IntroScreen(),
         ),
         Router(
           '/auth',
