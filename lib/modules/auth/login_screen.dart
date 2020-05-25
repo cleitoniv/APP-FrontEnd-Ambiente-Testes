@@ -64,6 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailController,
                 prefixIcon: Icon(
                   Icons.email,
+                  color: Color(0xffA1A1A1),
                 ),
               ),
               SizedBox(height: 20),
@@ -72,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 prefixIcon: Icon(
                   Icons.lock,
+                  color: Color(0xffA1A1A1),
                 ),
               ),
               SizedBox(height: 20),
@@ -98,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                heightFactor: MediaQuery.of(context).size.height / 60,
+                heightFactor: MediaQuery.of(context).size.height / 75,
                 child: Text.rich(
                   TextSpan(
                     text: 'Não possui conta ainda? ',

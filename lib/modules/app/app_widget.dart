@@ -47,15 +47,15 @@ class AppWidget extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
           subtitle2: GoogleFonts.poppins().copyWith(
-            fontSize: 14,
+            fontSize: 16,
             color: Colors.white,
           ),
           subtitle1: GoogleFonts.poppins().copyWith(
-            fontSize: 14,
+            fontSize: 16,
             color: Color(0xff444443),
           ),
           button: GoogleFonts.poppins().copyWith(
-            fontSize: 14,
+            fontSize: 16,
             color: Colors.white,
             fontWeight: FontWeight.w700,
           ),
