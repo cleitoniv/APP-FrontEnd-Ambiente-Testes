@@ -47,7 +47,6 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
               SizedBox(height: 30),
               ListView.separated(
                 shrinkWrap: true,
-                primary: false,
                 itemCount: _activities.length,
                 separatorBuilder: (context, index) => SizedBox(
                   height: 20,
@@ -74,7 +73,7 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
                       _currentActivity['id'] != null ? _handleSubmit : null,
                   disabledColor: Theme.of(context).accentColor,
                   child: Text(
-                    'Cadastrar',
+                    'Confirmar Atividade',
                     style: Theme.of(context).textTheme.button,
                   ),
                 ),
