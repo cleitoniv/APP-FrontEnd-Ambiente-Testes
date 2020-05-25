@@ -1,4 +1,3 @@
-import 'package:central_oftalmica_app_cliente/blocs/widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
@@ -20,9 +19,6 @@ class AppModule extends MainModule {
         Bind(
           (i) => ClientHttp(),
           singleton: true,
-        ),
-        Bind(
-          (i) => WidgetBloc(),
         ),
       ];
 

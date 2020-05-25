@@ -1,4 +1,4 @@
-import 'package:central_oftalmica_app_cliente/blocs/widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/home_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/home_screen.dart';
@@ -20,7 +20,7 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen>
     with SingleTickerProviderStateMixin {
-  WidgetBloc _widgetBloc = Modular.get<WidgetBloc>();
+  HomeBloc _homeBloc = Modular.get<HomeBloc>();
   TabController _tabController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> _sightProblems = [
@@ -59,7 +59,7 @@ class _TabsScreenState extends State<TabsScreen>
   ];
 
   _handleChangeSightProblem(String sightProblem) {
-    _widgetBloc.sightProblemIn.add(sightProblem);
+    _homeBloc.sightProblemIn.add(sightProblem);
   }
 
   @override
@@ -241,7 +241,7 @@ class _TabsScreenState extends State<TabsScreen>
                     ),
                     itemBuilder: (context, index) {
                       return StreamBuilder<Object>(
-                          stream: _widgetBloc.sightProblemOut,
+                          stream: _homeBloc.sightProblemOut,
                           builder: (context, snapshot) {
                             return GestureDetector(
                               onTap: () => _handleChangeSightProblem(
