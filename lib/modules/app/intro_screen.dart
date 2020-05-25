@@ -69,7 +69,7 @@ class _IntroScreenState extends State<IntroScreen> {
             },
             itemBuilder: (context, index) {
               return Container(
-                padding: const EdgeInsets.all(50),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
@@ -104,7 +104,7 @@ class _IntroScreenState extends State<IntroScreen> {
           ),
           _currentIndex == 2
               ? Positioned(
-                  bottom: 40,
+                  bottom: 25,
                   right: 20,
                   child: GestureDetector(
                     onTap: _handleContinue,
@@ -118,7 +118,7 @@ class _IntroScreenState extends State<IntroScreen> {
                 )
               : Container(),
           Positioned(
-            bottom: 40,
+            bottom: 30,
             width: MediaQuery.of(context).size.width,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
