@@ -55,6 +55,11 @@ flutter:
     - assets/images/intro_0.png
     - assets/images/intro_1.png
     - assets/images/intro_2.png
+
+    - assets/icons/home.png
+    - assets/icons/wallet.png
+    - assets/icons/cart.png
+    - assets/icons/requests.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

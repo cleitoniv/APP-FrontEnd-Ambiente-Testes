@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,9 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _passwordController;
 
   _handleLogin() async {
-    Modular.to.pushNamed('/home/0');
+    if (_formKey.currentState.validate()) {
+      Modular.to.pushNamed('/home/0');
+    }
   }
 
   _handlePasswordReset() {
@@ -44,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _formKey,
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -66,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icons.email,
                   color: Color(0xffA1A1A1),
                 ),
+                validator: Helper.emailValidator,
               ),
               SizedBox(height: 20),
               TextFieldWidget(
@@ -75,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icons.lock,
                   color: Color(0xffA1A1A1),
                 ),
+                validator: Helper.lengthValidator,
               ),
               SizedBox(height: 20),
               Align(
