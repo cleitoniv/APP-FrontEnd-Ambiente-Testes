@@ -11,7 +11,16 @@ class AppWidget extends StatelessWidget {
       onGenerateRoute: Modular.generateRoute,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        accentColor: Color(0xff36AFC6),
         scaffoldBackgroundColor: Color(0xffFBFBFB),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Color(0xff36AFC6),
+          height: 50,
+          minWidth: double.infinity,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
         textTheme: TextTheme(
           headline6: GoogleFonts.poppins().copyWith(
             fontSize: 24,
@@ -20,6 +29,11 @@ class AppWidget extends StatelessWidget {
           subtitle2: GoogleFonts.poppins().copyWith(
             fontSize: 14,
             color: Colors.white,
+          ),
+          button: GoogleFonts.poppins().copyWith(
+            fontSize: 14,
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
