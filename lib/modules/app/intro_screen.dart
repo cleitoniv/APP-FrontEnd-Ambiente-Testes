@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/intro_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -7,8 +8,8 @@ class IntroScreen extends StatefulWidget {
 }
 
 class _IntroScreenState extends State<IntroScreen> {
+  IntroBloc _introBloc = Modular.get<IntroBloc>();
   PageController _pageController;
-  int _currentIndex = 0;
 
   List<Map> _slides = [
     {
@@ -43,7 +44,7 @@ class _IntroScreenState extends State<IntroScreen> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      initialPage: _currentIndex,
+      initialPage: 0,
     );
   }
 
@@ -56,91 +57,94 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        overflow: Overflow.visible,
-        children: <Widget>[
-          PageView.builder(
-            controller: _pageController,
-            itemCount: _slides.length,
-            onPageChanged: (int index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              return Container(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: ExactAssetImage(
-                      _slides[index]['image'],
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text(
-                        _slides[index]['title'],
-                        style: Theme.of(context).textTheme.headline6,
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        _slides[index]['subtitle'],
-                        style: Theme.of(context).textTheme.subtitle2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-          _currentIndex == 2
-              ? Positioned(
-                  bottom: 25,
-                  right: 20,
-                  child: GestureDetector(
-                    onTap: _handleContinue,
-                    child: Text(
-                      'Continuar',
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
-                            fontWeight: FontWeight.w900,
+      body: StreamBuilder<int>(
+          stream: _introBloc.currentSlideOut,
+          builder: (context, snapshot) {
+            return Stack(
+              overflow: Overflow.visible,
+              children: <Widget>[
+                PageView.builder(
+                  controller: _pageController,
+                  itemCount: _slides.length,
+                  onPageChanged: (int index) {
+                    _introBloc.currentSlideIn.add(index);
+                  },
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: ExactAssetImage(
+                            _slides[index]['image'],
                           ),
-                    ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text(
+                              _slides[index]['title'],
+                              style: Theme.of(context).textTheme.headline6,
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              _slides[index]['subtitle'],
+                              style: Theme.of(context).textTheme.subtitle2,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                snapshot.data == 2
+                    ? Positioned(
+                        bottom: 25,
+                        right: 20,
+                        child: GestureDetector(
+                          onTap: _handleContinue,
+                          child: Text(
+                            'Continuar',
+                            style:
+                                Theme.of(context).textTheme.subtitle2.copyWith(
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                          ),
+                        ),
+                      )
+                    : Container(),
+                Positioned(
+                  bottom: 30,
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _slides.map(
+                      (e) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 2,
+                          ),
+                          child: CircleAvatar(
+                            radius: snapshot.data == e['id'] ? 5 : 4,
+                            backgroundColor: snapshot.data == e['id']
+                                ? Colors.white
+                                : Colors.white54,
+                          ),
+                        );
+                      },
+                    ).toList(),
                   ),
-                )
-              : Container(),
-          Positioned(
-            bottom: 30,
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _slides.map(
-                (e) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 2,
-                    ),
-                    child: CircleAvatar(
-                      radius: _currentIndex == e['id'] ? 5 : 4,
-                      backgroundColor: _currentIndex == e['id']
-                          ? Colors.white
-                          : Colors.white54,
-                    ),
-                  );
-                },
-              ).toList(),
-            ),
-          ),
-        ],
-      ),
+                ),
+              ],
+            );
+          }),
     );
   }
 }
