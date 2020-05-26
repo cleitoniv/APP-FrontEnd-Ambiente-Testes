@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_bloc.dart';
+import 'package:central_oftalmica_app_cliente/widgets/card_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -72,22 +73,47 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   topRight: Radius.circular(20),
                 ),
               ),
-              child: ListView.separated(
-                padding: const EdgeInsets.all(20),
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                separatorBuilder: (context, index) => SizedBox(
-                  width: 10,
-                ),
-                itemBuilder: (context, index) {
-                  return ProductWidget(
-                    credits: 1,
-                    tests: 1,
+              child: StreamBuilder<String>(
+                stream: _homeBloc.currentCreditTypeOut,
+                builder: (context, snapshot) {
+                  return ListView.separated(
+                    padding: const EdgeInsets.all(20),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data == 'Financeiro' ? 5 : 3,
+                    separatorBuilder: (context, index) => SizedBox(
+                      width: 20,
+                    ),
+                    itemBuilder: (context, index) {
+                      return snapshot.data == 'Financeiro'
+                          ? CardWidget()
+                          : ProductWidget(
+                              credits: 1,
+                              tests: 1,
+                            );
+                    },
                   );
                 },
               ),
             ),
+          ),
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: 20,
+            child: StreamBuilder<String>(
+                stream: _homeBloc.currentCreditTypeOut,
+                builder: (context, snapshot) {
+                  return RaisedButton(
+                    onPressed: () {},
+                    child: Text(
+                      snapshot.data == 'Financeiro'
+                          ? 'Valor Personalizado'
+                          : 'Comprar Crédito de Produto',
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                  );
+                }),
           ),
         ],
       ),
