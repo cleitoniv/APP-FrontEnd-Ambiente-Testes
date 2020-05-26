@@ -236,161 +236,158 @@ class _TabsScreenState extends State<TabsScreen>
                       ),
                       child: SafeArea(
                         child: StreamBuilder<int>(
-                            stream: _homeBloc.currentTabIndexOut,
-                            builder: (context, snapshot) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Image.asset(
-                                          'assets/icons/drawer.png',
-                                          width: 30,
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          'Antônio Fraga',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline4,
-                                        ),
-                                        Stack(
-                                          overflow: Overflow.visible,
-                                          children: <Widget>[
-                                            Image.asset(
-                                              'assets/icons/bell.png',
-                                              width: 30,
-                                              height: 30,
-                                            ),
-                                            Positioned(
-                                              right: -2,
-                                              top: -2,
-                                              child: CircleAvatar(
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .accentColor,
-                                                radius: 10,
-                                                child: Text(
-                                                  '2',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle2
-                                                      .copyWith(
-                                                        fontSize: 12,
-                                                      ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                          stream: _homeBloc.currentTabIndexOut,
+                          builder: (context, snapshot) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Container(
-                                        width: 119,
-                                        height: 36,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .primaryColor
-                                              .withOpacity(0.2),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            CircleAvatar(
-                                              backgroundColor: Theme.of(context)
-                                                  .primaryColor,
-                                              radius: 12,
-                                              child: Icon(
-                                                Icons.attach_money,
-                                                color: Colors.white,
-                                                size: 20,
-                                              ),
-                                            ),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              '5.600,00',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle2
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                  ),
-                                            )
-                                          ],
-                                        ),
+                                      Image.asset(
+                                        'assets/icons/drawer.png',
+                                        width: 30,
+                                        height: 30,
                                       ),
-                                      SizedBox(width: 10),
-                                      Container(
-                                        width: 76,
-                                        height: 36,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          border: Border.all(
-                                            color:
-                                                Theme.of(context).accentColor,
+                                      Text(
+                                        'Antônio Fraga',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4,
+                                      ),
+                                      Stack(
+                                        overflow: Overflow.visible,
+                                        children: <Widget>[
+                                          Image.asset(
+                                            'assets/icons/bell.png',
+                                            width: 30,
+                                            height: 30,
                                           ),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            CircleAvatar(
+                                          Positioned(
+                                            right: -2,
+                                            top: -2,
+                                            child: CircleAvatar(
                                               backgroundColor:
                                                   Theme.of(context).accentColor,
-                                              radius: 12,
-                                              child: Icon(
-                                                MaterialCommunityIcons
-                                                    .star_four_points,
-                                                color: Colors.white,
-                                                size: 20,
+                                              radius: 10,
+                                              child: Text(
+                                                '2',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2
+                                                    .copyWith(
+                                                      fontSize: 12,
+                                                    ),
                                               ),
                                             ),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              '50',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle2
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .accentColor,
-                                                  ),
-                                            )
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 20),
-                                  Container(
-                                    height: 44,
-                                    child: _renderHeader(
-                                      snapshot.data,
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      width: 119,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          CircleAvatar(
+                                            backgroundColor:
+                                                Theme.of(context).primaryColor,
+                                            radius: 12,
+                                            child: Icon(
+                                              Icons.attach_money,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            '5.600,00',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  )
-                                ],
-                              );
-                            }),
+                                    SizedBox(width: 10),
+                                    Container(
+                                      width: 76,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: Theme.of(context).accentColor,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          CircleAvatar(
+                                            backgroundColor:
+                                                Theme.of(context).accentColor,
+                                            radius: 12,
+                                            child: Icon(
+                                              MaterialCommunityIcons
+                                                  .star_four_points,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            '50',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(
+                                                  color: Theme.of(context)
+                                                      .accentColor,
+                                                ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                                Container(
+                                  height: 44,
+                                  child: _renderHeader(
+                                    snapshot.data,
+                                  ),
+                                )
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
