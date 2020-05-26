@@ -107,7 +107,9 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     ),
                     itemBuilder: (context, index) {
                       return snapshot.data == 'Financeiro'
-                          ? CardWidget()
+                          ? CardWidget(
+                              parcels: 1,
+                            )
                           : ProductWidget(
                               credits: 1,
                               tests: 1,

@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class CardWidget extends StatelessWidget {
+  int value;
+  int parcels;
+
+  CardWidget({
+    this.value = 20000,
+    this.parcels = 1,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -29,7 +37,7 @@ class CardWidget extends StatelessWidget {
                       ),
                   children: [
                     TextSpan(
-                      text: Helper.intToMoney(20000),
+                      text: Helper.intToMoney(value),
                       style: Theme.of(context).textTheme.headline5,
                     ),
                   ],
@@ -44,7 +52,7 @@ class CardWidget extends StatelessWidget {
               ),
               Spacer(),
               Text(
-                'Até 3x',
+                parcels == 1 ? 'À vista' : 'Até ${parcels}x',
                 style: Theme.of(context).textTheme.subtitle1.copyWith(
                       color: Theme.of(context).accentColor,
                       fontSize: 14,
