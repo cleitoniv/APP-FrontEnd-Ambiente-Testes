@@ -9,105 +9,112 @@ class ProductWidget extends StatelessWidget {
   String title;
   int value;
   String imageUrl;
+  double width;
 
   ProductWidget({
     this.tests = 0,
     this.credits = 0,
     this.title = 'Produto',
-    this.value = 56778,
+    this.value = 0,
     this.imageUrl =
         'https://onelens.fbitsstatic.net/img/p/lentes-de-contato-bioview-asferica-80342/353788.jpg?w=530&h=530&v=202004021417',
+    this.width = 170,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            credits != 0
-                ? Container(
-                    width: 64,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: Color(0xffFAF4E4),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/icons/open_box.png',
-                          width: 25,
-                          height: 25,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          '$credits',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        )
-                      ],
-                    ),
-                  )
-                : Container(),
-            tests != 0
-                ? Container(
-                    width: 64,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: Color(0xffE6E6E6),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          MaterialCommunityIcons.eye,
-                          color: Colors.black45,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          '$tests',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        )
-                      ],
-                    ),
-                  )
-                : Container(),
-          ],
-        ),
-        CachedNetworkImage(
-          imageUrl: imageUrl,
-          width: 140,
-          height: 140,
-          fit: BoxFit.contain,
-        ),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                fontSize: 14,
-              ),
-        ),
-        Text.rich(
-          TextSpan(
-            text: 'R\$ ',
-            style: Theme.of(context).textTheme.headline5.copyWith(
-                  fontSize: 14,
-                ),
-            children: [
-              TextSpan(
-                text: Helper.intToMoney(value),
-                style: Theme.of(context).textTheme.headline5,
-              ),
+    return Container(
+      width: width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              credits != 0
+                  ? Container(
+                      width: 64,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Color(0xffFAF4E4),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset(
+                            'assets/icons/open_box.png',
+                            width: 25,
+                            height: 25,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            '$credits',
+                            style: Theme.of(context).textTheme.subtitle1,
+                          )
+                        ],
+                      ),
+                    )
+                  : Container(),
+              tests != 0
+                  ? Container(
+                      width: 64,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Color(0xffE6E6E6),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            MaterialCommunityIcons.eye,
+                            color: Colors.black45,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            '$tests',
+                            style: Theme.of(context).textTheme.subtitle1,
+                          )
+                        ],
+                      ),
+                    )
+                  : Container(),
             ],
           ),
-        )
-      ],
+          CachedNetworkImage(
+            imageUrl: imageUrl,
+            width: 140,
+            height: 140,
+            fit: BoxFit.contain,
+          ),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.subtitle1.copyWith(
+                  fontSize: 14,
+                ),
+          ),
+          value != 0
+              ? Text.rich(
+                  TextSpan(
+                    text: 'R\$ ',
+                    style: Theme.of(context).textTheme.headline5.copyWith(
+                          fontSize: 14,
+                        ),
+                    children: [
+                      TextSpan(
+                        text: Helper.intToMoney(value),
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 }
