@@ -202,210 +202,244 @@ class _TabsScreenState extends State<TabsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: Container(),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(200),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                offset: Offset(0, 2),
-                blurRadius: 5,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: SafeArea(
-            child: StreamBuilder<int>(
-                stream: _homeBloc.currentTabIndexOut,
-                builder: (context, snapshot) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Image.asset(
-                              'assets/icons/drawer.png',
-                              width: 30,
-                              height: 30,
-                            ),
-                            Text(
-                              'Antônio Fraga',
-                              style: Theme.of(context).textTheme.headline4,
-                            ),
-                            Stack(
-                              overflow: Overflow.visible,
-                              children: <Widget>[
-                                Image.asset(
-                                  'assets/icons/bell.png',
-                                  width: 30,
-                                  height: 30,
-                                ),
-                                Positioned(
-                                  right: -2,
-                                  top: -2,
-                                  child: CircleAvatar(
-                                    backgroundColor:
-                                        Theme.of(context).accentColor,
-                                    radius: 10,
-                                    child: Text(
-                                      '2',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle2
-                                          .copyWith(
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+    return StreamBuilder<String>(
+        stream: _homeBloc.currentCreditTypeOut,
+        builder: (context, snapshot) {
+          return StreamBuilder<int>(
+              stream: _homeBloc.currentTabIndexOut,
+              builder: (context, snapshot2) {
+                return Scaffold(
+                  key: _scaffoldKey,
+                  backgroundColor: snapshot2.data == 1
+                      ? snapshot.data == 'Financeiro'
+                          ? Theme.of(context).primaryColor
+                          : Color(0xffEFC75E)
+                      : Theme.of(context).scaffoldBackgroundColor,
+                  drawer: Container(),
+                  appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(200),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: 119,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
-                                  radius: 12,
-                                  child: Icon(
-                                    Icons.attach_money,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  '5.600,00',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2
-                                      .copyWith(
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Container(
-                            width: 76,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                color: Theme.of(context).accentColor,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).accentColor,
-                                  radius: 12,
-                                  child: Icon(
-                                    MaterialCommunityIcons.star_four_points,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  '50',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2
-                                      .copyWith(
-                                        color: Theme.of(context).accentColor,
-                                      ),
-                                )
-                              ],
-                            ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            offset: Offset(0, 2),
+                            blurRadius: 5,
+                            spreadRadius: 2,
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
-                      Container(
-                        height: 44,
-                        child: _renderHeader(
-                          snapshot.data,
-                        ),
-                      )
-                    ],
-                  );
-                }),
-          ),
-        ),
-      ),
-      body: TabBarView(
-        physics: NeverScrollableScrollPhysics(),
-        controller: _tabController,
-        children: _screens,
-      ),
-      bottomNavigationBar: SafeArea(
-        child: TabBar(
-          indicatorColor: Colors.transparent,
-          controller: _tabController,
-          tabs: _tabs.map(
-            (e) {
-              return StreamBuilder<int>(
-                  stream: _homeBloc.currentTabIndexOut,
-                  builder: (context, snapshot) {
-                    return Tab(
-                      child: Text(
-                        e['title'],
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              color: e['id'] == snapshot.data
-                                  ? Theme.of(context).accentColor
-                                  : Color(0xffBFBFBF),
-                              fontSize: 12,
-                            ),
+                      child: SafeArea(
+                        child: StreamBuilder<int>(
+                            stream: _homeBloc.currentTabIndexOut,
+                            builder: (context, snapshot) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Image.asset(
+                                          'assets/icons/drawer.png',
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        Text(
+                                          'Antônio Fraga',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4,
+                                        ),
+                                        Stack(
+                                          overflow: Overflow.visible,
+                                          children: <Widget>[
+                                            Image.asset(
+                                              'assets/icons/bell.png',
+                                              width: 30,
+                                              height: 30,
+                                            ),
+                                            Positioned(
+                                              right: -2,
+                                              top: -2,
+                                              child: CircleAvatar(
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .accentColor,
+                                                radius: 10,
+                                                child: Text(
+                                                  '2',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle2
+                                                      .copyWith(
+                                                        fontSize: 12,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 119,
+                                        height: 36,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .primaryColor
+                                              .withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            CircleAvatar(
+                                              backgroundColor: Theme.of(context)
+                                                  .primaryColor,
+                                              radius: 12,
+                                              child: Icon(
+                                                Icons.attach_money,
+                                                color: Colors.white,
+                                                size: 20,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              '5.600,00',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle2
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Container(
+                                        width: 76,
+                                        height: 36,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          border: Border.all(
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            CircleAvatar(
+                                              backgroundColor:
+                                                  Theme.of(context).accentColor,
+                                              radius: 12,
+                                              child: Icon(
+                                                MaterialCommunityIcons
+                                                    .star_four_points,
+                                                color: Colors.white,
+                                                size: 20,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              '50',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle2
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .accentColor,
+                                                  ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20),
+                                  Container(
+                                    height: 44,
+                                    child: _renderHeader(
+                                      snapshot.data,
+                                    ),
+                                  )
+                                ],
+                              );
+                            }),
                       ),
-                      icon: Image.asset(
-                        'assets/icons/${e['iconName']}',
-                        width: 20,
-                        height: 20,
-                        color: e['id'] == snapshot.data
-                            ? Theme.of(context).accentColor
-                            : Color(0xffBFBFBF),
+                    ),
+                  ),
+                  body: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: _tabController,
+                    children: _screens,
+                  ),
+                  bottomNavigationBar: Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: SafeArea(
+                      child: TabBar(
+                        indicatorColor: Colors.transparent,
+                        controller: _tabController,
+                        tabs: _tabs.map(
+                          (e) {
+                            return StreamBuilder<int>(
+                                stream: _homeBloc.currentTabIndexOut,
+                                builder: (context, snapshot) {
+                                  return Tab(
+                                    child: Text(
+                                      e['title'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          .copyWith(
+                                            color: e['id'] == snapshot.data
+                                                ? Theme.of(context).accentColor
+                                                : Color(0xffBFBFBF),
+                                            fontSize: 12,
+                                          ),
+                                    ),
+                                    icon: Image.asset(
+                                      'assets/icons/${e['iconName']}',
+                                      width: 20,
+                                      height: 20,
+                                      color: e['id'] == snapshot.data
+                                          ? Theme.of(context).accentColor
+                                          : Color(0xffBFBFBF),
+                                    ),
+                                  );
+                                });
+                          },
+                        ).toList(),
                       ),
-                    );
-                  });
-            },
-          ).toList(),
-        ),
-      ),
-    );
+                    ),
+                  ),
+                );
+              });
+        });
   }
 }

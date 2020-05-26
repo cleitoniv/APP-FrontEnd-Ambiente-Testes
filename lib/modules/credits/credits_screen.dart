@@ -29,6 +29,9 @@ class _CreditsScreenState extends State<CreditsScreen> {
     _pageController = PageController(
       initialPage: 0,
     );
+    _homeBloc.currentCreditTypeIn.add(
+      'Financeiro',
+    );
   }
 
   @override
@@ -45,15 +48,33 @@ class _CreditsScreenState extends State<CreditsScreen> {
         builder: (context, snapshot) {
           _handleChangePage();
 
-          return PageView(
-            controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
+          return Stack(
+            overflow: Overflow.clip,
             children: <Widget>[
-              Container(
-                color: Theme.of(context).primaryColor,
+              Positioned(
+                child: PageView(
+                  controller: _pageController,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: <Widget>[
+                    Container(),
+                    Container(),
+                  ],
+                ),
               ),
-              Container(
-                color: Color(0xffEFC75E),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: MediaQuery.of(context).size.height / 2.5,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                ),
               ),
             ],
           );
