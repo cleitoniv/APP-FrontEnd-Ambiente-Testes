@@ -3,6 +3,7 @@ import 'package:central_oftalmica_app_cliente/widgets/card_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class CreditsScreen extends StatefulWidget {
   @override
@@ -34,8 +35,9 @@ class _CreditsScreenState extends State<CreditsScreen> {
             child: StreamBuilder<String>(
               stream: _homeBloc.currentCreditTypeOut,
               builder: (context, snapshot) {
-                return ListTile(
+                return ListTileMoreCustomizable(
                   contentPadding: const EdgeInsets.all(0),
+                  horizontalTitleGap: -5,
                   leading: Text(
                     snapshot.data == 'Financeiro' ? 'R\$' : 'Cx',
                     style: Theme.of(context).textTheme.subtitle2.copyWith(
