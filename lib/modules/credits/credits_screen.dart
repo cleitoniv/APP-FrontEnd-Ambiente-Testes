@@ -128,18 +128,20 @@ class _CreditsScreenState extends State<CreditsScreen> {
             right: 20,
             bottom: 20,
             child: StreamBuilder<String>(
-                stream: _homeBloc.currentCreditTypeOut,
-                builder: (context, snapshot) {
-                  return RaisedButton(
-                    onPressed: () {},
-                    child: Text(
-                      snapshot.data == 'Financeiro'
-                          ? 'Valor Personalizado'
-                          : 'Comprar Crédito de Produto',
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                  );
-                }),
+              stream: _homeBloc.currentCreditTypeOut,
+              builder: (context, snapshot) {
+                return RaisedButton(
+                  elevation: 0,
+                  onPressed: () {},
+                  child: Text(
+                    snapshot.data == 'Financeiro'
+                        ? 'Valor Personalizado'
+                        : 'Comprar Crédito de Produto',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

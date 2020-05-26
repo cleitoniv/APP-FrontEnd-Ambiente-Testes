@@ -2,7 +2,7 @@ import 'package:central_oftalmica_app_cliente/blocs/home_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
-import 'package:central_oftalmica_app_cliente/modules/home/home_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/products/products_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -31,7 +31,7 @@ class _TabsScreenState extends State<TabsScreen>
     'Astigmatismo',
   ];
   List<Widget> _screens = [
-    HomeScreen(),
+    ProductsScreen(),
     CreditsScreen(),
     CartScreen(),
     RequestsScreen(),
