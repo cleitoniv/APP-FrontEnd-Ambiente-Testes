@@ -43,17 +43,38 @@ class _CreditsScreenState extends State<CreditsScreen> {
                           color: Colors.white54,
                         ),
                   ),
-                  title: Align(
-                    alignment: Alignment(
-                      snapshot.data == 'Financeiro' ? -1.3 : -1.17,
-                      0,
-                    ),
-                    child: Text(
-                      snapshot.data == 'Financeiro' ? '567,00' : '2',
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
-                            fontSize: 48,
-                          ),
-                    ),
+                  title: Text(
+                    snapshot.data == 'Financeiro' ? '567,00' : '2',
+                    style: Theme.of(context).textTheme.subtitle2.copyWith(
+                          fontSize: 48,
+                        ),
+                  ),
+                  subtitle: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.white,
+                        child: snapshot.data == 'Financeiro'
+                            ? Icon(
+                                Icons.attach_money,
+                                color: Theme.of(context).primaryColor,
+                                size: 30,
+                              )
+                            : Image.asset(
+                                'assets/icons/open_box.png',
+                                width: 25,
+                                height: 25,
+                              ),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        snapshot.data == 'Financeiro'
+                            ? 'Saldo atual'
+                            : 'Total de Produtos',
+                        style: Theme.of(context).textTheme.subtitle2,
+                      )
+                    ],
                   ),
                 );
               },
