@@ -4,6 +4,10 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PointsScreen extends StatelessWidget {
+  _handleAddPoints() {}
+
+  _handleRescuePoints() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,6 +120,60 @@ class PointsScreen extends StatelessWidget {
                 ),
               );
             },
+          ),
+          SizedBox(height: 10),
+          Column(
+            children: [
+              {
+                'title': 'Adicionar Pontos',
+                'onTap': _handleAddPoints,
+                'border': 2.0,
+                'color': Colors.white,
+                'textColor': Theme.of(context).primaryColor,
+                'icon': Icon(
+                  MaterialCommunityIcons.plus,
+                  size: 30,
+                  color: Theme.of(context).primaryColor,
+                )
+              },
+              {
+                'title': 'Resgatar Pontos',
+                'onTap': _handleRescuePoints,
+                'border': 0.0,
+                'color': Theme.of(context).accentColor,
+                'textColor': Colors.white,
+                'icon': Icon(
+                  Icons.attach_money,
+                  size: 25,
+                  color: Colors.white,
+                )
+              },
+            ].map(
+              (item) {
+                return Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: RaisedButton.icon(
+                    icon: item['icon'],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      side: BorderSide(
+                        width: item['border'],
+                        color: item['textColor'],
+                      ),
+                    ),
+                    onPressed: item['onTap'],
+                    color: item['color'],
+                    elevation: 0,
+                    label: Text(
+                      item['title'],
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: item['textColor'],
+                          ),
+                    ),
+                  ),
+                );
+              },
+            ).toList(),
           ),
         ],
       ),
