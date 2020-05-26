@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/home_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_screen.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,41 @@ class _TabsScreenState extends State<TabsScreen>
     _homeBloc.currentRequestTypeIn.add(type);
   }
 
-  Widget _renderHeader(int index) {
+  _handleOpenDrawer() {
+    _scaffoldKey.currentState.openDrawer();
+  }
+
+  _handleCloseDrawer() {
+    Modular.to.pop();
+  }
+
+  _handleNavigateDrawer(int index) {
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        break;
+      case 2:
+        _handleCloseDrawer();
+        _tabController.index = 1;
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+      case 6:
+        break;
+      case 7:
+        break;
+      case 8:
+        break;
+      default:
+    }
+  }
+
+  _handleExitApp() {}
+
+  Widget _renderHeaderFilters(int index) {
     switch (index) {
       case 0:
         return ListView.separated(
@@ -284,7 +319,11 @@ class _TabsScreenState extends State<TabsScreen>
                           ? Theme.of(context).primaryColor
                           : Color(0xffEFC75E)
                       : Theme.of(context).scaffoldBackgroundColor,
-                  drawer: Container(),
+                  drawer: DrawerWidget(
+                    onClose: _handleCloseDrawer,
+                    onNavigate: _handleNavigateDrawer,
+                    onExitApp: _handleExitApp,
+                  ),
                   appBar: PreferredSize(
                     preferredSize: Size.fromHeight(200),
                     child: Container(
@@ -316,10 +355,13 @@ class _TabsScreenState extends State<TabsScreen>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Image.asset(
-                                        'assets/icons/drawer.png',
-                                        width: 30,
-                                        height: 30,
+                                      GestureDetector(
+                                        onTap: _handleOpenDrawer,
+                                        child: Image.asset(
+                                          'assets/icons/drawer.png',
+                                          width: 30,
+                                          height: 30,
+                                        ),
                                       ),
                                       Text(
                                         'Antônio Fraga',
@@ -449,7 +491,7 @@ class _TabsScreenState extends State<TabsScreen>
                                 SizedBox(height: 20),
                                 Container(
                                   height: 44,
-                                  child: _renderHeader(
+                                  child: _renderHeaderFilters(
                                     snapshot.data,
                                   ),
                                 )
