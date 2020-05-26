@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
@@ -107,6 +108,14 @@ class _TabsScreenState extends State<TabsScreen>
         break;
       default:
     }
+  }
+
+  _handleMyCredits() {
+    _tabController.index = 1;
+  }
+
+  _handleMyPoints() {
+    Modular.to.pushNamed('/points');
   }
 
   _handleExitApp() {}
@@ -417,86 +426,95 @@ class _TabsScreenState extends State<TabsScreen>
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Container(
-                                      width: 119,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          CircleAvatar(
-                                            backgroundColor:
-                                                Theme.of(context).primaryColor,
-                                            radius: 12,
-                                            child: Icon(
-                                              Icons.attach_money,
-                                              color: Colors.white,
-                                              size: 20,
+                                    GestureDetector(
+                                      onTap: _handleMyCredits,
+                                      child: Container(
+                                        width: 119,
+                                        height: 36,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .primaryColor
+                                              .withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            CircleAvatar(
+                                              backgroundColor: Theme.of(context)
+                                                  .primaryColor,
+                                              radius: 12,
+                                              child: Icon(
+                                                Icons.attach_money,
+                                                color: Colors.white,
+                                                size: 20,
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text(
-                                            '5.600,00',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                ),
-                                          )
-                                        ],
+                                            SizedBox(width: 10),
+                                            Text(
+                                              Helper.intToMoney(350090),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle2
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     SizedBox(width: 10),
-                                    Container(
-                                      width: 76,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                          color: Theme.of(context).accentColor,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          CircleAvatar(
-                                            backgroundColor:
+                                    GestureDetector(
+                                      onTap: _handleMyPoints,
+                                      child: Container(
+                                        width: 76,
+                                        height: 36,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          border: Border.all(
+                                            color:
                                                 Theme.of(context).accentColor,
-                                            radius: 12,
-                                            child: Icon(
-                                              MaterialCommunityIcons
-                                                  .star_four_points,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
                                           ),
-                                          SizedBox(width: 10),
-                                          Text(
-                                            '50',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .accentColor,
-                                                ),
-                                          )
-                                        ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            CircleAvatar(
+                                              backgroundColor:
+                                                  Theme.of(context).accentColor,
+                                              radius: 12,
+                                              child: Icon(
+                                                MaterialCommunityIcons
+                                                    .star_four_points,
+                                                color: Colors.white,
+                                                size: 20,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              '50',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle2
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .accentColor,
+                                                  ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],

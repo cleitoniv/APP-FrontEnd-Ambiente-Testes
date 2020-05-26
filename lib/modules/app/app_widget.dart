@@ -20,8 +20,14 @@ class AppWidget extends StatelessWidget {
           brightness: Brightness.light,
           textTheme: TextTheme(
             headline6: GoogleFonts.poppins().copyWith(
-              fontSize: 16,
+              fontSize: 18,
               color: Color(0xffA5A5A5),
+              fontWeight: FontWeight.w600,
+            ),
+            headline5: GoogleFonts.poppins().copyWith(
+              fontSize: 18,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
             ),
           ),
           iconTheme: IconThemeData(
@@ -40,6 +46,7 @@ class AppWidget extends StatelessWidget {
           headline6: GoogleFonts.poppins().copyWith(
             fontSize: 24,
             color: Colors.white,
+            fontWeight: FontWeight.w600,
           ),
           headline5: GoogleFonts.poppins().copyWith(
             fontSize: 24,
