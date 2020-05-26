@@ -84,8 +84,9 @@ class _CreditsScreenState extends State<CreditsScreen> {
             left: 0,
             right: 0,
             bottom: 0,
-            height: MediaQuery.of(context).size.height / 2.5,
+            height: MediaQuery.of(context).size.height / 2.2,
             child: Container(
+              padding: const EdgeInsets.only(top: 30),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: Colors.white,
