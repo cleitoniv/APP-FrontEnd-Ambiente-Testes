@@ -93,11 +93,15 @@ class CartScreen extends StatelessWidget {
             children: <Widget>[
               Text(
                 'Taxa de entrega',
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      fontSize: 14,
+                    ),
               ),
               Text(
                 'R\$ ${Helper.intToMoney(20000)}',
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      fontSize: 14,
+                    ),
               ),
             ],
           ),
@@ -108,13 +112,13 @@ class CartScreen extends StatelessWidget {
               Text(
                 'Total',
                 style: Theme.of(context).textTheme.headline5.copyWith(
-                      fontSize: 16,
+                      fontSize: 18,
                     ),
               ),
               Text(
                 'R\$ ${Helper.intToMoney(20000)}',
                 style: Theme.of(context).textTheme.headline5.copyWith(
-                      fontSize: 16,
+                      fontSize: 18,
                     ),
               ),
             ],
