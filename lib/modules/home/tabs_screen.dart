@@ -400,7 +400,17 @@ class _TabsScreenState extends State<TabsScreen>
                     children: _screens,
                   ),
                   bottomNavigationBar: Container(
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 2),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        )
+                      ],
+                    ),
                     child: SafeArea(
                       child: TabBar(
                         indicatorColor: Colors.transparent,
@@ -408,31 +418,32 @@ class _TabsScreenState extends State<TabsScreen>
                         tabs: _tabs.map(
                           (e) {
                             return StreamBuilder<int>(
-                                stream: _homeBloc.currentTabIndexOut,
-                                builder: (context, snapshot) {
-                                  return Tab(
-                                    child: Text(
-                                      e['title'],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1
-                                          .copyWith(
-                                            color: e['id'] == snapshot.data
-                                                ? Theme.of(context).accentColor
-                                                : Color(0xffBFBFBF),
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                    icon: Image.asset(
-                                      'assets/icons/${e['iconName']}',
-                                      width: 20,
-                                      height: 20,
-                                      color: e['id'] == snapshot.data
-                                          ? Theme.of(context).accentColor
-                                          : Color(0xffBFBFBF),
-                                    ),
-                                  );
-                                });
+                              stream: _homeBloc.currentTabIndexOut,
+                              builder: (context, snapshot) {
+                                return Tab(
+                                  child: Text(
+                                    e['title'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          color: e['id'] == snapshot.data
+                                              ? Theme.of(context).accentColor
+                                              : Color(0xffBFBFBF),
+                                          fontSize: 12,
+                                        ),
+                                  ),
+                                  icon: Image.asset(
+                                    'assets/icons/${e['iconName']}',
+                                    width: 20,
+                                    height: 20,
+                                    color: e['id'] == snapshot.data
+                                        ? Theme.of(context).accentColor
+                                        : Color(0xffBFBFBF),
+                                  ),
+                                );
+                              },
+                            );
                           },
                         ).toList(),
                       ),
