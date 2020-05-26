@@ -56,7 +56,6 @@ class _IntroScreenState extends State<IntroScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('Buildou');
     return Scaffold(
       body: Stack(
         overflow: Overflow.visible,
