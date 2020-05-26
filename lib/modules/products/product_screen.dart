@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProductScreen extends StatelessWidget {
@@ -9,6 +10,10 @@ class ProductScreen extends StatelessWidget {
   ProductScreen({
     this.id,
   });
+
+  _handleSingleOrder() {}
+  _handleProductCredit() {}
+  _handleFinancialCredit() {}
 
   @override
   Widget build(BuildContext context) {
@@ -55,16 +60,17 @@ class ProductScreen extends StatelessWidget {
                 height: 208,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(0, 2),
-                      blurRadius: 5,
-                      spreadRadius: 1,
-                    )
-                  ],
+                  color: Colors.white,
+                  border: Border(
+                    top: BorderSide(
+                      width: 0.5,
+                      color: Colors.black26,
+                    ),
+                    bottom: BorderSide(
+                      width: 0.5,
+                      color: Colors.black26,
+                    ),
+                  ),
                 ),
                 child: CachedNetworkImage(
                   imageUrl:
@@ -75,7 +81,7 @@ class ProductScreen extends StatelessWidget {
                 width: 67,
                 height: 32,
                 left: 20,
-                top: 20,
+                top: 15,
                 child: RaisedButton(
                   onPressed: () {},
                   padding: const EdgeInsets.all(0),
@@ -92,7 +98,128 @@ class ProductScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              Positioned(
+                bottom: -30,
+                right: 20,
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Color(0xffFD6565),
+                  child: Image.asset(
+                    'assets/icons/heart_outline.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                ),
+              ),
             ],
+          ),
+          SizedBox(height: 30),
+          Table(
+            children: [
+              TableRow(
+                children: [
+                  {
+                    'title': 'Financeiro',
+                    'subtitle': 'R\$ ${Helper.intToMoney(200000)}',
+                    'color': Theme.of(context).primaryColor,
+                    'widget': Icon(
+                      Icons.attach_money,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  },
+                  {
+                    'title': 'Produto',
+                    'subtitle': '0 caixas',
+                    'color': Color(0xffEFC75E),
+                    'widget': Image.asset(
+                      'assets/icons/open_box.png',
+                      width: 15,
+                      height: 15,
+                      color: Colors.white,
+                    ),
+                  },
+                  {
+                    'title': 'Testes',
+                    'subtitle': '30 un.',
+                    'color': Color(0xffA5A5A5),
+                    'widget': Icon(
+                      Icons.remove_red_eye,
+                      color: Colors.white,
+                      size: 15,
+                    ),
+                  }
+                ].map(
+                  (item) {
+                    return ListTileMoreCustomizable(
+                      contentPadding: const EdgeInsets.all(0),
+                      horizontalTitleGap: -5,
+                      leading: CircleAvatar(
+                        backgroundColor: item['color'],
+                        radius: 12,
+                        child: item['widget'],
+                      ),
+                      title: Text(
+                        item['title'],
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontSize: 14,
+                            ),
+                      ),
+                      subtitle: Text(
+                        item['subtitle'],
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                            ),
+                      ),
+                    );
+                  },
+                ).toList(),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Como deseja comprar?',
+            style: Theme.of(context).textTheme.headline5.copyWith(
+                  fontSize: 18,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 10),
+          Column(
+            children: [
+              {
+                'title': 'Pedido Avulso R\$ ${Helper.intToMoney(15100)}',
+                'color': Color(0xff707070),
+                'onTap': _handleSingleOrder,
+              },
+              {
+                'title': 'Crédito de Produto R\$ ${Helper.intToMoney(25000)}',
+                'color': Theme.of(context).primaryColor,
+                'onTap': _handleProductCredit,
+              },
+              {
+                'title': 'Crédito Financeiro R\$ ${Helper.intToMoney(25000)}',
+                'color': Theme.of(context).accentColor,
+                'onTap': _handleFinancialCredit,
+              }
+            ].map(
+              (item) {
+                return Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: RaisedButton(
+                    onPressed: item['onTap'],
+                    color: item['color'],
+                    elevation: 0,
+                    child: Text(
+                      item['title'],
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                  ),
+                );
+              },
+            ).toList(),
           ),
         ],
       ),
