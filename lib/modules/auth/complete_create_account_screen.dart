@@ -126,13 +126,8 @@ class _CompleteCreateAccountScreenState
         'validator': Helper.lengthValidator,
       },
       {
-        'labelText': 'Bairro',
-        'controller': _districtController,
-        'validator': Helper.lengthValidator,
-      },
-      {
         'labelText': 'Cidade',
-        'controller': _districtController,
+        'controller': _cityController,
         'validator': Helper.lengthValidator,
       },
     ];
@@ -202,7 +197,6 @@ class _CompleteCreateAccountScreenState
               style: Theme.of(context).textTheme.headline5,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 30),
             Column(
               children: _fieldData.skip(3).map(
                 (e) {
