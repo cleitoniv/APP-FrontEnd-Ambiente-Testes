@@ -1,6 +1,5 @@
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class CartScreen extends StatelessWidget {
@@ -33,7 +32,9 @@ class CartScreen extends StatelessWidget {
                 ),
                 title: Text(
                   'Bioview Asferica Cx 6',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(),
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        fontSize: 14,
+                      ),
                 ),
                 subtitle: Row(
                   children: <Widget>[
@@ -69,7 +70,7 @@ class CartScreen extends StatelessWidget {
                     Text(
                       'R\$ ${Helper.intToMoney(20000)}',
                       style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                     ),
                     Icon(

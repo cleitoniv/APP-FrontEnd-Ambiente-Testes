@@ -37,11 +37,15 @@ class RequestsScreen extends StatelessWidget {
               children: <Widget>[
                 Text(
                   'Marcos Barbosa Santos',
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        fontSize: 14,
+                      ),
                 ),
                 Text(
                   'Valor',
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        fontSize: 14,
+                      ),
                 )
               ],
             ),
