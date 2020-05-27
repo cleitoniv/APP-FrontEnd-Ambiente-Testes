@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/modules/profile/add_user_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/app_users_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/delivery_address_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/personal_info_screen.dart';
@@ -35,6 +36,10 @@ class ProfileModule extends ChildModule {
         Router(
           '/appUsers',
           child: (_, args) => AppUsersScreen(),
+        ),
+        Router(
+          '/addUser',
+          child: (_, args) => AddUserScreen(),
         ),
       ];
 }

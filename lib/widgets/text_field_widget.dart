@@ -74,7 +74,9 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           prefixIcon: widget.prefixIcon,
           suffixIcon: widget.suffixIcon,
         ),
-        style: Theme.of(context).textTheme.subtitle1,
+        style: Theme.of(context).textTheme.subtitle1.copyWith(
+              color: widget.enabled ? null : Colors.black38,
+            ),
       ),
     );
   }

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class AppUsersScreen extends StatelessWidget {
-  _onAddUser() {}
+  _onAddUser() {
+    Modular.to.pushNamed(
+      '/profile/addUser',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,12 +76,12 @@ class AppUsersScreen extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    left: -14,
+                    left: -10,
                     top: 20,
                     child: Icon(
                       Icons.check_circle,
                       color: Theme.of(context).accentColor,
-                      size: 30,
+                      size: 25,
                     ),
                   )
                 ],
