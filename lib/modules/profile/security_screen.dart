@@ -11,12 +11,12 @@ class SecurityScreen extends StatefulWidget {
 }
 
 class _SecurityScreenState extends State<SecurityScreen> {
-  ProfileWidgetBloc _profileBloc = Modular.get<ProfileWidgetBloc>();
+  ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   TextEditingController _passwordController;
   List<Map> _data;
 
   _onShowPassword(bool value) {
-    _profileBloc.securityShowPasswordIn.add(value);
+    _profileWidgetBloc.securityShowPasswordIn.add(value);
   }
 
   _onSubmit() {}
@@ -77,7 +77,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
             ),
             itemBuilder: (context, index) {
               return StreamBuilder<bool>(
-                stream: _profileBloc.securityShowPasswordOut,
+                stream: _profileWidgetBloc.securityShowPasswordOut,
                 builder: (context, snapshot) {
                   return TextFieldWidget(
                     obscureText: snapshot.data,

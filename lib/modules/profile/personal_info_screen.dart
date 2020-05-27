@@ -11,7 +11,7 @@ class PersonalInfoScreen extends StatefulWidget {
 }
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
-  ProfileWidgetBloc _profileBloc = Modular.get<ProfileWidgetBloc>();
+  ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   TextEditingController _nameController;
   MaskedTextController _cpfController;
   MaskedTextController _birthdayController;
@@ -21,7 +21,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   List<Map> _personalInfo;
 
   _onChangeVisitHour(String value) {
-    _profileBloc.visitHourIn.add(value);
+    _profileWidgetBloc.visitHourIn.add(value);
   }
 
   _onSaveNewSchedule() {}
@@ -166,7 +166,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             ),
             child: DropdownButtonHideUnderline(
               child: StreamBuilder<String>(
-                stream: _profileBloc.visitHourOut,
+                stream: _profileWidgetBloc.visitHourOut,
                 builder: (context, snapshot) {
                   return DropdownButton(
                     value: snapshot.data,
