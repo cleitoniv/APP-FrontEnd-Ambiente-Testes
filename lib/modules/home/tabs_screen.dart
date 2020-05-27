@@ -94,9 +94,10 @@ class _TabsScreenState extends State<TabsScreen>
         _route = '/profile';
         break;
       case 1:
+        _tabController.index = 3;
+
         break;
       case 2:
-        _handleCloseDrawer();
         _tabController.index = 1;
         break;
       case 3:
@@ -111,6 +112,7 @@ class _TabsScreenState extends State<TabsScreen>
         break;
       default:
     }
+    _handleCloseDrawer();
 
     Modular.to.pushNamed(_route);
   }
