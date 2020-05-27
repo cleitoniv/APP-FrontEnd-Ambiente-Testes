@@ -9,6 +9,7 @@ class TextFieldWidget extends StatefulWidget {
   double width;
   bool obscureText;
   TextInputType keyboardType;
+  bool enabled;
 
   TextFieldWidget({
     this.labelText,
@@ -19,6 +20,7 @@ class TextFieldWidget extends StatefulWidget {
     this.width = double.infinity,
     this.obscureText = false,
     this.keyboardType,
+    this.enabled = true,
   });
 
   @override
@@ -48,6 +50,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     return Container(
       width: widget.width,
       child: TextFormField(
+        enabled: widget.enabled,
         controller: widget.controller,
         validator: widget.validator,
         focusNode: _focusNode,
