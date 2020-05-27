@@ -1,21 +1,42 @@
+import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-class AddUserScreen extends StatefulWidget {
+class FormScreen extends StatefulWidget {
+  //add or edit
+  String formType;
+
+  FormScreen({
+    this.formType = 'add',
+  });
+
   @override
-  _AddUserScreenState createState() => _AddUserScreenState();
+  _FormScreenState createState() => _FormScreenState();
 }
 
-class _AddUserScreenState extends State<AddUserScreen> {
+class _FormScreenState extends State<FormScreen> {
+  ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   List<Map> _data;
-
   TextEditingController _nameController;
   TextEditingController _emailController;
   TextEditingController _officeController;
   MaskedTextController _passwordController;
+
+  _onAddUser() {
+    Modular.to.pop();
+  }
+
+  _onSaveInfo() {
+    Modular.to.pop();
+  }
+
+  _onChangeUserStatus(bool value) {
+    _profileWidgetBloc.userStatusIn.add(value);
+  }
 
   @override
   void initState() {
@@ -24,7 +45,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     _emailController = TextEditingController();
     _officeController = TextEditingController();
     _passwordController = MaskedTextController(
-      mask: '0 0 0 0 0 0 0 0',
+      mask: '* * * * * * * *',
     );
 
     _data = [
@@ -79,7 +100,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
         padding: const EdgeInsets.all(20),
         children: <Widget>[
           Text(
-            'Cadastrar Usuário',
+            widget.formType == 'edit' ? 'Editar Usuário' : 'Cadastrar Usuário',
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
           ),
@@ -119,7 +140,41 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     fontSize: 14,
                   ),
             ),
-          )
+          ),
+          widget.formType == 'edit'
+              ? ListTileMoreCustomizable(
+                  dense: true,
+                  contentPadding: const EdgeInsets.all(0),
+                  horizontalTitleGap: 0,
+                  title: Text(
+                    'Ativar/Desativar Usuário',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontSize: 14,
+                        ),
+                  ),
+                  trailing: StreamBuilder<bool>(
+                    stream: _profileWidgetBloc.userStatusOut,
+                    builder: (context, snapshot) {
+                      return Switch(
+                        value: snapshot.data,
+                        activeColor: Theme.of(context).primaryColor,
+                        onChanged: (value) => _onChangeUserStatus(value),
+                      );
+                    },
+                  ),
+                )
+              : Container(),
+          SizedBox(height: 30),
+          RaisedButton(
+            onPressed: widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
+            elevation: 0,
+            child: Text(
+              widget.formType == 'edit'
+                  ? 'Salvar Alterações de Usuário'
+                  : 'Cadastrar Novo Usuário',
+              style: Theme.of(context).textTheme.button,
+            ),
+          ),
         ],
       ),
     );

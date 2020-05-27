@@ -6,7 +6,13 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 class AppUsersScreen extends StatelessWidget {
   _onAddUser() {
     Modular.to.pushNamed(
-      '/profile/addUser',
+      '/profile/appUsers/add',
+    );
+  }
+
+  _onEditUser() {
+    Modular.to.pushNamed(
+      '/profile/appUsers/edit',
     );
   }
 
@@ -39,52 +45,55 @@ class AppUsersScreen extends StatelessWidget {
               height: 20,
             ),
             itemBuilder: (context, index) {
-              return Stack(
-                overflow: Overflow.visible,
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      color: Color(0xffF1F1F1),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ListTileMoreCustomizable(
-                      contentPadding: const EdgeInsets.all(0),
-                      title: Text(
-                        'Maria Cristina',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+              return GestureDetector(
+                onTap: _onEditUser,
+                child: Stack(
+                  overflow: Overflow.visible,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
                       ),
-                      subtitle: Text(
-                        'maria@atendimento.com.br',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontSize: 14,
-                              color: Colors.black38,
-                            ),
+                      width: MediaQuery.of(context).size.width,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Color(0xffF1F1F1),
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      trailing: Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 30,
+                      child: ListTileMoreCustomizable(
+                        contentPadding: const EdgeInsets.all(0),
+                        title: Text(
+                          'Maria Cristina',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        subtitle: Text(
+                          'maria@atendimento.com.br',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                                color: Colors.black38,
+                              ),
+                        ),
+                        trailing: Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 30,
+                          color: Theme.of(context).accentColor,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: -10,
+                      top: 20,
+                      child: Icon(
+                        Icons.check_circle,
                         color: Theme.of(context).accentColor,
+                        size: 25,
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    left: -10,
-                    top: 20,
-                    child: Icon(
-                      Icons.check_circle,
-                      color: Theme.of(context).accentColor,
-                      size: 25,
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               );
             },
           ),
