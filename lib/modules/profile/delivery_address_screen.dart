@@ -126,7 +126,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                 enabled: false,
                 labelText: _addressInfo[index]['labelText'],
                 prefixIcon: Icon(
-                  MaterialCommunityIcons.map,
+                  MaterialCommunityIcons.map_marker,
                   color: Color(0xffA1A1A1),
                 ),
                 controller: _addressInfo[index]['controller']
