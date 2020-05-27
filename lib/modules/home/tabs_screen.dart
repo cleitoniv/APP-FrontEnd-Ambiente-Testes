@@ -87,8 +87,11 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _handleNavigateDrawer(int index) {
+    String _route;
+
     switch (index) {
       case 0:
+        _route = '/profile';
         break;
       case 1:
         break;
@@ -108,6 +111,8 @@ class _TabsScreenState extends State<TabsScreen>
         break;
       default:
     }
+
+    Modular.to.pushNamed(_route);
   }
 
   _handleMyCredits() {
