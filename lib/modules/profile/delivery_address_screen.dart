@@ -2,6 +2,7 @@ import 'package:central_oftalmica_app_cliente/modules/auth/login_screen.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class DeliveryAddressScreen extends StatefulWidget {
@@ -125,7 +126,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                 enabled: false,
                 labelText: _addressInfo[index]['labelText'],
                 prefixIcon: Icon(
-                  MaterialCommunityIcons.map_marker,
+                  MaterialCommunityIcons.map,
                   color: Color(0xffA1A1A1),
                 ),
                 controller: _addressInfo[index]['controller']
