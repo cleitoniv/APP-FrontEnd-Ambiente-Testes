@@ -95,7 +95,6 @@ class _TabsScreenState extends State<TabsScreen>
         break;
       case 1:
         _tabController.index = 3;
-
         break;
       case 2:
         _tabController.index = 1;
