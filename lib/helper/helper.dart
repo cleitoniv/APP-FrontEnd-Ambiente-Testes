@@ -21,9 +21,13 @@ class Helper {
     return null;
   }
 
-  static String equalValidator(String text, {String value}) {
+  static String equalValidator(
+    String text, {
+    String value,
+    String message = 'Campos não coincidem',
+  }) {
     if (text != value) {
-      return 'Campos não coincidem';
+      return message;
     }
     return null;
   }

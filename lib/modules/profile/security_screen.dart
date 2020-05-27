@@ -1,8 +1,117 @@
+import 'package:central_oftalmica_app_cliente/blocs/profile_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
-class SecurityScreen extends StatelessWidget {
+class SecurityScreen extends StatefulWidget {
+  @override
+  _SecurityScreenState createState() => _SecurityScreenState();
+}
+
+class _SecurityScreenState extends State<SecurityScreen> {
+  ProfileBloc _profileBloc = Modular.get<ProfileBloc>();
+  TextEditingController _passwordController;
+  List<Map> _data;
+
+  _onShowPassword(bool value) {
+    _profileBloc.securityShowPasswordIn.add(value);
+  }
+
+  _onSubmit() {}
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordController = TextEditingController();
+    _data = [
+      {
+        'labelText': 'Digite uma senha',
+        'controller': _passwordController,
+      },
+      {
+        'labelText': 'Confirme a senha',
+        'validator': (String text) => Helper.equalValidator(
+              text,
+              value: _passwordController.text,
+              message: 'As senhas não coincidem',
+            )
+      },
+    ];
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Segurança'),
+        centerTitle: false,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: <Widget>[
+          Text(
+            'Selecione o melhor horário de visita',
+            style: Theme.of(context).textTheme.headline5,
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            'Caso tenha um representante Central Oftálmica informe abaixo o melhor horário para o mesmo visita-lo',
+            style: Theme.of(context).textTheme.subtitle1,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 30),
+          ListView.separated(
+            shrinkWrap: true,
+            primary: false,
+            itemCount: _data.length,
+            separatorBuilder: (context, index) => SizedBox(
+              height: 10,
+            ),
+            itemBuilder: (context, index) {
+              return StreamBuilder<bool>(
+                stream: _profileBloc.securityShowPasswordOut,
+                builder: (context, snapshot) {
+                  return TextFieldWidget(
+                    obscureText: snapshot.data,
+                    labelText: _data[index]['labelText'],
+                    suffixIcon: IconButton(
+                      onPressed: () => _onShowPassword(!snapshot.data),
+                      icon: Icon(
+                        snapshot.data
+                            ? MaterialCommunityIcons.eye
+                            : MaterialCommunityIcons.eye_off,
+                        color: Color(0xffa1a1a1),
+                      ),
+                    ),
+                    prefixIcon: Icon(
+                      MaterialCommunityIcons.lock,
+                      color: Color(0xffA1A1A1),
+                    ),
+                    controller: _data[index]['controller'],
+                    validator: _data[index]['validator'],
+                  );
+                },
+              );
+            },
+          ),
+          SizedBox(height: 30),
+          RaisedButton(
+            onPressed: _onSubmit,
+            child: Text(
+              'Alterar Senha',
+              style: Theme.of(context).textTheme.button,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
