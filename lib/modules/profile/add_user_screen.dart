@@ -2,6 +2,7 @@ import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class AddUserScreen extends StatefulWidget {
   @override
@@ -102,6 +103,22 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   ..text = _data[index]['value'],
               );
             },
+          ),
+          ListTileMoreCustomizable(
+            dense: true,
+            contentPadding: const EdgeInsets.all(0),
+            horizontalTitleGap: 0,
+            leading: Image.asset(
+              'assets/icons/info.png',
+              width: 25,
+              height: 25,
+            ),
+            title: Text(
+              'Senha gerada automaticamente.',
+              style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    fontSize: 14,
+                  ),
+            ),
           )
         ],
       ),
