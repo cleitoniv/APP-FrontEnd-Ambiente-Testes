@@ -1,4 +1,4 @@
-import 'package:central_oftalmica_app_cliente/blocs/home_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
@@ -22,7 +22,7 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen>
     with SingleTickerProviderStateMixin {
-  HomeBloc _homeBloc = Modular.get<HomeBloc>();
+  HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
   TabController _tabController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> _sightProblems = [

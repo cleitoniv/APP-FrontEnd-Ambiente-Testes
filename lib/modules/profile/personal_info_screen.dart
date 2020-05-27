@@ -1,4 +1,4 @@
-import 'package:central_oftalmica_app_cliente/blocs/profile_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -11,7 +11,7 @@ class PersonalInfoScreen extends StatefulWidget {
 }
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
-  ProfileBloc _profileBloc = Modular.get<ProfileBloc>();
+  ProfileWidgetBloc _profileBloc = Modular.get<ProfileWidgetBloc>();
   TextEditingController _nameController;
   MaskedTextController _cpfController;
   MaskedTextController _birthdayController;

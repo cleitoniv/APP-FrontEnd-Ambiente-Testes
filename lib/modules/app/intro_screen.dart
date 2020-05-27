@@ -1,4 +1,4 @@
-import 'package:central_oftalmica_app_cliente/blocs/intro_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/intro_widget_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -8,7 +8,7 @@ class IntroScreen extends StatefulWidget {
 }
 
 class _IntroScreenState extends State<IntroScreen> {
-  IntroBloc _introBloc = Modular.get<IntroBloc>();
+  IntroWidgetBloc _introBloc = Modular.get<IntroWidgetBloc>();
   PageController _pageController;
 
   List<Map> _slides = [
