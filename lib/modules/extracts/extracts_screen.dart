@@ -1,13 +1,38 @@
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/modules/extracts/financial_extract_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/extracts/product_extract_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class ExtractsScreen extends StatelessWidget {
+class ExtractsScreen extends StatefulWidget {
+  @override
+  _ExtractsScreenState createState() => _ExtractsScreenState();
+}
+
+class _ExtractsScreenState extends State<ExtractsScreen> {
   ExtractWidgetBloc _extractWidgetBloc = Modular.get<ExtractWidgetBloc>();
+  PageController _pageController;
 
   _onChangeExtractType(String type) {
     _extractWidgetBloc.extractTypeIn.add(type);
+
+    _pageController.animateToPage(
+      type == 'Financeiro' ? 0 : 1,
+      duration: Duration(seconds: 1),
+      curve: Curves.fastLinearToSlowEaseIn,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _extractWidgetBloc.extractTypeOut.first.then((value) {
+      _pageController = PageController(
+        initialPage: value == 'Financeiro' ? 0 : 1,
+      );
+    });
   }
 
   @override
@@ -78,105 +103,16 @@ class ExtractsScreen extends StatelessWidget {
               },
             ).toList(),
           ),
-          SizedBox(height: 30),
-          Text(
-            'Fevereiro/2019',
-            style: Theme.of(context).textTheme.headline5,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 30),
-          Table(
-            border: TableBorder.symmetric(
-              outside: BorderSide(
-                width: 0.2,
-              ),
+          Container(
+            height: MediaQuery.of(context).size.height / 1.5,
+            child: PageView(
+              controller: _pageController,
+              physics: NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                FinancialExtractScreen(),
+                ProductExtractScreen(),
+              ],
             ),
-            children: [
-              TableRow(
-                children: [
-                  Text(
-                    'Data',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black45,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    'Pedido',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black45,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    'Valor',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black45,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Table(
-            border: TableBorder.all(
-              width: 0.2,
-            ),
-            children: [
-              {
-                'date': '20/08/2020',
-                'request': '43564564',
-                'value': 20000,
-              },
-              {
-                'date': '20/08/2020',
-                'request': '43564564',
-                'value': 20000,
-              },
-              {
-                'date': '20/08/2020',
-                'request': '43564564',
-                'value': 20000,
-              },
-            ].map((e) {
-              return TableRow(
-                children: [
-                  Text(
-                    e['date'],
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black26,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    e['request'],
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black26,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    '+ R\$ ${Helper.intToMoney(e['value'])}',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 14,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              );
-            }).toList(),
           ),
         ],
       ),
