@@ -1,10 +1,17 @@
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PaymentScreen extends StatelessWidget {
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   _onAddCreditCard() {}
+
+  _onChangePaymentForm(int index) {
+    _cartWidgetBloc.currentPaymentFormIn.add(index);
+  }
 
   _onSubmit() {}
 
@@ -71,33 +78,54 @@ class PaymentScreen extends StatelessWidget {
               height: 15,
             ),
             itemBuilder: (context, index) {
-              return Container(
-                height: 50,
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: Color(0xffF1F1F1),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: ListTileMoreCustomizable(
-                  contentPadding: const EdgeInsets.all(0),
-                  horizontalTitleGap: 10,
-                  leading: Image.asset(
-                    'assets/icons/barcode.png',
-                    width: 30,
-                    height: 25,
-                    fit: BoxFit.contain,
-                  ),
-                  title: Text(
-                    'À vista (5% de desconto)',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ),
+              return StreamBuilder<int>(
+                stream: _cartWidgetBloc.currentPaymentFormOut,
+                builder: (context, snapshot) {
+                  return AnimatedContainer(
+                    duration: Duration(
+                      milliseconds: 100,
+                    ),
+                    height: 50,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: snapshot.data == index
+                          ? Theme.of(context).accentColor
+                          : Color(0xffF1F1F1),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: ListTileMoreCustomizable(
+                      onTap: (value) => _onChangePaymentForm(
+                        index,
+                      ),
+                      contentPadding: const EdgeInsets.all(0),
+                      horizontalTitleGap: 10,
+                      leading: Image.asset(
+                        'assets/icons/barcode.png',
+                        width: 30,
+                        height: 25,
+                        fit: BoxFit.contain,
+                      ),
+                      title: Text(
+                        'À vista (5% de desconto)',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  snapshot.data == index ? Colors.white : null,
+                            ),
+                      ),
+                      trailing: snapshot.data == index
+                          ? Icon(
+                              Icons.check,
+                              color: Colors.white,
+                            )
+                          : null,
+                    ),
+                  );
+                },
               );
             },
           ),

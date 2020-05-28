@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
@@ -51,6 +52,9 @@ class AppModule extends MainModule {
         ),
         Bind(
           (i) => ExtractWidgetBloc(),
+        ),
+        Bind(
+          (i) => CartWidgetBloc(),
         ),
       ];
 

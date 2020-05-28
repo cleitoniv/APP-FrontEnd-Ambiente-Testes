@@ -1,10 +1,15 @@
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/payment_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class CartModule extends ChildModule {
   @override
-  List<Bind> get binds => [];
+  List<Bind> get binds => [
+        Bind(
+          (i) => i.get<CartWidgetBloc>(),
+        ),
+      ];
 
   @override
   List<Router> get routers => [
