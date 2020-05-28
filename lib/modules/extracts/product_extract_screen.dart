@@ -1,5 +1,6 @@
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProductExtractScreen extends StatelessWidget {
   @override
@@ -7,13 +8,31 @@ class ProductExtractScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: <Widget>[
-        SizedBox(height: 30),
-        Text(
-          'Fevereiro/2019',
-          style: Theme.of(context).textTheme.headline5,
-          textAlign: TextAlign.center,
+        ListTileMoreCustomizable(
+          contentPadding: const EdgeInsets.all(0),
+          horizontalTitleGap: 0,
+          leading: CircleAvatar(
+            backgroundColor: Color(0xffF1F1F1),
+            radius: 15,
+            child: Image.asset(
+              'assets/icons/open_box.png',
+              width: 25,
+              height: 25,
+            ),
+          ),
+          title: Text(
+            'BIOSOFT SIHY 45 CX3',
+            style: Theme.of(context).textTheme.headline5.copyWith(
+                  fontSize: 14,
+                ),
+          ),
+          trailing: Text(
+            'Saldo: 1',
+            style: Theme.of(context).textTheme.headline5.copyWith(
+                  fontSize: 14,
+                ),
+          ),
         ),
-        SizedBox(height: 30),
         Table(
           border: TableBorder.symmetric(
             outside: BorderSide(
