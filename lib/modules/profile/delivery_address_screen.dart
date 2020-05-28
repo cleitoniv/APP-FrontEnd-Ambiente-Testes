@@ -99,7 +99,6 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                   text:
                       'Caso tenha um representante Central Oftálmica informe abaixo o melhor horário para o mesmo visita-lo ',
                   style: Theme.of(context).textTheme.subtitle1,
-                  recognizer: TapGestureRecognizer()..onTap = () {},
                 ),
                 TextSpan(
                   text: 'deste link',

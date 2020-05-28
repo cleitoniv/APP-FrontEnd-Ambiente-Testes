@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -151,38 +152,15 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 20),
-          InputDecorator(
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(0),
-              labelText: 'Horário de Visita',
-              labelStyle: Theme.of(context).textTheme.subtitle1.copyWith(
-                    color: Theme.of(context).primaryColor,
-                  ),
-              alignLabelWithHint: true,
-              prefixIcon: Icon(
-                Icons.remove_red_eye,
-                color: Color(0xffA1A1A1),
-              ),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: StreamBuilder<String>(
-                stream: _profileWidgetBloc.visitHourOut,
-                builder: (context, snapshot) {
-                  return DropdownButton(
-                    value: snapshot.data,
-                    items: ['Manhã', 'Tarde', 'Noite'].map(
-                      (e) {
-                        return DropdownMenuItem(
-                          child: Text(e),
-                          value: e,
-                        );
-                      },
-                    ).toList(),
-                    onChanged: _onChangeVisitHour,
-                  );
-                },
-              ),
-            ),
+          StreamBuilder<String>(
+            stream: _profileWidgetBloc.visitHourOut,
+            builder: (context, snapshot) {
+              return DropdownWidget(
+                items: ['Manhã', 'Tarde', 'Noite'],
+                currentValue: snapshot.data,
+                onChanged: _onChangeVisitHour,
+              );
+            },
           ),
           SizedBox(height: 30),
           RaisedButton(
