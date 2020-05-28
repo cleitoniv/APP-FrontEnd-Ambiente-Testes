@@ -1,12 +1,12 @@
 import 'package:central_oftalmica_app_cliente/blocs/payments_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PaymentsScreen extends StatelessWidget {
   PaymentsWidgetBloc _paymentsWidgetBloc = Modular.get<PaymentsWidgetBloc>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _onChangePaymentType(String value) {
     _paymentsWidgetBloc.paymentTypeIn.add(value);
@@ -14,11 +14,29 @@ class PaymentsScreen extends StatelessWidget {
 
   _onExpandItem() {}
 
-  _onCopyBarcode() {}
+  _showSnackBar() {
+    SnackBar _snackBar = SnackBar(
+      content: Text(
+        'Texto copiado para área de transferência',
+      ),
+    );
+
+    _scaffoldKey.currentState.showSnackBar(
+      _snackBar,
+    );
+  }
+
+  _onCopyBarcode(String code) {
+    ClipboardData data = ClipboardData(text: code);
+    Clipboard.setData(data);
+
+    _showSnackBar();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Pagamentos'),
         centerTitle: false,
@@ -106,7 +124,9 @@ class PaymentsScreen extends StatelessWidget {
               ),
               SizedBox(height: 30),
               RaisedButton(
-                onPressed: _onCopyBarcode,
+                onPressed: () => _onCopyBarcode(
+                  '34191.09271 45666.470658 54648.080007 5 82130000089700',
+                ),
                 child: Text(
                   'Copiar Código de Barra',
                   style: Theme.of(context).textTheme.button,
