@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -10,7 +11,22 @@ class RescuePointsScreen extends StatefulWidget {
 }
 
 class _RescuePointsScreenState extends State<RescuePointsScreen> {
-  _onConfirmRescue() {}
+  _onGoToFinancialCredit() {
+    Modular.to.pushNamedAndRemoveUntil(
+      '/home/1',
+      (route) => route.isFirst,
+    );
+  }
+
+  _onConfirmRescue() {
+    Modular.to.pop();
+    Dialogs.success(
+      context,
+      subtitle: 'Resgate realizado com sucesso!',
+      buttonText: 'Ir para Crédito Financeiro',
+      onTap: _onGoToFinancialCredit,
+    );
+  }
 
   _onCancelRescue() {
     Modular.to.pop();
