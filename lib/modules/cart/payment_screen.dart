@@ -1,8 +1,13 @@
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PaymentScreen extends StatelessWidget {
+  _onAddCreditCard() {}
+
+  _onSubmit() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,16 +83,53 @@ class PaymentScreen extends StatelessWidget {
                 ),
                 child: ListTileMoreCustomizable(
                   contentPadding: const EdgeInsets.all(0),
-                  horizontalTitleGap: 0,
+                  horizontalTitleGap: 10,
                   leading: Image.asset(
                     'assets/icons/barcode.png',
                     width: 30,
                     height: 25,
                     fit: BoxFit.contain,
                   ),
+                  title: Text(
+                    'À vista (5% de desconto)',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
                 ),
               );
             },
+          ),
+          RaisedButton.icon(
+            onPressed: _onAddCreditCard,
+            elevation: 0,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+              side: BorderSide(
+                width: 2,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            icon: Icon(
+              MaterialCommunityIcons.plus,
+              color: Theme.of(context).primaryColor,
+            ),
+            label: Text(
+              'Adicionar Outro Cartão',
+              style: Theme.of(context).textTheme.button.copyWith(
+                    color: Theme.of(context).primaryColor,
+                  ),
+            ),
+          ),
+          SizedBox(height: 20),
+          RaisedButton(
+            onPressed: _onSubmit,
+            child: Text(
+              'Finalizar Pedido',
+              style: Theme.of(context).textTheme.button,
+            ),
           ),
         ],
       ),
