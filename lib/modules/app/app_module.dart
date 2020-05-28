@@ -13,6 +13,7 @@ import 'package:central_oftalmica_app_cliente/modules/devolution/devolution_modu
 import 'package:central_oftalmica_app_cliente/modules/extracts/extracts_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/home_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/notifications/notifications_module.dart';
+import 'package:central_oftalmica_app_cliente/modules/payments/payments_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/points/points_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/products/products_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/profile_module.dart';
@@ -93,6 +94,10 @@ class AppModule extends MainModule {
         Router(
           '/devolution',
           module: DevolutionModule(),
+        ),
+        Router(
+          '/payments',
+          module: PaymentsModule(),
         ),
       ];
 

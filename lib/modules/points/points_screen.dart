@@ -5,6 +5,35 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PointsScreen extends StatelessWidget {
+  List<Map> _renderButtonData(BuildContext context) {
+    return [
+      {
+        'title': 'Adicionar Pontos',
+        'onTap': _onAddPoints,
+        'border': 2.0,
+        'color': Colors.white,
+        'textColor': Theme.of(context).primaryColor,
+        'icon': Icon(
+          MaterialCommunityIcons.plus,
+          size: 30,
+          color: Theme.of(context).primaryColor,
+        )
+      },
+      {
+        'title': 'Resgatar Pontos',
+        'onTap': _onRescuePoints,
+        'border': 0.0,
+        'color': Theme.of(context).accentColor,
+        'textColor': Colors.white,
+        'icon': Icon(
+          Icons.attach_money,
+          size: 25,
+          color: Colors.white,
+        )
+      },
+    ];
+  }
+
   _onAddPoints() {
     Modular.to.pushNamed('/points/add');
   }
@@ -128,32 +157,7 @@ class PointsScreen extends StatelessWidget {
           ),
           SizedBox(height: 10),
           Column(
-            children: [
-              {
-                'title': 'Adicionar Pontos',
-                'onTap': _onAddPoints,
-                'border': 2.0,
-                'color': Colors.white,
-                'textColor': Theme.of(context).primaryColor,
-                'icon': Icon(
-                  MaterialCommunityIcons.plus,
-                  size: 30,
-                  color: Theme.of(context).primaryColor,
-                )
-              },
-              {
-                'title': 'Resgatar Pontos',
-                'onTap': _onRescuePoints,
-                'border': 0.0,
-                'color': Theme.of(context).accentColor,
-                'textColor': Colors.white,
-                'icon': Icon(
-                  Icons.attach_money,
-                  size: 25,
-                  color: Colors.white,
-                )
-              },
-            ].map(
+            children: _renderButtonData(context).map(
               (item) {
                 return Container(
                   margin: const EdgeInsets.only(top: 20),
