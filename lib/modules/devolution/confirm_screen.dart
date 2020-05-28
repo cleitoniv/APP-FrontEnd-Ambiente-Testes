@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +9,12 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-class ConfirmDevolutionScreen extends StatefulWidget {
+class ConfirmScreen extends StatefulWidget {
   @override
-  _ConfirmDevolutionScreenState createState() =>
-      _ConfirmDevolutionScreenState();
+  _ConfirmScreenState createState() => _ConfirmScreenState();
 }
 
-class _ConfirmDevolutionScreenState extends State<ConfirmDevolutionScreen> {
+class _ConfirmScreenState extends State<ConfirmScreen> {
   DevolutionWidgetBloc _devolutionWidgetBloc =
       Modular.get<DevolutionWidgetBloc>();
   List<Map> _pacientInfo;
@@ -48,17 +48,27 @@ class _ConfirmDevolutionScreenState extends State<ConfirmDevolutionScreen> {
     }
   }
 
-  _onSubmit() {}
+  _onSubmitDialog() {
+    Modular.to.popAndPushNamed(
+      '/devolution/effectuation',
+    );
+  }
+
+  _onSubmit() {
+    Dialogs.success(
+      context,
+      onTap: _onSubmitDialog,
+    );
+  }
 
   @override
   void initState() {
+    super.initState();
     _nameController = TextEditingController();
     _numberController = TextEditingController();
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
     );
-
-    super.initState();
     _pacientInfo = [
       {
         'labelText': 'Nome do paciente',
