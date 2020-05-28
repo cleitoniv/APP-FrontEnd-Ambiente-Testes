@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/activity_performed_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/complete_create_account_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/create_account_screen.dart';
@@ -7,7 +8,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 class AuthModule extends ChildModule {
   @override
-  List<Bind> get binds => [];
+  List<Bind> get binds => [
+        Bind((i) => i.get<AuthWidgetBloc>()),
+      ];
 
   @override
   List<Router> get routers => [

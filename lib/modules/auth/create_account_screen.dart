@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -12,6 +13,7 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
+  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController _nameController;
@@ -22,10 +24,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   bool _obscureText = true;
   List<Map> _fieldData;
 
-  _handleObscureText() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
+  _handleObscureText() async {
+    bool _first = await _authWidgetBloc.createAccountShowPasswordOut.first;
+
+    _authWidgetBloc.createAccountShowPasswordIn.add(
+      !_first,
+    );
   }
 
   _handleShowTerm() {}
@@ -39,9 +43,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   _handleAcceptTerm(bool value) {
-    setState(() {
-      _isAccepted = value;
-    });
+    _authWidgetBloc.createAccountTermIn.add(
+      value,
+    );
   }
 
   @override
@@ -207,14 +211,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   (e) {
                     return Container(
                       margin: const EdgeInsets.only(top: 20),
-                      child: TextFieldWidget(
-                        labelText: e['labelText'],
-                        prefixIcon: e['prefixIcon'],
-                        controller: e['controller'],
-                        suffixIcon: e['suffixIcon'],
-                        validator: e['validator'],
-                        keyboardType: e['keyboardType'],
-                        obscureText: _obscureText,
+                      child: StreamBuilder<bool>(
+                        stream: _authWidgetBloc.createAccountShowPasswordOut,
+                        builder: (context, snapshot) {
+                          return TextFieldWidget(
+                            labelText: e['labelText'],
+                            prefixIcon: e['prefixIcon'],
+                            controller: e['controller'],
+                            suffixIcon: e['suffixIcon'],
+                            validator: e['validator'],
+                            keyboardType: e['keyboardType'],
+                            obscureText: snapshot.data,
+                          );
+                        },
                       ),
                     );
                   },
@@ -223,9 +232,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               SizedBox(height: 10),
               Row(
                 children: <Widget>[
-                  Checkbox(
-                    value: _isAccepted,
-                    onChanged: _handleAcceptTerm,
+                  StreamBuilder<bool>(
+                    stream: _authWidgetBloc.createAccountTermOut,
+                    builder: (context, snapshot) {
+                      return Checkbox(
+                        value: snapshot.data,
+                        onChanged: _handleAcceptTerm,
+                      );
+                    },
                   ),
                   Text.rich(
                     TextSpan(
