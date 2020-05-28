@@ -92,6 +92,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
           ),
+          SizedBox(height: 10),
           Text.rich(
             TextSpan(
               children: [

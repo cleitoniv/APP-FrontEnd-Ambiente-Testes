@@ -5,11 +5,13 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PointsScreen extends StatelessWidget {
-  _handleAddPoints() {
+  _onAddPoints() {
     Modular.to.pushNamed('/points/add');
   }
 
-  _handleRescuePoints() {}
+  _onRescuePoints() {
+    Modular.to.pushNamed('/points/rescue');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +131,7 @@ class PointsScreen extends StatelessWidget {
             children: [
               {
                 'title': 'Adicionar Pontos',
-                'onTap': _handleAddPoints,
+                'onTap': _onAddPoints,
                 'border': 2.0,
                 'color': Colors.white,
                 'textColor': Theme.of(context).primaryColor,
@@ -141,7 +143,7 @@ class PointsScreen extends StatelessWidget {
               },
               {
                 'title': 'Resgatar Pontos',
-                'onTap': _handleRescuePoints,
+                'onTap': _onRescuePoints,
                 'border': 0.0,
                 'color': Theme.of(context).accentColor,
                 'textColor': Colors.white,
