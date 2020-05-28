@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/cart/payment_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class CartModule extends ChildModule {
@@ -6,11 +7,14 @@ class CartModule extends ChildModule {
   List<Bind> get binds => [];
 
   @override
-  // TODO: implement routers
   List<Router> get routers => [
         Router(
           '/',
           child: (_, args) => CartScreen(),
+        ),
+        Router(
+          '/payment',
+          child: (_, args) => PaymentScreen(),
         )
       ];
 }
