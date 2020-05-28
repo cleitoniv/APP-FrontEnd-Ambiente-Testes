@@ -12,6 +12,10 @@ class PaymentsScreen extends StatelessWidget {
     _paymentsWidgetBloc.paymentTypeIn.add(value);
   }
 
+  _onExpandItem() {}
+
+  _onCopyBarcode() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,66 +35,84 @@ class PaymentsScreen extends StatelessWidget {
             ].map(
               (type) {
                 return StreamBuilder<String>(
-                    stream: _paymentsWidgetBloc.paymentTypeOut,
-                    builder: (context, snapshot) {
-                      return GestureDetector(
-                        onTap: () => _onChangePaymentType(
+                  stream: _paymentsWidgetBloc.paymentTypeOut,
+                  builder: (context, snapshot) {
+                    return GestureDetector(
+                      onTap: () => _onChangePaymentType(
+                        type,
+                      ),
+                      child: AnimatedContainer(
+                        height: 44,
+                        width: MediaQuery.of(context).size.width / 3.35,
+                        duration: Duration(
+                          milliseconds: 50,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                        ),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: type != snapshot.data
+                              ? Border.all(
+                                  width: 0.5,
+                                  color: Colors.black12,
+                                )
+                              : null,
+                          color: type == snapshot.data
+                              ? Theme.of(context).accentColor
+                              : Color(0xffF1F1F1),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: type == 'À Vencer'
+                                ? Radius.circular(5)
+                                : Radius.circular(0),
+                            topLeft: type == 'À Vencer'
+                                ? Radius.circular(5)
+                                : Radius.circular(0),
+                            bottomRight: type == 'Vencidas'
+                                ? Radius.circular(5)
+                                : Radius.circular(0),
+                            topRight: type == 'Vencidas'
+                                ? Radius.circular(5)
+                                : Radius.circular(0),
+                          ),
+                        ),
+                        child: Text(
                           type,
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                color: type == snapshot.data
+                                    ? Color(0xffF1F1F1)
+                                    : Color(0xff828282),
+                              ),
                         ),
-                        child: AnimatedContainer(
-                          height: 44,
-                          width: MediaQuery.of(context).size.width / 3.35,
-                          duration: Duration(
-                            milliseconds: 50,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: type != snapshot.data
-                                ? Border.all(
-                                    width: 0.5,
-                                    color: Colors.black12,
-                                  )
-                                : null,
-                            color: type == snapshot.data
-                                ? Theme.of(context).accentColor
-                                : Color(0xffF1F1F1),
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: type == 'À Vencer'
-                                  ? Radius.circular(5)
-                                  : Radius.circular(0),
-                              topLeft: type == 'À Vencer'
-                                  ? Radius.circular(5)
-                                  : Radius.circular(0),
-                              bottomRight: type == 'Vencidas'
-                                  ? Radius.circular(5)
-                                  : Radius.circular(0),
-                              topRight: type == 'Vencidas'
-                                  ? Radius.circular(5)
-                                  : Radius.circular(0),
-                            ),
-                          ),
-                          child: Text(
-                            type,
-                            style:
-                                Theme.of(context).textTheme.subtitle2.copyWith(
-                                      color: type == snapshot.data
-                                          ? Color(0xffF1F1F1)
-                                          : Color(0xff828282),
-                                    ),
-                          ),
-                        ),
-                      );
-                    });
+                      ),
+                    );
+                  },
+                );
               },
             ).toList(),
           ),
           SizedBox(height: 30),
-          ListTileMoreCustomizable(
-            contentPadding: const EdgeInsets.all(0),
-            horizontalTitleGap: 20,
+          ExpansionTile(
+            onExpansionChanged: (value) => _onExpandItem(),
+            children: <Widget>[
+              SizedBox(height: 10),
+              Text(
+                '34191.09271 45666.470658 54648.080007 5 82130000089700',
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black38,
+                      fontSize: 12,
+                    ),
+              ),
+              SizedBox(height: 30),
+              RaisedButton(
+                onPressed: _onCopyBarcode,
+                child: Text(
+                  'Copiar Código de Barra',
+                  style: Theme.of(context).textTheme.button,
+                ),
+              )
+            ],
             leading: Container(
               width: 50,
               height: 50,
