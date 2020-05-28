@@ -112,6 +112,7 @@ class _TabsScreenState extends State<TabsScreen>
         _route = '/payments';
         break;
       case 7:
+        _route = '/extracts';
         break;
       case 8:
         break;
