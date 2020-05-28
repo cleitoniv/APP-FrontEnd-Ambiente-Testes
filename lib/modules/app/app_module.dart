@@ -7,6 +7,7 @@ import 'package:central_oftalmica_app_cliente/blocs/payments_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
+import 'package:central_oftalmica_app_cliente/modules/app/help_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/auth_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_module.dart';
@@ -58,6 +59,10 @@ class AppModule extends MainModule {
         Router(
           '/intro',
           child: (_, args) => IntroScreen(),
+        ),
+        Router(
+          '/help',
+          child: (_, args) => HelpScreen(),
         ),
         Router(
           '/auth',

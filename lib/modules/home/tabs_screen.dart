@@ -115,6 +115,7 @@ class _TabsScreenState extends State<TabsScreen>
         _route = '/extracts';
         break;
       case 8:
+        _route = '/help';
         break;
       default:
     }
