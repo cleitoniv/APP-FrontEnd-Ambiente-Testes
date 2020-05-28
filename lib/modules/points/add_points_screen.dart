@@ -12,6 +12,7 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
   List<Map> _data;
 
   TextEditingController _nameController;
+  TextEditingController _serialController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
 
@@ -22,6 +23,7 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
     super.initState();
     _nameController = TextEditingController();
     _numberController = TextEditingController();
+    _serialController = TextEditingController();
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
     );
@@ -49,6 +51,7 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
     _nameController.dispose();
     _numberController.dispose();
     _birthdayController.dispose();
+    _serialController.dispose();
     super.dispose();
   }
 
@@ -74,6 +77,20 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
+          TextFieldWidget(
+            controller: _serialController,
+            labelText: 'Número de série',
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(13),
+              child: Image.asset(
+                'assets/icons/open_eye.png',
+                width: 5,
+                height: 0,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
           ListView.separated(
             shrinkWrap: true,
             primary: false,
