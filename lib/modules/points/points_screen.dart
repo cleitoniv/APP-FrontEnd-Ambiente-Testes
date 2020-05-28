@@ -1,10 +1,13 @@
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PointsScreen extends StatelessWidget {
-  _handleAddPoints() {}
+  _handleAddPoints() {
+    Modular.to.pushNamed('/points/add');
+  }
 
   _handleRescuePoints() {}
 

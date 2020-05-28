@@ -105,6 +105,9 @@ class _TabsScreenState extends State<TabsScreen>
       case 4:
         _route = '/devolution';
         break;
+      case 5:
+        _route = '/points';
+        break;
       case 6:
         break;
       case 7:
