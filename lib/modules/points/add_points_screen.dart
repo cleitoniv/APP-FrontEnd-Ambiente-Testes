@@ -1,7 +1,9 @@
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class AddPointsScreen extends StatefulWidget {
   @override
@@ -16,7 +18,19 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
 
-  _onSubmit() {}
+  _onSubmitDialog() {
+    Modular.to.pop();
+    Modular.to.pop();
+  }
+
+  _onSubmit() {
+    Dialogs.success(
+      context,
+      subtitle: 'Pontos adicionados com sucesso!',
+      buttonText: 'Ir para os Meus Pontos',
+      onTap: _onSubmitDialog,
+    );
+  }
 
   @override
   void initState() {
