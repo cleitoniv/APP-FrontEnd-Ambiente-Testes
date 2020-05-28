@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DropdownWidget extends StatefulWidget {
-  List<String> items;
-  String currentValue;
+  List<dynamic> items;
+  dynamic currentValue;
   Function onChanged;
   Widget prefixIcon;
   Widget suffixIcon;
@@ -45,7 +45,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
           items: widget.items.map(
             (e) {
               return DropdownMenuItem(
-                child: Text(e),
+                child: Text('$e'),
                 value: e,
               );
             },

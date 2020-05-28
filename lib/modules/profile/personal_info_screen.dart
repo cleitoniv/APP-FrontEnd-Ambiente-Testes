@@ -21,7 +21,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
   List<Map> _personalInfo;
 
-  _onChangeVisitHour(String value) {
+  _onChangeVisitHour(value) {
     _profileWidgetBloc.visitHourIn.add(value);
   }
 

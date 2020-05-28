@@ -15,13 +15,17 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
       Modular.get<DevolutionWidgetBloc>();
   TextEditingController _serialController;
 
-  _onChangeDevolutionType(String value) {
+  _onChangeDevolutionType(value) {
     _devolutionWidgetBloc.devolutionTypeIn.add(value);
   }
 
   _onAddProduct() {}
 
-  _onSubmit() {}
+  _onSubmit() {
+    Modular.to.pushNamed(
+      '/devolution/confirm',
+    );
+  }
 
   @override
   void initState() {
