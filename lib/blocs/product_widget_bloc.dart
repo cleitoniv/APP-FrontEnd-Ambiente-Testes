@@ -40,7 +40,7 @@ class ProductWidgetBloc extends Disposable {
   });
 
   Sink get pacientInfoIn => _pacientInfoController.sink;
-  Stream<Map<String, dynamic>> get pacientInfoOut =>
+  Stream<Map<dynamic, dynamic>> get pacientInfoOut =>
       _pacientInfoController.stream.map(
         (event) => event,
       );

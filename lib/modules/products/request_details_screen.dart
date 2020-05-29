@@ -26,31 +26,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   _onBackToPurchase() {}
   _onPurchase() {}
 
-  _onSelectOption(
-    Map<dynamic, dynamic> data,
-    double current,
-  ) async {
-    Map<String, dynamic> _first = await _productWidgetBloc.pacientInfoOut.first;
-
-    print('$current ==========================');
-
-    _productWidgetBloc.pacientInfoIn.add({
-      _first['current']: {
-        ..._first['current'],
-        _first['current'][data['key']]: current,
-      }
-    });
-  }
-
-  _onShowOptions(Map<dynamic, dynamic> data) {
-    Modals.params(
-      context,
-      items: data,
-      onTap: _onSelectOption,
-      title: data['labelText'],
-    );
-  }
-
   List<Map> _renderButtons() {
     return [
       {
@@ -88,8 +63,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     ];
   }
 
-  _onAddParam(Map<String, dynamic> data) async {
-    Map<String, dynamic> _first = await _productWidgetBloc.pacientInfoOut.first;
+  _onAddParam(Map<dynamic, dynamic> data) async {
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
 
     if (_first == null) {
       _productWidgetBloc.pacientInfoIn.add(data);
@@ -99,6 +75,32 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ...data,
       });
     }
+  }
+
+  _onSelectOption(
+    Map<dynamic, dynamic> data,
+    double current,
+  ) async {
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
+
+    await _onAddParam({
+      await _first['current']: {
+        ..._first[_first['current']],
+        data['key']: current,
+      }
+    });
+
+    Modular.to.pop();
+  }
+
+  _onShowOptions(Map<dynamic, dynamic> data) {
+    Modals.params(
+      context,
+      items: data,
+      onTap: _onSelectOption,
+      title: data['labelText'],
+    );
   }
 
   @override
@@ -296,7 +298,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
-          StreamBuilder<Map<String, dynamic>>(
+          StreamBuilder<Map<dynamic, dynamic>>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
               return DropdownWidget(
@@ -315,7 +317,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             },
           ),
           SizedBox(height: 20),
-          StreamBuilder<Map<String, dynamic>>(
+          StreamBuilder<Map<dynamic, dynamic>>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -346,8 +348,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             Icons.keyboard_arrow_down,
                             color: Color(0xffa1a1a1),
                           ),
-                          initialValue:
-                              _productParams[index]['items'][0].toString(),
+                          controller: TextEditingController()
+                            ..text = snapshot.data[snapshot.data['current']]
+                                    [_productParams[index]['key']]
+                                .toString(),
                           labelText: _productParams[index]['labelText'],
                           onTap: () => _onShowOptions(
                             _productParams[index],
@@ -397,8 +401,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 Icons.keyboard_arrow_down,
                                 color: Color(0xffa1a1a1),
                               ),
-                              initialValue:
-                                  _productParams[index]['items'][0].toString(),
+                              controller: TextEditingController()
+                                ..text = snapshot
+                                    .data['Graus diferentes em cada olho']
+                                        ['direito']
+                                        [_productParams[index]['key']]
+                                    .toString(),
                               labelText: _productParams[index]['labelText'],
                               onTap: () => _onShowOptions(
                                 _productParams[index],
@@ -430,8 +438,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 Icons.keyboard_arrow_down,
                                 color: Color(0xffa1a1a1),
                               ),
-                              initialValue:
-                                  _productParams[index]['items'][0].toString(),
+                              controller: TextEditingController()
+                                ..text = snapshot
+                                    .data['Graus diferentes em cada olho']
+                                        ['esquerdo']
+                                        [_productParams[index]['key']]
+                                    .toString(),
                               labelText: _productParams[index]['labelText'],
                               onTap: () => _onShowOptions(
                                 _productParams[index],
