@@ -251,9 +251,160 @@ class RequestInfoScreen extends StatelessWidget {
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
                                 fontSize: 14,
                               ),
+                          textAlign: TextAlign.center,
                         ),
                         Text(
                           'Olho direito',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                              ),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Grau Esférico',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                            color: Colors.black38,
+                          ),
+                    ),
+                    Text(
+                      'R\$ ${Helper.intToMoney(150)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'Grau Esférico',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                            color: Colors.black38,
+                          ),
+                    ),
+                    Text(
+                      'R\$ ${Helper.intToMoney(150)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Cilíndro',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                            color: Colors.black38,
+                          ),
+                    ),
+                    Text(
+                      'R\$ ${Helper.intToMoney(150)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'Cilíndro',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                            color: Colors.black38,
+                          ),
+                    ),
+                    Text(
+                      'R\$ ${Helper.intToMoney(150)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Eixo',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                            color: Colors.black38,
+                          ),
+                    ),
+                    Text(
+                      'R\$ ${Helper.intToMoney(150)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'Eixo',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                            color: Colors.black38,
+                          ),
+                    ),
+                    Text(
+                      'R\$ ${Helper.intToMoney(150)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                Divider(
+                  height: 50,
+                  thickness: 0.2,
+                  color: Colors.black38,
+                ),
+                Table(
+                  children: [
+                    TableRow(
+                      children: [
+                        Text(
+                          'Previsão de Entrega',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                              ),
+                        ),
+                        Text(
+                          'Total + Frete',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                              ),
+                        )
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        Text(
+                          '22/05/2020',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                              ),
+                        ),
+                        Text(
+                          'R\$ ${Helper.intToMoney(40000)}',
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
                                 fontSize: 14,
                               ),
@@ -261,7 +412,7 @@ class RequestInfoScreen extends StatelessWidget {
                       ],
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
