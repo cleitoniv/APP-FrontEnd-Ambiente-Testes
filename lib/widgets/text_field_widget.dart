@@ -10,6 +10,9 @@ class TextFieldWidget extends StatefulWidget {
   bool obscureText;
   TextInputType keyboardType;
   bool enabled;
+  bool readOnly;
+  Function onTap;
+  String initialValue;
 
   TextFieldWidget({
     this.labelText,
@@ -21,6 +24,9 @@ class TextFieldWidget extends StatefulWidget {
     this.obscureText = false,
     this.keyboardType,
     this.enabled = true,
+    this.initialValue,
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
@@ -50,10 +56,13 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     return Container(
       width: widget.width,
       child: TextFormField(
+        initialValue: widget.initialValue,
         enabled: widget.enabled,
         controller: widget.controller,
         validator: widget.validator,
         focusNode: _focusNode,
+        onTap: widget.onTap,
+        readOnly: widget.readOnly,
         obscureText: widget.obscureText,
         keyboardType: widget.keyboardType,
         decoration: InputDecoration(

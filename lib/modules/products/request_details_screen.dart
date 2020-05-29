@@ -1,16 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
-import 'package:direct_select_flutter/direct_select_container.dart';
-import 'package:direct_select_flutter/direct_select_item.dart';
-import 'package:direct_select_flutter/direct_select_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   @override
@@ -28,6 +25,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   _onAddToCart() {}
   _onBackToPurchase() {}
   _onPurchase() {}
+
+  _onSelectOption() async {
+    Map<String, dynamic> _first = await _productWidgetBloc.pacientInfoOut.first;
+  }
+
+  _onShowOptions(Map<dynamic, dynamic> data) {
+    Modals.params(
+      context,
+      items: data['items'],
+      onTap: _onSelectOption,
+    );
+  }
 
   List<Map> _renderButtons() {
     return [
@@ -318,19 +327,34 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         height: 10,
                       ),
                       itemBuilder: (context, index) {
-                        return DropdownWidget(
-                          items: _productParams[index]['items'],
+                        return TextFieldWidget(
+                          readOnly: true,
+                          suffixIcon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Color(0xffa1a1a1),
+                          ),
+                          initialValue:
+                              _productParams[index]['items'][0].toString(),
                           labelText: _productParams[index]['labelText'],
-                          prefixIcon: SizedBox(),
-                          currentValue: snapshot.data[snapshot.data['current']]
-                              [_productParams[index]['key']],
-                          onChanged: (value) => _onAddParam({
-                            snapshot.data['current']: {
-                              ...snapshot.data[snapshot.data['current']],
-                              _productParams[index]['key']: value,
-                            }
-                          }),
+                          onTap: () => _onShowOptions(
+                            _productParams[index],
+                          ),
                         );
+                        // return DropdownWidget(
+                        //   items: _productParams[index]['items'],
+                        //   labelText: _productParams[index]['labelText'],
+                        //   prefixIcon: SizedBox(),
+                        //   currentValue: snapshot.data[snapshot.data['current']]
+                        //       [_productParams[index]['key']],
+                        //   onChanged: (value) {
+                        //     _onAddParam({
+                        //       snapshot.data['current']: {
+                        //         ...snapshot.data[snapshot.data['current']],
+                        //         _productParams[index]['key']: value,
+                        //       }
+                        //     });
+                        //   },
+                        // );
                       },
                     ),
                   ],
@@ -354,18 +378,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             height: 10,
                           ),
                           itemBuilder: (context, index) {
-                            return DropdownWidget(
-                              items: _productParams[index]['items'],
+                            return TextFieldWidget(
+                              readOnly: true,
+                              suffixIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Color(0xffa1a1a1),
+                              ),
+                              initialValue:
+                                  _productParams[index]['items'][0].toString(),
                               labelText: _productParams[index]['labelText'],
-                              prefixIcon: SizedBox(),
-                              currentValue: snapshot.data['Olho direito']
-                                  [_productParams[index]['key']],
-                              onChanged: (value) => _onAddParam({
-                                'Olho direito': {
-                                  ...snapshot.data['Olho direito'],
-                                  _productParams[index]['key']: value,
-                                }
-                              }),
+                              onTap: () => _onShowOptions(
+                                _productParams[index],
+                              ),
                             );
                           },
                         ),
@@ -387,18 +411,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             height: 10,
                           ),
                           itemBuilder: (context, index) {
-                            return DropdownWidget(
-                              items: _productParams[index]['items'],
+                            return TextFieldWidget(
+                              readOnly: true,
+                              suffixIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Color(0xffa1a1a1),
+                              ),
+                              initialValue:
+                                  _productParams[index]['items'][0].toString(),
                               labelText: _productParams[index]['labelText'],
-                              prefixIcon: SizedBox(),
-                              currentValue: snapshot.data['Olho esquerdo']
-                                  [_productParams[index]['key']],
-                              onChanged: (value) => _onAddParam({
-                                'Olho esquerdo': {
-                                  ...snapshot.data['Olho esquerdo'],
-                                  _productParams[index]['key']: value,
-                                }
-                              }),
+                              onTap: () => _onShowOptions(
+                                _productParams[index],
+                              ),
                             );
                           },
                         ),
