@@ -1,7 +1,9 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/card_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
+import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
@@ -13,13 +15,29 @@ class CreditsScreen extends StatefulWidget {
 class _CreditsScreenState extends State<CreditsScreen> {
   HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
 
+  MoneyMaskedTextController _creditValueController;
+
+  _onAddCredit() {
+    _homeBloc.valueVisibilityIn.add(false);
+  }
+
+  _onTapPersonalizedValue() {
+    _homeBloc.valueVisibilityIn.add(true);
+  }
+
   @override
   void initState() {
     super.initState();
+    _creditValueController = MoneyMaskedTextController(
+      decimalSeparator: ',',
+      leftSymbol: 'R\$ ',
+      thousandSeparator: '.',
+    );
   }
 
   @override
   void dispose() {
+    _creditValueController.dispose();
     super.dispose();
   }
 
@@ -130,15 +148,44 @@ class _CreditsScreenState extends State<CreditsScreen> {
             child: StreamBuilder<String>(
               stream: _homeBloc.currentCreditTypeOut,
               builder: (context, snapshot) {
-                return RaisedButton(
-                  elevation: 0,
-                  onPressed: () {},
-                  child: Text(
-                    snapshot.data == 'Financeiro'
-                        ? 'Valor Personalizado'
-                        : 'Comprar Crédito de Produto',
-                    style: Theme.of(context).textTheme.button,
-                  ),
+                return StreamBuilder<bool>(
+                  stream: _homeBloc.valueVisibilityOut,
+                  builder: (context, snapshot2) {
+                    if (snapshot2.hasData && snapshot2.data) {
+                      return Column(
+                        children: <Widget>[
+                          TextFieldWidget(
+                            labelText: 'Digite o valor',
+                            controller: _creditValueController,
+                            prefixIcon: Icon(
+                              Icons.attach_money,
+                              color: Color(0xffa1a1a1),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          RaisedButton(
+                            elevation: 0,
+                            onPressed: _onAddCredit,
+                            child: Text(
+                              'Adicionar Crédito',
+                              style: Theme.of(context).textTheme.button,
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return RaisedButton(
+                        elevation: 0,
+                        onPressed: _onTapPersonalizedValue,
+                        child: Text(
+                          snapshot.data == 'Financeiro'
+                              ? 'Valor Personalizado'
+                              : 'Comprar Crédito de Produto',
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                      );
+                    }
+                  },
                 );
               },
             ),

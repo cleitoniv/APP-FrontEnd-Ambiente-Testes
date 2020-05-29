@@ -1,6 +1,7 @@
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
-class AuthWidgetBloc {
+class AuthWidgetBloc extends Disposable {
   BehaviorSubject _createAccountShowPasswordController =
       BehaviorSubject.seeded(true);
   Sink get createAccountShowPasswordIn =>
@@ -16,4 +17,10 @@ class AuthWidgetBloc {
       _createAccountTermController.stream.map(
         (event) => event,
       );
+
+  @override
+  void dispose() {
+    _createAccountShowPasswordController.close();
+    _createAccountTermController.close();
+  }
 }

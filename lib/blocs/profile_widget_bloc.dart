@@ -1,6 +1,7 @@
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
-class ProfileWidgetBloc {
+class ProfileWidgetBloc extends Disposable {
   BehaviorSubject _visitHourController = BehaviorSubject.seeded('Manhã');
   Sink get visitHourIn => _visitHourController.sink;
   Stream<String> get visitHourOut => _visitHourController.stream.map(
@@ -20,4 +21,11 @@ class ProfileWidgetBloc {
   Stream<bool> get userStatusOut => _userStatusController.stream.map(
         (event) => event,
       );
+
+  @override
+  void dispose() {
+    _visitHourController.close();
+    _securityShowPasswordController.close();
+    _userStatusController.close();
+  }
 }
