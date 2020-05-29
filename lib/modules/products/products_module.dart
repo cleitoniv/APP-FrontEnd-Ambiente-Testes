@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/modules/products/product_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/products/request_details_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class ProductsModule extends ChildModule {
@@ -12,6 +13,10 @@ class ProductsModule extends ChildModule {
           child: (_, args) => ProductScreen(
             id: int.parse(args.params['id']),
           ),
-        )
+        ),
+        Router(
+          '/:id/requestDetails',
+          child: (_, args) => RequestDetailsScreen(),
+        ),
       ];
 }

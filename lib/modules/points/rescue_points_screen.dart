@@ -32,23 +32,6 @@ class _RescuePointsScreenState extends State<RescuePointsScreen> {
     Modular.to.pop();
   }
 
-  List<Map> _renderButtonData(BuildContext context) {
-    return [
-      {
-        'title': 'Confirmar Resgate',
-        'onTap': _onConfirmRescue,
-        'color': Theme.of(context).accentColor,
-        'textColor': Colors.white,
-      },
-      {
-        'title': 'Cancelar Resgate',
-        'onTap': _onCancelRescue,
-        'color': Color(0xffF1F1F1),
-        'textColor': Theme.of(context).accentColor,
-      },
-    ];
-  }
-
   List<Map> _renderPoints(BuildContext context) {
     return [
       {
@@ -67,52 +50,10 @@ class _RescuePointsScreenState extends State<RescuePointsScreen> {
   }
 
   _onSubmit() {
-    showDialog(
-      context: context,
-      child: AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        title: Column(
-          children: <Widget>[
-            Text(
-              'Deseja confirmarresgate de pontos?',
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Ao confirmar iremos converter seus Pontos em Crédito Financeiro, tem certeza que deseja resgatar?',
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: _renderButtonData(context).map(
-            (e) {
-              return Container(
-                margin: const EdgeInsets.only(
-                  top: 10,
-                ),
-                child: RaisedButton(
-                  onPressed: e['onTap'],
-                  elevation: 0,
-                  color: e['color'],
-                  child: Text(
-                    e['title'],
-                    style: Theme.of(context).textTheme.button.copyWith(
-                          color: e['textColor'],
-                        ),
-                  ),
-                ),
-              );
-            },
-          ).toList(),
-        ),
-      ),
+    Dialogs.confirm(
+      context,
+      onConfirm: _onConfirmRescue,
+      onCancel: _onCancelRescue,
     );
   }
 
