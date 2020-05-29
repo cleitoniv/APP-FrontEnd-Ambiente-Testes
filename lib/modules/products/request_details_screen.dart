@@ -3,6 +3,9 @@ import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+import 'package:direct_select_flutter/direct_select_container.dart';
+import 'package:direct_select_flutter/direct_select_item.dart';
+import 'package:direct_select_flutter/direct_select_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -275,6 +278,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
               return DropdownWidget(
+                labelText: 'Escolha os olhos',
                 items: [
                   'Olho direito',
                   'Olho esquerdo',
