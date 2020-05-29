@@ -18,12 +18,14 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  _onCancelSingleOrder() {
+  _onCancelPurchase() {
     Modular.to.pop();
   }
 
   _onConfirmPurchase() {
-    Modular.to.pushNamed('/products/1/requestDetails');
+    Modular.to.pushNamed(
+      '/products/1/requestDetails',
+    );
   }
 
   _handleSingleOrder() {
@@ -34,14 +36,13 @@ class _ProductScreenState extends State<ProductScreen> {
           'O valor da compra avulsa é maior do que a de créditos, tem certeza que deseja comprar avulsamente?',
       confirmText: 'Confirmar Compra',
       cancelText: 'Cancelar Compra',
-      onCancel: _onCancelSingleOrder,
-      onConfirm: _onConfirmPurchase,
+      onCancel: _onCancelPurchase,
+      onConfirm: () {
+        Modular.to.pop();
+        _onConfirmPurchase();
+      },
     );
   }
-
-  _handleProductCredit() {}
-
-  _handleFinancialCredit() {}
 
   @override
   Widget build(BuildContext context) {
@@ -225,12 +226,12 @@ class _ProductScreenState extends State<ProductScreen> {
               {
                 'title': 'Crédito de Produto R\$ ${Helper.intToMoney(25000)}',
                 'color': Theme.of(context).primaryColor,
-                'onTap': _handleProductCredit,
+                'onTap': _onConfirmPurchase,
               },
               {
                 'title': 'Crédito Financeiro R\$ ${Helper.intToMoney(25000)}',
                 'color': Theme.of(context).accentColor,
-                'onTap': _handleFinancialCredit,
+                'onTap': _onConfirmPurchase,
               }
             ].map(
               (item) {
