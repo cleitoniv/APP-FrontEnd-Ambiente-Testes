@@ -9,8 +9,15 @@ class Modals {
   }) {
     showModalBottomSheet(
       context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+        ),
+      ),
       builder: (context) {
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(20),
@@ -21,7 +28,6 @@ class Modals {
                     ),
               ),
             ),
-            SizedBox(height: 30),
             GridView.builder(
               shrinkWrap: true,
               itemCount: items.length,
@@ -31,7 +37,7 @@ class Modals {
               ),
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: onTap,
+                  onTap: () => onTap(items[index]),
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(

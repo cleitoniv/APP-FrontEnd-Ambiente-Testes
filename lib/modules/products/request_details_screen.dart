@@ -26,7 +26,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   _onBackToPurchase() {}
   _onPurchase() {}
 
-  _onSelectOption() async {
+  _onSelectOption(double value) async {
     Map<String, dynamic> _first = await _productWidgetBloc.pacientInfoOut.first;
   }
 
