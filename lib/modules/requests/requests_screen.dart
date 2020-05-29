@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestsScreen extends StatelessWidget {
+  _onShowRequest(int id) {
+    Modular.to.pushNamed('/requests/$id');
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -14,6 +19,7 @@ class RequestsScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTileMoreCustomizable(
             contentPadding: const EdgeInsets.all(0),
+            onTap: (value) => _onShowRequest(1),
             horizontalTitleGap: 10,
             leading: Container(
               width: 50,
