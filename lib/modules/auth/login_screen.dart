@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   _handleLogin() async {
     if (_formKey.currentState.validate()) {
       Modular.to.pushNamedAndRemoveUntil(
-        '/home/0',
+        '/auth/activityPerformed',
         (route) => route.isFirst,
       );
     }
@@ -57,10 +57,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _formKey,
+      key: _scaffoldKey,
       body: SafeArea(
         child: Form(
-          key: _scaffoldKey,
+          key: _formKey,
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: <Widget>[

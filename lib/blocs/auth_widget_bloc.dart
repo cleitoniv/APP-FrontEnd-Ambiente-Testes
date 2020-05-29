@@ -18,9 +18,17 @@ class AuthWidgetBloc extends Disposable {
         (event) => event,
       );
 
+  BehaviorSubject _currentActivityController = BehaviorSubject.seeded(null);
+  Sink get currentActivityIn => _currentActivityController.sink;
+  Stream<Map<String, dynamic>> get currentActivityOut =>
+      _currentActivityController.stream.map(
+        (event) => event,
+      );
+
   @override
   void dispose() {
     _createAccountShowPasswordController.close();
     _createAccountTermController.close();
+    _currentActivityController.close();
   }
 }
