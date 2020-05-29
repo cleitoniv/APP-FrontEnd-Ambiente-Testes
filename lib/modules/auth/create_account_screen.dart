@@ -20,8 +20,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   TextEditingController _emailController;
   MaskedTextController _phoneController;
   TextEditingController _passwordController;
-  bool _isAccepted = false;
-  bool _obscureText = true;
   List<Map> _fieldData;
 
   _handleObscureText() async {
@@ -236,7 +234,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     stream: _authWidgetBloc.createAccountTermOut,
                     builder: (context, snapshot) {
                       return Checkbox(
-                        value: snapshot.data,
+                        value: snapshot.hasData ? snapshot.data : false,
                         onChanged: _handleAcceptTerm,
                       );
                     },

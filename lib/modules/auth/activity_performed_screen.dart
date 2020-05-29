@@ -19,9 +19,9 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
   ];
 
   _handleActivity(Map<String, dynamic> value) {
-    _authWidgetBloc.currentActivityIn.add({
+    _authWidgetBloc.currentActivityIn.add(
       value,
-    });
+    );
   }
 
   _handleSubmit() {
