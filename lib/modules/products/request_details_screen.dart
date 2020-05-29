@@ -26,15 +26,28 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   _onBackToPurchase() {}
   _onPurchase() {}
 
-  _onSelectOption(double value) async {
+  _onSelectOption(
+    Map<dynamic, dynamic> data,
+    double current,
+  ) async {
     Map<String, dynamic> _first = await _productWidgetBloc.pacientInfoOut.first;
+
+    print('$current ==========================');
+
+    _productWidgetBloc.pacientInfoIn.add({
+      _first['current']: {
+        ..._first['current'],
+        _first['current'][data['key']]: current,
+      }
+    });
   }
 
   _onShowOptions(Map<dynamic, dynamic> data) {
     Modals.params(
       context,
-      items: data['items'],
+      items: data,
       onTap: _onSelectOption,
+      title: data['labelText'],
     );
   }
 

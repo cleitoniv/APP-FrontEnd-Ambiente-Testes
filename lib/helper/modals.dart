@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class Modals {
   static params(
     BuildContext context, {
-    List<double> items,
-    Function onTap,
+    Map<dynamic, dynamic> items,
+    Function(Map<dynamic, dynamic>, double) onTap,
     String title = 'Selecione os graus',
   }) {
     showModalBottomSheet(
@@ -30,14 +30,14 @@ class Modals {
             ),
             GridView.builder(
               shrinkWrap: true,
-              itemCount: items.length,
+              itemCount: items['items'].length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 5,
               ),
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () => onTap(items[index]),
+                  onTap: () => onTap(items, items['items'][index]),
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -47,7 +47,7 @@ class Modals {
                       ),
                     ),
                     child: Text(
-                      '${items[index]}',
+                      '${items['items'][index]}',
                       style: Theme.of(context).textTheme.subtitle1,
                       textAlign: TextAlign.center,
                     ),
