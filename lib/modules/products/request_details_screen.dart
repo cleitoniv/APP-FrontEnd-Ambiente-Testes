@@ -112,7 +112,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _productParams = [
       {
         'labelText': 'Escolha o Grau',
-        'items': [0.5, 1.0, 1.5],
+        'items': [
+          -0.50,
+          -0.75,
+          -1.00,
+          -1.25,
+          -1.50,
+          0.50,
+          0.75,
+          1.00,
+          1.25,
+          1.50,
+        ],
         'key': 'degree',
       },
       {
@@ -396,27 +407,28 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           ),
           SizedBox(height: 10),
           Column(
-              children: _renderButtons().map(
-            (e) {
-              return Container(
-                margin: const EdgeInsets.only(
-                  top: 20,
-                ),
-                child: RaisedButton.icon(
-                  icon: e['icon'],
-                  color: e['color'],
-                  elevation: 0,
-                  onPressed: e['onTap'],
-                  label: Text(
-                    e['text'],
-                    style: Theme.of(context).textTheme.button.copyWith(
-                          color: e['textColor'],
-                        ),
+            children: _renderButtons().map(
+              (e) {
+                return Container(
+                  margin: const EdgeInsets.only(
+                    top: 20,
                   ),
-                ),
-              );
-            },
-          ).toList())
+                  child: RaisedButton.icon(
+                    icon: e['icon'],
+                    color: e['color'],
+                    elevation: 0,
+                    onPressed: e['onTap'],
+                    label: Text(
+                      e['text'],
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: e['textColor'],
+                          ),
+                    ),
+                  ),
+                );
+              },
+            ).toList(),
+          )
         ],
       ),
     );
