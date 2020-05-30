@@ -23,7 +23,7 @@ class ProductWidgetBloc extends Disposable {
       'axis': 1.0,
       'lenses': 1.0,
     },
-    'Grau diferente em cada olho': {
+    'Graus diferentes em cada olho': {
       'esquerdo': {
         'degree': 1.0,
         'cylinder': 1.0,

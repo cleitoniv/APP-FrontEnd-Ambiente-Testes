@@ -84,12 +84,21 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
 
-    await _onAddParam({
-      await _first['current']: {
-        ..._first[_first['current']],
-        data['key']: current,
-      }
-    });
+    if (_first['current'] != 'Graus diferents em cada olho') {
+      await _onAddParam({
+        await _first['current']: {
+          ..._first[_first['current']],
+          data['key']: current,
+        }
+      });
+    } else {
+      await _onAddParam({
+        await _first['Graus diferents em cada olho']: {
+          ..._first['Graus diferents em cada olho'],
+          data['key']: current,
+        }
+      });
+    }
 
     Modular.to.pop();
   }
