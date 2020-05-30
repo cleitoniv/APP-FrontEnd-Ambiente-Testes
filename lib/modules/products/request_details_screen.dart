@@ -79,12 +79,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   _onSelectOption(
     Map<dynamic, dynamic> data,
-    double current,
-  ) async {
+    double current, {
+    String key,
+  }) async {
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
 
-    if (_first['current'] != 'Graus diferents em cada olho') {
+    if (_first['current'] != 'Graus diferentes em cada olho') {
       await _onAddParam({
         await _first['current']: {
           ..._first[_first['current']],
@@ -92,10 +93,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         }
       });
     } else {
+      print(_first['Graus diferentes em cada olho']['esquerdo']);
       await _onAddParam({
-        await _first['Graus diferents em cada olho']: {
-          ..._first['Graus diferents em cada olho'],
-          data['key']: current,
+        await _first['current']: {
+          ..._first[_first['current']],
+          key: {
+            ..._first[_first['current']][key],
+            data['key']: current,
+          }
         }
       });
     }
@@ -103,11 +108,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Modular.to.pop();
   }
 
-  _onShowOptions(Map<dynamic, dynamic> data) {
+  _onShowOptions(Map<dynamic, dynamic> data, {String key}) {
     Modals.params(
       context,
       items: data,
-      onTap: _onSelectOption,
+      onTap: (data, current) => _onSelectOption(data, current, key: key),
       title: data['labelText'],
     );
   }
@@ -419,6 +424,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               labelText: _productParams[index]['labelText'],
                               onTap: () => _onShowOptions(
                                 _productParams[index],
+                                key: 'direito',
                               ),
                             );
                           },
@@ -456,6 +462,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               labelText: _productParams[index]['labelText'],
                               onTap: () => _onShowOptions(
                                 _productParams[index],
+                                key: 'esquerdo',
                               ),
                             );
                           },
