@@ -1,4 +1,6 @@
-abstract class Bloc<Model> {
+import 'package:flutter_modular/flutter_modular.dart';
+
+abstract class Bloc<Model> extends Disposable {
   Sink get indexIn => throw UnimplementedError();
   Stream<List<Model>> get indexOut => throw UnimplementedError();
 
@@ -11,6 +13,6 @@ abstract class Bloc<Model> {
   Sink get updateIn => throw UnimplementedError();
   Stream<String> get updateOut => throw UnimplementedError();
 
-  Sink get deleteIn => throw UnimplementedError();
-  Stream<String> get deleteOut => throw UnimplementedError();
+  Sink get destroyIn => throw UnimplementedError();
+  Stream<String> get destroyOut => throw UnimplementedError();
 }
