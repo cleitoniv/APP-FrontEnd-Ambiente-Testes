@@ -94,10 +94,10 @@ class _TabsScreenState extends State<TabsScreen>
         _route = '/profile';
         break;
       case 1:
-        _homeWidgetBloc.currentTabIndexIn.add(3);
+        _tabController.index = 3;
         break;
       case 2:
-        _homeWidgetBloc.currentTabIndexIn.add(1);
+        _tabController.index = 1;
         break;
       case 3:
         _route = '/notifications';
@@ -261,7 +261,7 @@ class _TabsScreenState extends State<TabsScreen>
                       type,
                     ),
                     child: AnimatedContainer(
-                      width: MediaQuery.of(context).size.width / 3.3,
+                      width: MediaQuery.of(context).size.width / 3.2,
                       duration: Duration(
                         milliseconds: 50,
                       ),
@@ -326,9 +326,16 @@ class _TabsScreenState extends State<TabsScreen>
       length: _screens.length,
     );
 
-    _homeWidgetBloc.currentTabIndexOut.listen((event) {
-      _tabController.index = event;
+    _tabController.addListener(() {
+      _homeWidgetBloc.currentTabIndexIn.add(
+        _tabController.index,
+      );
     });
+
+    // _homeWidgetBloc.currentTabIndexOut.listen((event) {}).onData((event) {
+    //   print('Etrou Bloc');
+    //   return _tabController.index = event;
+    // });
   }
 
   @override
