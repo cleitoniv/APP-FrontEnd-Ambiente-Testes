@@ -18,6 +18,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   List<Map> _productParams;
   List<Map> _fieldData;
+  List<Map> _buttonData;
   TextEditingController _nameController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
@@ -25,43 +26,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   _onAddToCart() {}
   _onBackToPurchase() {}
   _onPurchase() {}
-
-  List<Map> _renderButtons() {
-    return [
-      {
-        'color': Theme.of(context).accentColor,
-        'textColor': Colors.white,
-        'icon': Icon(
-          MaterialCommunityIcons.plus,
-          color: Colors.white,
-        ),
-        'onTap': _onPurchase,
-        'text': 'Comprar Mesmo Produto',
-      },
-      {
-        'color': Color(0xffF1F1F1),
-        'textColor': Theme.of(context).accentColor,
-        'icon': Icon(
-          Icons.arrow_back,
-          color: Theme.of(context).accentColor,
-        ),
-        'onTap': _onBackToPurchase,
-        'text': 'Continue Comprando',
-      },
-      {
-        'color': Theme.of(context).primaryColor,
-        'textColor': Colors.white,
-        'icon': Image.asset(
-          'assets/icons/cart.png',
-          width: 20,
-          height: 20,
-          color: Colors.white,
-        ),
-        'onTap': _onAddToCart,
-        'text': 'Adicionar ao Carrinho',
-      }
-    ];
-  }
 
   _onAddParam(Map<dynamic, dynamic> data) async {
     Map<dynamic, dynamic> _first =
@@ -125,6 +89,41 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
     );
+
+    _buttonData = [
+      {
+        'color': Theme.of(context).accentColor,
+        'textColor': Colors.white,
+        'icon': Icon(
+          MaterialCommunityIcons.plus,
+          color: Colors.white,
+        ),
+        'onTap': _onPurchase,
+        'text': 'Comprar Mesmo Produto',
+      },
+      {
+        'color': Color(0xffF1F1F1),
+        'textColor': Theme.of(context).accentColor,
+        'icon': Icon(
+          Icons.arrow_back,
+          color: Theme.of(context).accentColor,
+        ),
+        'onTap': _onBackToPurchase,
+        'text': 'Continue Comprando',
+      },
+      {
+        'color': Theme.of(context).primaryColor,
+        'textColor': Colors.white,
+        'icon': Image.asset(
+          'assets/icons/cart.png',
+          width: 20,
+          height: 20,
+          color: Colors.white,
+        ),
+        'onTap': _onAddToCart,
+        'text': 'Adicionar ao Carrinho',
+      }
+    ];
     _fieldData = [
       {
         'labelText': 'Nome do paciente',
@@ -371,21 +370,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             _productParams[index],
                           ),
                         );
-                        // return DropdownWidget(
-                        //   items: _productParams[index]['items'],
-                        //   labelText: _productParams[index]['labelText'],
-                        //   prefixIcon: SizedBox(),
-                        //   currentValue: snapshot.data[snapshot.data['current']]
-                        //       [_productParams[index]['key']],
-                        //   onChanged: (value) {
-                        //     _onAddParam({
-                        //       snapshot.data['current']: {
-                        //         ...snapshot.data[snapshot.data['current']],
-                        //         _productParams[index]['key']: value,
-                        //       }
-                        //     });
-                        //   },
-                        // );
                       },
                     ),
                   ],
@@ -476,7 +460,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           ),
           SizedBox(height: 10),
           Column(
-            children: _renderButtons().map(
+            children: _buttonData.map(
               (e) {
                 return Container(
                   margin: const EdgeInsets.only(
