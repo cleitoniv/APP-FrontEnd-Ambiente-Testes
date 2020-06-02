@@ -70,33 +70,43 @@ class _ProductScreenState extends State<ProductScreen> {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
-          ListTileMoreCustomizable(
-            contentPadding: const EdgeInsets.all(0),
-            horizontalTitleGap: 0,
-            title: Text(
-              'Bioview Asferica Cx 6',
-              style: Theme.of(context).textTheme.subtitle1.copyWith(
-                    fontSize: 18,
+          StreamBuilder<ProductModel>(
+              stream: _productBloc.showOut,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return ListTileMoreCustomizable(
+                  contentPadding: const EdgeInsets.all(0),
+                  horizontalTitleGap: 0,
+                  title: Text(
+                    snapshot.data.title,
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontSize: 18,
+                        ),
                   ),
-            ),
-            trailing: Column(
-              children: <Widget>[
-                Text(
-                  'Valor avulso',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        fontSize: 14,
-                        color: Colors.black38,
+                  trailing: Column(
+                    children: <Widget>[
+                      Text(
+                        'Valor avulso',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontSize: 14,
+                              color: Colors.black38,
+                            ),
                       ),
-                ),
-                Text(
-                  'R\$ ${Helper.intToMoney(20000)}',
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                        fontSize: 20,
+                      Text(
+                        'R\$ ${Helper.intToMoney(snapshot.data.value)}',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 20,
+                            ),
                       ),
-                ),
-              ],
-            ),
-          ),
+                    ],
+                  ),
+                );
+              }),
           Stack(
             overflow: Overflow.visible,
             children: <Widget>[
