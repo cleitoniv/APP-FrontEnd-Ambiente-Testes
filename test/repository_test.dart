@@ -21,4 +21,16 @@ main() {
       );
     },
   );
+
+  test(
+    'show products - repository',
+    () async {
+      ProductModel _product = await productRepository.show(id: 1);
+
+      expectLater(
+        _product.title.isNotEmpty,
+        true,
+      );
+    },
+  );
 }

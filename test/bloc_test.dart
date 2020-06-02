@@ -24,4 +24,20 @@ main() {
       );
     },
   );
+
+  test(
+    'show products - bloc',
+    () async {
+      ProductBloc _bloc = ProductBloc(productRepository);
+
+      _bloc.showIn.add(1);
+
+      expectLater(
+        _bloc.showOut,
+        emits(
+          (ProductModel product) => product.title.isNotEmpty,
+        ),
+      );
+    },
+  );
 }
