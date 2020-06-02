@@ -71,42 +71,43 @@ class _ProductScreenState extends State<ProductScreen> {
         padding: const EdgeInsets.all(20),
         children: <Widget>[
           StreamBuilder<ProductModel>(
-              stream: _productBloc.showOut,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                return ListTileMoreCustomizable(
-                  contentPadding: const EdgeInsets.all(0),
-                  horizontalTitleGap: 0,
-                  title: Text(
-                    snapshot.data.title,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 18,
-                        ),
-                  ),
-                  trailing: Column(
-                    children: <Widget>[
-                      Text(
-                        'Valor avulso',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontSize: 14,
-                              color: Colors.black38,
-                            ),
-                      ),
-                      Text(
-                        'R\$ ${Helper.intToMoney(snapshot.data.value)}',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 20,
-                            ),
-                      ),
-                    ],
-                  ),
+            stream: _productBloc.showOut,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
-              }),
+              }
+
+              return ListTileMoreCustomizable(
+                contentPadding: const EdgeInsets.all(0),
+                horizontalTitleGap: 0,
+                title: Text(
+                  snapshot.data.title,
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        fontSize: 18,
+                      ),
+                ),
+                trailing: Column(
+                  children: <Widget>[
+                    Text(
+                      'Valor avulso',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                            color: Colors.black38,
+                          ),
+                    ),
+                    Text(
+                      'R\$ ${Helper.intToMoney(snapshot.data.value)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 20,
+                          ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
           Stack(
             overflow: Overflow.visible,
             children: <Widget>[
@@ -418,66 +419,71 @@ class _ProductScreenState extends State<ProductScreen> {
             },
           ),
           SizedBox(height: 20),
-          Text(
-            'Como deseja comprar?',
-            style: Theme.of(context).textTheme.headline5.copyWith(
-                  fontSize: 18,
-                ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 20),
           StreamBuilder<bool>(
-              stream: _productWidgetBloc.showInfoOut,
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data) {
-                  return RaisedButton(
-                    onPressed: () => _onShowInfo(
-                      snapshot.data,
-                    ),
-                    child: Text(
-                      'Voltar aos Detalhes',
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                  );
-                }
-
-                return Column(
-                  children: [
-                    {
-                      'title': 'Pedido Avulso R\$ ${Helper.intToMoney(15100)}',
-                      'color': Color(0xff707070),
-                      'onTap': _handleSingleOrder,
-                    },
-                    {
-                      'title':
-                          'Crédito de Produto R\$ ${Helper.intToMoney(25000)}',
-                      'color': Theme.of(context).primaryColor,
-                      'onTap': _onConfirmPurchase,
-                    },
-                    {
-                      'title':
-                          'Crédito Financeiro R\$ ${Helper.intToMoney(25000)}',
-                      'color': Theme.of(context).accentColor,
-                      'onTap': _onConfirmPurchase,
-                    }
-                  ].map(
-                    (item) {
-                      return Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: RaisedButton(
-                          onPressed: item['onTap'],
-                          color: item['color'],
-                          elevation: 0,
-                          child: Text(
-                            item['title'],
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                        ),
-                      );
-                    },
-                  ).toList(),
+            stream: _productWidgetBloc.showInfoOut,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data) {
+                return RaisedButton(
+                  onPressed: () => _onShowInfo(
+                    snapshot.data,
+                  ),
+                  child: Text(
+                    'Voltar aos Detalhes',
+                    style: Theme.of(context).textTheme.button,
+                  ),
                 );
-              }),
+              }
+              return Column(
+                children: <Widget>[
+                  Text(
+                    'Como deseja comprar?',
+                    style: Theme.of(context).textTheme.headline5.copyWith(
+                          fontSize: 18,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  Column(
+                    children: [
+                      {
+                        'title':
+                            'Pedido Avulso R\$ ${Helper.intToMoney(15100)}',
+                        'color': Color(0xff707070),
+                        'onTap': _handleSingleOrder,
+                      },
+                      {
+                        'title':
+                            'Crédito de Produto R\$ ${Helper.intToMoney(25000)}',
+                        'color': Theme.of(context).primaryColor,
+                        'onTap': _onConfirmPurchase,
+                      },
+                      {
+                        'title':
+                            'Crédito Financeiro R\$ ${Helper.intToMoney(25000)}',
+                        'color': Theme.of(context).accentColor,
+                        'onTap': _onConfirmPurchase,
+                      }
+                    ].map(
+                      (item) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: RaisedButton(
+                            onPressed: item['onTap'],
+                            color: item['color'],
+                            elevation: 0,
+                            child: Text(
+                              item['title'],
+                              style: Theme.of(context).textTheme.button,
+                            ),
+                          ),
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
