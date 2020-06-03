@@ -208,10 +208,10 @@ class _ProductScreenState extends State<ProductScreen> {
                   {
                     'title': 'Testes',
                     'subtitle': '30 un.',
-                    'color': Color(0xffA5A5A5),
+                    'color': Colors.black12,
                     'widget': Icon(
                       Icons.remove_red_eye,
-                      color: Colors.white,
+                      color: Colors.black54,
                       size: 15,
                     ),
                   }

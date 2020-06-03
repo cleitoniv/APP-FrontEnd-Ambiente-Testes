@@ -35,16 +35,20 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
 
-  _onAddToCart(Map data) {
-    print(widget.type);
+  _onAddToCart(Map data, {bool test = false}) {
     _requestsBloc.addProductToCart({
-      'quantity': data['quantity'],
+      'quantity': test ? 1 : data['quantity'],
       'product': data['product'],
-      'type': widget.type,
+      'type': test ? 'test' : widget.type,
     });
   }
 
-  _onBackToPurchase() {}
+  _onBackToPurchase() {
+    Modular.to.popUntil(
+      (route) => route.isFirst,
+    );
+  }
+
   _onPurchase() {}
 
   List<Map> _renderButtonData(ProductModel product) {

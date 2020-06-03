@@ -6,8 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
+  @override
+  _CartScreenState createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
+
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
   _onBackToPurchase() {
@@ -20,14 +26,39 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  _buyType(String type) {
+  Map<String, dynamic> _buyTypeBuild(String type) {
     switch (type) {
       case 'singleOrder':
-        return 'Avulso';
+        return {
+          'title': 'Avulso',
+          'color': Color(0xff707070),
+          'icon': Icon(
+            Icons.attach_money,
+            color: Colors.white,
+            size: 20,
+          )
+        };
       case 'financialCredit':
-        return 'Crédito Financeiro';
+        return {
+          'title': 'Financeiro',
+          'color': Theme.of(context).primaryColor,
+          'icon': Icon(
+            Icons.attach_money,
+            color: Colors.white,
+            size: 20,
+          )
+        };
       case 'productCredit':
-        return 'Crédito de Produto';
+        return {
+          'title': 'Produto',
+          'color': Theme.of(context).splashColor,
+          'icon': Image.asset(
+            'assets/icons/open_box.png',
+            width: 15,
+            height: 15,
+            color: Colors.white,
+          )
+        };
     }
   }
 
@@ -97,26 +128,25 @@ class CartScreen extends StatelessWidget {
                           'Qnt. ${_data[index]['quantity']}',
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
                                 color: Colors.black38,
-                                fontSize: 12,
+                                fontSize: 14,
                               ),
                         ),
                         SizedBox(width: 20),
                         CircleAvatar(
-                          backgroundColor: Color(0xff707070),
-                          radius: 10,
-                          child: Icon(
-                            Icons.attach_money,
-                            color: Colors.white,
-                            size: 15,
-                          ),
-                        ),
+                            backgroundColor: _buyTypeBuild(
+                              _data[index]['type'],
+                            )['color'],
+                            radius: 10,
+                            child: _buyTypeBuild(
+                              _data[index]['type'],
+                            )['icon']),
                         SizedBox(width: 5),
                         Text(
-                          _buyType(
+                          _buyTypeBuild(
                             _data[index]['type'],
-                          ),
+                          )['title'],
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 12,
+                                fontSize: 14,
                               ),
                         ),
                       ],
