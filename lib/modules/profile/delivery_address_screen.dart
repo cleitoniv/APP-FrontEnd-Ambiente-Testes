@@ -1,9 +1,12 @@
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/login_screen.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class DeliveryAddressScreen extends StatefulWidget {
   @override
@@ -11,14 +14,51 @@ class DeliveryAddressScreen extends StatefulWidget {
 }
 
 class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
+  UserBloc _userBloc = Modular.get<UserBloc>();
   List<Map> _addressInfo;
-
   MaskedTextController _zipCodeController;
   TextEditingController _addressController;
   TextEditingController _houseNumberController;
   TextEditingController _adjunctController;
   TextEditingController _districtController;
   TextEditingController _cityController;
+
+  _initData() async {
+    UserModel _user = await _userBloc.currentUserOut.first;
+
+    _addressInfo = [
+      {
+        'labelText': 'CEP',
+        'value': _user.locale.zipCode,
+        'controller': _zipCodeController,
+      },
+      {
+        'labelText': 'Endereço',
+        'value': _user.locale.address,
+        'controller': _addressController,
+      },
+      {
+        'labelText': 'Número',
+        'value': _user.locale.number,
+        'controller': _houseNumberController,
+      },
+      {
+        'labelText': 'Complemento',
+        'value': _user.locale.adjunct,
+        'controller': _adjunctController,
+      },
+      {
+        'labelText': 'Bairro',
+        'value': _user.locale.district,
+        'controller': _districtController,
+      },
+      {
+        'labelText': 'Cidade',
+        'value': _user.locale.city,
+        'controller': _cityController,
+      },
+    ];
+  }
 
   @override
   void initState() {
@@ -32,38 +72,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
     _districtController = TextEditingController();
     _cityController = TextEditingController();
 
-    _addressInfo = [
-      {
-        'labelText': 'CEP',
-        'value': '290550445',
-        'controller': _zipCodeController,
-      },
-      {
-        'labelText': 'Endereço',
-        'value': 'Rua Dr. Eurico de Aguiar',
-        'controller': _addressController,
-      },
-      {
-        'labelText': 'Número',
-        'value': '130',
-        'controller': _houseNumberController,
-      },
-      {
-        'labelText': 'Complemento',
-        'value': 'Sala 609',
-        'controller': _adjunctController,
-      },
-      {
-        'labelText': 'Bairro',
-        'value': 'Santa Helena',
-        'controller': _districtController,
-      },
-      {
-        'labelText': 'Cidade',
-        'value': 'Vitória',
-        'controller': _cityController,
-      },
-    ];
+    _initData();
   }
 
   @override
@@ -114,26 +123,36 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
-          ListView.separated(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: _addressInfo.length,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 10,
-            ),
-            itemBuilder: (context, index) {
-              return TextFieldWidget(
-                enabled: false,
-                labelText: _addressInfo[index]['labelText'],
-                prefixIcon: Icon(
-                  MaterialCommunityIcons.map_marker,
-                  color: Color(0xffA1A1A1),
-                ),
-                controller: _addressInfo[index]['controller']
-                  ..text = _addressInfo[index]['value'],
-              );
-            },
-          ),
+          StreamBuilder<UserModel>(
+              stream: _userBloc.currentUserOut,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    heightFactor: 3,
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return ListView.separated(
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: _addressInfo.length,
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: 10,
+                  ),
+                  itemBuilder: (context, index) {
+                    return TextFieldWidget(
+                      enabled: false,
+                      labelText: _addressInfo[index]['labelText'],
+                      prefixIcon: Icon(
+                        MaterialCommunityIcons.map_marker,
+                        color: Color(0xffA1A1A1),
+                      ),
+                      controller: _addressInfo[index]['controller']
+                        ..text = _addressInfo[index]['value'],
+                    );
+                  },
+                );
+              }),
         ],
       ),
     );
