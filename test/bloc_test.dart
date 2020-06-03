@@ -1,6 +1,10 @@
+import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
+import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
+import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +14,8 @@ main() {
   ClientHttp clientHttp = ClientHttp();
   ProductRepository productRepository =
       ProductRepository(clientHttp.getClient());
+  CreditsRepository creditsRepository =
+      CreditsRepository(clientHttp.getClient());
 
   test(
     'index products - bloc',
@@ -35,7 +41,35 @@ main() {
       expectLater(
         _bloc.showOut,
         emits(
-          (ProductModel product) => product.title.isNotEmpty,
+          (ProductModel credits) => credits.title.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
+    'index financial credits - bloc',
+    () async {
+      CreditsBloc _bloc = CreditsBloc(creditsRepository);
+
+      expectLater(
+        _bloc.indexFinancialOut,
+        emits(
+          (FinancialCreditModel credits) => credits.credits.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
+    'index product credits - bloc',
+    () async {
+      CreditsBloc _bloc = CreditsBloc(creditsRepository);
+
+      expectLater(
+        _bloc.indexProductOut,
+        emits(
+          (ProductCreditModel credits) => credits.products.isNotEmpty,
         ),
       );
     },

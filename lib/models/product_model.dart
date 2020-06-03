@@ -5,6 +5,7 @@ class ProductModel {
   String title;
   int value;
   int tests;
+  int credits;
   String imageUrl;
   Details details;
 
@@ -15,6 +16,7 @@ class ProductModel {
     this.tests,
     this.imageUrl,
     this.details,
+    this.credits,
   });
 
   ProductModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class ProductModel {
     value = json['value'];
     tests = json['tests'];
     imageUrl = json['imageUrl'];
+    credits = json['credits'];
     details =
         json['details'] != null ? new Details.fromJson(json['details']) : null;
   }
@@ -34,6 +37,7 @@ class ProductModel {
     data['value'] = this.value;
     data['tests'] = this.tests;
     data['imageUrl'] = this.imageUrl;
+    data['credits'] = this.credits;
     if (this.details != null) {
       data['details'] = this.details.toJson();
     }
