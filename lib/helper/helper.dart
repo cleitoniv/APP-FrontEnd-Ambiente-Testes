@@ -41,4 +41,28 @@ class Helper {
       value.toString().replaceAll(',', '.').replaceAll('.', ''),
     );
   }
+
+  static dateToWeek(String date) {
+    int _milliseconds = int.parse(date);
+    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(
+      _milliseconds,
+    );
+
+    switch (_dateTime.weekday) {
+      case 1:
+        return 'Segunda-Feira';
+      case 2:
+        return 'Terça-Feira';
+      case 3:
+        return 'Quarta-Feira';
+      case 4:
+        return 'Quinta-Feira';
+      case 5:
+        return 'Sexta-Feira';
+      case 6:
+        return 'Sábado';
+      case 7:
+        return 'Domingo';
+    }
+  }
 }

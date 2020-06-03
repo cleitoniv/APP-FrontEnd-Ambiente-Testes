@@ -1,11 +1,14 @@
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -16,6 +19,7 @@ main() {
       ProductRepository(clientHttp.getClient());
   CreditsRepository creditsRepository =
       CreditsRepository(clientHttp.getClient());
+  UserRepository userRepository = UserRepository(clientHttp.getClient());
 
   test(
     'index products - bloc',
@@ -86,6 +90,20 @@ main() {
         _bloc.storeFinancialOut,
         emits(
           (String data) => data.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
+    'current user - bloc',
+    () async {
+      UserBloc _bloc = UserBloc(userRepository);
+
+      expectLater(
+        _bloc.currentUserOut,
+        emits(
+          (UserModel user) => user.name.isNotEmpty,
         ),
       );
     },

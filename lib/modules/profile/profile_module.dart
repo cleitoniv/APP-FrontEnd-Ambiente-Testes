@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/app_users_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/delivery_address_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/form_screen.dart';
@@ -12,6 +13,9 @@ class ProfileModule extends ChildModule {
   List<Bind> get binds => [
         Bind(
           (i) => i.get<ProfileWidgetBloc>(),
+        ),
+        Bind(
+          (i) => i.get<UserBloc>(),
         ),
       ];
 

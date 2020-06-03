@@ -10,6 +10,7 @@ import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/help_screen.dart';
@@ -29,6 +30,7 @@ import 'package:central_oftalmica_app_cliente/modules/requests/requests_module.d
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -67,6 +69,16 @@ class AppModule extends MainModule {
         Bind(
           (i) => RequestsBloc(
             i.get<RequestsRepository>(),
+          ),
+        ),
+        Bind(
+          (i) => UserRepository(
+            i.get<ClientHttp>().getClient(),
+          ),
+        ),
+        Bind(
+          (i) => UserBloc(
+            i.get<UserRepository>(),
           ),
         ),
         Bind(
