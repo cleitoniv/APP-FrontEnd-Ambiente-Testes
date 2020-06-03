@@ -32,13 +32,14 @@ class _ProductScreenState extends State<ProductScreen> {
     Modular.to.pop();
   }
 
-  _onConfirmPurchase() {
+  _onConfirmPurchase(ProductModel product, String type) {
     Modular.to.pushNamed(
-      '/products/1/requestDetails',
+      '/products/${product.id}/requestDetails',
+      arguments: type,
     );
   }
 
-  _handleSingleOrder() {
+  _handleSingleOrder(ProductModel product) {
     Dialogs.confirm(
       context,
       title: 'Deseja confirmarcompra avulsa?',
@@ -49,7 +50,7 @@ class _ProductScreenState extends State<ProductScreen> {
       onCancel: _onCancelPurchase,
       onConfirm: () {
         Modular.to.pop();
-        _onConfirmPurchase();
+        _onConfirmPurchase(product, 'singleOrder');
       },
     );
   }
@@ -443,43 +444,55 @@ class _ProductScreenState extends State<ProductScreen> {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
-                  Column(
-                    children: [
-                      {
-                        'title':
-                            'Pedido Avulso R\$ ${Helper.intToMoney(15100)}',
-                        'color': Color(0xff707070),
-                        'onTap': _handleSingleOrder,
-                      },
-                      {
-                        'title':
-                            'Crédito de Produto R\$ ${Helper.intToMoney(25000)}',
-                        'color': Theme.of(context).primaryColor,
-                        'onTap': _onConfirmPurchase,
-                      },
-                      {
-                        'title':
-                            'Crédito Financeiro R\$ ${Helper.intToMoney(25000)}',
-                        'color': Theme.of(context).accentColor,
-                        'onTap': _onConfirmPurchase,
-                      }
-                    ].map(
-                      (item) {
-                        return Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: RaisedButton(
-                            onPressed: item['onTap'],
-                            color: item['color'],
-                            elevation: 0,
-                            child: Text(
-                              item['title'],
-                              style: Theme.of(context).textTheme.button,
-                            ),
-                          ),
+                  StreamBuilder<ProductModel>(
+                      stream: _productBloc.showOut,
+                      builder: (context, snapshot) {
+                        return Column(
+                          children: [
+                            {
+                              'title':
+                                  'Pedido Avulso R\$ ${Helper.intToMoney(15100)}',
+                              'color': Color(0xff707070),
+                              'onTap': () => _handleSingleOrder(
+                                    snapshot.data,
+                                  ),
+                            },
+                            {
+                              'title':
+                                  'Crédito de Produto R\$ ${Helper.intToMoney(25000)}',
+                              'color': Theme.of(context).primaryColor,
+                              'onTap': () => _onConfirmPurchase(
+                                    snapshot.data,
+                                    'productCredit',
+                                  ),
+                            },
+                            {
+                              'title':
+                                  'Crédito Financeiro R\$ ${Helper.intToMoney(25000)}',
+                              'color': Theme.of(context).accentColor,
+                              'onTap': () => _onConfirmPurchase(
+                                    snapshot.data,
+                                    'financialCredit',
+                                  ),
+                            }
+                          ].map(
+                            (item) {
+                              return Container(
+                                margin: const EdgeInsets.only(top: 20),
+                                child: RaisedButton(
+                                  onPressed: item['onTap'],
+                                  color: item['color'],
+                                  elevation: 0,
+                                  child: Text(
+                                    item['title'],
+                                    style: Theme.of(context).textTheme.button,
+                                  ),
+                                ),
+                              );
+                            },
+                          ).toList(),
                         );
-                      },
-                    ).toList(),
-                  ),
+                      }),
                 ],
               );
             },

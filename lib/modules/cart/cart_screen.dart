@@ -1,11 +1,14 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class CartScreen extends StatelessWidget {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
+  RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
   _onBackToPurchase() {
     _homeWidgetBloc.currentTabIndexIn.add(0);
@@ -17,79 +20,125 @@ class CartScreen extends StatelessWidget {
     );
   }
 
+  _buyType(String type) {
+    switch (type) {
+      case 'singleOrder':
+        return 'Avulso';
+      case 'financialCredit':
+        return 'Crédito Financeiro';
+      case 'productCredit':
+        return 'Crédito de Produto';
+    }
+  }
+
+  String _totalToPay(List<Map<String, dynamic>> data) {
+    int _total = data.fold(
+      0,
+      (previousValue, element) => previousValue + element['product'].value,
+    );
+
+    return Helper.intToMoney(_total);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
-          ListView.separated(
-            primary: false,
-            addSemanticIndexes: true,
-            shrinkWrap: true,
-            itemCount: 3,
-            separatorBuilder: (context, index) => Divider(
-              height: 25,
-              thickness: 1,
-              color: Colors.black12,
-            ),
-            itemBuilder: (context, index) {
-              return ListTileMoreCustomizable(
-                contentPadding: const EdgeInsets.all(0),
-                horizontalTitleGap: 10,
-                leading: Image.network(
-                  'https://onelens.fbitsstatic.net/img/p/lentes-de-contato-bioview-asferica-80342/353788.jpg?w=530&h=530&v=202004021417',
+          StreamBuilder<List<Map<String, dynamic>>>(
+            stream: _requestsBloc.cartOut,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  heightFactor: 3,
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasData && snapshot.data.isEmpty) {
+                return Center(
+                  heightFactor: 3,
+                  child: Text(
+                    'Seu carrinho está vazio',
+                    style: Theme.of(context).textTheme.title.copyWith(
+                          color: Color(0xffa1a1a1),
+                          fontSize: 14,
+                        ),
+                  ),
+                );
+              }
+
+              List<Map<String, dynamic>> _data = snapshot.data;
+              return ListView.separated(
+                primary: false,
+                addSemanticIndexes: true,
+                shrinkWrap: true,
+                itemCount: _data.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 25,
+                  thickness: 1,
+                  color: Colors.black12,
                 ),
-                title: Text(
-                  'Bioview Asferica Cx 6',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        fontSize: 14,
-                      ),
-                ),
-                subtitle: Row(
-                  children: <Widget>[
-                    Text(
-                      'Qnt. 2',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Colors.black38,
-                            fontSize: 14,
-                          ),
+                itemBuilder: (context, index) {
+                  return ListTileMoreCustomizable(
+                    contentPadding: const EdgeInsets.all(0),
+                    horizontalTitleGap: 10,
+                    leading: Image.network(
+                      _data[index]['product'].imageUrl,
                     ),
-                    SizedBox(width: 20),
-                    CircleAvatar(
-                      backgroundColor: Color(0xff707070),
-                      radius: 10,
-                      child: Icon(
-                        Icons.attach_money,
-                        color: Colors.white,
-                        size: 15,
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      'Avulso',
+                    title: Text(
+                      _data[index]['product'].title,
                       style: Theme.of(context).textTheme.subtitle1.copyWith(
                             fontSize: 14,
                           ),
                     ),
-                  ],
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      'R\$ ${Helper.intToMoney(20000)}',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 14,
+                    subtitle: Row(
+                      children: <Widget>[
+                        Text(
+                          'Qnt. ${_data[index]['quantity']}',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                color: Colors.black38,
+                                fontSize: 12,
+                              ),
+                        ),
+                        SizedBox(width: 20),
+                        CircleAvatar(
+                          backgroundColor: Color(0xff707070),
+                          radius: 10,
+                          child: Icon(
+                            Icons.attach_money,
+                            color: Colors.white,
+                            size: 15,
                           ),
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          _buyType(
+                            _data[index]['type'],
+                          ),
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 12,
+                              ),
+                        ),
+                      ],
                     ),
-                    Icon(
-                      Icons.keyboard_arrow_right,
-                      size: 30,
-                      color: Theme.of(context).accentColor,
-                    )
-                  ],
-                ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          'R\$ ${Helper.intToMoney(_data[index]['product'].value)}',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 14,
+                              ),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 30,
+                          color: Theme.of(context).accentColor,
+                        )
+                      ],
+                    ),
+                  );
+                },
               );
             },
           ),
@@ -125,12 +174,18 @@ class CartScreen extends StatelessWidget {
                       fontSize: 18,
                     ),
               ),
-              Text(
-                'R\$ ${Helper.intToMoney(20000)}',
-                style: Theme.of(context).textTheme.headline5.copyWith(
-                      fontSize: 18,
-                    ),
-              ),
+              StreamBuilder<List<Map<String, dynamic>>>(
+                  stream: _requestsBloc.cartOut,
+                  builder: (context, snapshot) {
+                    return Text(
+                      snapshot.hasData
+                          ? 'R\$ ${_totalToPay(snapshot.data)}'
+                          : '',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 18,
+                          ),
+                    );
+                  }),
             ],
           ),
           SizedBox(height: 30),
@@ -150,13 +205,25 @@ class CartScreen extends StatelessWidget {
             onPressed: _onBackToPurchase,
           ),
           SizedBox(height: 20),
-          RaisedButton(
-            elevation: 0,
-            child: Text(
-              'Finalizar Pedido',
-              style: Theme.of(context).textTheme.button,
-            ),
-            onPressed: _onSubmit,
+          StreamBuilder<List<Map<String, dynamic>>>(
+            stream: _requestsBloc.cartOut,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+              return Opacity(
+                opacity: snapshot.data.isEmpty ? 0.5 : 1,
+                child: RaisedButton(
+                  elevation: 0,
+                  child: Text(
+                    'Finalizar Pedido',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                  disabledColor: Theme.of(context).accentColor,
+                  onPressed: snapshot.data.isEmpty ? null : _onSubmit,
+                ),
+              );
+            },
           ),
         ],
       ),
