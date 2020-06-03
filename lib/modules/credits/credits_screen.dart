@@ -22,8 +22,18 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
   MoneyMaskedTextController _creditValueController;
 
-  _onAddCredit() {
-    _homeBloc.valueVisibilityIn.add(false);
+  _onAddCredit() async {
+    _creditsBloc.storeFinancialIn.add(
+      Helper.moneyToInt(
+        _creditValueController.numberValue,
+      ),
+    );
+
+    String _first = await _creditsBloc.storeFinancialOut.first;
+
+    if (_first != null && _first.isNotEmpty) {
+      _homeBloc.valueVisibilityIn.add(false);
+    }
   }
 
   _onTapPersonalizedValue() {
@@ -71,9 +81,20 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   title: StreamBuilder<ProductCreditModel>(
                     stream: _creditsBloc.indexProductOut,
                     builder: (context, snapshot2) {
+                      if (snapshot.data == 'Financeiro' && !snapshot2.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                       return StreamBuilder<FinancialCreditModel>(
                         stream: _creditsBloc.indexFinancialOut,
                         builder: (context, snapshot3) {
+                          if (snapshot.data != 'Financeiro' &&
+                              !snapshot3.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
                           return Text(
                             snapshot.data == 'Financeiro'
                                 ? Helper.intToMoney(snapshot3.data.balance)
@@ -138,48 +159,60 @@ class _CreditsScreenState extends State<CreditsScreen> {
                 builder: (context, snapshot) {
                   String _currentType = snapshot.data;
                   return StreamBuilder<ProductCreditModel>(
-                      stream: _creditsBloc.indexProductOut,
-                      builder: (context, snapshot) {
-                        ProductCreditModel _productCredits = snapshot.data;
-                        return StreamBuilder<FinancialCreditModel>(
-                          stream: _creditsBloc.indexFinancialOut,
-                          builder: (context, snapshot) {
-                            FinancialCreditModel _financialCredits =
-                                snapshot.data;
-
-                            return ListView.separated(
-                              padding: const EdgeInsets.all(20),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: _currentType == 'Financeiro'
-                                  ? _financialCredits.credits.length
-                                  : _productCredits.products.length,
-                              separatorBuilder: (context, index) => SizedBox(
-                                width: 20,
-                              ),
-                              itemBuilder: (context, index) {
-                                return _currentType == 'Financeiro'
-                                    ? CardWidget(
-                                        parcels: _financialCredits
-                                            .credits[index].parcels,
-                                        value: _financialCredits
-                                            .credits[index].value,
-                                      )
-                                    : ProductWidget(
-                                        credits: _productCredits
-                                            .products[index].credits,
-                                        tests: _productCredits
-                                            .products[index].tests,
-                                        imageUrl: _productCredits
-                                            .products[index].imageUrl,
-                                        title: _productCredits
-                                            .products[index].title,
-                                      );
-                              },
-                            );
-                          },
+                    stream: _creditsBloc.indexProductOut,
+                    builder: (context, snapshot) {
+                      if (_currentType != 'Financeiro' && !snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
                         );
-                      });
+                      }
+                      ProductCreditModel _productCredits = snapshot.data;
+                      return StreamBuilder<FinancialCreditModel>(
+                        stream: _creditsBloc.indexFinancialOut,
+                        builder: (context, snapshot) {
+                          if (_currentType == 'Financeiro' &&
+                              !snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          FinancialCreditModel _financialCredits =
+                              snapshot.data;
+
+                          return ListView.separated(
+                            padding: const EdgeInsets.all(20),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _currentType == 'Financeiro'
+                                ? _financialCredits.credits.length
+                                : _productCredits.products.length,
+                            separatorBuilder: (context, index) => SizedBox(
+                              width: 20,
+                            ),
+                            itemBuilder: (context, index) {
+                              return _currentType == 'Financeiro'
+                                  ? CardWidget(
+                                      parcels: _financialCredits
+                                          .credits[index].parcels,
+                                      value: _financialCredits
+                                          .credits[index].value,
+                                    )
+                                  : ProductWidget(
+                                      credits: _productCredits
+                                          .products[index].credits,
+                                      tests:
+                                          _productCredits.products[index].tests,
+                                      imageUrl: _productCredits
+                                          .products[index].imageUrl,
+                                      title:
+                                          _productCredits.products[index].title,
+                                    );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ),

@@ -62,4 +62,16 @@ main() {
       );
     },
   );
+
+  test(
+    'store financial credits - repository',
+    () async {
+      String data = await creditsRepository.storeFinancial(100);
+
+      expectLater(
+        data.isNotEmpty,
+        true,
+      );
+    },
+  );
 }

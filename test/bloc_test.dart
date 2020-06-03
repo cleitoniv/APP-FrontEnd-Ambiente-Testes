@@ -74,4 +74,20 @@ main() {
       );
     },
   );
+
+  test(
+    'store financial credits - bloc',
+    () async {
+      CreditsBloc _bloc = CreditsBloc(creditsRepository);
+
+      _bloc.storeFinancialIn.add(200);
+
+      expectLater(
+        _bloc.storeFinancialOut,
+        emits(
+          (String data) => data.isNotEmpty,
+        ),
+      );
+    },
+  );
 }

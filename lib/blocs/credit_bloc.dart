@@ -23,9 +23,17 @@ class CreditsBloc extends Disposable {
         (event) => repository.indexProduct(),
       );
 
+  BehaviorSubject _storeFinancialController = BehaviorSubject.seeded(null);
+  Sink get storeFinancialIn => _storeFinancialController.sink;
+  Stream<String> get storeFinancialOut =>
+      _storeFinancialController.stream.asyncMap(
+        (event) => repository.storeFinancial(event),
+      );
+
   @override
   void dispose() {
     _indexFinancialController.close();
     _indexProductController.close();
+    _storeFinancialController.close();
   }
 }
