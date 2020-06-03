@@ -90,6 +90,8 @@ flutter:
     - assets/icons/profile_1.png
     - assets/icons/profile_2.png
     - assets/icons/profile_3.png
+    - assets/icons/truck.png
+    - assets/icons/map_marker.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   int id;
@@ -571,7 +572,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
           StreamBuilder<Map>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
@@ -583,7 +584,79 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               );
             },
           ),
-          SizedBox(height: 10),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 160,
+            margin: const EdgeInsets.symmetric(
+              vertical: 30,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(0, 2),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: <Widget>[
+                      ListTileMoreCustomizable(
+                        contentPadding: const EdgeInsets.all(0),
+                        horizontalTitleGap: 0,
+                        leading: Image.asset(
+                          'assets/icons/map_marker.png',
+                          width: 25,
+                          height: 25,
+                        ),
+                        title: Text(
+                          'Endereço de Entrega',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 16,
+                              ),
+                        ),
+                        subtitle: Text(
+                          'Rua Madeira de Freitas, 249, Ap 10001, Praia do Canto, Vitória/ES. 29055-320',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 30,
+                  color: Color(0xffF1F1F1),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/icons/truck.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Consultar Prazo de Entrega',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           StreamBuilder<ProductModel>(
             stream: _productBloc.showOut,
             builder: (context, snapshot) {
