@@ -3,7 +3,7 @@ import 'package:rxdart/subjects.dart';
 
 class ProductWidgetBloc extends Disposable {
   BehaviorSubject _pacientInfoController = BehaviorSubject.seeded({
-    //both, left, right, different
+    'test': 'Não',
     'current': 'Olho direito',
     'Olho direito': {
       'degree': 1.0,

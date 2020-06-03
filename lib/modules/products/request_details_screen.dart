@@ -32,15 +32,39 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   List<Map> _productParams;
   List<Map> _fieldData;
   TextEditingController _nameController;
+  TextEditingController _lensController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
 
-  _onAddToCart(Map data, {bool test = false}) {
-    _requestsBloc.addProductToCart({
-      'quantity': test ? 1 : data['quantity'],
+  _onAddLens() {
+    _lensController.text = '${int.parse(_lensController.text) + 1}';
+  }
+
+  _onRemoveLens() {
+    if (int.parse(_lensController.text) > 1) {
+      _lensController.text = '${int.parse(_lensController.text) - 1}';
+    }
+  }
+
+  _onAddToCart(Map data) async {
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
+
+    Map<String, dynamic> _data = {
+      'quantity': _first['test'] == 'Sim' ? 1 : int.parse(_lensController.text),
       'product': data['product'],
-      'type': test ? 'test' : widget.type,
-    });
+      'type': _first['test'] == 'Sim' ? 'test' : widget.type,
+      'pacient': {
+        'name': _nameController.text,
+        'number': _numberController.text,
+        'birthday': _birthdayController.text,
+      },
+      _first['current']: _first[_first['current']],
+    };
+
+    _requestsBloc.addProductToCart(_data);
+
+    // print(_data);
   }
 
   _onBackToPurchase() {
@@ -83,7 +107,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           color: Colors.white,
         ),
         'onTap': () => _onAddToCart({
-              'quantity': 1,
               'product': product,
             }),
         'text': 'Adicionar ao Carrinho',
@@ -103,6 +126,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ...data,
       });
     }
+  }
+
+  _onChangedTest(dynamic value) {
+    _onAddParam({'test': value});
   }
 
   _onSelectOption(
@@ -150,6 +177,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     super.initState();
     _nameController = TextEditingController();
     _numberController = TextEditingController();
+
+    _lensController = TextEditingController(
+      text: '1',
+    );
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
     );
@@ -508,6 +539,48 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   ],
                 );
               }
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                'Quantidade de lentes',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              TextFieldWidget(
+                width: 120,
+                controller: _lensController,
+                readOnly: true,
+                prefixIcon: IconButton(
+                  icon: Icon(
+                    Icons.remove,
+                    color: Colors.black26,
+                    size: 30,
+                  ),
+                  onPressed: _onRemoveLens,
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.black26,
+                    size: 30,
+                  ),
+                  onPressed: _onAddLens,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          StreamBuilder<Map>(
+            stream: _productWidgetBloc.pacientInfoOut,
+            builder: (context, snapshot) {
+              return DropdownWidget(
+                items: ['Sim', 'Não'],
+                currentValue: snapshot.hasData ? snapshot.data['test'] : null,
+                labelText: 'Teste?',
+                onChanged: _onChangedTest,
+              );
             },
           ),
           SizedBox(height: 10),
