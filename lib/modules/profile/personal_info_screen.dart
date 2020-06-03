@@ -29,7 +29,13 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     _profileWidgetBloc.visitHourIn.add(value);
   }
 
-  _onSaveNewSchedule() {}
+  _onSaveNewSchedule() async {
+    String _hour = await _profileWidgetBloc.visitHourOut.first;
+
+    _userBloc.updateIn.add({
+      'visitHour': _hour,
+    });
+  }
 
   _initData() async {
     UserModel _user = await _userBloc.currentUserOut.first;
@@ -176,12 +182,12 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 20),
-          StreamBuilder<UserModel>(
-            stream: _userBloc.currentUserOut,
+          StreamBuilder<String>(
+            stream: _profileWidgetBloc.visitHourOut,
             builder: (context, snapshot) {
               return DropdownWidget(
                 items: ['Manhã', 'Tarde', 'Noite'],
-                currentValue: snapshot.hasData ? snapshot.data.visitHour : null,
+                currentValue: snapshot.hasData ? snapshot.data : null,
                 onChanged: _onChangeVisitHour,
               );
             },
