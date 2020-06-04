@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
@@ -7,6 +8,14 @@ class RequestsBloc extends Disposable {
   RequestsRepository repository;
 
   RequestsBloc(this.repository);
+
+  BehaviorSubject _indexController = BehaviorSubject.seeded(null);
+  Sink get indexIn => _indexController.sink;
+  Stream<List<RequestModel>> get indexOut => _indexController.stream.asyncMap(
+        (event) => repository.index(
+          filter: event,
+        ),
+      );
 
   BehaviorSubject _cartController = BehaviorSubject.seeded(
     <Map<String, dynamic>>[],
@@ -36,5 +45,6 @@ class RequestsBloc extends Disposable {
   @override
   void dispose() {
     _cartController.close();
+    _indexController.close();
   }
 }

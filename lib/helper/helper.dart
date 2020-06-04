@@ -94,4 +94,65 @@ class Helper {
         return 'Domingo';
     }
   }
+
+  static String dateToMonth(String date) {
+    int _milliseconds = int.parse(date);
+    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(
+      _milliseconds,
+    );
+
+    int _day = _dateTime.day;
+    String _month;
+    switch (_dateTime.month) {
+      case 1:
+        _month = 'Janeiro';
+        break;
+      case 2:
+        _month = 'Fevereiro';
+        break;
+      case 3:
+        _month = 'Março';
+        break;
+      case 4:
+        _month = 'Abril';
+        break;
+      case 5:
+        _month = 'Maio';
+        break;
+      case 6:
+        _month = 'Junho';
+        break;
+      case 7:
+        _month = 'Julho';
+        break;
+      case 8:
+        _month = 'Agosto';
+        break;
+      case 9:
+        _month = 'Setembro';
+        break;
+      case 10:
+        _month = 'Outubro';
+        break;
+      case 11:
+        _month = 'Novembro';
+        break;
+      case 12:
+        _month = 'Dezembro';
+        break;
+    }
+
+    return '$_day de\n$_month';
+  }
+
+  static String sqlToDate(String date) {
+    DateFormat _format = DateFormat('dd/MM/yyyy');
+    int _milliseconds = int.parse(date);
+    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(
+      _milliseconds,
+    );
+    String _formatDate = _format.format(_dateTime);
+
+    return _formatDate;
+  }
 }

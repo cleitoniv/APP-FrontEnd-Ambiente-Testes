@@ -1,5 +1,6 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
@@ -25,6 +26,7 @@ class _TabsScreenState extends State<TabsScreen>
     with SingleTickerProviderStateMixin {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
+  RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   TabController _tabController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> _sightProblems = [
@@ -70,8 +72,30 @@ class _TabsScreenState extends State<TabsScreen>
     _homeWidgetBloc.currentCreditTypeIn.add(type);
   }
 
-  _onChangeRequestType(String type) {
+  _onChangeRequestType(String type) async {
+    String _first = await _homeWidgetBloc.currentRequestTypeOut.first;
+
     _homeWidgetBloc.currentRequestTypeIn.add(type);
+
+    String _status;
+
+    if (type != _first) {
+      switch (type) {
+        case 'Pendentes':
+          _status = 'pendent';
+          break;
+        case 'Entregues':
+          _status = 'delivered';
+          break;
+        case 'Reposição':
+          _status = 'replacement';
+          break;
+      }
+
+      _requestsBloc.indexIn.add({
+        'status': _status,
+      });
+    }
   }
 
   _handleOpenDrawer() {
