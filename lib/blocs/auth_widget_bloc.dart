@@ -32,11 +32,34 @@ class AuthWidgetBloc extends Disposable {
         (event) => event,
       );
 
+  BehaviorSubject _createAccountDataController = BehaviorSubject.seeded(null);
+  Sink get createAccountDataIn => _createAccountDataController.sink;
+  Stream<Map<String, dynamic>> get createAccountDataOut =>
+      _createAccountDataController.stream.map(
+        (event) => event,
+      );
+
+  addUserInfo(Map<String, dynamic> data) async {
+    Map<String, dynamic> _first = await createAccountDataOut.first;
+
+    print(_first);
+
+    if (_first == null) {
+      createAccountDataIn.add(data);
+    } else {
+      createAccountDataIn.add({
+        ..._first,
+        ...data,
+      });
+    }
+  }
+
   @override
   void dispose() {
     _createAccountShowPasswordController.close();
     _createAccountTermController.close();
     _currentActivityController.close();
     _loginShowPasswordController.close();
+    _createAccountDataController.close();
   }
 }

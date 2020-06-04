@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
@@ -27,6 +28,7 @@ import 'package:central_oftalmica_app_cliente/modules/points/points_module.dart'
 import 'package:central_oftalmica_app_cliente/modules/products/products_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/profile_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_module.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
@@ -79,6 +81,16 @@ class AppModule extends MainModule {
         Bind(
           (i) => UserBloc(
             i.get<UserRepository>(),
+          ),
+        ),
+        Bind(
+          (i) => AuthRepository(
+            i.get<ClientHttp>().getClient(),
+          ),
+        ),
+        Bind(
+          (i) => AuthBloc(
+            i.get<AuthRepository>(),
           ),
         ),
         Bind(

@@ -1,3 +1,5 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ class CompleteCreateAccountScreen extends StatefulWidget {
 
 class _CompleteCreateAccountScreenState
     extends State<CompleteCreateAccountScreen> {
+  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map> _fieldData;
@@ -26,10 +30,43 @@ class _CompleteCreateAccountScreenState
   TextEditingController _districtController;
   TextEditingController _cityController;
 
-  _handleSubmit() {
+  _handleSubmit() async {
     if (_formKey.currentState.validate()) {
-      Modular.to.pushNamed(
-        '/home/0',
+      _authWidgetBloc.addUserInfo({
+        'cpf': _cpfController.text,
+        'full_name': _nameController.text,
+        'zip_code': _zipCodeController.text,
+        'address': _addressController.text,
+        'district': _districtController.text,
+        'city': _cityController.text,
+        'adjunct': _adjunctController.text,
+        'number': _houseNumberController.text,
+        'crm': _crmController.text,
+      });
+
+      Map<String, dynamic> _data =
+          await _authWidgetBloc.createAccountDataOut.first;
+
+      _authBloc.createAccountIn.add(
+        _data,
+      );
+
+      String _first = await _authBloc.createAccountOut.first;
+      String _message = '';
+      if (_first.contains('ERROR')) {
+        _message = Helper.handleFirebaseError(
+          _first,
+        );
+      } else {
+        _message = 'Usuário criado com sucesso';
+      }
+
+      SnackBar _snackBar = SnackBar(
+        content: Text(_message),
+      );
+
+      _scaffoldKey.currentState.showSnackBar(
+        _snackBar,
       );
     }
   }

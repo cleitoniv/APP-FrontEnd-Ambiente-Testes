@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
@@ -14,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _emailController;
@@ -22,10 +24,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _onLogin() async {
     if (_formKey.currentState.validate()) {
-      Modular.to.pushNamedAndRemoveUntil(
-        '/home/0',
-        (route) => route.isFirst,
-      );
+      _authBloc.loginIn.add({
+        'email': _emailController.text,
+        'password': _passwordController.text,
+      });
+
+      String _first = await _authBloc.loginOut.first;
+      if (_first.contains('ERROR')) {
+        String _message = Helper.handleFirebaseError(
+          _first,
+        );
+
+        SnackBar _snackBar = SnackBar(
+          content: Text(_message),
+        );
+
+        _scaffoldKey.currentState.showSnackBar(
+          _snackBar,
+        );
+      } else {
+        Modular.to.pushNamedAndRemoveUntil(
+          '/home/0',
+          (route) => route.isFirst,
+        );
+      }
     }
   }
 
