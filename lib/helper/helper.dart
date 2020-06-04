@@ -60,6 +60,9 @@ class Helper {
         case 'ERROR_WRONG_PASSWORD':
           _message = 'Senha incorreta';
           break;
+        case 'ERROR_REQUIRES_RECENT_LOGIN':
+          _message = 'Login recente';
+          break;
         default:
           _message = '$error';
       }
