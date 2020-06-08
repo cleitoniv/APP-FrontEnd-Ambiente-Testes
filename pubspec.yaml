@@ -75,7 +75,11 @@ flutter:
     - assets/icons/open_eye.png
     - assets/icons/requests.png
     - assets/icons/return.png
+    - assets/icons/blue_barcode.png
     - assets/icons/drawer.png
+    - assets/icons/blue_openbox.png
+    - assets/icons/money.png
+    - assets/icons/refresh.png
     - assets/icons/bell.png
     - assets/icons/open_box.png
     - assets/icons/drawer_0.png

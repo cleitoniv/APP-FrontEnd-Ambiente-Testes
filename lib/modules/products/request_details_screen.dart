@@ -587,7 +587,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 160,
             margin: const EdgeInsets.symmetric(
               vertical: 30,
             ),

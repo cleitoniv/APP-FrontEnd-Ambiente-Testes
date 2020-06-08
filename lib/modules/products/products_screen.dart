@@ -33,7 +33,7 @@ class ProductsScreen extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 20,
               crossAxisSpacing: 20,
-              childAspectRatio: 0.75,
+              childAspectRatio: 0.7,
             ),
             itemBuilder: (context, index) {
               return ProductWidget(

@@ -5,7 +5,6 @@ import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
@@ -101,7 +100,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     Text(
                       'R\$ ${Helper.intToMoney(snapshot.data.value)}',
                       style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 20,
+                            fontSize: 18,
                           ),
                     ),
                   ],

@@ -92,7 +92,7 @@ class ProductWidget extends StatelessWidget {
             CachedNetworkImage(
               imageUrl: imageUrl,
               width: 140,
-              height: 140,
+              height: 120,
               fit: BoxFit.contain,
             ),
             Text(
