@@ -100,6 +100,23 @@ main() {
   );
 
   test(
+    'add points - repository',
+    () async {
+      String data = await userRepository.addPoints({
+        'serial_number': '0000',
+        'patient_name': '',
+        'patient_reference_number': '3423',
+        'patient_birthday': '10/05/100'
+      });
+
+      expectLater(
+        data.isNotEmpty,
+        true,
+      );
+    },
+  );
+
+  test(
     'index requests - repository',
     () async {
       List<RequestModel> _requests = await requestsRepository.index(filter: {

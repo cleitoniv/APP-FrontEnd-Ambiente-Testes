@@ -35,4 +35,19 @@ class UserRepository {
       return null;
     }
   }
+
+  Future<String> addPoints(
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      Response response = await dio.post(
+        '/addPoints',
+        data: jsonEncode(data),
+      );
+
+      return response.data['data'];
+    } catch (error) {
+      return null;
+    }
+  }
 }
