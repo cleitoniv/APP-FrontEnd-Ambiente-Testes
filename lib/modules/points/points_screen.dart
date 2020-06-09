@@ -1,10 +1,17 @@
+import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/request_model.dart';
+import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PointsScreen extends StatelessWidget {
+  RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+  UserBloc _userBloc = Modular.get<UserBloc>();
+
   List<Map> _renderButtonData(BuildContext context) {
     return [
       {
@@ -79,9 +86,25 @@ class PointsScreen extends StatelessWidget {
                     'Saldo atual',
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  trailing: Text(
-                    '50',
-                    style: Theme.of(context).textTheme.headline6,
+                  trailing: StreamBuilder<UserModel>(
+                    stream: _userBloc.currentUserOut,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(
+                          width: 30,
+                          height: 30,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        );
+                      }
+                      return Text(
+                        '${snapshot.data.points}',
+                        style: Theme.of(context).textTheme.headline6,
+                      );
+                    },
                   ),
                 ),
               )
@@ -92,69 +115,85 @@ class PointsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
-          ListView.separated(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: 4,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 20,
-            ),
-            itemBuilder: (context, index) {
-              return ListTileMoreCustomizable(
-                contentPadding: const EdgeInsets.all(0),
-                horizontalTitleGap: 10,
-                leading: Container(
-                  width: 50,
-                  height: 50,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Color(0xffECECEC),
-                    borderRadius: BorderRadius.circular(5),
+          StreamBuilder<List<RequestModel>>(
+              stream: _requestsBloc.indexOut,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    heightFactor: 3,
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                List<RequestModel> _requests = snapshot.data;
+
+                return ListView.separated(
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: _requests.length,
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: 20,
                   ),
-                  child: Text(
-                    '15\nAgo',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
+                  itemBuilder: (context, index) {
+                    return ListTileMoreCustomizable(
+                      contentPadding: const EdgeInsets.all(0),
+                      horizontalTitleGap: 10,
+                      leading: Container(
+                        width: 50,
+                        height: 50,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Color(0xffECECEC),
+                          borderRadius: BorderRadius.circular(5),
                         ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                title: Text(
-                  'Pedro de Oliveira Palaoro',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        fontSize: 14,
-                      ),
-                ),
-                subtitle: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Pedido 282740',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Colors.black26,
-                            fontSize: 14,
+                        child: Text(
+                          Helper.dateToMonth(
+                            _requests[index].requestDate,
                           ),
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      'Valor R\$ ${Helper.intToMoney(29000)}',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 14,
-                          ),
-                    ),
-                  ],
-                ),
-                trailing: Text(
-                  '+5',
-                  style: Theme.of(context).textTheme.headline6.copyWith(
-                        color: Colors.black26,
-                        fontSize: 18,
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                ),
-              );
-            },
-          ),
+                      title: Text(
+                        '${_requests[index].owner}',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontSize: 14,
+                            ),
+                      ),
+                      subtitle: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Pedido ${_requests[index].id}',
+                            style:
+                                Theme.of(context).textTheme.subtitle1.copyWith(
+                                      color: Colors.black26,
+                                      fontSize: 14,
+                                    ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'Valor R\$ ${Helper.intToMoney(_requests[index].value)}',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 14,
+                                    ),
+                          ),
+                        ],
+                      ),
+                      trailing: Text(
+                        '+5',
+                        style: Theme.of(context).textTheme.headline6.copyWith(
+                              color: Colors.black26,
+                              fontSize: 18,
+                            ),
+                      ),
+                    );
+                  },
+                );
+              }),
           SizedBox(height: 10),
           Column(
             children: _renderButtonData(context).map(
