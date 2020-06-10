@@ -1,6 +1,10 @@
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/credit_card_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -13,6 +17,18 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
+  CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
+  PaymentBloc _paymentBloc = Modular.get<PaymentBloc>();
+  RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
+
+  String _totalToPay(List<Map<String, dynamic>> data) {
+    int _total = data.fold(
+      0,
+      (previousValue, element) => previousValue + element['product'].value,
+    );
+
+    return Helper.intToMoney(_total);
+  }
 
   _onAddCreditCard() {
     Modular.to.pushNamed('/cart/addCreditCard');
@@ -75,12 +91,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             fontSize: 18,
                           ),
                     ),
-                    Text(
-                      'R\$ ${Helper.intToMoney(20000)}',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 18,
-                          ),
-                    )
+                    StreamBuilder<List<Map<String, dynamic>>>(
+                        stream: _requestBloc.cartOut,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return Text(
+                            'R\$ ${_totalToPay(snapshot.data)}',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 18,
+                                    ),
+                          );
+                        })
                   ],
                 ),
               ),
@@ -91,65 +117,84 @@ class _PaymentScreenState extends State<PaymentScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
         children: <Widget>[
-          ListView.separated(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: 4,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 15,
-            ),
-            itemBuilder: (context, index) {
-              return StreamBuilder<int>(
-                stream: _cartWidgetBloc.currentPaymentFormOut,
-                builder: (context, snapshot) {
-                  return AnimatedContainer(
-                    duration: Duration(
-                      milliseconds: 100,
-                    ),
-                    height: 50,
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
-                    decoration: BoxDecoration(
-                      color: snapshot.data == index
-                          ? Theme.of(context).accentColor
-                          : Color(0xffF1F1F1),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ListTileMoreCustomizable(
-                      onTap: (value) => _onChangePaymentForm(
-                        index,
-                      ),
-                      contentPadding: const EdgeInsets.all(0),
-                      horizontalTitleGap: 10,
-                      leading: Image.asset(
-                        'assets/icons/barcode.png',
-                        width: 30,
-                        height: 25,
-                        fit: BoxFit.contain,
-                      ),
-                      title: Text(
-                        'À vista (5% de desconto)',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color:
-                                  snapshot.data == index ? Colors.white : null,
-                            ),
-                      ),
-                      trailing: snapshot.data == index
-                          ? Icon(
-                              Icons.check,
-                              color: Colors.white,
-                            )
-                          : null,
-                    ),
+          StreamBuilder<List<CreditCardModel>>(
+              stream: _creditCardBloc.indexOut,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
-                },
-              );
-            },
-          ),
+                }
+
+                final _creditCards = snapshot.data;
+
+                return ListView.separated(
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: _creditCards.length,
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: 15,
+                  ),
+                  itemBuilder: (context, index) {
+                    return StreamBuilder<int>(
+                      stream: _cartWidgetBloc.currentPaymentFormOut,
+                      builder: (context, snapshot) {
+                        return AnimatedContainer(
+                          duration: Duration(
+                            milliseconds: 100,
+                          ),
+                          height: 50,
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                          ),
+                          decoration: BoxDecoration(
+                            color: snapshot.data == index
+                                ? Theme.of(context).accentColor
+                                : Color(0xffF1F1F1),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: ListTileMoreCustomizable(
+                            onTap: (value) => _onChangePaymentForm(
+                              index,
+                            ),
+                            contentPadding: const EdgeInsets.all(0),
+                            horizontalTitleGap: 10,
+                            // leading: Image.asset(
+                            //   'assets/icons/barcode.png',
+                            //   width: 30,
+                            //   height: 25,
+                            //   fit: BoxFit.contain,
+                            // ),
+                            leading: Icon(
+                              Icons.credit_card,
+                            ),
+                            title: Text(
+                              _creditCards[index].number,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: snapshot.data == index
+                                        ? Colors.white
+                                        : null,
+                                  ),
+                            ),
+                            trailing: snapshot.data == index
+                                ? Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                  )
+                                : null,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              }),
           RaisedButton.icon(
             onPressed: _onAddCreditCard,
             elevation: 0,

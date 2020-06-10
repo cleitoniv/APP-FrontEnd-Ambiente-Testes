@@ -1,17 +1,22 @@
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/credit_card_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
+import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/notifications_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/payment_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
@@ -25,6 +30,10 @@ main() {
       ProductRepository(clientHttp.getClient());
   CreditsRepository creditsRepository =
       CreditsRepository(clientHttp.getClient());
+  PaymentRepository paymentRepository =
+      PaymentRepository(clientHttp.getClient());
+  CreditCardRepository creditCardRepository =
+      CreditCardRepository(clientHttp.getClient());
   UserRepository userRepository = UserRepository(clientHttp.getClient());
   RequestsRepository requestsRepository =
       RequestsRepository(clientHttp.getClient());
@@ -69,6 +78,54 @@ main() {
         _bloc.indexFinancialOut,
         emits(
           (FinancialCreditModel credits) => credits.credits.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
+    'index credit cards - bloc',
+    () async {
+      CreditCardBloc _bloc = CreditCardBloc(creditCardRepository);
+
+      expectLater(
+        _bloc.indexOut,
+        emits(
+          (List<CreditCardModel> creditCards) => creditCards.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
+    'store credit cards - bloc',
+    () async {
+      CreditCardBloc _bloc = CreditCardBloc(creditCardRepository);
+
+      _bloc.storeIn.add(
+        CreditCardModel(),
+      );
+
+      expectLater(
+        _bloc.storeOut,
+        emits(
+          (String data) => data.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
+    'payment - bloc',
+    () async {
+      PaymentBloc _bloc = PaymentBloc(paymentRepository);
+
+      _bloc.paymentIn.add({'id': 1});
+
+      expectLater(
+        _bloc.paymentOut,
+        emits(
+          (String data) => data.isNotEmpty,
         ),
       );
     },
