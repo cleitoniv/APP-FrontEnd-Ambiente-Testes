@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class RescuePointsScreen extends StatefulWidget {
 }
 
 class _RescuePointsScreenState extends State<RescuePointsScreen> {
+  UserBloc _userBloc = Modular.get<UserBloc>();
   _onGoToFinancialCredit() {
     Modular.to.pushNamedAndRemoveUntil(
       '/home/1',
@@ -18,14 +20,23 @@ class _RescuePointsScreenState extends State<RescuePointsScreen> {
     );
   }
 
-  _onConfirmRescue() {
+  _onConfirmRescue() async {
     Modular.to.pop();
-    Dialogs.success(
-      context,
-      subtitle: 'Resgate realizado com sucesso!',
-      buttonText: 'Ir para Crédito Financeiro',
-      onTap: _onGoToFinancialCredit,
-    );
+
+    _userBloc.pointsIn.add({
+      'type': 'rescue',
+    });
+
+    String _first = await _userBloc.pointsOut.first;
+
+    if (_first != null) {
+      Dialogs.success(
+        context,
+        subtitle: 'Resgate realizado com sucesso!',
+        buttonText: 'Ir para Crédito Financeiro',
+        onTap: _onGoToFinancialCredit,
+      );
+    }
   }
 
   _onCancelRescue() {
