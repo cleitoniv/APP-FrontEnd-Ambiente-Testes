@@ -8,6 +8,7 @@ import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:intl/intl.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -34,8 +35,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
     Modular.to.pushNamed('/cart/addCreditCard');
   }
 
-  _onChangePaymentForm(int index) {
-    _cartWidgetBloc.currentPaymentFormIn.add(index);
+  _onChangePaymentForm(CreditCardModel creditCard) {
+    _cartWidgetBloc.currentPaymentFormIn.add(
+      creditCard,
+    );
   }
 
   _onSubmitDialog() {
@@ -45,11 +48,28 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  _onSubmit() {
-    Dialogs.success(context,
-        subtitle: 'Compra efetuada com sucesso!',
-        buttonText: 'Ir para Meus Pedidos',
-        onTap: _onSubmitDialog);
+  _onSubmit() async {
+    final _creditCard = await _cartWidgetBloc.currentPaymentFormOut.first;
+
+    final _cart = await _requestBloc.cartOut.first;
+
+    int _value = int.parse(
+      _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
+    );
+
+    print(_value);
+
+    _paymentBloc.paymentIn.add({
+      'payment_data': _creditCard,
+      'value': _value,
+    });
+
+    Dialogs.success(
+      context,
+      subtitle: 'Compra efetuada com sucesso!',
+      buttonText: 'Ir para Meus Pedidos',
+      onTap: _onSubmitDialog,
+    );
   }
 
   @override
@@ -92,21 +112,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ),
                     ),
                     StreamBuilder<List<Map<String, dynamic>>>(
-                        stream: _requestBloc.cartOut,
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          return Text(
-                            'R\$ ${_totalToPay(snapshot.data)}',
-                            style:
-                                Theme.of(context).textTheme.headline5.copyWith(
-                                      fontSize: 18,
-                                    ),
+                      stream: _requestBloc.cartOut,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(),
                           );
-                        })
+                        }
+                        return Text(
+                          'R\$ ${_totalToPay(snapshot.data)}',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 18,
+                              ),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),
@@ -136,9 +156,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     height: 15,
                   ),
                   itemBuilder: (context, index) {
-                    return StreamBuilder<int>(
+                    return StreamBuilder<CreditCardModel>(
                       stream: _cartWidgetBloc.currentPaymentFormOut,
                       builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          _onChangePaymentForm(
+                            _creditCards[index],
+                          );
+
+                          return Container();
+                        }
+
+                        final _currentPaymentForm = snapshot.data;
                         return AnimatedContainer(
                           duration: Duration(
                             milliseconds: 100,
@@ -149,14 +178,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             horizontal: 20,
                           ),
                           decoration: BoxDecoration(
-                            color: snapshot.data == index
-                                ? Theme.of(context).accentColor
-                                : Color(0xffF1F1F1),
+                            color:
+                                _currentPaymentForm.id == _creditCards[index].id
+                                    ? Theme.of(context).accentColor
+                                    : Color(0xffF1F1F1),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: ListTileMoreCustomizable(
                             onTap: (value) => _onChangePaymentForm(
-                              index,
+                              _creditCards[index],
                             ),
                             contentPadding: const EdgeInsets.all(0),
                             horizontalTitleGap: 10,
@@ -177,17 +207,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   .copyWith(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color: snapshot.data == index
+                                    color: _currentPaymentForm.id ==
+                                            _creditCards[index].id
                                         ? Colors.white
                                         : null,
                                   ),
                             ),
-                            trailing: snapshot.data == index
-                                ? Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                  )
-                                : null,
+                            trailing:
+                                _currentPaymentForm.id == _creditCards[index].id
+                                    ? Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      )
+                                    : null,
                           ),
                         );
                       },
