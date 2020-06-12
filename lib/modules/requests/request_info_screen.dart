@@ -528,64 +528,65 @@ class RequestInfoScreen extends StatelessWidget {
                   color: Colors.black38,
                 ),
                 StreamBuilder<RequestDetailsModel>(
-                    stream: _requestsBloc.showOut,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container();
-                      }
+                  stream: _requestsBloc.showOut,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container();
+                    }
 
-                      final _request = snapshot.data;
-                      return Table(
-                        children: [
-                          TableRow(
-                            children: [
-                              Text(
-                                'Previsão de Entrega',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    .copyWith(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                              ),
-                              Text(
-                                'Total + Frete',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    .copyWith(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                              )
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Text(
-                                Helper.sqlToDate(_request.deliveryForecast),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1
-                                    .copyWith(
-                                      fontSize: 14,
-                                    ),
-                              ),
-                              Text(
-                                'R\$ ${Helper.intToMoney(_request.value)}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1
-                                    .copyWith(
-                                      fontSize: 14,
-                                    ),
-                              )
-                            ],
-                          ),
-                        ],
-                      );
-                    }),
+                    final _request = snapshot.data;
+                    return Table(
+                      children: [
+                        TableRow(
+                          children: [
+                            Text(
+                              'Previsão de Entrega',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                            ),
+                            Text(
+                              'Total + Frete',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                            )
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              Helper.sqlToDate(_request.deliveryForecast),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontSize: 14,
+                                  ),
+                            ),
+                            Text(
+                              'R\$ ${Helper.intToMoney(_request.value)}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontSize: 14,
+                                  ),
+                            )
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ],
             ),
           ),
