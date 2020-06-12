@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Helper {
@@ -154,5 +155,43 @@ class Helper {
     String _formatDate = _format.format(_dateTime);
 
     return _formatDate;
+  }
+
+  static Map<String, dynamic> buyTypeBuild(BuildContext context, String type) {
+    switch (type) {
+      case 'singleOrder':
+        return {
+          'title': 'Avulso',
+          'color': Color(0xff707070),
+          'icon': Icon(
+            Icons.attach_money,
+            color: Colors.white,
+            size: 20,
+          )
+        };
+      case 'financialCredit':
+        return {
+          'title': 'Financeiro',
+          'color': Theme.of(context).primaryColor,
+          'icon': Icon(
+            Icons.attach_money,
+            color: Colors.white,
+            size: 20,
+          )
+        };
+      case 'productCredit':
+        return {
+          'title': 'Produto',
+          'color': Theme.of(context).splashColor,
+          'icon': Image.asset(
+            'assets/icons/open_box.png',
+            width: 15,
+            height: 15,
+            color: Colors.white,
+          )
+        };
+    }
+
+    return {};
   }
 }

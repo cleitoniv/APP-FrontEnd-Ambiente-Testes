@@ -26,42 +26,6 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Map<String, dynamic> _buyTypeBuild(String type) {
-    switch (type) {
-      case 'singleOrder':
-        return {
-          'title': 'Avulso',
-          'color': Color(0xff707070),
-          'icon': Icon(
-            Icons.attach_money,
-            color: Colors.white,
-            size: 20,
-          )
-        };
-      case 'financialCredit':
-        return {
-          'title': 'Financeiro',
-          'color': Theme.of(context).primaryColor,
-          'icon': Icon(
-            Icons.attach_money,
-            color: Colors.white,
-            size: 20,
-          )
-        };
-      case 'productCredit':
-        return {
-          'title': 'Produto',
-          'color': Theme.of(context).splashColor,
-          'icon': Image.asset(
-            'assets/icons/open_box.png',
-            width: 15,
-            height: 15,
-            color: Colors.white,
-          )
-        };
-    }
-  }
-
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(
       0,
@@ -133,16 +97,19 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         SizedBox(width: 20),
                         CircleAvatar(
-                            backgroundColor: _buyTypeBuild(
+                            backgroundColor: Helper.buyTypeBuild(
+                              context,
                               _data[index]['type'],
                             )['color'],
                             radius: 10,
-                            child: _buyTypeBuild(
+                            child: Helper.buyTypeBuild(
+                              context,
                               _data[index]['type'],
                             )['icon']),
                         SizedBox(width: 5),
                         Text(
-                          _buyTypeBuild(
+                          Helper.buyTypeBuild(
+                            context,
                             _data[index]['type'],
                           )['title'],
                           style: Theme.of(context).textTheme.subtitle1.copyWith(

@@ -11,6 +11,7 @@ import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart
 import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/models/request_details_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
@@ -92,6 +93,22 @@ main() {
         _bloc.indexOut,
         emits(
           (List<CreditCardModel> creditCards) => creditCards.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
+    'show requests details - bloc',
+    () async {
+      RequestsBloc _bloc = RequestsBloc(requestsRepository);
+
+      _bloc.showIn.add(1);
+
+      expectLater(
+        _bloc.showOut,
+        emits(
+          (RequestDetailsModel details) => details.birthday.isNotEmpty,
         ),
       );
     },

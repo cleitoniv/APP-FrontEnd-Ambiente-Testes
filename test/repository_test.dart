@@ -5,6 +5,7 @@ import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart
 import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/models/request_details_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
@@ -77,6 +78,18 @@ main() {
 
       expectLater(
         _credits.products.isNotEmpty,
+        true,
+      );
+    },
+  );
+
+  test(
+    'show request details - repository',
+    () async {
+      RequestDetailsModel _details = await requestsRepository.show(id: 1);
+
+      expectLater(
+        _details.birthday.isNotEmpty,
         true,
       );
     },
