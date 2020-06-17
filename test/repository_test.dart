@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
+import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
@@ -6,8 +7,10 @@ import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/notifications_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/payment_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
@@ -22,6 +25,10 @@ main() {
   CreditsRepository creditsRepository =
       CreditsRepository(clientHttp.getClient());
   UserRepository userRepository = UserRepository(clientHttp.getClient());
+  PaymentRepository paymentRepository =
+      PaymentRepository(clientHttp.getClient());
+  CreditCardRepository creditCardRepository =
+      CreditCardRepository(clientHttp.getClient());
   RequestsRepository requestsRepository =
       RequestsRepository(clientHttp.getClient());
   NotificationsRepository notificationsRepository =
@@ -70,6 +77,46 @@ main() {
 
       expectLater(
         _credits.products.isNotEmpty,
+        true,
+      );
+    },
+  );
+
+  test(
+    'index credit cards - repository',
+    () async {
+      List<CreditCardModel> _creditCards = await creditCardRepository.index();
+
+      expectLater(
+        _creditCards.isNotEmpty,
+        true,
+      );
+    },
+  );
+
+  test(
+    'store credit cards - repository',
+    () async {
+      String data = await creditCardRepository.store(
+        model: CreditCardModel(),
+      );
+
+      expectLater(
+        data.isNotEmpty,
+        true,
+      );
+    },
+  );
+
+  test(
+    'payment - repository',
+    () async {
+      String data = await paymentRepository.payment(
+        {'serial': '5685'},
+      );
+
+      expectLater(
+        data.isNotEmpty,
         true,
       );
     },

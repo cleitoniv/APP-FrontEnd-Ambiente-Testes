@@ -4,7 +4,7 @@ class Helper {
   static String lengthValidator(
     String text, {
     int length = 0,
-    String message = 'Campo inválido',
+    String message = 'Campo Obrigatório',
   }) {
     if (text.isEmpty || text.length < length) {
       return message;
