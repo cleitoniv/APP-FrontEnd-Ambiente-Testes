@@ -7,9 +7,7 @@ class HelpScreen extends StatefulWidget {
 }
 
 class _HelpScreenState extends State<HelpScreen> {
-  _onShowTerm() {
-    print('ola');
-  }
+  _onShowTerm() {}
 
   List<Map> _data;
 

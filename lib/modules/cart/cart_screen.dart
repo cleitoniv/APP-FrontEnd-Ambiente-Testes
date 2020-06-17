@@ -1,11 +1,16 @@
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class CartScreen extends StatelessWidget {
-  _handleBack() {}
+  _onBack() {}
 
-  _handleSubmit() {}
+  _onSubmit() {
+    Modular.to.pushNamed(
+      '/cart/payment',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +142,7 @@ class CartScreen extends StatelessWidget {
                     color: Theme.of(context).accentColor,
                   ),
             ),
-            onPressed: _handleBack,
+            onPressed: _onBack,
           ),
           SizedBox(height: 20),
           RaisedButton(
@@ -146,7 +151,7 @@ class CartScreen extends StatelessWidget {
               'Finalizar Pedido',
               style: Theme.of(context).textTheme.button,
             ),
-            onPressed: _handleSubmit,
+            onPressed: _onSubmit,
           ),
         ],
       ),
