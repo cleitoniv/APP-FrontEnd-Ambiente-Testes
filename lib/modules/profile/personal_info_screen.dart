@@ -1,4 +1,4 @@
-import 'package:central_oftalmica_app_cliente/blocs/profile_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -11,7 +11,7 @@ class PersonalInfoScreen extends StatefulWidget {
 }
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
-  ProfileBloc _profileBloc = Modular.get<ProfileBloc>();
+  ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   TextEditingController _nameController;
   MaskedTextController _cpfController;
   MaskedTextController _birthdayController;
@@ -21,7 +21,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   List<Map> _personalInfo;
 
   _onChangeVisitHour(String value) {
-    _profileBloc.visitHourIn.add(value);
+    _profileWidgetBloc.visitHourIn.add(value);
   }
 
   _onSaveNewSchedule() {}
@@ -166,7 +166,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             ),
             child: DropdownButtonHideUnderline(
               child: StreamBuilder<String>(
-                stream: _profileBloc.visitHourOut,
+                stream: _profileWidgetBloc.visitHourOut,
                 builder: (context, snapshot) {
                   return DropdownButton(
                     value: snapshot.data,

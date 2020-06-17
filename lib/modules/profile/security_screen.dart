@@ -1,4 +1,4 @@
-import 'package:central_oftalmica_app_cliente/blocs/profile_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +11,12 @@ class SecurityScreen extends StatefulWidget {
 }
 
 class _SecurityScreenState extends State<SecurityScreen> {
-  ProfileBloc _profileBloc = Modular.get<ProfileBloc>();
+  ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   TextEditingController _passwordController;
   List<Map> _data;
 
   _onShowPassword(bool value) {
-    _profileBloc.securityShowPasswordIn.add(value);
+    _profileWidgetBloc.securityShowPasswordIn.add(value);
   }
 
   _onSubmit() {}
@@ -77,7 +77,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
             ),
             itemBuilder: (context, index) {
               return StreamBuilder<bool>(
-                stream: _profileBloc.securityShowPasswordOut,
+                stream: _profileWidgetBloc.securityShowPasswordOut,
                 builder: (context, snapshot) {
                   return TextFieldWidget(
                     obscureText: snapshot.data,

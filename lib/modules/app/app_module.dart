@@ -1,6 +1,6 @@
-import 'package:central_oftalmica_app_cliente/blocs/home_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/intro_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/profile_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/intro_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
@@ -25,13 +25,13 @@ class AppModule extends MainModule {
           singleton: true,
         ),
         Bind(
-          (i) => IntroBloc(),
+          (i) => IntroWidgetBloc(),
         ),
         Bind(
-          (i) => HomeBloc(),
+          (i) => HomeWidgetBloc(),
         ),
         Bind(
-          (i) => ProfileBloc(),
+          (i) => ProfileWidgetBloc(),
         ),
       ];
 

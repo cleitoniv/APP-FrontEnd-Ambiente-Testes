@@ -1,6 +1,6 @@
 import 'package:rxdart/rxdart.dart';
 
-class HomeBloc {
+class HomeWidgetBloc {
   BehaviorSubject _sightProblemController = BehaviorSubject.seeded('Todos');
   Sink get sightProblemIn => _sightProblemController.sink;
   Stream<String> get sightProblemOut => _sightProblemController.stream.map(

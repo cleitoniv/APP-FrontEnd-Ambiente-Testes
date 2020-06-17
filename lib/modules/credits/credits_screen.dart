@@ -1,4 +1,4 @@
-import 'package:central_oftalmica_app_cliente/blocs/home_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/card_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ class CreditsScreen extends StatefulWidget {
 }
 
 class _CreditsScreenState extends State<CreditsScreen> {
-  HomeBloc _homeBloc = Modular.get<HomeBloc>();
+  HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
 
   @override
   void initState() {
