@@ -10,6 +10,7 @@ import 'package:central_oftalmica_app_cliente/modules/extracts/extracts_module.d
 import 'package:central_oftalmica_app_cliente/modules/home/home_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/notifications/notifications_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/points/points_module.dart';
+import 'package:central_oftalmica_app_cliente/modules/products/products_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/profile_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_module.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -71,6 +72,10 @@ class AppModule extends MainModule {
         Router(
           '/notifications',
           module: NotificationsModule(),
+        ),
+        Router(
+          '/products',
+          module: ProductsModule(),
         ),
       ];
 

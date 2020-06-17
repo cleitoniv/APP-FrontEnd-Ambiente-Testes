@@ -1,7 +1,14 @@
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
-class HomeScreen extends StatelessWidget {
+class ProductsScreen extends StatelessWidget {
+  _handleProduct() {
+    Modular.to.pushNamed(
+      '/products/1',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -19,6 +26,7 @@ class HomeScreen extends StatelessWidget {
             value: 76888,
             title: 'Biosoft',
             tests: 2,
+            onTap: _handleProduct,
           );
         },
       ),
