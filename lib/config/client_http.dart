@@ -14,6 +14,7 @@ class ClientHttp {
         onRequest: (RequestOptions options) {
           if (_currentToken.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $_currentToken';
+            options.headers['Content-Type'] = 'application/json';
           }
         },
         onResponse: (Response response) => response,

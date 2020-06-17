@@ -1,4 +1,8 @@
+import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
+import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/widgets/card_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
@@ -14,11 +18,22 @@ class CreditsScreen extends StatefulWidget {
 
 class _CreditsScreenState extends State<CreditsScreen> {
   HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
+  CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
 
   MoneyMaskedTextController _creditValueController;
 
-  _onAddCredit() {
-    _homeBloc.valueVisibilityIn.add(false);
+  _onAddCredit() async {
+    _creditsBloc.storeFinancialIn.add(
+      Helper.moneyToInt(
+        _creditValueController.numberValue,
+      ),
+    );
+
+    String _first = await _creditsBloc.storeFinancialOut.first;
+
+    if (_first != null && _first.isNotEmpty) {
+      _homeBloc.valueVisibilityIn.add(false);
+    }
   }
 
   _onTapPersonalizedValue() {
@@ -63,11 +78,35 @@ class _CreditsScreenState extends State<CreditsScreen> {
                           color: Colors.white54,
                         ),
                   ),
-                  title: Text(
-                    snapshot.data == 'Financeiro' ? '567,00' : '2',
-                    style: Theme.of(context).textTheme.subtitle2.copyWith(
-                          fontSize: 48,
-                        ),
+                  title: StreamBuilder<ProductCreditModel>(
+                    stream: _creditsBloc.indexProductOut,
+                    builder: (context, snapshot2) {
+                      if (snapshot.data == 'Financeiro' && !snapshot2.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return StreamBuilder<FinancialCreditModel>(
+                        stream: _creditsBloc.indexFinancialOut,
+                        builder: (context, snapshot3) {
+                          if (snapshot.data != 'Financeiro' &&
+                              !snapshot3.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return Text(
+                            snapshot.data == 'Financeiro'
+                                ? Helper.intToMoney(snapshot3.data.balance)
+                                : '${snapshot2.data.total}',
+                            style:
+                                Theme.of(context).textTheme.subtitle2.copyWith(
+                                      fontSize: 48,
+                                    ),
+                          );
+                        },
+                      );
+                    },
                   ),
                   subtitle: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -118,23 +157,60 @@ class _CreditsScreenState extends State<CreditsScreen> {
               child: StreamBuilder<String>(
                 stream: _homeBloc.currentCreditTypeOut,
                 builder: (context, snapshot) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.all(20),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data == 'Financeiro' ? 5 : 3,
-                    separatorBuilder: (context, index) => SizedBox(
-                      width: 20,
-                    ),
-                    itemBuilder: (context, index) {
-                      return snapshot.data == 'Financeiro'
-                          ? CardWidget(
-                              parcels: 1,
-                            )
-                          : ProductWidget(
-                              credits: 1,
-                              tests: 1,
+                  String _currentType = snapshot.data;
+                  return StreamBuilder<ProductCreditModel>(
+                    stream: _creditsBloc.indexProductOut,
+                    builder: (context, snapshot) {
+                      if (_currentType != 'Financeiro' && !snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      ProductCreditModel _productCredits = snapshot.data;
+                      return StreamBuilder<FinancialCreditModel>(
+                        stream: _creditsBloc.indexFinancialOut,
+                        builder: (context, snapshot) {
+                          if (_currentType == 'Financeiro' &&
+                              !snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(),
                             );
+                          }
+                          FinancialCreditModel _financialCredits =
+                              snapshot.data;
+
+                          return ListView.separated(
+                            padding: const EdgeInsets.all(20),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _currentType == 'Financeiro'
+                                ? _financialCredits.credits.length
+                                : _productCredits.products.length,
+                            separatorBuilder: (context, index) => SizedBox(
+                              width: 20,
+                            ),
+                            itemBuilder: (context, index) {
+                              return _currentType == 'Financeiro'
+                                  ? CardWidget(
+                                      parcels: _financialCredits
+                                          .credits[index].parcels,
+                                      value: _financialCredits
+                                          .credits[index].value,
+                                    )
+                                  : ProductWidget(
+                                      credits: _productCredits
+                                          .products[index].credits,
+                                      tests:
+                                          _productCredits.products[index].tests,
+                                      imageUrl: _productCredits
+                                          .products[index].imageUrl,
+                                      title:
+                                          _productCredits.products[index].title,
+                                    );
+                            },
+                          );
+                        },
+                      );
                     },
                   );
                 },
