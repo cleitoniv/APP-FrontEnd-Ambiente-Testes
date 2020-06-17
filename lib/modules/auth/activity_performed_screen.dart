@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -10,6 +11,7 @@ class ActivityPerformedScreen extends StatefulWidget {
 
 class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   List<Map<String, dynamic>> _activities = [
     {'id': 1, 'name': 'Oftalmologista'},
@@ -24,7 +26,14 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
     );
   }
 
-  _handleSubmit() {
+  _handleSubmit() async {
+    Map<String, dynamic> _first =
+        await _authWidgetBloc.currentActivityOut.first;
+
+    _authWidgetBloc.addUserInfo({
+      'activity': _first['name'],
+    });
+
     Modular.to.pushNamed(
       '/auth/completeCreateAccount',
     );
@@ -61,7 +70,6 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
                   return StreamBuilder<Map<String, dynamic>>(
                     stream: _authWidgetBloc.currentActivityOut,
                     builder: (context, snapshot) {
-                      print(snapshot.data);
                       return RadioListTile(
                         value: snapshot.hasData ? snapshot.data['id'] : null,
                         groupValue: _activities[index]['id'],

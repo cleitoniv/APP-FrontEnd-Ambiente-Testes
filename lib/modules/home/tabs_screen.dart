@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
@@ -23,6 +24,7 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen>
     with SingleTickerProviderStateMixin {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   TabController _tabController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> _sightProblems = [
@@ -135,7 +137,14 @@ class _TabsScreenState extends State<TabsScreen>
     Modular.to.pushNamed('/points');
   }
 
-  _onExitApp() {}
+  _onExitApp() async {
+    await _authBloc.signOutOut.first;
+
+    Modular.to.pushNamedAndRemoveUntil(
+      '/auth/login',
+      (route) => route.isFirst,
+    );
+  }
 
   Widget _renderHeaderFilters(int index) {
     switch (index) {

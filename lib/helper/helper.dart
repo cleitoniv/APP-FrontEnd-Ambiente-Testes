@@ -42,6 +42,32 @@ class Helper {
     );
   }
 
+  static handleFirebaseError(
+    String error,
+  ) {
+    if (error.contains('ERROR')) {
+      String _message = '';
+      switch (error) {
+        case 'ERROR_USER_NOT_FOUND':
+          _message = 'Usuário não encontrado';
+          break;
+        case 'ERROR_INVALID_EMAIL':
+          _message = 'Email inválido';
+          break;
+        case 'ERROR_EMAIL_ALREADY_IN_USE':
+          _message = 'Este email já está em uso';
+          break;
+        case 'ERROR_WRONG_PASSWORD':
+          _message = 'Senha incorreta';
+          break;
+        default:
+          _message = '$error';
+      }
+
+      return _message;
+    }
+  }
+
   static dateToWeek(String date) {
     int _milliseconds = int.parse(date);
     DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(

@@ -58,13 +58,13 @@ class _SecurityScreenState extends State<SecurityScreen> {
         padding: const EdgeInsets.all(20),
         children: <Widget>[
           Text(
-            'Selecione o melhor horário de visita',
+            'Alterar sua senha',
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 10),
           Text(
-            'Caso tenha um representante Central Oftálmica informe abaixo o melhor horário para o mesmo visita-lo',
+            'Crie e gerencie acessos diretos para seus colaboradores fazerem pedidos através da sua conta:',
             style: Theme.of(context).textTheme.subtitle1,
             textAlign: TextAlign.center,
           ),

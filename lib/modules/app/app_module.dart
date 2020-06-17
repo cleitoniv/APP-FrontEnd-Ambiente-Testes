@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/help_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/app/main_app.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/auth_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_module.dart';
@@ -27,6 +29,7 @@ import 'package:central_oftalmica_app_cliente/modules/points/points_module.dart'
 import 'package:central_oftalmica_app_cliente/modules/products/products_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/profile_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_module.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
@@ -82,6 +85,16 @@ class AppModule extends MainModule {
           ),
         ),
         Bind(
+          (i) => AuthRepository(
+            i.get<ClientHttp>().getClient(),
+          ),
+        ),
+        Bind(
+          (i) => AuthBloc(
+            i.get<AuthRepository>(),
+          ),
+        ),
+        Bind(
           (i) => IntroWidgetBloc(),
         ),
         Bind(
@@ -112,6 +125,10 @@ class AppModule extends MainModule {
 
   @override
   List<Router> get routers => [
+        Router(
+          '/',
+          child: (_, args) => MainApp(),
+        ),
         Router(
           '/intro',
           child: (_, args) => IntroScreen(),

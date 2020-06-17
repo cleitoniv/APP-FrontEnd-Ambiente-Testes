@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
@@ -14,6 +15,7 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController _nameController;
@@ -32,8 +34,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   _handleShowTerm() {}
 
-  _handleSubmit() {
+  _handleSubmit() async {
     if (_formKey.currentState.validate()) {
+      _authWidgetBloc.addUserInfo({
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'cellphone': _phoneController.text,
+        'password': _passwordController.text,
+      });
+
       Modular.to.pushNamed(
         '/auth/activityPerformed',
       );
