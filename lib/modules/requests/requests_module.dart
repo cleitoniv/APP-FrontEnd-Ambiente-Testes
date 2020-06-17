@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/modules/requests/request_info_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -15,6 +16,12 @@ class RequestsModule extends ChildModule {
         Router(
           '/',
           child: (_, args) => RequestsScreen(),
+        ),
+        Router(
+          '/:id',
+          child: (_, args) => RequestInfoScreen(
+            id: int.parse(args.params['id']),
+          ),
         )
       ];
 }
