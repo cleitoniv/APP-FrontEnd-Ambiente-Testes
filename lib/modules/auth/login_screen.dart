@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _emailController;
   TextEditingController _passwordController;
+  bool _obscureText = true;
 
   _handleLogin() async {
     if (_formKey.currentState.validate()) {
@@ -28,6 +29,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _handleCreateAccount() {
     Modular.to.pushNamed('/auth/createAccount');
+  }
+
+  _handleShowPassword() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 
   @override
@@ -50,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       key: _formKey,
       body: SafeArea(
         child: Form(
-          key: _formKey,
+          key: _scaffoldKey,
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: <Widget>[
@@ -76,6 +83,14 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFieldWidget(
                 labelText: 'Senha',
                 controller: _passwordController,
+                obscureText: _obscureText,
+                suffixIcon: IconButton(
+                  onPressed: _handleShowPassword,
+                  icon: Icon(
+                    Icons.remove_red_eye,
+                    color: Color(0xffA1A1A1),
+                  ),
+                ),
                 prefixIcon: Icon(
                   Icons.lock,
                   color: Color(0xffA1A1A1),
@@ -134,3 +149,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+class MaterialCommunityIcons {}

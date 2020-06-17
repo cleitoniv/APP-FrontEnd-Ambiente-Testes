@@ -202,7 +202,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 style: Theme.of(context).textTheme.headline5,
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 30),
               Column(
                 children: _fieldData.skip(4).map(
                   (e) {

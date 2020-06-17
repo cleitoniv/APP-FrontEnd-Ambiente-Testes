@@ -78,6 +78,10 @@ flutter:
     - assets/icons/drawer_7.png
     - assets/icons/drawer_8.png
     - assets/icons/drawer_9.png
+    - assets/icons/profile_0.png
+    - assets/icons/profile_1.png
+    - assets/icons/profile_2.png
+    - assets/icons/profile_3.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
