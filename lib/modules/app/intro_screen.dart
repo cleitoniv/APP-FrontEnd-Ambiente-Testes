@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/intro_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -7,8 +8,8 @@ class IntroScreen extends StatefulWidget {
 }
 
 class _IntroScreenState extends State<IntroScreen> {
+  IntroBloc _introBloc = Modular.get<IntroBloc>();
   PageController _pageController;
-  int _currentIndex = 0;
 
   List<Map> _slides = [
     {
@@ -43,7 +44,7 @@ class _IntroScreenState extends State<IntroScreen> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      initialPage: _currentIndex,
+      initialPage: 0,
     );
   }
 
@@ -63,9 +64,7 @@ class _IntroScreenState extends State<IntroScreen> {
             controller: _pageController,
             itemCount: _slides.length,
             onPageChanged: (int index) {
-              setState(() {
-                _currentIndex = index;
-              });
+              _introBloc.currentSlideIn.add(index);
             },
             itemBuilder: (context, index) {
               return Container(
@@ -102,21 +101,26 @@ class _IntroScreenState extends State<IntroScreen> {
               );
             },
           ),
-          _currentIndex == 2
-              ? Positioned(
+          StreamBuilder<int>(
+              stream: _introBloc.currentSlideOut,
+              builder: (context, snapshot) {
+                return Positioned(
                   bottom: 25,
                   right: 20,
-                  child: GestureDetector(
-                    onTap: _handleContinue,
-                    child: Text(
-                      'Continuar',
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
-                            fontWeight: FontWeight.w900,
+                  child: snapshot.data == 2
+                      ? GestureDetector(
+                          onTap: _handleContinue,
+                          child: Text(
+                            'Continuar',
+                            style:
+                                Theme.of(context).textTheme.subtitle2.copyWith(
+                                      fontWeight: FontWeight.w900,
+                                    ),
                           ),
-                    ),
-                  ),
-                )
-              : Container(),
+                        )
+                      : Container(),
+                );
+              }),
           Positioned(
             bottom: 30,
             width: MediaQuery.of(context).size.width,
@@ -128,12 +132,16 @@ class _IntroScreenState extends State<IntroScreen> {
                     margin: const EdgeInsets.symmetric(
                       horizontal: 2,
                     ),
-                    child: CircleAvatar(
-                      radius: _currentIndex == e['id'] ? 5 : 4,
-                      backgroundColor: _currentIndex == e['id']
-                          ? Colors.white
-                          : Colors.white54,
-                    ),
+                    child: StreamBuilder<int>(
+                        stream: _introBloc.currentSlideOut,
+                        builder: (context, snapshot) {
+                          return CircleAvatar(
+                            radius: snapshot.data == e['id'] ? 5 : 4,
+                            backgroundColor: snapshot.data == e['id']
+                                ? Colors.white
+                                : Colors.white54,
+                          );
+                        }),
                   );
                 },
               ).toList(),

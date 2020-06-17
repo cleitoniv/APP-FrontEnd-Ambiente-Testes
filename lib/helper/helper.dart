@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Helper {
   static String lengthValidator(
     String text, {
@@ -24,5 +26,15 @@ class Helper {
       return 'Campos não coincidem';
     }
     return null;
+  }
+
+  static intToMoney(int value) {
+    return '${NumberFormat('#,##0.00', 'pt_BR').format(value / 100)}';
+  }
+
+  static moneyToInt(double value) {
+    return int.parse(
+      value.toString().replaceAll(',', '.').replaceAll('.', ''),
+    );
   }
 }
