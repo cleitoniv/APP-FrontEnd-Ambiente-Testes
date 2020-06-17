@@ -66,6 +66,10 @@ class _TabsScreenState extends State<TabsScreen>
     _homeBloc.currentCreditTypeIn.add(type);
   }
 
+  _handleChangeRequestType(String type) {
+    _homeBloc.currentRequestTypeIn.add(type);
+  }
+
   Widget _renderHeader(int index) {
     switch (index) {
       case 0:
@@ -161,6 +165,71 @@ class _TabsScreenState extends State<TabsScreen>
                               color: type == snapshot.data
                                   ? Color(0xffF1F1F1)
                                   : Theme.of(context).accentColor,
+                            ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ).toList(),
+        );
+      case 3:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            'Pendentes',
+            'Entregues',
+            'Reposição',
+          ].map(
+            (type) {
+              return StreamBuilder<String>(
+                stream: _homeBloc.currentRequestTypeOut,
+                builder: (context, snapshot) {
+                  return GestureDetector(
+                    onTap: () => _handleChangeRequestType(
+                      type,
+                    ),
+                    child: AnimatedContainer(
+                      width: MediaQuery.of(context).size.width / 3.2,
+                      duration: Duration(
+                        milliseconds: 50,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: type != snapshot.data
+                            ? Border.all(
+                                width: 0.5,
+                                color: Colors.black12,
+                              )
+                            : null,
+                        color: type == snapshot.data
+                            ? Theme.of(context).accentColor
+                            : Color(0xffF1F1F1),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: type == 'Pendentes'
+                              ? Radius.circular(5)
+                              : Radius.circular(0),
+                          topLeft: type == 'Pendentes'
+                              ? Radius.circular(5)
+                              : Radius.circular(0),
+                          bottomRight: type == 'Reposição'
+                              ? Radius.circular(5)
+                              : Radius.circular(0),
+                          topRight: type == 'Reposição'
+                              ? Radius.circular(5)
+                              : Radius.circular(0),
+                        ),
+                      ),
+                      child: Text(
+                        type,
+                        style: Theme.of(context).textTheme.subtitle2.copyWith(
+                              color: type == snapshot.data
+                                  ? Color(0xffF1F1F1)
+                                  : Color(0xff828282),
                             ),
                       ),
                     ),
