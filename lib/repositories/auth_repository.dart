@@ -62,4 +62,16 @@ class AuthRepository {
       return null;
     }
   }
+
+  Future<String> updatePassword({String password}) async {
+    try {
+      FirebaseUser _user = await _auth.currentUser();
+
+      await _user.updatePassword(password);
+
+      return '';
+    } catch (error) {
+      return error.code;
+    }
+  }
 }

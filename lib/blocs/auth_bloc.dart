@@ -40,11 +40,21 @@ class AuthBloc extends Disposable {
         (event) => repository.signout(),
       );
 
+  BehaviorSubject _updatePasswordController = BehaviorSubject.seeded(null);
+  Sink get updatePasswordIn => _updatePasswordController.sink;
+  Stream<String> get updatePasswordOut =>
+      _updatePasswordController.stream.asyncMap(
+        (event) => repository.updatePassword(
+          password: event,
+        ),
+      );
+
   @override
   void dispose() {
     _loginController.close();
     _createAccountController.close();
     _passwordResetController.close();
+    _updatePasswordController.close();
     _signOutController.close();
   }
 }

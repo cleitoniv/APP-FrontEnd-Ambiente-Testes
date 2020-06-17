@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
@@ -12,6 +13,9 @@ class SecurityScreen extends StatefulWidget {
 
 class _SecurityScreenState extends State<SecurityScreen> {
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   TextEditingController _passwordController;
   List<Map> _data;
 
@@ -19,7 +23,32 @@ class _SecurityScreenState extends State<SecurityScreen> {
     _profileWidgetBloc.securityShowPasswordIn.add(value);
   }
 
-  _onSubmit() {}
+  _onSubmit() async {
+    if (_formKey.currentState.validate()) {
+      _authBloc.updatePasswordIn.add(
+        _passwordController.text,
+      );
+
+      String _data = await _authBloc.updatePasswordOut.first;
+      String _message = '';
+
+      if (_data.contains('ERROR')) {
+        _message = Helper.handleFirebaseError(
+          _data,
+        );
+      } else {
+        _message = 'Senha alterada com sucesso';
+      }
+
+      SnackBar _snackBar = SnackBar(
+        content: Text(_message),
+      );
+
+      _scaffoldKey.currentState.showSnackBar(
+        _snackBar,
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -29,6 +58,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
       {
         'labelText': 'Digite uma senha',
         'controller': _passwordController,
+        'validator': (String text) => Helper.lengthValidator(
+              text,
+              length: 6,
+              message: 'Mínimo de 6 dígitos',
+            )
       },
       {
         'labelText': 'Confirme a senha',
@@ -50,6 +84,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Segurança'),
         centerTitle: false,
@@ -69,39 +104,42 @@ class _SecurityScreenState extends State<SecurityScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
-          ListView.separated(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: _data.length,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 10,
-            ),
-            itemBuilder: (context, index) {
-              return StreamBuilder<bool>(
-                stream: _profileWidgetBloc.securityShowPasswordOut,
-                builder: (context, snapshot) {
-                  return TextFieldWidget(
-                    obscureText: snapshot.data,
-                    labelText: _data[index]['labelText'],
-                    suffixIcon: IconButton(
-                      onPressed: () => _onShowPassword(!snapshot.data),
-                      icon: Icon(
-                        snapshot.data
-                            ? MaterialCommunityIcons.eye
-                            : MaterialCommunityIcons.eye_off,
-                        color: Color(0xffa1a1a1),
+          Form(
+            key: _formKey,
+            child: ListView.separated(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: _data.length,
+              separatorBuilder: (context, index) => SizedBox(
+                height: 10,
+              ),
+              itemBuilder: (context, index) {
+                return StreamBuilder<bool>(
+                  stream: _profileWidgetBloc.securityShowPasswordOut,
+                  builder: (context, snapshot) {
+                    return TextFieldWidget(
+                      obscureText: snapshot.data,
+                      labelText: _data[index]['labelText'],
+                      suffixIcon: IconButton(
+                        onPressed: () => _onShowPassword(!snapshot.data),
+                        icon: Icon(
+                          snapshot.data
+                              ? MaterialCommunityIcons.eye
+                              : MaterialCommunityIcons.eye_off,
+                          color: Color(0xffa1a1a1),
+                        ),
                       ),
-                    ),
-                    prefixIcon: Icon(
-                      MaterialCommunityIcons.lock,
-                      color: Color(0xffA1A1A1),
-                    ),
-                    controller: _data[index]['controller'],
-                    validator: _data[index]['validator'],
-                  );
-                },
-              );
-            },
+                      prefixIcon: Icon(
+                        MaterialCommunityIcons.lock,
+                        color: Color(0xffA1A1A1),
+                      ),
+                      controller: _data[index]['controller'],
+                      validator: _data[index]['validator'],
+                    );
+                  },
+                );
+              },
+            ),
           ),
           SizedBox(height: 30),
           RaisedButton(
