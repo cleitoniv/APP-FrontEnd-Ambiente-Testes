@@ -1,7 +1,9 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
@@ -24,6 +26,7 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen>
     with SingleTickerProviderStateMixin {
+  NotificationBloc _notificationBloc = Modular.get<NotificationBloc>();
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
@@ -70,6 +73,16 @@ class _TabsScreenState extends State<TabsScreen>
 
   _onChangeCreditType(String type) {
     _homeWidgetBloc.currentCreditTypeIn.add(type);
+  }
+
+  int _countNotifications(
+    List<NotificationModel> notifications,
+  ) {
+    return notifications
+        .where(
+          (item) => !item.isRead,
+        )
+        .length;
   }
 
   _onChangeRequestType(String type) async {
@@ -464,20 +477,35 @@ class _TabsScreenState extends State<TabsScreen>
                                         Positioned(
                                           right: -2,
                                           top: -2,
-                                          child: CircleAvatar(
-                                            backgroundColor:
-                                                Theme.of(context).accentColor,
-                                            radius: 10,
-                                            child: Text(
-                                              '2',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle2
-                                                  .copyWith(
-                                                    fontSize: 12,
+                                          child: StreamBuilder<
+                                                  List<NotificationModel>>(
+                                              stream:
+                                                  _notificationBloc.indexOut,
+                                              builder: (context, snapshot) {
+                                                if (!snapshot.hasData) {
+                                                  return Container();
+                                                }
+                                                if (_countNotifications(
+                                                        snapshot.data) ==
+                                                    0) {
+                                                  return Container();
+                                                }
+                                                return CircleAvatar(
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .accentColor,
+                                                  radius: 10,
+                                                  child: Text(
+                                                    '${_countNotifications(snapshot.data)}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle2
+                                                        .copyWith(
+                                                          fontSize: 12,
+                                                        ),
                                                   ),
-                                            ),
-                                          ),
+                                                );
+                                              }),
                                         ),
                                       ],
                                     ),

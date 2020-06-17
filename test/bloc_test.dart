@@ -1,14 +1,17 @@
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
+import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/notifications_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
@@ -25,7 +28,8 @@ main() {
   UserRepository userRepository = UserRepository(clientHttp.getClient());
   RequestsRepository requestsRepository =
       RequestsRepository(clientHttp.getClient());
-
+  NotificationsRepository notificationsRepository =
+      NotificationsRepository(clientHttp.getClient());
   test(
     'index products - bloc',
     () async {
@@ -123,6 +127,20 @@ main() {
         _bloc.indexOut,
         emits(
           (List<RequestModel> requests) => requests.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
+    'index notifications - bloc',
+    () async {
+      NotificationBloc _bloc = NotificationBloc(notificationsRepository);
+
+      expectLater(
+        _bloc.indexOut,
+        emits(
+          (List<NotificationModel> notifications) => notifications.isNotEmpty,
         ),
       );
     },

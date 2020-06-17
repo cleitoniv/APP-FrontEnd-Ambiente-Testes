@@ -19,8 +19,8 @@ class CardWidget extends StatelessWidget {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.all(20),
-          width: 140,
-          height: 140,
+          width: 170,
+          height: 150,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: Color(0xffF1F1F1),

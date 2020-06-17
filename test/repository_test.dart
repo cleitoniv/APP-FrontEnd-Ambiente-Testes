@@ -1,11 +1,13 @@
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
+import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/notifications_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
@@ -22,6 +24,9 @@ main() {
   UserRepository userRepository = UserRepository(clientHttp.getClient());
   RequestsRepository requestsRepository =
       RequestsRepository(clientHttp.getClient());
+  NotificationsRepository notificationsRepository =
+      NotificationsRepository(clientHttp.getClient());
+
   test(
     'index products - repository',
     () async {
@@ -103,6 +108,19 @@ main() {
 
       expectLater(
         _requests.isNotEmpty,
+        true,
+      );
+    },
+  );
+
+  test(
+    'index notifications - repository',
+    () async {
+      List<NotificationModel> _notifications =
+          await notificationsRepository.index();
+
+      expectLater(
+        _notifications.isNotEmpty,
         true,
       );
     },
