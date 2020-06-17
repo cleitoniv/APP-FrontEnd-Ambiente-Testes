@@ -57,8 +57,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
       _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
     );
 
-    print(_value);
-
     _paymentBloc.paymentIn.add({
       'payment_data': _creditCard,
       'value': _value,
