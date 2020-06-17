@@ -79,6 +79,12 @@ class _TabsScreenState extends State<TabsScreen>
     Modular.to.pop();
   }
 
+  _handleNotifications() {
+    Modular.to.pushNamed(
+      '/notifications',
+    );
+  }
+
   _handleNavigateDrawer(int index) {
     switch (index) {
       case 0:
@@ -157,7 +163,10 @@ class _TabsScreenState extends State<TabsScreen>
       case 1:
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: ['Financeiro', 'Produto'].map(
+          children: [
+            'Financeiro',
+            'Produto',
+          ].map(
             (type) {
               return StreamBuilder<String>(
                 stream: _homeBloc.currentCreditTypeOut,
@@ -369,33 +378,37 @@ class _TabsScreenState extends State<TabsScreen>
                                             .textTheme
                                             .headline4,
                                       ),
-                                      Stack(
-                                        overflow: Overflow.visible,
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/bell.png',
-                                            width: 30,
-                                            height: 30,
-                                          ),
-                                          Positioned(
-                                            right: -2,
-                                            top: -2,
-                                            child: CircleAvatar(
-                                              backgroundColor:
-                                                  Theme.of(context).accentColor,
-                                              radius: 10,
-                                              child: Text(
-                                                '2',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2
-                                                    .copyWith(
-                                                      fontSize: 12,
-                                                    ),
+                                      GestureDetector(
+                                        onTap: _handleNotifications,
+                                        child: Stack(
+                                          overflow: Overflow.visible,
+                                          children: <Widget>[
+                                            Image.asset(
+                                              'assets/icons/bell.png',
+                                              width: 30,
+                                              height: 30,
+                                            ),
+                                            Positioned(
+                                              right: -2,
+                                              top: -2,
+                                              child: CircleAvatar(
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .accentColor,
+                                                radius: 10,
+                                                child: Text(
+                                                  '2',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle2
+                                                      .copyWith(
+                                                        fontSize: 12,
+                                                      ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
