@@ -102,7 +102,7 @@ main() {
   test(
     'add points - repository',
     () async {
-      String data = await userRepository.addPoints({
+      String data = await userRepository.postPoints({
         'serial_number': '0000',
         'patient_name': '',
         'patient_reference_number': '3423',

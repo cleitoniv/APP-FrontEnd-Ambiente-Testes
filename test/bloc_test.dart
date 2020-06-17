@@ -123,7 +123,7 @@ main() {
     () async {
       UserBloc _bloc = UserBloc(userRepository);
 
-      _bloc.addPointsIn.add({
+      _bloc.pointsIn.add({
         'serial_number': '0000',
         'patient_name': '',
         'patient_reference_number': '3423',
@@ -131,7 +131,7 @@ main() {
       });
 
       expectLater(
-        _bloc.addPointsOut,
+        _bloc.pointsOut,
         emits(
           (String data) => data.isNotEmpty,
         ),

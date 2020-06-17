@@ -36,12 +36,12 @@ class UserRepository {
     }
   }
 
-  Future<String> addPoints(
+  Future<String> postPoints(
     Map<String, dynamic> data,
   ) async {
     try {
       Response response = await dio.post(
-        '/addPoints',
+        '/points',
         data: jsonEncode(data),
       );
 

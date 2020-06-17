@@ -28,14 +28,15 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
 
   _onSubmit() async {
     if (_formKey.currentState.validate()) {
-      _userBloc.addPointsIn.add({
+      _userBloc.pointsIn.add({
+        'type': 'add',
         'serial_number': _serialController.text,
         'patient_name': _nameController.text,
         'patient_reference_number': _numberController.text,
         'patient_birthday': _birthdayController.text,
       });
 
-      String _first = await _userBloc.addPointsOut.first;
+      String _first = await _userBloc.pointsOut.first;
 
       if (_first != null) {
         Dialogs.success(
