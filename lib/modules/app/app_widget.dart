@@ -14,6 +14,7 @@ class AppWidget extends StatelessWidget {
         primaryColor: Color(0xff56B952),
         accentColor: Color(0xff36AFC6),
         scaffoldBackgroundColor: Colors.white,
+        dividerColor: Colors.transparent,
         appBarTheme: AppBarTheme(
           color: Colors.white,
           elevation: 0,

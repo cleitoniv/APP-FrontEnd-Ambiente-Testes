@@ -2,6 +2,7 @@ import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/intro_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/payments_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
@@ -13,6 +14,7 @@ import 'package:central_oftalmica_app_cliente/modules/devolution/devolution_modu
 import 'package:central_oftalmica_app_cliente/modules/extracts/extracts_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/home_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/notifications/notifications_module.dart';
+import 'package:central_oftalmica_app_cliente/modules/payments/payments_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/points/points_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/products/products_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/profile_module.dart';
@@ -41,6 +43,9 @@ class AppModule extends MainModule {
         ),
         Bind(
           (i) => DevolutionWidgetBloc(),
+        ),
+        Bind(
+          (i) => PaymentsWidgetBloc(),
         ),
       ];
 
@@ -93,6 +98,10 @@ class AppModule extends MainModule {
         Router(
           '/devolution',
           module: DevolutionModule(),
+        ),
+        Router(
+          '/payments',
+          module: PaymentsModule(),
         ),
       ];
 
