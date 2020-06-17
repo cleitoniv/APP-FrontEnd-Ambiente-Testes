@@ -77,7 +77,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       },
       {
         'labelText': 'Número do Cliente',
-        'icon': MaterialCommunityIcons.format_list_numbered,
+        'icon': MaterialCommunityIcons.numeric,
         'controller': _numberController,
       },
       {
