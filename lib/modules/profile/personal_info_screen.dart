@@ -1,4 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +15,7 @@ class PersonalInfoScreen extends StatefulWidget {
 }
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
+  UserBloc _userBloc = Modular.get<UserBloc>();
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   TextEditingController _nameController;
   MaskedTextController _cpfController;
@@ -19,13 +23,56 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   TextEditingController _emailController;
   MaskedTextController _phoneController;
 
-  List<Map> _personalInfo;
+  List<Map> _personalInfo = [];
 
   _onChangeVisitHour(value) {
     _profileWidgetBloc.visitHourIn.add(value);
   }
 
-  _onSaveNewSchedule() {}
+  _onSaveNewSchedule() async {
+    String _hour = await _profileWidgetBloc.visitHourOut.first;
+
+    _userBloc.updateIn.add({
+      'visitHour': _hour,
+    });
+  }
+
+  _initData() async {
+    UserModel _user = await _userBloc.currentUserOut.first;
+
+    _personalInfo = [
+      {
+        'labelText': 'Nome completo',
+        'icon': Icons.person,
+        'value': _user.name,
+        'controller': _nameController,
+      },
+      {
+        'labelText': 'CPF',
+        'icon': Icons.person,
+        'value': _user.cpf,
+        'controller': _cpfController,
+      },
+      {
+        'labelText': 'Data de nascimento',
+        'icon': MaterialCommunityIcons.cake_layered,
+        'value': _user.birthday,
+        'controller': _birthdayController,
+      },
+      {
+        'labelText': 'Email',
+        'icon': Icons.email,
+        'value': _user.email,
+        'controller': _emailController,
+      },
+      {
+        'labelText': 'Celular',
+        'icon': MaterialCommunityIcons.cellphone,
+        'value': _user.cellphone,
+        'controller': _phoneController,
+      },
+    ];
+  }
 
   @override
   void initState() {
@@ -41,39 +88,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     _phoneController = MaskedTextController(
       mask: '00 00000-0000',
     );
-
-    _personalInfo = [
-      {
-        'labelText': 'Nome completo',
-        'icon': Icons.person,
-        'value': 'Marcos Barbosa Santos',
-        'controller': _nameController,
-      },
-      {
-        'labelText': 'CPF',
-        'icon': Icons.person,
-        'value': '12345678900',
-        'controller': _cpfController,
-      },
-      {
-        'labelText': 'Data de nascimento',
-        'icon': MaterialCommunityIcons.cake_layered,
-        'value': '25091990',
-        'controller': _birthdayController,
-      },
-      {
-        'labelText': 'Email',
-        'icon': Icons.email,
-        'value': 'marcos@hotmail.com',
-        'controller': _emailController,
-      },
-      {
-        'labelText': 'Celular',
-        'icon': MaterialCommunityIcons.cellphone,
-        'value': '27999999999',
-        'controller': _phoneController,
-      },
-    ];
+    _initData();
   }
 
   @override
@@ -126,15 +141,29 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               ),
               TableRow(
                 children: [
-                  Text(
-                    '123456',
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.center,
+                  StreamBuilder<UserModel>(
+                    stream: _userBloc.currentUserOut,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.hasData ? snapshot.data.code : '',
+                        style: Theme.of(context).textTheme.subtitle1,
+                        textAlign: TextAlign.center,
+                      );
+                    },
                   ),
-                  Text(
-                    'Quarta-Feira',
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.center,
+                  StreamBuilder<UserModel>(
+                    stream: _userBloc.currentUserOut,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.hasData
+                            ? Helper.dateToWeek(
+                                snapshot.data.dayOfSend,
+                              )
+                            : '',
+                        style: Theme.of(context).textTheme.subtitle1,
+                        textAlign: TextAlign.center,
+                      );
+                    },
                   ),
                 ],
               )
@@ -158,7 +187,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             builder: (context, snapshot) {
               return DropdownWidget(
                 items: ['Manhã', 'Tarde', 'Noite'],
-                currentValue: snapshot.data,
+                currentValue: snapshot.hasData ? snapshot.data : null,
                 onChanged: _onChangeVisitHour,
               );
             },
@@ -179,23 +208,34 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 20),
-          ListView.separated(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: _personalInfo.length,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 10,
-            ),
-            itemBuilder: (context, index) {
-              return TextFieldWidget(
-                enabled: false,
-                labelText: _personalInfo[index]['labelText'],
-                prefixIcon: Icon(
-                  _personalInfo[index]['icon'],
-                  color: Color(0xffA1A1A1),
+          StreamBuilder<UserModel>(
+            stream: _userBloc.currentUserOut,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  heightFactor: 3,
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return ListView.separated(
+                shrinkWrap: true,
+                primary: false,
+                itemCount: _personalInfo.length,
+                separatorBuilder: (context, index) => SizedBox(
+                  height: 10,
                 ),
-                controller: _personalInfo[index]['controller']
-                  ..text = _personalInfo[index]['value'],
+                itemBuilder: (context, index) {
+                  return TextFieldWidget(
+                    enabled: false,
+                    labelText: _personalInfo[index]['labelText'],
+                    prefixIcon: Icon(
+                      _personalInfo[index]['icon'],
+                      color: Color(0xffA1A1A1),
+                    ),
+                    controller: _personalInfo[index]['controller']
+                      ..text = _personalInfo[index]['value'],
+                  );
+                },
               );
             },
           )
