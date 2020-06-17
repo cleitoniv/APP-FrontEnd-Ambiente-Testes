@@ -6,4 +6,24 @@ class DevolutionWidgetBloc {
   Stream<String> get devolutionTypeOut => _devolutionTypeController.stream.map(
         (event) => event,
       );
+
+  BehaviorSubject _productParamsController = BehaviorSubject.seeded({
+    'degree': null,
+    'cylinder': null,
+    'axis': null,
+    'color': null,
+    'addition': null,
+  });
+  Sink get productParamsIn => _productParamsController.sink;
+  Stream<Map<String, dynamic>> get productParamsOut =>
+      _productParamsController.stream.map(
+        (event) => event,
+      );
+
+  BehaviorSubject _buttonCartStatusController = BehaviorSubject.seeded(false);
+  Sink get buttonCartStatusIn => _buttonCartStatusController.sink;
+  Stream<bool> get buttonCartStatusOut =>
+      _buttonCartStatusController.stream.map(
+        (event) => event,
+      );
 }
