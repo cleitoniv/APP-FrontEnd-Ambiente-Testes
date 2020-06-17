@@ -10,6 +10,8 @@ class UserModel {
   String visitHour;
   String code;
   String dayOfSend;
+  int credits;
+  int points;
   LocaleModel locale;
 
   UserModel({
@@ -22,6 +24,8 @@ class UserModel {
     this.visitHour,
     this.code,
     this.dayOfSend,
+    this.credits,
+    this.points,
     this.locale,
   });
 
@@ -35,6 +39,8 @@ class UserModel {
     visitHour = json['visit_hour'];
     code = json['code'];
     dayOfSend = json['day_of_send'];
+    credits = json['credits'];
+    points = json['points'];
     locale = json['locale'] != null
         ? new LocaleModel.fromJson(json['locale'])
         : null;
@@ -51,6 +57,8 @@ class UserModel {
     data['visit_hour'] = this.visitHour;
     data['code'] = this.code;
     data['day_of_send'] = this.dayOfSend;
+    data['credits'] = this.credits;
+    data['points'] = this.points;
     if (this.locale != null) {
       data['locale'] = this.locale.toJson();
     }
