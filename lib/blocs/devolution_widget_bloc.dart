@@ -1,6 +1,7 @@
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
-class DevolutionWidgetBloc {
+class DevolutionWidgetBloc extends Disposable {
   BehaviorSubject _devolutionTypeController = BehaviorSubject.seeded('Crédito');
   Sink get devolutionTypeIn => _devolutionTypeController.sink;
   Stream<String> get devolutionTypeOut => _devolutionTypeController.stream.map(
@@ -26,4 +27,11 @@ class DevolutionWidgetBloc {
       _buttonCartStatusController.stream.map(
         (event) => event,
       );
+
+  @override
+  void dispose() {
+    _devolutionTypeController.close();
+    _productParamsController.close();
+    _buttonCartStatusController.close();
+  }
 }

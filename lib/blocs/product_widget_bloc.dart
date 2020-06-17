@@ -1,6 +1,7 @@
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
-class ProductWidgetBloc {
+class ProductWidgetBloc extends Disposable {
   BehaviorSubject _pacientInfoController = BehaviorSubject.seeded({
     //both, left, right, different
     'current': 'Olho direito',
@@ -43,4 +44,9 @@ class ProductWidgetBloc {
       _pacientInfoController.stream.map(
         (event) => event,
       );
+
+  @override
+  void dispose() {
+    _pacientInfoController.close();
+  }
 }

@@ -1,6 +1,7 @@
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/rxdart.dart';
 
-class HomeWidgetBloc {
+class HomeWidgetBloc extends Disposable {
   BehaviorSubject _sightProblemController = BehaviorSubject.seeded('Todos');
   Sink get sightProblemIn => _sightProblemController.sink;
   Stream<String> get sightProblemOut => _sightProblemController.stream.map(
@@ -28,4 +29,20 @@ class HomeWidgetBloc {
   Stream<int> get currentTabIndexOut => _currentTabIndexController.stream.map(
         (event) => event,
       );
+
+  BehaviorSubject _valueVisibilityController = BehaviorSubject.seeded(false);
+
+  Sink get valueVisibilityIn => _valueVisibilityController.sink;
+  Stream<bool> get valueVisibilityOut => _valueVisibilityController.stream.map(
+        (event) => event,
+      );
+
+  @override
+  void dispose() {
+    _sightProblemController.close();
+    _currentCreditTypeController.close();
+    _currentRequestTypeController.close();
+    _currentTabIndexController.close();
+    _valueVisibilityController.close();
+  }
 }
