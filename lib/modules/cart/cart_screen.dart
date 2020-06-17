@@ -1,10 +1,15 @@
+import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class CartScreen extends StatelessWidget {
-  _onBack() {}
+  HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
+
+  _onBackToPurchase() {
+    _homeWidgetBloc.currentTabIndexIn.add(0);
+  }
 
   _onSubmit() {
     Modular.to.pushNamed(
@@ -142,7 +147,7 @@ class CartScreen extends StatelessWidget {
                     color: Theme.of(context).accentColor,
                   ),
             ),
-            onPressed: _onBack,
+            onPressed: _onBackToPurchase,
           ),
           SizedBox(height: 20),
           RaisedButton(
