@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class ActivityPerformedScreen extends StatefulWidget {
   @override
@@ -22,7 +23,11 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
     });
   }
 
-  _handleSubmit() {}
+  _handleSubmit() {
+    Modular.to.pushNamed(
+      '/auth/completeCreateAccount',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,28 +21,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   bool _isAccepted = false;
   bool _obscureText = true;
   List<Map> _fieldData;
-
-  String _passwordValidator(String text) {
-    if (text != _passwordController.text) {
-      return 'Senhas não coincidem';
-    }
-    return null;
-  }
-
-  String _emailValidator(String text) {
-    if (text != _emailController.text) {
-      return 'Emails não coincidem';
-    }
-    return null;
-  }
-
-  String _emptyValidator(String text) {
-    if (text.isEmpty) {
-      return 'Campo obrigatório';
-    }
-
-    return null;
-  }
 
   _handleObscureText() {
     setState(() {
@@ -84,7 +63,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
         'suffixIcon': null,
         'controller': _nameController,
-        'validator': _emptyValidator,
+        'validator': Helper.lengthValidator,
       },
       {
         'labelText': 'Email',
@@ -94,7 +73,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
         'suffixIcon': null,
         'controller': _emailController,
-        'validator': _emptyValidator,
+        'validator': Helper.emailValidator,
+        'keyboardType': TextInputType.emailAddress,
       },
       {
         'labelText': 'Confirme o email',
@@ -104,7 +84,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
         'suffixIcon': null,
         'controller': null,
-        'validator': _emailValidator,
+        'validator': (String text) => Helper.equalValidator(
+              text,
+              value: _emailController.text,
+            ),
+        'keyboardType': TextInputType.emailAddress,
       },
       {
         'labelText': 'Celular',
@@ -114,7 +98,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
         'suffixIcon': null,
         'controller': _phoneController,
-        'validator': _emptyValidator,
+        'validator': (String text) => Helper.lengthValidator(
+              text,
+              length: 13,
+              message: 'Celular deve possuir 11 dígitos',
+            ),
+        'keyboardType': TextInputType.number,
       },
       {
         'labelText': 'Digite uma senha',
@@ -130,7 +119,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           onPressed: _handleObscureText,
         ),
         'controller': _passwordController,
-        'validator': _emptyValidator,
+        'validator': Helper.lengthValidator,
       },
       {
         'labelText': 'Confirme a senha',
@@ -146,7 +135,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           onPressed: _handleObscureText,
         ),
         'controller': null,
-        'validator': _passwordValidator,
+        'validator': (String text) => Helper.equalValidator(
+              text,
+              value: _passwordController.text,
+            ),
       },
     ];
   }
@@ -198,6 +190,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         prefixIcon: e['prefixIcon'],
                         controller: e['controller'],
                         validator: e['validator'],
+                        keyboardType: e['keyboardType'],
                       ),
                     );
                   },
@@ -221,6 +214,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         controller: e['controller'],
                         suffixIcon: e['suffixIcon'],
                         validator: e['validator'],
+                        keyboardType: e['keyboardType'],
                         obscureText: _obscureText,
                       ),
                     );
