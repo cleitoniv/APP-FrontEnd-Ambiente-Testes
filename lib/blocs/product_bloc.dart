@@ -23,11 +23,16 @@ class ProductBloc implements Bloc<ProductModel> {
         (event) => repository.index(),
       );
 
+  BehaviorSubject _showController = BehaviorSubject.seeded(null);
   @override
-  Sink get showIn => throw UnimplementedError();
+  Sink get showIn => _showController.sink;
 
   @override
-  Stream<ProductModel> get showOut => throw UnimplementedError();
+  Stream<ProductModel> get showOut => _showController.stream.asyncMap(
+        (event) => repository.show(
+          id: event,
+        ),
+      );
 
   @override
   Sink get storeIn => throw UnimplementedError();
@@ -44,5 +49,6 @@ class ProductBloc implements Bloc<ProductModel> {
   @override
   void dispose() {
     _indexController.close();
+    _showController.close();
   }
 }

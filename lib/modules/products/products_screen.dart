@@ -7,9 +7,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 class ProductsScreen extends StatelessWidget {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
 
-  _handleProduct() {
+  onChangeProduct(ProductModel product) {
     Modular.to.pushNamed(
-      '/products/1',
+      '/products/${product.id}',
     );
   }
 
@@ -41,7 +41,9 @@ class ProductsScreen extends StatelessWidget {
                 title: _products[index].title,
                 tests: _products[index].tests,
                 imageUrl: _products[index].imageUrl,
-                onTap: _handleProduct,
+                onTap: () => onChangeProduct(
+                  _products[index],
+                ),
               );
             },
           );

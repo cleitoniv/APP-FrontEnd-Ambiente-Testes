@@ -25,12 +25,19 @@ class ProductRepository implements Repository<ProductModel> {
     } catch (error) {
       return null;
     }
-    ;
   }
 
   @override
-  Future<ProductModel> show({int id}) {
-    throw UnimplementedError();
+  Future<ProductModel> show({int id}) async {
+    try {
+      Response response = await dio.get('/products/$id');
+
+      return ProductModel.fromJson(
+        response.data,
+      );
+    } catch (error) {
+      return null;
+    }
   }
 
   @override

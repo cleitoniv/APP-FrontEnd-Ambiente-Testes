@@ -45,8 +45,15 @@ class ProductWidgetBloc extends Disposable {
         (event) => event,
       );
 
+  BehaviorSubject _showInfoController = BehaviorSubject.seeded(false);
+  Sink get showInfoIn => _showInfoController.sink;
+  Stream<bool> get showInfoOut => _showInfoController.stream.map(
+        (event) => event,
+      );
+
   @override
   void dispose() {
     _pacientInfoController.close();
+    _showInfoController.close();
   }
 }
