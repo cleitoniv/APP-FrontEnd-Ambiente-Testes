@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "title": "Bioview Asferica Cx 6",
+  "value": 20000,
+  "tests": 30,
+  "imageUrl": "https://onelens.fbitsstatic.net/img/p/lentes-de-contato-bioview-asferica-80342/353788.jpg?w=530&h=530&v=202004021417",
+  "details": {
+    "description": "Produzidas com amterial hidrofilico de alta performance pelo inovador e patenteado processo Micro Molden System. Com desenho asférico, compensando o astigmatismo residual em até -0,075. Lentes para uma adaptação com muito mais segurança e conforto.",
+    "material": "Hidrogel Methafilcon",
+    "dkt": 20,
+    "vistint": true,
+    "thickness": 2,
+    "hydration": 55,
+    "assepsis": "Química",
+    "discard": "Mensal",
+    "design": "Asférico",
+    "diameter": 14,
+    "base_curve": 10,
+    "spherical": [8, -12]
+  }
+}

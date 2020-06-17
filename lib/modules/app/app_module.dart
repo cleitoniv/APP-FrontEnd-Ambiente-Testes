@@ -5,6 +5,7 @@ import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/intro_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/payments_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
@@ -23,6 +24,7 @@ import 'package:central_oftalmica_app_cliente/modules/points/points_module.dart'
 import 'package:central_oftalmica_app_cliente/modules/products/products_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/profile_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_module.dart';
+import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -32,6 +34,16 @@ class AppModule extends MainModule {
         Bind(
           (i) => ClientHttp(),
           singleton: true,
+        ),
+        Bind(
+          (i) => ProductRepository(
+            i.get<ClientHttp>().getClient(),
+          ),
+        ),
+        Bind(
+          (i) => ProductBloc(
+            i.get<ProductRepository>(),
+          ),
         ),
         Bind(
           (i) => IntroWidgetBloc(),
