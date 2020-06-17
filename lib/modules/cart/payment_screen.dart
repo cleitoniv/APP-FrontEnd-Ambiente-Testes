@@ -7,7 +7,10 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class PaymentScreen extends StatelessWidget {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
-  _onAddCreditCard() {}
+
+  _onAddCreditCard() {
+    Modular.to.pushNamed('/cart/addCreditCard');
+  }
 
   _onChangePaymentForm(int index) {
     _cartWidgetBloc.currentPaymentFormIn.add(index);

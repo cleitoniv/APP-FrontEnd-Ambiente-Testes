@@ -107,7 +107,6 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
             height: MediaQuery.of(context).size.height / 1.5,
             child: PageView(
               controller: _pageController,
-              physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
                 FinancialExtractScreen(),
                 ProductExtractScreen(),

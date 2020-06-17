@@ -7,7 +7,6 @@ class FinancialExtractScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: <Widget>[
-        SizedBox(height: 30),
         Text(
           'Fevereiro/2019',
           style: Theme.of(context).textTheme.headline5,
