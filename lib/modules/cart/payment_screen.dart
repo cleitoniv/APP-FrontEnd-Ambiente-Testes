@@ -1,11 +1,17 @@
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-class PaymentScreen extends StatelessWidget {
+class PaymentScreen extends StatefulWidget {
+  @override
+  _PaymentScreenState createState() => _PaymentScreenState();
+}
+
+class _PaymentScreenState extends State<PaymentScreen> {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   _onAddCreditCard() {
@@ -16,7 +22,19 @@ class PaymentScreen extends StatelessWidget {
     _cartWidgetBloc.currentPaymentFormIn.add(index);
   }
 
-  _onSubmit() {}
+  _onSubmitDialog() {
+    Modular.to.pushNamedAndRemoveUntil(
+      '/home/3',
+      (route) => route.isFirst,
+    );
+  }
+
+  _onSubmit() {
+    Dialogs.success(context,
+        subtitle: 'Compra efetuada com sucesso!',
+        buttonText: 'Ir para Meus Pedidos',
+        onTap: _onSubmitDialog);
+  }
 
   @override
   Widget build(BuildContext context) {

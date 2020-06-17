@@ -1,19 +1,48 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-class ProductScreen extends StatelessWidget {
+class ProductScreen extends StatefulWidget {
   int id;
 
   ProductScreen({
     this.id,
   });
 
-  _handleSingleOrder() {}
-  _handleProductCredit() {}
-  _handleFinancialCredit() {}
+  @override
+  _ProductScreenState createState() => _ProductScreenState();
+}
+
+class _ProductScreenState extends State<ProductScreen> {
+  _onCancelPurchase() {
+    Modular.to.pop();
+  }
+
+  _onConfirmPurchase() {
+    Modular.to.pushNamed(
+      '/products/1/requestDetails',
+    );
+  }
+
+  _handleSingleOrder() {
+    Dialogs.confirm(
+      context,
+      title: 'Deseja confirmarcompra avulsa?',
+      subtitle:
+          'O valor da compra avulsa é maior do que a de créditos, tem certeza que deseja comprar avulsamente?',
+      confirmText: 'Confirmar Compra',
+      cancelText: 'Cancelar Compra',
+      onCancel: _onCancelPurchase,
+      onConfirm: () {
+        Modular.to.pop();
+        _onConfirmPurchase();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,12 +226,12 @@ class ProductScreen extends StatelessWidget {
               {
                 'title': 'Crédito de Produto R\$ ${Helper.intToMoney(25000)}',
                 'color': Theme.of(context).primaryColor,
-                'onTap': _handleProductCredit,
+                'onTap': _onConfirmPurchase,
               },
               {
                 'title': 'Crédito Financeiro R\$ ${Helper.intToMoney(25000)}',
                 'color': Theme.of(context).accentColor,
-                'onTap': _handleFinancialCredit,
+                'onTap': _onConfirmPurchase,
               }
             ].map(
               (item) {
