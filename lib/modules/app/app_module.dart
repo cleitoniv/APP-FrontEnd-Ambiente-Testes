@@ -55,6 +55,16 @@ class AppModule extends MainModule {
           ),
         ),
         Bind(
+          (i) => RequestsRepository(
+            i.get<ClientHttp>().getClient(),
+          ),
+        ),
+        Bind(
+          (i) => RequestsBloc(
+            i.get<RequestsRepository>(),
+          ),
+        ),
+        Bind(
           (i) => CreditsRepository(
             i.get<ClientHttp>().getClient(),
           ),
