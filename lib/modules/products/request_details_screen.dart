@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   int id;
@@ -32,15 +34,39 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   List<Map> _productParams;
   List<Map> _fieldData;
   TextEditingController _nameController;
+  TextEditingController _lensController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
 
-  _onAddToCart(Map data, {bool test = false}) {
-    _requestsBloc.addProductToCart({
-      'quantity': test ? 1 : data['quantity'],
+  _onAddLens() {
+    _lensController.text = '${int.parse(_lensController.text) + 1}';
+  }
+
+  _onRemoveLens() {
+    if (int.parse(_lensController.text) > 1) {
+      _lensController.text = '${int.parse(_lensController.text) - 1}';
+    }
+  }
+
+  _onAddToCart(Map data) async {
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
+
+    Map<String, dynamic> _data = {
+      'quantity': _first['test'] == 'Sim' ? 1 : int.parse(_lensController.text),
       'product': data['product'],
-      'type': test ? 'test' : widget.type,
-    });
+      'type': _first['test'] == 'Sim' ? 'test' : widget.type,
+      'pacient': {
+        'name': _nameController.text,
+        'number': _numberController.text,
+        'birthday': _birthdayController.text,
+      },
+      _first['current']: _first[_first['current']],
+    };
+
+    _requestsBloc.addProductToCart(_data);
+
+    // print(_data);
   }
 
   _onBackToPurchase() {
@@ -83,7 +109,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           color: Colors.white,
         ),
         'onTap': () => _onAddToCart({
-              'quantity': 1,
               'product': product,
             }),
         'text': 'Adicionar ao Carrinho',
@@ -103,6 +128,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ...data,
       });
     }
+  }
+
+  _onChangedTest(dynamic value) {
+    _onAddParam({'test': value});
   }
 
   _onSelectOption(
@@ -150,6 +179,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     super.initState();
     _nameController = TextEditingController();
     _numberController = TextEditingController();
+
+    _lensController = TextEditingController(
+      text: '1',
+    );
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
     );
@@ -510,7 +543,121 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               }
             },
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                'Quantidade de lentes',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              TextFieldWidget(
+                width: 120,
+                controller: _lensController,
+                readOnly: true,
+                prefixIcon: IconButton(
+                  icon: Icon(
+                    Icons.remove,
+                    color: Colors.black26,
+                    size: 30,
+                  ),
+                  onPressed: _onRemoveLens,
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.black26,
+                    size: 30,
+                  ),
+                  onPressed: _onAddLens,
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: 10),
+          StreamBuilder<Map>(
+            stream: _productWidgetBloc.pacientInfoOut,
+            builder: (context, snapshot) {
+              return DropdownWidget(
+                items: ['Sim', 'Não'],
+                currentValue: snapshot.hasData ? snapshot.data['test'] : null,
+                labelText: 'Teste?',
+                onChanged: _onChangedTest,
+              );
+            },
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 160,
+            margin: const EdgeInsets.symmetric(
+              vertical: 30,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(0, 2),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: <Widget>[
+                      ListTileMoreCustomizable(
+                        contentPadding: const EdgeInsets.all(0),
+                        horizontalTitleGap: 0,
+                        leading: Image.asset(
+                          'assets/icons/map_marker.png',
+                          width: 25,
+                          height: 25,
+                        ),
+                        title: Text(
+                          'Endereço de Entrega',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 16,
+                              ),
+                        ),
+                        subtitle: Text(
+                          'Rua Madeira de Freitas, 249, Ap 10001, Praia do Canto, Vitória/ES. 29055-320',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 30,
+                  color: Color(0xffF1F1F1),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/icons/truck.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Consultar Prazo de Entrega',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           StreamBuilder<ProductModel>(
             stream: _productBloc.showOut,
             builder: (context, snapshot) {
