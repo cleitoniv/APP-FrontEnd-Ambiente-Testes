@@ -60,15 +60,15 @@ class _TabsScreenState extends State<TabsScreen>
     },
   ];
 
-  _handleChangeSightProblem(String sightProblem) {
+  _onChangeSightProblem(String sightProblem) {
     _homeBloc.sightProblemIn.add(sightProblem);
   }
 
-  _handleChangeCreditType(String type) {
+  _onChangeCreditType(String type) {
     _homeBloc.currentCreditTypeIn.add(type);
   }
 
-  _handleChangeRequestType(String type) {
+  _onChangeRequestType(String type) {
     _homeBloc.currentRequestTypeIn.add(type);
   }
 
@@ -76,7 +76,7 @@ class _TabsScreenState extends State<TabsScreen>
     _scaffoldKey.currentState.openDrawer();
   }
 
-  _handleCloseDrawer() {
+  _onCloseDrawer() {
     Modular.to.pop();
   }
 
@@ -86,7 +86,7 @@ class _TabsScreenState extends State<TabsScreen>
     );
   }
 
-  _handleNavigateDrawer(int index) {
+  _onNavigateDrawer(int index) {
     String _route;
 
     switch (index) {
@@ -94,14 +94,16 @@ class _TabsScreenState extends State<TabsScreen>
         _route = '/profile';
         break;
       case 1:
+        _tabController.index = 3;
         break;
       case 2:
-        _handleCloseDrawer();
         _tabController.index = 1;
         break;
       case 3:
+        _route = '/notifications';
         break;
       case 4:
+        _route = '/devolution';
         break;
       case 6:
         break;
@@ -112,7 +114,11 @@ class _TabsScreenState extends State<TabsScreen>
       default:
     }
 
-    Modular.to.pushNamed(_route);
+    _onCloseDrawer();
+
+    if (_route != null) {
+      Modular.to.pushNamed(_route);
+    }
   }
 
   _handleMyCredits() {
@@ -123,7 +129,7 @@ class _TabsScreenState extends State<TabsScreen>
     Modular.to.pushNamed('/points');
   }
 
-  _handleExitApp() {}
+  _onExitApp() {}
 
   Widget _renderHeaderFilters(int index) {
     switch (index) {
@@ -143,7 +149,7 @@ class _TabsScreenState extends State<TabsScreen>
               stream: _homeBloc.sightProblemOut,
               builder: (context, snapshot) {
                 return GestureDetector(
-                  onTap: () => _handleChangeSightProblem(
+                  onTap: () => _onChangeSightProblem(
                     _sightProblems[index],
                   ),
                   child: AnimatedContainer(
@@ -186,7 +192,7 @@ class _TabsScreenState extends State<TabsScreen>
                 stream: _homeBloc.currentCreditTypeOut,
                 builder: (context, snapshot) {
                   return GestureDetector(
-                    onTap: () => _handleChangeCreditType(
+                    onTap: () => _onChangeCreditType(
                       type,
                     ),
                     child: AnimatedContainer(
@@ -245,7 +251,7 @@ class _TabsScreenState extends State<TabsScreen>
                 stream: _homeBloc.currentRequestTypeOut,
                 builder: (context, snapshot) {
                   return GestureDetector(
-                    onTap: () => _handleChangeRequestType(
+                    onTap: () => _onChangeRequestType(
                       type,
                     ),
                     child: AnimatedContainer(
@@ -343,9 +349,9 @@ class _TabsScreenState extends State<TabsScreen>
                           : Color(0xffEFC75E)
                       : Theme.of(context).scaffoldBackgroundColor,
                   drawer: DrawerWidget(
-                    onClose: _handleCloseDrawer,
-                    onNavigate: _handleNavigateDrawer,
-                    onExitApp: _handleExitApp,
+                    onClose: _onCloseDrawer,
+                    onNavigate: _onNavigateDrawer,
+                    onExitApp: _onExitApp,
                   ),
                   appBar: PreferredSize(
                     preferredSize: Size.fromHeight(200),
