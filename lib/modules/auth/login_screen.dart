@@ -19,7 +19,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _handleLogin() async {
     if (_formKey.currentState.validate()) {
-      Modular.to.pushNamed('/home/0');
+      Modular.to.pushNamedAndRemoveUntil(
+        '/home/0',
+        (route) => route.isFirst,
+      );
     }
   }
 
