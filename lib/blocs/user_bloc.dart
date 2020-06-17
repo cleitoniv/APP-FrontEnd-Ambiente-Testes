@@ -21,9 +21,16 @@ class UserBloc extends Disposable {
         (event) => repository.update(event),
       );
 
+  BehaviorSubject _addPointsController = BehaviorSubject.seeded(null);
+  Sink get addPointsIn => _addPointsController.sink;
+  Stream<String> get addPointsOut => _addPointsController.stream.asyncMap(
+        (event) => repository.addPoints(event),
+      );
+
   @override
   void dispose() {
     _currentUserController.close();
     _updateController.close();
+    _addPointsController.close();
   }
 }

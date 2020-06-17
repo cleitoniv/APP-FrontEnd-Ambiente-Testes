@@ -119,6 +119,27 @@ main() {
   );
 
   test(
+    'add points - bloc',
+    () async {
+      UserBloc _bloc = UserBloc(userRepository);
+
+      _bloc.addPointsIn.add({
+        'serial_number': '0000',
+        'patient_name': '',
+        'patient_reference_number': '3423',
+        'patient_birthday': '10/05/100'
+      });
+
+      expectLater(
+        _bloc.addPointsOut,
+        emits(
+          (String data) => data.isNotEmpty,
+        ),
+      );
+    },
+  );
+
+  test(
     'index requests - bloc',
     () async {
       RequestsBloc _bloc = RequestsBloc(requestsRepository);
