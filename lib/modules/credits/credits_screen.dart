@@ -157,6 +157,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                           TextFieldWidget(
                             labelText: 'Digite o valor',
                             controller: _creditValueController,
+                            keyboardType: TextInputType.number,
                             prefixIcon: Icon(
                               Icons.attach_money,
                               color: Color(0xffa1a1a1),

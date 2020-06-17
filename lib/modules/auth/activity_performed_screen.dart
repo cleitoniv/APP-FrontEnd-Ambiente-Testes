@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -8,19 +9,19 @@ class ActivityPerformedScreen extends StatefulWidget {
 }
 
 class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
-  List<Map> _activities = [
+  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
+
+  List<Map<String, dynamic>> _activities = [
     {'id': 1, 'name': 'Oftalmologista'},
     {'id': 2, 'name': 'Ótica'},
     {'id': 3, 'name': 'Clínica, Hospital de Olhos ou Afins'},
     {'id': 4, 'name': 'Usuário de Lente Contato'},
   ];
 
-  Map _currentActivity = {'id': null, 'name': ''};
-
-  _handleActivity(value) {
-    setState(() {
-      _currentActivity = value;
-    });
+  _handleActivity(Map<String, dynamic> value) {
+    _authWidgetBloc.currentActivityIn.add(
+      value,
+    );
   }
 
   _handleSubmit() {
@@ -57,31 +58,41 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
                   height: 20,
                 ),
                 itemBuilder: (context, index) {
-                  return RadioListTile(
-                    value: _currentActivity['id'],
-                    groupValue: _activities[index]['id'],
-                    onChanged: (value) => _handleActivity(
-                      _activities[index],
-                    ),
-                    title: Text(
-                      _activities[index]['name'],
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
+                  return StreamBuilder<Map<String, dynamic>>(
+                    stream: _authWidgetBloc.currentActivityOut,
+                    builder: (context, snapshot) {
+                      print(snapshot.data);
+                      return RadioListTile(
+                        value: snapshot.hasData ? snapshot.data['id'] : null,
+                        groupValue: _activities[index]['id'],
+                        onChanged: (value) => _handleActivity(
+                          _activities[index],
+                        ),
+                        title: Text(
+                          _activities[index]['name'],
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      );
+                    },
                   );
                 },
               ),
               Spacer(),
-              Opacity(
-                opacity: _currentActivity['id'] != null ? 1 : 0.5,
-                child: RaisedButton(
-                  onPressed:
-                      _currentActivity['id'] != null ? _handleSubmit : null,
-                  disabledColor: Theme.of(context).accentColor,
-                  child: Text(
-                    'Confirmar Atividade',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
+              StreamBuilder<Map<String, dynamic>>(
+                stream: _authWidgetBloc.currentActivityOut,
+                builder: (context, snapshot) {
+                  return Opacity(
+                    opacity: snapshot.hasData ? 1 : 0.5,
+                    child: RaisedButton(
+                      onPressed: snapshot.hasData ? _handleSubmit : null,
+                      disabledColor: Theme.of(context).accentColor,
+                      child: Text(
+                        'Confirmar Atividade',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
