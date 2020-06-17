@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -6,20 +7,28 @@ class ProfileScreen extends StatelessWidget {
     {
       'title': 'Informações Pessoais',
       'subtitle': 'Informações básicas',
+      'route': '/profile/personalInfo',
     },
     {
       'title': 'Endereço de Entrega',
       'subtitle': 'Dados para entrega dos produtos',
+      'route': '/profile/deliveryAddress',
     },
     {
       'title': 'Segurança',
       'subtitle': 'Altere sua senha de acesso',
+      'route': '/profile/security',
     },
     {
       'title': 'Usuários do Aplicativo',
       'subtitle': 'Crie e gerencie usuários a sua conta',
+      'route': '/profile/appUsers',
     },
   ];
+
+  _handleTap(String route) {
+    Modular.to.pushNamed(route);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +47,9 @@ class ProfileScreen extends StatelessWidget {
           return ListTileMoreCustomizable(
             contentPadding: const EdgeInsets.all(0),
             horizontalTitleGap: 0,
+            onTap: (value) => _handleTap(
+              _data[index]['route'],
+            ),
             leading: Image.asset(
               'assets/icons/profile_$index.png',
               width: 25,

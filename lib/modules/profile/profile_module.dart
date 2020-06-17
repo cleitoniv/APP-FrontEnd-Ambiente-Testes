@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/profile_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/app_users_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/delivery_address_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/profile/personal_info_screen.dart';
@@ -7,7 +8,11 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 class ProfileModule extends ChildModule {
   @override
-  List<Bind> get binds => [];
+  List<Bind> get binds => [
+        Bind(
+          (i) => i.get<ProfileBloc>(),
+        ),
+      ];
 
   @override
   List<Router> get routers => [
