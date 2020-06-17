@@ -1,5 +1,6 @@
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/products/product_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/products/request_details_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -13,6 +14,9 @@ class ProductsModule extends ChildModule {
         Bind(
           (i) => i.get<ProductWidgetBloc>(),
         ),
+        Bind(
+          (i) => i.get<RequestsBloc>(),
+        ),
       ];
 
   @override
@@ -25,7 +29,12 @@ class ProductsModule extends ChildModule {
         ),
         Router(
           '/:id/requestDetails',
-          child: (_, args) => RequestDetailsScreen(),
+          child: (_, args) => RequestDetailsScreen(
+            id: int.parse(
+              args.params['id'],
+            ),
+            type: args.data,
+          ),
         ),
       ];
 }

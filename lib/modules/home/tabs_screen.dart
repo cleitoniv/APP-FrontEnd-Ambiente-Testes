@@ -313,6 +313,20 @@ class _TabsScreenState extends State<TabsScreen>
     }
   }
 
+  _initState() async {
+    _tabController.addListener(() {
+      _homeWidgetBloc.currentTabIndexIn.add(
+        _tabController.index,
+      );
+    });
+
+    _homeWidgetBloc.currentTabIndexOut.listen((int event) {
+      if (event != null && event != _tabController.index) {
+        _tabController.index = event;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -326,11 +340,7 @@ class _TabsScreenState extends State<TabsScreen>
       length: _screens.length,
     );
 
-    _tabController.addListener(() {
-      _homeWidgetBloc.currentTabIndexIn.add(
-        _tabController.index,
-      );
-    });
+    _initState();
 
     // _homeWidgetBloc.currentTabIndexOut.listen((event) {}).onData((event) {
     //   print('Etrou Bloc');

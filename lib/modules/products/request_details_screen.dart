@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
+import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -10,23 +13,45 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
+  int id;
+  String type;
+
+  RequestDetailsScreen({
+    this.id,
+    this.type = 'Avulso',
+  });
+
   @override
   _RequestDetailsScreenState createState() => _RequestDetailsScreenState();
 }
 
 class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
+  ProductBloc _productBloc = Modular.get<ProductBloc>();
+  RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   List<Map> _productParams;
   List<Map> _fieldData;
   TextEditingController _nameController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
 
-  _onAddToCart() {}
-  _onBackToPurchase() {}
+  _onAddToCart(Map data, {bool test = false}) {
+    _requestsBloc.addProductToCart({
+      'quantity': test ? 1 : data['quantity'],
+      'product': data['product'],
+      'type': test ? 'test' : widget.type,
+    });
+  }
+
+  _onBackToPurchase() {
+    Modular.to.popUntil(
+      (route) => route.isFirst,
+    );
+  }
+
   _onPurchase() {}
 
-  List<Map> _renderButtonData() {
+  List<Map> _renderButtonData(ProductModel product) {
     return [
       {
         'color': Theme.of(context).accentColor,
@@ -57,7 +82,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           height: 20,
           color: Colors.white,
         ),
-        'onTap': _onAddToCart,
+        'onTap': () => _onAddToCart({
+              'quantity': 1,
+              'product': product,
+            }),
         'text': 'Adicionar ao Carrinho',
       }
     ];
@@ -126,6 +154,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       mask: '00/00/0000',
     );
 
+    _productBloc.showIn.add(widget.id);
+
     _fieldData = [
       {
         'labelText': 'Nome do paciente',
@@ -193,25 +223,37 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CachedNetworkImage(
-                    imageUrl:
-                        'https://onelens.fbitsstatic.net/img/p/lentes-de-contato-bioview-asferica-80342/353788.jpg?w=530&h=530&v=202004021417',
-                    width: 120,
-                    height: 100,
-                    alignment: Alignment.center,
-                    fit: BoxFit.contain,
-                  ),
-                  Text(
-                    'R\$ ${Helper.intToMoney(20000)}',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                ],
+              StreamBuilder<ProductModel>(
+                stream: _productBloc.showOut,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  ProductModel _product = snapshot.data;
+
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CachedNetworkImage(
+                        imageUrl: _product.imageUrl,
+                        width: 120,
+                        height: 100,
+                        alignment: Alignment.center,
+                        fit: BoxFit.contain,
+                      ),
+                      Text(
+                        'R\$ ${Helper.intToMoney(_product.value)}',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 14,
+                            ),
+                      ),
+                    ],
+                  );
+                },
               ),
               SizedBox(width: 20),
               Column(
@@ -226,14 +268,22 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           fontWeight: FontWeight.w700,
                         ),
                   ),
-                  Text(
-                    'Bioview Asferica Cx 6',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black45,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
+                  StreamBuilder<ProductModel>(
+                      stream: _productBloc.showOut,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Container();
+                        }
+
+                        return Text(
+                          snapshot.data.title,
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                color: Colors.black45,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        );
+                      }),
                   SizedBox(height: 40),
                   Container(
                     height: 30,
@@ -461,28 +511,39 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             },
           ),
           SizedBox(height: 10),
-          Column(
-            children: _renderButtonData().map(
-              (e) {
-                return Container(
-                  margin: const EdgeInsets.only(
-                    top: 20,
-                  ),
-                  child: RaisedButton.icon(
-                    icon: e['icon'],
-                    color: e['color'],
-                    elevation: 0,
-                    onPressed: e['onTap'],
-                    label: Text(
-                      e['text'],
-                      style: Theme.of(context).textTheme.button.copyWith(
-                            color: e['textColor'],
-                          ),
-                    ),
-                  ),
+          StreamBuilder<ProductModel>(
+            stream: _productBloc.showOut,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            ).toList(),
+              }
+
+              return Column(
+                children: _renderButtonData(snapshot.data).map(
+                  (e) {
+                    return Container(
+                      margin: const EdgeInsets.only(
+                        top: 20,
+                      ),
+                      child: RaisedButton.icon(
+                        icon: e['icon'],
+                        color: e['color'],
+                        elevation: 0,
+                        onPressed: e['onTap'],
+                        label: Text(
+                          e['text'],
+                          style: Theme.of(context).textTheme.button.copyWith(
+                                color: e['textColor'],
+                              ),
+                        ),
+                      ),
+                    );
+                  },
+                ).toList(),
+              );
+            },
           )
         ],
       ),

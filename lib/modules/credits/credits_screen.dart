@@ -81,18 +81,28 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   title: StreamBuilder<ProductCreditModel>(
                     stream: _creditsBloc.indexProductOut,
                     builder: (context, snapshot2) {
-                      if (snapshot.data == 'Financeiro' && !snapshot2.hasData) {
+                      if (snapshot.data != 'Financeiro' && !snapshot2.hasData) {
                         return Center(
-                          child: CircularProgressIndicator(),
+                          heightFactor: 2,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
                         );
                       }
                       return StreamBuilder<FinancialCreditModel>(
                         stream: _creditsBloc.indexFinancialOut,
                         builder: (context, snapshot3) {
-                          if (snapshot.data != 'Financeiro' &&
+                          if (snapshot.data == 'Financeiro' &&
                               !snapshot3.hasData) {
                             return Center(
-                              child: CircularProgressIndicator(),
+                              heightFactor: 2,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
                             );
                           }
                           return Text(
