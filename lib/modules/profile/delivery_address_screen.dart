@@ -133,7 +133,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                   ..text = _addressInfo[index]['value'],
               );
             },
-          )
+          ),
         ],
       ),
     );

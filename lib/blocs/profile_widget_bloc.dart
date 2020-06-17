@@ -14,4 +14,10 @@ class ProfileWidgetBloc {
       _securityShowPasswordController.stream.map(
         (event) => event,
       );
+
+  BehaviorSubject _userStatusController = BehaviorSubject.seeded(true);
+  Sink get userStatusIn => _userStatusController.sink;
+  Stream<bool> get userStatusOut => _userStatusController.stream.map(
+        (event) => event,
+      );
 }
