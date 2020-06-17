@@ -31,6 +31,7 @@ class AppUsersScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
           ),
+          SizedBox(height: 10),
           Text(
             'Crie e gerencie acessos diretos para seus colaboradores fazerem pedidos através da sua conta:',
             style: Theme.of(context).textTheme.subtitle1,
