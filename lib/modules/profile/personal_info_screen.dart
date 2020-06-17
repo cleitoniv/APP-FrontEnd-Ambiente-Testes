@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/profile_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -55,7 +56,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       },
       {
         'labelText': 'Data de nascimento',
-        'icon': Icons.cake,
+        'icon': MaterialCommunityIcons.cake_layered,
         'value': '25091990',
         'controller': _birthdayController,
       },
@@ -67,7 +68,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       },
       {
         'labelText': 'Celular',
-        'icon': Icons.phone_android,
+        'icon': MaterialCommunityIcons.cellphone,
         'value': '27999999999',
         'controller': _phoneController,
       },
