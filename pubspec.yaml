@@ -66,6 +66,9 @@ flutter:
     - assets/icons/heart_outline.png
     - assets/icons/barcode.png
     - assets/icons/cart.png
+    - assets/icons/clip.png
+    - assets/icons/email.png
+    - assets/icons/security.png
     - assets/icons/open_eye.png
     - assets/icons/requests.png
     - assets/icons/return.png
