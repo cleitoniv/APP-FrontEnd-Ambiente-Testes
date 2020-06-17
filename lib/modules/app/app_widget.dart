@@ -6,7 +6,7 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/intro',
+      initialRoute: '/home/0',
       navigatorKey: Modular.navigatorKey,
       onGenerateRoute: Modular.generateRoute,
       debugShowCheckedModeBanner: false,
@@ -46,13 +46,18 @@ class AppWidget extends StatelessWidget {
             color: Color(0xff36AFC6),
             fontWeight: FontWeight.w600,
           ),
+          headline4: GoogleFonts.poppins().copyWith(
+            fontSize: 20,
+            color: Color(0xff36AFC6),
+            fontWeight: FontWeight.bold,
+          ),
           subtitle2: GoogleFonts.poppins().copyWith(
             fontSize: 16,
             color: Colors.white,
           ),
           subtitle1: GoogleFonts.poppins().copyWith(
             fontSize: 16,
-            color: Color(0xff444443),
+            color: Colors.black45,
           ),
           button: GoogleFonts.poppins().copyWith(
             fontSize: 16,
