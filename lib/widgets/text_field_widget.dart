@@ -58,23 +58,20 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             borderSide: BorderSide(
               width: _focusNode.hasFocus ? 2 : 1,
               color: _focusNode.hasFocus
-                  ? Theme.of(context).accentColor
+                  ? Theme.of(context).primaryColor
                   : Colors.black38,
             ),
           ),
           labelText: widget.labelText,
           labelStyle: Theme.of(context).textTheme.subtitle2.copyWith(
                 color: _focusNode.hasFocus
-                    ? Theme.of(context).accentColor
+                    ? Theme.of(context).primaryColor
                     : Colors.black38,
               ),
           prefixIcon: widget.prefixIcon,
           suffixIcon: widget.suffixIcon,
         ),
-        style: Theme.of(context).textTheme.button.copyWith(
-              fontSize: 14,
-              color: Colors.black38,
-            ),
+        style: Theme.of(context).textTheme.subtitle1,
       ),
     );
   }
