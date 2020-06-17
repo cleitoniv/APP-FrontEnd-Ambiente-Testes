@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   @override
@@ -63,8 +63,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     ];
   }
 
-  _onAddParam(Map<String, dynamic> data) async {
-    Map<String, dynamic> _first = await _productWidgetBloc.pacientInfoOut.first;
+  _onAddParam(Map<dynamic, dynamic> data) async {
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
 
     if (_first == null) {
       _productWidgetBloc.pacientInfoIn.add(data);
@@ -74,6 +75,46 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ...data,
       });
     }
+  }
+
+  _onSelectOption(
+    Map<dynamic, dynamic> data,
+    double current, {
+    String key,
+  }) async {
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
+
+    if (_first['current'] != 'Graus diferentes em cada olho') {
+      await _onAddParam({
+        await _first['current']: {
+          ..._first[_first['current']],
+          data['key']: current,
+        }
+      });
+    } else {
+      print(_first['Graus diferentes em cada olho']['esquerdo']);
+      await _onAddParam({
+        await _first['current']: {
+          ..._first[_first['current']],
+          key: {
+            ..._first[_first['current']][key],
+            data['key']: current,
+          }
+        }
+      });
+    }
+
+    Modular.to.pop();
+  }
+
+  _onShowOptions(Map<dynamic, dynamic> data, {String key}) {
+    Modals.params(
+      context,
+      items: data,
+      onTap: (data, current) => _onSelectOption(data, current, key: key),
+      title: data['labelText'],
+    );
   }
 
   @override
@@ -112,7 +153,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _productParams = [
       {
         'labelText': 'Escolha o Grau',
-        'items': [0.5, 1.0, 1.5],
+        'items': [
+          -0.50,
+          -0.75,
+          -1.00,
+          -1.25,
+          -1.50,
+          0.50,
+          0.75,
+          1.00,
+          1.25,
+          1.50,
+        ],
         'key': 'degree',
       },
       {
@@ -260,10 +312,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
-          StreamBuilder<Map<String, dynamic>>(
+          StreamBuilder<Map<dynamic, dynamic>>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
               return DropdownWidget(
+                labelText: 'Escolha os olhos',
                 items: [
                   'Olho direito',
                   'Olho esquerdo',
@@ -278,7 +331,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             },
           ),
           SizedBox(height: 20),
-          StreamBuilder<Map<String, dynamic>>(
+          StreamBuilder<Map<dynamic, dynamic>>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -303,19 +356,36 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         height: 10,
                       ),
                       itemBuilder: (context, index) {
-                        return DropdownWidget(
-                          items: _productParams[index]['items'],
+                        return TextFieldWidget(
+                          readOnly: true,
+                          suffixIcon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Color(0xffa1a1a1),
+                          ),
+                          controller: TextEditingController()
+                            ..text = snapshot.data[snapshot.data['current']]
+                                    [_productParams[index]['key']]
+                                .toString(),
                           labelText: _productParams[index]['labelText'],
-                          prefixIcon: SizedBox(),
-                          currentValue: snapshot.data[snapshot.data['current']]
-                              [_productParams[index]['key']],
-                          onChanged: (value) => _onAddParam({
-                            snapshot.data['current']: {
-                              ...snapshot.data[snapshot.data['current']],
-                              _productParams[index]['key']: value,
-                            }
-                          }),
+                          onTap: () => _onShowOptions(
+                            _productParams[index],
+                          ),
                         );
+                        // return DropdownWidget(
+                        //   items: _productParams[index]['items'],
+                        //   labelText: _productParams[index]['labelText'],
+                        //   prefixIcon: SizedBox(),
+                        //   currentValue: snapshot.data[snapshot.data['current']]
+                        //       [_productParams[index]['key']],
+                        //   onChanged: (value) {
+                        //     _onAddParam({
+                        //       snapshot.data['current']: {
+                        //         ...snapshot.data[snapshot.data['current']],
+                        //         _productParams[index]['key']: value,
+                        //       }
+                        //     });
+                        //   },
+                        // );
                       },
                     ),
                   ],
@@ -339,18 +409,23 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             height: 10,
                           ),
                           itemBuilder: (context, index) {
-                            return DropdownWidget(
-                              items: _productParams[index]['items'],
+                            return TextFieldWidget(
+                              readOnly: true,
+                              suffixIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Color(0xffa1a1a1),
+                              ),
+                              controller: TextEditingController()
+                                ..text = snapshot
+                                    .data['Graus diferentes em cada olho']
+                                        ['direito']
+                                        [_productParams[index]['key']]
+                                    .toString(),
                               labelText: _productParams[index]['labelText'],
-                              prefixIcon: SizedBox(),
-                              currentValue: snapshot.data['Olho direito']
-                                  [_productParams[index]['key']],
-                              onChanged: (value) => _onAddParam({
-                                'Olho direito': {
-                                  ...snapshot.data['Olho direito'],
-                                  _productParams[index]['key']: value,
-                                }
-                              }),
+                              onTap: () => _onShowOptions(
+                                _productParams[index],
+                                key: 'direito',
+                              ),
                             );
                           },
                         ),
@@ -372,18 +447,23 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             height: 10,
                           ),
                           itemBuilder: (context, index) {
-                            return DropdownWidget(
-                              items: _productParams[index]['items'],
+                            return TextFieldWidget(
+                              readOnly: true,
+                              suffixIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Color(0xffa1a1a1),
+                              ),
+                              controller: TextEditingController()
+                                ..text = snapshot
+                                    .data['Graus diferentes em cada olho']
+                                        ['esquerdo']
+                                        [_productParams[index]['key']]
+                                    .toString(),
                               labelText: _productParams[index]['labelText'],
-                              prefixIcon: SizedBox(),
-                              currentValue: snapshot.data['Olho esquerdo']
-                                  [_productParams[index]['key']],
-                              onChanged: (value) => _onAddParam({
-                                'Olho esquerdo': {
-                                  ...snapshot.data['Olho esquerdo'],
-                                  _productParams[index]['key']: value,
-                                }
-                              }),
+                              onTap: () => _onShowOptions(
+                                _productParams[index],
+                                key: 'esquerdo',
+                              ),
                             );
                           },
                         ),
@@ -396,27 +476,28 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           ),
           SizedBox(height: 10),
           Column(
-              children: _renderButtons().map(
-            (e) {
-              return Container(
-                margin: const EdgeInsets.only(
-                  top: 20,
-                ),
-                child: RaisedButton.icon(
-                  icon: e['icon'],
-                  color: e['color'],
-                  elevation: 0,
-                  onPressed: e['onTap'],
-                  label: Text(
-                    e['text'],
-                    style: Theme.of(context).textTheme.button.copyWith(
-                          color: e['textColor'],
-                        ),
+            children: _renderButtons().map(
+              (e) {
+                return Container(
+                  margin: const EdgeInsets.only(
+                    top: 20,
                   ),
-                ),
-              );
-            },
-          ).toList())
+                  child: RaisedButton.icon(
+                    icon: e['icon'],
+                    color: e['color'],
+                    elevation: 0,
+                    onPressed: e['onTap'],
+                    label: Text(
+                      e['text'],
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: e['textColor'],
+                          ),
+                    ),
+                  ),
+                );
+              },
+            ).toList(),
+          )
         ],
       ),
     );
