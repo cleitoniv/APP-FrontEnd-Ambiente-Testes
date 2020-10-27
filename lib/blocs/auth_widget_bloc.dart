@@ -1,7 +1,24 @@
+import 'dart:math';
+
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
 class AuthWidgetBloc extends Disposable {
+  AuthResult _guestToken;
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void setAuthResult(AuthResult auth) {
+    this._guestToken = auth;
+  }
+
+  AuthResult getGuestToken() {
+    return _guestToken;
+  }
+
   BehaviorSubject _createAccountShowPasswordController =
       BehaviorSubject.seeded(true);
   Sink get createAccountShowPasswordIn =>
@@ -38,11 +55,39 @@ class AuthWidgetBloc extends Disposable {
       _createAccountDataController.stream.map(
         (event) => event,
       );
+  Map<String, dynamic> get currentAccountData =>
+      _createAccountDataController.value;
+
+  Future<String> registerGuestToken(Map<String, dynamic> data) async {
+    try {
+      if (this._guestToken != null) {
+        return "ok";
+      } else {
+        this._guestToken = await _auth.createUserWithEmailAndPassword(
+          email: data['email'],
+          password: data['password'],
+        );
+
+        Map<String, dynamic> _first = await createAccountDataOut.first;
+
+        if (_first == null) {
+          createAccountDataIn.add(data);
+        } else {
+          createAccountDataIn.add({
+            ..._first,
+            ...data,
+          });
+        }
+        return "ok";
+      }
+    } catch (e) {
+      final error = e as PlatformException;
+      return error.code;
+    }
+  }
 
   addUserInfo(Map<String, dynamic> data) async {
     Map<String, dynamic> _first = await createAccountDataOut.first;
-
-    print(_first);
 
     if (_first == null) {
       createAccountDataIn.add(data);

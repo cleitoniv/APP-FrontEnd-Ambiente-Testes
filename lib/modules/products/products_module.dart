@@ -23,16 +23,12 @@ class ProductsModule extends ChildModule {
   List<Router> get routers => [
         Router(
           '/:id',
-          child: (_, args) => ProductScreen(
-            id: int.parse(args.params['id']),
-          ),
+          child: (_, args) => ProductScreen(id: 0, product: args.data),
         ),
         Router(
           '/:id/requestDetails',
           child: (_, args) => RequestDetailsScreen(
-            id: int.parse(
-              args.params['id'],
-            ),
+            id: 0,
             type: args.data,
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -10,7 +11,11 @@ class EffectuationScreen extends StatefulWidget {
 class _EffectuationScreenState extends State<EffectuationScreen> {
   TextEditingController _emailController;
 
+  DevolutionWidgetBloc _devolutionWidgetBloc =
+      Modular.get<DevolutionWidgetBloc>();
+
   _onSubmit() {
+    _devolutionWidgetBloc.sendEmail(_emailController.text);
     Modular.to.pushNamedAndRemoveUntil(
       '/home/0',
       (route) => route.isFirst,

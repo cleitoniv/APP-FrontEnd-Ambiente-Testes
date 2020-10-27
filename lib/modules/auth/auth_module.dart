@@ -5,6 +5,7 @@ import 'package:central_oftalmica_app_cliente/modules/auth/complete_create_accou
 import 'package:central_oftalmica_app_cliente/modules/auth/create_account_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/login_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/password_reset_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/auth/validation_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AuthModule extends ChildModule {
@@ -16,6 +17,9 @@ class AuthModule extends ChildModule {
 
   @override
   List<Router> get routers => [
+        Router(
+          '/validate', child: (_, args) => ValidationScreen()
+        ),
         Router(
           '/login',
           child: (_, args) => LoginScreen(),

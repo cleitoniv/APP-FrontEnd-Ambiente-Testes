@@ -1,4 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
+import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -9,10 +12,9 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 class FormScreen extends StatefulWidget {
   //add or edit
   String formType;
+  UsuarioClienteModel usuario;
 
-  FormScreen({
-    this.formType = 'add',
-  });
+  FormScreen({this.formType = 'add', this.usuario});
 
   @override
   _FormScreenState createState() => _FormScreenState();
@@ -20,18 +22,40 @@ class FormScreen extends StatefulWidget {
 
 class _FormScreenState extends State<FormScreen> {
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
+  UserBloc _userBloc = Modular.get<UserBloc>();
   List<Map> _data;
   TextEditingController _nameController;
   TextEditingController _emailController;
   TextEditingController _officeController;
   MaskedTextController _passwordController;
 
-  _onAddUser() {
-    Modular.to.pop();
+  _onAddUser() async {
+    Map<String, dynamic> params = {
+      "nome": _nameController.text,
+      "email": _emailController.text,
+      "cargo": _officeController.text
+    };
+    AddUsuarioCliente addUser = await _userBloc.addUsuario(params);
+
+    if (addUser.isValid) {
+      Modular.to.pop();
+    }
   }
 
-  _onSaveInfo() {
-    Modular.to.pop();
+  _onSaveInfo() async {
+    Map<String, dynamic> params = {
+      "nome": _nameController.text,
+      "email": _emailController.text,
+      "cargo": _officeController.text,
+      "status": _profileWidgetBloc.currentStatus ? 1 : 0
+    };
+
+    UpdateUsuarioCliente updateUser =
+        await _userBloc.updateUsuario(widget.usuario.id, params);
+    if (updateUser.isValid) {
+      _userBloc.fetchUsuariosCliente();
+      Modular.to.pop();
+    }
   }
 
   _onChangeUserStatus(bool value) {
@@ -48,35 +72,31 @@ class _FormScreenState extends State<FormScreen> {
       mask: '* * * * * * * *',
     );
 
+    if (widget.usuario != null) {
+      _nameController.text = widget.usuario.nome;
+      _emailController.text = widget.usuario.email;
+      _officeController.text = widget.usuario.cargo;
+    }
+
     _data = [
       {
         'labelText': 'Nome completo',
-        'value': '',
         'controller': _nameController,
         'icon': Icons.person,
         'enabled': true,
       },
       {
         'labelText': 'Email',
-        'value': '',
         'controller': _emailController,
         'icon': Icons.email,
-        'enabled': true,
+        'enabled': widget.formType == "edit" ? false : true,
       },
       {
         'labelText': 'Cargo (opcional)',
-        'value': '',
         'controller': _officeController,
         'icon': MaterialCommunityIcons.cake_layered,
         'enabled': true,
-      },
-      {
-        'labelText': 'Senha de acesso',
-        'value': 'MT132546',
-        'controller': _passwordController,
-        'icon': Icons.lock,
-        'enabled': false,
-      },
+      }
     ];
   }
 
@@ -155,11 +175,19 @@ class _FormScreenState extends State<FormScreen> {
                   trailing: StreamBuilder<bool>(
                     stream: _profileWidgetBloc.userStatusOut,
                     builder: (context, snapshot) {
-                      return Switch(
-                        value: snapshot.data,
-                        activeColor: Theme.of(context).primaryColor,
-                        onChanged: (value) => _onChangeUserStatus(value),
-                      );
+                      if (snapshot.hasData) {
+                        return Switch(
+                          value: snapshot.data,
+                          activeColor: Theme.of(context).primaryColor,
+                          onChanged: (value) => _onChangeUserStatus(value),
+                        );
+                      } else {
+                        return Switch(
+                          value: false,
+                          activeColor: Theme.of(context).primaryColor,
+                          onChanged: (value) => _onChangeUserStatus(value),
+                        );
+                      }
                     },
                   ),
                 )

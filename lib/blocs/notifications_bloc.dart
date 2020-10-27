@@ -8,6 +8,20 @@ class NotificationBloc extends Bloc<NotificationModel> {
 
   NotificationBloc(this.repository);
 
+  void fetchNotifications() async {
+    notificationsSink.add(NotificationsList(isLoading: true));
+    NotificationsList list = await repository.fetchNotifications();
+    notificationsSink.add(list);
+  }
+
+  Future<bool> readNotification(int id) async {
+    return repository.readNotification(id);
+  }
+
+  BehaviorSubject _notificationsController = BehaviorSubject();
+  Sink get notificationsSink => _notificationsController.sink;
+  Stream get notificationsStream => _notificationsController.stream;
+
   BehaviorSubject _indexController = BehaviorSubject.seeded(null);
   @override
   Sink get indexIn => _indexController.sink;
@@ -19,6 +33,7 @@ class NotificationBloc extends Bloc<NotificationModel> {
 
   @override
   void dispose() {
+    _notificationsController.close();
     _indexController.close();
   }
 }

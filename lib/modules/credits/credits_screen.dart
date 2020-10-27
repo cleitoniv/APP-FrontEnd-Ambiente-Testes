@@ -1,8 +1,15 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/credito_financeiro.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
+import 'package:central_oftalmica_app_cliente/models/offer.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
+import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/card_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
@@ -18,9 +25,19 @@ class CreditsScreen extends StatefulWidget {
 
 class _CreditsScreenState extends State<CreditsScreen> {
   HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
+
   CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
 
+  ProductBloc _productsBloc = Modular.get<ProductBloc>();
+
   MoneyMaskedTextController _creditValueController;
+
+  CreditoFinanceiroBloc _creditoFinanceiroBloc =
+      Modular.get<CreditoFinanceiroBloc>();
+
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
+
+  AuthEvent _currentUser;
 
   _onAddCredit() async {
     _creditsBloc.storeFinancialIn.add(
@@ -36,13 +53,34 @@ class _CreditsScreenState extends State<CreditsScreen> {
     }
   }
 
-  _onTapPersonalizedValue() {
-    _homeBloc.valueVisibilityIn.add(true);
+  _onTapPersonalizedValue(String type) {
+    // _homeBloc.valueVisibilityIn.add(true);
+    if (type == "Financeiro") {
+      Modular.to.pushNamed('/credito_financeiro');
+    } else {
+      Modular.to.pushNamed('/credito_financeiro/produto');
+    }
+  }
+
+  _onTapSelectProduct(ProductModel product) {
+    _creditsBloc.currentProductSink.add(product);
+  }
+
+  void _addCreditoFinanceiro(OfferModel offer) {
+    _creditoFinanceiroBloc.creditoFinaceiroSink.add(CreditoFinanceiro(
+        valor: offer.value,
+        installmentCount: offer.installmentCount,
+        desconto: 0));
+    Modular.to.pushNamed('/credito_financeiro/pagamento');
   }
 
   @override
   void initState() {
     super.initState();
+    _productsBloc.fetchCreditProducts("Todos");
+    _currentUser = _authBloc.getAuthCurrentUser;
+    _creditsBloc.indexFinancialIn.add(_currentUser);
+    _creditsBloc.fetchOffers();
     _creditValueController = MoneyMaskedTextController(
       decimalSeparator: ',',
       leftSymbol: 'R\$ ',
@@ -78,8 +116,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                           color: Colors.white54,
                         ),
                   ),
-                  title: StreamBuilder<ProductCreditModel>(
-                    stream: _creditsBloc.indexProductOut,
+                  title: StreamBuilder(
+                    stream: _creditsBloc.currentProductStream,
                     builder: (context, snapshot2) {
                       if (snapshot.data != 'Financeiro' && !snapshot2.hasData) {
                         return Center(
@@ -91,7 +129,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                           ),
                         );
                       }
-                      return StreamBuilder<FinancialCreditModel>(
+                      return StreamBuilder(
                         stream: _creditsBloc.indexFinancialOut,
                         builder: (context, snapshot3) {
                           if (snapshot.data == 'Financeiro' &&
@@ -105,14 +143,35 @@ class _CreditsScreenState extends State<CreditsScreen> {
                               ),
                             );
                           }
-                          return Text(
-                            snapshot.data == 'Financeiro'
-                                ? Helper.intToMoney(snapshot3.data.balance)
-                                : '${snapshot2.data.total}',
-                            style:
-                                Theme.of(context).textTheme.subtitle2.copyWith(
+                          return Row(
+                            children: [
+                              Text(
+                                snapshot.data == 'Financeiro'
+                                    ? Helper.intToMoney(
+                                        snapshot3.data.data.money)
+                                    : '${snapshot2.data.boxes}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    .copyWith(
                                       fontSize: 48,
                                     ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 15),
+                                child: Text(
+                                  snapshot.data == 'Financeiro'
+                                      ? ''
+                                      : '${snapshot2.data.title}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2
+                                      .copyWith(
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              )
+                            ],
                           );
                         },
                       );
@@ -168,55 +227,70 @@ class _CreditsScreenState extends State<CreditsScreen> {
                 stream: _homeBloc.currentCreditTypeOut,
                 builder: (context, snapshot) {
                   String _currentType = snapshot.data;
-                  return StreamBuilder<ProductCreditModel>(
-                    stream: _creditsBloc.indexProductOut,
-                    builder: (context, snapshot) {
-                      if (_currentType != 'Financeiro' && !snapshot.hasData) {
+                  return StreamBuilder(
+                    stream: _productsBloc.creditProductListStream,
+                    builder: (context, productSnapshot) {
+                      if (_currentType != 'Financeiro' &&
+                              !productSnapshot.hasData ||
+                          productSnapshot.data.isLoading) {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
                       }
-                      ProductCreditModel _productCredits = snapshot.data;
-                      return StreamBuilder<FinancialCreditModel>(
-                        stream: _creditsBloc.indexFinancialOut,
-                        builder: (context, snapshot) {
+                      ProductList _productCredits = productSnapshot.data;
+                      return StreamBuilder(
+                        stream: _creditsBloc.offerStream,
+                        builder: (context, offerSnapshot) {
                           if (_currentType == 'Financeiro' &&
-                              !snapshot.hasData) {
+                                  !offerSnapshot.hasData ||
+                              _currentType == 'Produto' &&
+                                  !offerSnapshot.hasData ||
+                              offerSnapshot.data.isLoading) {
                             return Center(
                               child: CircularProgressIndicator(),
                             );
                           }
-                          FinancialCreditModel _financialCredits =
-                              snapshot.data;
+                          List<OfferModel> _financialCredits =
+                              offerSnapshot.data.offers;
 
                           return ListView.separated(
                             padding: const EdgeInsets.all(20),
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemCount: _currentType == 'Financeiro'
-                                ? _financialCredits.credits.length
-                                : _productCredits.products.length,
+                                ? _financialCredits.length
+                                : _productCredits.list.length,
                             separatorBuilder: (context, index) => SizedBox(
                               width: 20,
                             ),
                             itemBuilder: (context, index) {
                               return _currentType == 'Financeiro'
-                                  ? CardWidget(
-                                      parcels: _financialCredits
-                                          .credits[index].parcels,
-                                      value: _financialCredits
-                                          .credits[index].value,
+                                  ? InkWell(
+                                      onTap: () {
+                                        _addCreditoFinanceiro(
+                                            _financialCredits[index]);
+                                      },
+                                      child: CardWidget(
+                                        parcels: _financialCredits[index]
+                                            .installmentCount,
+                                        value: _financialCredits[index].value,
+                                      ),
                                     )
-                                  : ProductWidget(
-                                      credits: _productCredits
-                                          .products[index].credits,
-                                      tests:
-                                          _productCredits.products[index].tests,
-                                      imageUrl: _productCredits
-                                          .products[index].imageUrl,
-                                      title:
-                                          _productCredits.products[index].title,
-                                    );
+                                  : InkWell(
+                                      onTap: () {
+                                        _onTapSelectProduct(
+                                            _productCredits.list[index]);
+                                      },
+                                      child: ProductWidget(
+                                        credits:
+                                            _productCredits.list[index].boxes,
+                                        tests:
+                                            _productCredits.list[index].tests,
+                                        imageUrl: _productCredits
+                                            .list[index].imageUrl,
+                                        title:
+                                            _productCredits.list[index].title,
+                                      ));
                             },
                           );
                         },
@@ -263,7 +337,9 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     } else {
                       return RaisedButton(
                         elevation: 0,
-                        onPressed: _onTapPersonalizedValue,
+                        onPressed: () {
+                          _onTapPersonalizedValue(snapshot.data);
+                        },
                         child: Text(
                           snapshot.data == 'Financeiro'
                               ? 'Valor Personalizado'

@@ -15,24 +15,40 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
   PageController _pageController;
 
   _onChangeExtractType(String type) {
-    _extractWidgetBloc.extractTypeIn.add(type);
+    if (type == "Financeiro") {
+      _extractWidgetBloc.fetchExtratoFinanceiro();
+    } else {
+      _extractWidgetBloc.fetchExtratoProduto();
+    }
 
-    _pageController.animateToPage(
-      type == 'Financeiro' ? 0 : 1,
-      duration: Duration(seconds: 1),
-      curve: Curves.fastLinearToSlowEaseIn,
-    );
+    int _pageIndex = 0;
+
+    if (type != "Financeiro") {
+      _pageIndex = 1;
+    }
+
+    if (_pageController.hasClients) {
+      _pageController.animateToPage(
+        _pageIndex,
+        duration: Duration(seconds: 1),
+        curve: Curves.fastLinearToSlowEaseIn,
+      );
+      _extractWidgetBloc.extractTypeIn.add(type);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-
-    _extractWidgetBloc.extractTypeOut.first.then((value) {
-      _pageController = PageController(
-        initialPage: value == 'Financeiro' ? 0 : 1,
-      );
-    });
+    Map<String, dynamic> currentPage = _extractWidgetBloc.currentPageValue;
+    if (currentPage['type'] == "Financeiro") {
+      _extractWidgetBloc.fetchExtratoFinanceiro();
+    } else {
+      _extractWidgetBloc.fetchExtratoProduto();
+    }
+    _pageController = PageController(
+      initialPage: currentPage['page'],
+    );
   }
 
   @override

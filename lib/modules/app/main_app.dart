@@ -15,16 +15,23 @@ class _MainAppState extends State<MainApp> {
     return StreamBuilder<FirebaseUser>(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data.providerData.length == 1) {
-            return TabsScreen(
-              index: 0,
-            );
-          }
-          return IntroScreen();
-        } else {
-          return IntroScreen();
-        }
+        // if (snapshot.hasData && (!snapshot.data.isAnonymous)) {
+        //   return TabsScreen(
+        //     index: 0,
+        //   );
+        // }
+
+        return IntroScreen();
+        // if (snapshot.hasData) {
+        //   if (snapshot.data.providerData.length == 1) {
+        //     return TabsScreen(
+        //       index: 0,
+        //     );
+        //   }
+        //   return IntroScreen();
+        // } else {
+        //   return IntroScreen();
+        // }
       },
     );
   }

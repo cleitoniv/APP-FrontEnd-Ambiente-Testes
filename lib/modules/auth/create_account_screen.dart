@@ -1,7 +1,10 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -14,6 +17,7 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -34,18 +38,50 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   _handleShowTerm() {}
 
+  _showErrors(Map<String, dynamic> errors) {
+    SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
+    _scaffoldKey.currentState.showSnackBar(
+      _snack,
+    );
+  }
+
   _handleSubmit() async {
     if (_formKey.currentState.validate()) {
-      _authWidgetBloc.addUserInfo({
+      final Map<String, dynamic> data = {
         'name': _nameController.text,
         'email': _emailController.text,
-        'cellphone': _phoneController.text,
+        'telefone': _phoneController.text,
+        'ddd': '27',
         'password': _passwordController.text,
-      });
+      };
+      final String authResult = await _authWidgetBloc.registerGuestToken(data);
 
-      Modular.to.pushNamed(
-        '/auth/activityPerformed',
-      );
+      if (authResult == "ok") {
+        LoginEvent firstAccess =
+            await _authBloc.firstAccess({'nome': data['name'], ...data});
+        if (firstAccess.isValid) {
+          Modular.to.pushNamed('/auth/activityPerformed');
+        } else {
+          _showErrors({
+            "Cadastro": [
+              "Ocorreu um erro no seu cadastro. Por favor entre em contato com a Central."
+            ]
+          });
+        }
+      } else {
+        final errors = {
+          "ERROR_WEAK_PASSWORD": {
+            "Senha": ["Senha deve conter no minimo 6 caracteres."]
+          },
+          "ERROR_EMAIL_ALREADY_IN_USE": {
+            "Email": [
+              "Email ja cadastrado. Faça o login e atualize os seus dados."
+            ]
+          }
+        };
+
+        _showErrors(errors[authResult]);
+      }
     }
   }
 
@@ -130,7 +166,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           onPressed: _handleObscureText,
         ),
         'controller': _passwordController,
-        'validator': Helper.lengthValidator,
+        'validator': (String text) => Helper.lengthValidator(text,
+            length: 6, message: "Senha deve ter no minimo 6 caracteres"),
       },
       {
         'labelText': 'Confirme a senha',

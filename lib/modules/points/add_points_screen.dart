@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -28,17 +29,16 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
 
   _onSubmit() async {
     if (_formKey.currentState.validate()) {
-      _userBloc.pointsIn.add({
-        'type': 'add',
-        'serial_number': _serialController.text,
-        'patient_name': _nameController.text,
-        'patient_reference_number': _numberController.text,
-        'patient_birthday': _birthdayController.text,
-      });
+      Map<String, dynamic> params = {
+        'num_serie': _serialController.text,
+        'paciente': _nameController.text,
+        'num_pac': _numberController.text,
+        'dt_nas_pac': _birthdayController.text,
+      };
 
-      String _first = await _userBloc.pointsOut.first;
-
-      if (_first != null) {
+      PointsResult _result = await _userBloc.addPoints(params);
+      print(_result);
+      if (_result.isValid) {
         Dialogs.success(
           context,
           subtitle: 'Pontos adicionados com sucesso!',

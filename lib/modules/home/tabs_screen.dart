@@ -1,6 +1,8 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
@@ -9,16 +11,16 @@ import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dar
 import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/products/products_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_screen.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class TabsScreen extends StatefulWidget {
   int index;
+  AuthEvent auth;
 
-  TabsScreen({
-    this.index = 0,
-  });
+  TabsScreen({this.index = 0});
 
   @override
   _TabsScreenState createState() => _TabsScreenState();
@@ -26,9 +28,11 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen>
     with SingleTickerProviderStateMixin {
+  ProductBloc _productBloc = Modular.get<ProductBloc>();
   NotificationBloc _notificationBloc = Modular.get<NotificationBloc>();
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
+  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   TabController _tabController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -38,12 +42,14 @@ class _TabsScreenState extends State<TabsScreen>
     'Hipermetropia',
     'Astigmatismo',
   ];
+
   List<Widget> _screens = [
     ProductsScreen(),
     CreditsScreen(),
     CartScreen(),
     RequestsScreen(),
   ];
+
   List<Map> _tabs = [
     {
       'id': 0,
@@ -68,6 +74,7 @@ class _TabsScreenState extends State<TabsScreen>
   ];
 
   _onChangeSightProblem(String sightProblem) {
+    _productBloc.fetchProducts(sightProblem);
     _homeWidgetBloc.sightProblemIn.add(sightProblem);
   }
 
@@ -90,24 +97,22 @@ class _TabsScreenState extends State<TabsScreen>
 
     _homeWidgetBloc.currentRequestTypeIn.add(type);
 
-    String _status;
+    int _status;
 
     if (type != _first) {
       switch (type) {
         case 'Pendentes':
-          _status = 'pendent';
+          _status = 0;
           break;
         case 'Entregues':
-          _status = 'delivered';
+          _status = 1;
           break;
         case 'Reposição':
-          _status = 'replacement';
+          _status = 2;
           break;
       }
 
-      _requestsBloc.indexIn.add({
-        'status': _status,
-      });
+      _requestsBloc.getPedidosList(_status);
     }
   }
 
@@ -127,6 +132,11 @@ class _TabsScreenState extends State<TabsScreen>
 
   _onNavigateDrawer(int index) {
     String _route;
+
+    if (index == 1) {
+      int filter = _requestsBloc.currentFilter;
+      _requestsBloc.getPedidosList(filter);
+    }
 
     switch (index) {
       case 0:
@@ -186,47 +196,61 @@ class _TabsScreenState extends State<TabsScreen>
   Widget _renderHeaderFilters(int index) {
     switch (index) {
       case 0:
-        return ListView.separated(
-          shrinkWrap: true,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-          ),
-          scrollDirection: Axis.horizontal,
-          itemCount: _sightProblems.length,
-          separatorBuilder: (context, index) => SizedBox(
-            width: 10,
-          ),
-          itemBuilder: (context, index) {
-            return StreamBuilder<String>(
-              stream: _homeWidgetBloc.sightProblemOut,
-              builder: (context, snapshot) {
-                return GestureDetector(
-                  onTap: () => _onChangeSightProblem(
-                    _sightProblems[index],
-                  ),
-                  child: AnimatedContainer(
-                    duration: Duration(
-                      milliseconds: 50,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                    ),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: _sightProblems[index] == snapshot.data
-                          ? Theme.of(context).accentColor
-                          : Color(0xffF1F1F1),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Text(
-                      _sightProblems[index],
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
-                            color: _sightProblems[index] == snapshot.data
-                                ? Color(0xffF1F1F1)
-                                : Theme.of(context).accentColor,
-                          ),
-                    ),
-                  ),
+        return StreamBuilder(
+          stream: _productBloc.productListStream,
+          builder: (context, productSnapshot) {
+            if (!productSnapshot.hasData || productSnapshot.data.isLoading) {
+              return Center(child: CircularProgressIndicator());
+            } else if (!productSnapshot.hasData ||
+                productSnapshot.data.isEmpty) {
+              return Container();
+            }
+
+            return ListView.separated(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              scrollDirection: Axis.horizontal,
+              itemCount: productSnapshot.data.filters.length,
+              separatorBuilder: (context, index) => SizedBox(
+                width: 10,
+              ),
+              itemBuilder: (context, index) {
+                return StreamBuilder<String>(
+                  stream: _homeWidgetBloc.sightProblemOut,
+                  builder: (context, snapshot) {
+                    return GestureDetector(
+                      onTap: () => _onChangeSightProblem(
+                        productSnapshot.data.filters[index],
+                      ),
+                      child: AnimatedContainer(
+                        duration: Duration(
+                          milliseconds: 50,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                        ),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: productSnapshot.data.filters[index] ==
+                                  snapshot.data
+                              ? Theme.of(context).accentColor
+                              : Color(0xffF1F1F1),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Text(
+                          productSnapshot.data.filters[index],
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                color: productSnapshot.data.filters[index] ==
+                                        snapshot.data
+                                    ? Color(0xffF1F1F1)
+                                    : Theme.of(context).accentColor,
+                              ),
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             );
@@ -360,11 +384,17 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _initState() async {
+    await _authBloc.fetchCurrentUser();
+    _productBloc.fetchProducts("Todos");
     _tabController.addListener(() {
       _homeWidgetBloc.currentTabIndexIn.add(
         _tabController.index,
       );
     });
+
+    int filter = _requestsBloc.currentFilter;
+
+    _requestsBloc.getPedidosList(filter);
 
     _homeWidgetBloc.currentTabIndexOut.listen((int event) {
       if (event != null && event != _tabController.index) {
@@ -385,6 +415,17 @@ class _TabsScreenState extends State<TabsScreen>
       initialIndex: widget.index,
       length: _screens.length,
     );
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging && _tabController.index == 3) {
+        int filter = _requestsBloc.currentFilter;
+
+        _requestsBloc.getPedidosList(filter);
+      } else if (_tabController.indexIsChanging && _tabController.index == 0) {
+        String currentSightProblem = _homeWidgetBloc.currentSightProblem;
+        _productBloc.fetchProducts(currentSightProblem);
+      }
+    });
 
     _initState();
 
@@ -423,203 +464,194 @@ class _TabsScreenState extends State<TabsScreen>
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(200),
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 2),
-                        blurRadius: 5,
-                        spreadRadius: 2,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
                       ),
-                    ],
-                  ),
-                  child: SafeArea(
-                    child: StreamBuilder<int>(
-                      stream: _homeWidgetBloc.currentTabIndexOut,
-                      builder: (context, snapshot) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 2),
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: StreamBuilder(
+                      stream: _authBloc.clienteDataStream,
+                      builder: (context, authEventSnapshot) {
+                        if (!authEventSnapshot.hasData ||
+                            authEventSnapshot.data.loading) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          return SafeArea(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      onTap: _handleOpenDrawer,
+                                      child: Image.asset(
+                                        'assets/icons/drawer.png',
+                                        width: 30,
+                                        height: 30,
+                                      ),
+                                    ),
+                                    Text(
+                                      authEventSnapshot.data.data.nome,
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
+                                    ),
+                                    GestureDetector(
+                                      onTap: _handleNotifications,
+                                      child: Stack(
+                                        overflow: Overflow.visible,
+                                        children: <Widget>[
+                                          Image.asset(
+                                            'assets/icons/bell.png',
+                                            width: 30,
+                                            height: 30,
+                                          ),
+                                          Positioned(
+                                            right: -2,
+                                            top: -2,
+                                            child: CircleAvatar(
+                                              backgroundColor:
+                                                  Theme.of(context).accentColor,
+                                              radius: 10,
+                                              child: Text(
+                                                "${authEventSnapshot.data.data.notifications["opens"]}",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2
+                                                    .copyWith(
+                                                      fontSize: 12,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   GestureDetector(
-                                    onTap: _handleOpenDrawer,
-                                    child: Image.asset(
-                                      'assets/icons/drawer.png',
-                                      width: 30,
-                                      height: 30,
+                                    onTap: _handleMyCredits,
+                                    child: Container(
+                                      width: 119,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          CircleAvatar(
+                                            backgroundColor:
+                                                Theme.of(context).primaryColor,
+                                            radius: 12,
+                                            child: Icon(
+                                              Icons.attach_money,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            Helper.intToMoney(authEventSnapshot
+                                                .data.data.money),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    'Antônio Fraga',
-                                    style:
-                                        Theme.of(context).textTheme.headline4,
-                                  ),
+                                  SizedBox(width: 10),
                                   GestureDetector(
-                                    onTap: _handleNotifications,
-                                    child: Stack(
-                                      overflow: Overflow.visible,
-                                      children: <Widget>[
-                                        Image.asset(
-                                          'assets/icons/bell.png',
-                                          width: 30,
-                                          height: 30,
+                                    onTap: _handleMyPoints,
+                                    child: Container(
+                                      width: 76,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: Theme.of(context).accentColor,
                                         ),
-                                        Positioned(
-                                          right: -2,
-                                          top: -2,
-                                          child: StreamBuilder<
-                                                  List<NotificationModel>>(
-                                              stream:
-                                                  _notificationBloc.indexOut,
-                                              builder: (context, snapshot) {
-                                                if (!snapshot.hasData) {
-                                                  return Container();
-                                                }
-                                                if (_countNotifications(
-                                                        snapshot.data) ==
-                                                    0) {
-                                                  return Container();
-                                                }
-                                                return CircleAvatar(
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .accentColor,
-                                                  radius: 10,
-                                                  child: Text(
-                                                    '${_countNotifications(snapshot.data)}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .subtitle2
-                                                        .copyWith(
-                                                          fontSize: 12,
-                                                        ),
-                                                  ),
-                                                );
-                                              }),
-                                        ),
-                                      ],
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          CircleAvatar(
+                                            backgroundColor:
+                                                Theme.of(context).accentColor,
+                                            radius: 12,
+                                            child: Icon(
+                                              MaterialCommunityIcons
+                                                  .star_four_points,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "${authEventSnapshot.data.data.points}",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(
+                                                  color: Theme.of(context)
+                                                      .accentColor,
+                                                ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: _handleMyCredits,
-                                  child: Container(
-                                    width: 119,
-                                    height: 36,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        CircleAvatar(
-                                          backgroundColor:
-                                              Theme.of(context).primaryColor,
-                                          radius: 12,
-                                          child: Icon(
-                                            Icons.attach_money,
-                                            color: Colors.white,
-                                            size: 20,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          Helper.intToMoney(350090),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2
-                                              .copyWith(
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                              SizedBox(height: 20),
+                              Container(
+                                height: 44,
+                                child: _renderHeaderFilters(
+                                  snapshot2.data,
                                 ),
-                                SizedBox(width: 10),
-                                GestureDetector(
-                                  onTap: _handleMyPoints,
-                                  child: Container(
-                                    width: 76,
-                                    height: 36,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color: Theme.of(context).accentColor,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        CircleAvatar(
-                                          backgroundColor:
-                                              Theme.of(context).accentColor,
-                                          radius: 12,
-                                          child: Icon(
-                                            MaterialCommunityIcons
-                                                .star_four_points,
-                                            color: Colors.white,
-                                            size: 20,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          '50',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2
-                                              .copyWith(
-                                                color: Theme.of(context)
-                                                    .accentColor,
-                                              ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 20),
-                            Container(
-                              height: 44,
-                              child: _renderHeaderFilters(
-                                snapshot.data,
-                              ),
-                            )
-                          ],
-                        );
+                              )
+                            ],
+                          ));
+                        }
                       },
-                    ),
-                  ),
-                ),
+                    )),
               ),
               body: TabBarView(
                 physics: NeverScrollableScrollPhysics(),

@@ -6,6 +6,7 @@ import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/add_credit_card_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/payment_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/cart/product_cart_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class CartModule extends ChildModule {
@@ -34,6 +35,7 @@ class CartModule extends ChildModule {
           '/',
           child: (_, args) => CartScreen(),
         ),
+        Router('/product', child: (_, args) => ProductCartScreen()),
         Router(
           '/payment',
           child: (_, args) => PaymentScreen(),

@@ -13,21 +13,22 @@ class TextFieldWidget extends StatefulWidget {
   bool readOnly;
   Function onTap;
   String initialValue;
+  FocusNode focus;
 
-  TextFieldWidget({
-    this.labelText,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.controller,
-    this.validator,
-    this.width = double.infinity,
-    this.obscureText = false,
-    this.keyboardType,
-    this.enabled = true,
-    this.initialValue,
-    this.readOnly = false,
-    this.onTap,
-  });
+  TextFieldWidget(
+      {this.labelText,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.controller,
+      this.validator,
+      this.width = double.infinity,
+      this.obscureText = false,
+      this.keyboardType,
+      this.enabled = true,
+      this.initialValue,
+      this.readOnly = false,
+      this.onTap,
+      this.focus});
 
   @override
   _TextFieldWidgetState createState() => _TextFieldWidgetState();
@@ -60,7 +61,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         enabled: widget.enabled,
         controller: widget.controller,
         validator: widget.validator,
-        focusNode: _focusNode,
+        focusNode: widget.focus ?? _focusNode,
         onTap: widget.onTap,
         readOnly: widget.readOnly,
         obscureText: widget.obscureText,

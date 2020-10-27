@@ -18,23 +18,27 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
   TextEditingController _ownerController;
   MaskedTextController _creditCardNumberController;
-  MaskedTextController _validityController;
-  MaskedTextController _securityCodeController;
+  MaskedTextController _mesValidadeController;
+  MaskedTextController _anoValidadeController;
   List<Map> _data;
+
+  String parseCartaoNumber(String number) {
+    return number.replaceAll(" ", "");
+  }
 
   _onSubmit() async {
     if (_formKey.currentState.validate()) {
       _creditCardBloc.storeIn.add(
         CreditCardModel(
-          number: _creditCardNumberController.text,
-          validity: _validityController.text,
-          securityCode: _securityCodeController.text,
-          owner: _ownerController.text,
+          cartao_number: parseCartaoNumber(_creditCardNumberController.text),
+          ano_validade: _anoValidadeController.text,
+          mes_validade: _mesValidadeController.text,
+          nome_titular: _ownerController.text,
         ),
       );
 
       String _data = await _creditCardBloc.storeOut.first;
-
+      print(_data);
       if (_data != null) {
         SnackBar _snackBar = SnackBar(
           content: Text(
@@ -47,6 +51,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         await Future.delayed(
           Duration(seconds: 2),
         );
+        _creditCardBloc.fetchPaymentMethods();
         Modular.to.pop();
       }
     }
@@ -59,11 +64,11 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
     _creditCardNumberController = MaskedTextController(
       mask: '0000 0000 0000 0000',
     );
-    _validityController = MaskedTextController(
-      mask: '00/00',
+    _mesValidadeController = MaskedTextController(
+      mask: '00',
     );
-    _securityCodeController = MaskedTextController(
-      mask: '000',
+    _anoValidadeController = MaskedTextController(
+      mask: '0000',
     );
     _data = [
       {
@@ -83,23 +88,23 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
             ),
       },
       {
-        'labelText': 'Validade do cartão',
+        'labelText': 'Mes',
         'icon': MaterialCommunityIcons.calendar_month,
-        'controller': _validityController,
+        'controller': _mesValidadeController,
         'validator': (text) => Helper.lengthValidator(
               text,
-              length: 5,
+              length: 2,
               message: 'Data inválida',
             ),
       },
       {
-        'labelText': 'CVV',
-        'icon': MaterialCommunityIcons.card_bulleted,
-        'controller': _securityCodeController,
+        'labelText': 'Ano',
+        'icon': MaterialCommunityIcons.calendar_month,
+        'controller': _anoValidadeController,
         'validator': (text) => Helper.lengthValidator(
               text,
-              length: 3,
-              message: 'Código inválido',
+              length: 4,
+              message: 'Ano invalido',
             ),
       }
     ];
@@ -109,8 +114,8 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
   void dispose() {
     _ownerController.dispose();
     _creditCardNumberController.dispose();
-    _validityController.dispose();
-    _securityCodeController.dispose();
+    _anoValidadeController.dispose();
+    _mesValidadeController.dispose();
     super.dispose();
   }
 

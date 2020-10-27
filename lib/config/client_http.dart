@@ -9,7 +9,7 @@ class ClientHttp {
 
   ClientHttp() {
     dio.interceptors.clear();
-    dio.options.baseUrl = MOCK_API;
+    dio.options.baseUrl = API;
 
     dio.interceptors.add(
       InterceptorsWrapper(

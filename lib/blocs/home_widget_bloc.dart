@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -7,6 +11,8 @@ class HomeWidgetBloc extends Disposable {
   Stream<String> get sightProblemOut => _sightProblemController.stream.map(
         (event) => event,
       );
+
+  get currentSightProblem => _sightProblemController.value;
 
   BehaviorSubject _currentCreditTypeController =
       BehaviorSubject.seeded('Financeiro');

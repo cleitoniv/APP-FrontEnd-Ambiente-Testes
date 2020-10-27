@@ -8,30 +8,28 @@ class ProductsScreen extends StatelessWidget {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
 
   onChangeProduct(ProductModel product) {
-    Modular.to.pushNamed(
-      '/products/${product.id}',
-    );
+    Modular.to.pushNamed('/products/${product.id}', arguments: product);
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: StreamBuilder<List<ProductModel>>(
-        stream: _productBloc.indexOut,
+      child: StreamBuilder(
+        stream: _productBloc.productListStream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (!snapshot.hasData || snapshot.data.isEmpty) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          List<ProductModel> _products = snapshot.data;
+          List<ProductModel> _products = snapshot.data.list;
           return GridView.builder(
             itemCount: _products.length,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(10),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisSpacing: 20,
+              mainAxisSpacing: 5,
               crossAxisSpacing: 20,
               childAspectRatio: 0.7,
             ),
@@ -41,6 +39,7 @@ class ProductsScreen extends StatelessWidget {
                 title: _products[index].title,
                 tests: _products[index].tests,
                 imageUrl: _products[index].imageUrl,
+                credits: _products[index].boxes,
                 onTap: () => onChangeProduct(
                   _products[index],
                 ),

@@ -45,6 +45,7 @@ class ProfileModule extends ChildModule {
           '/appUsers/:type',
           child: (_, args) => FormScreen(
             formType: args.params['type'],
+            usuario: args.data,
           ),
         ),
       ];

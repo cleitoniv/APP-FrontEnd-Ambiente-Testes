@@ -1,136 +1,160 @@
+import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProductExtractScreen extends StatelessWidget {
+  ExtractWidgetBloc _extractWidgetBloc = Modular.get<ExtractWidgetBloc>();
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(20),
-      children: <Widget>[
-        ListTileMoreCustomizable(
-          contentPadding: const EdgeInsets.all(0),
-          horizontalTitleGap: 0,
-          leading: CircleAvatar(
-            backgroundColor: Color(0xffF1F1F1),
-            radius: 15,
-            child: Image.asset(
-              'assets/icons/open_box.png',
-              width: 25,
-              height: 25,
-            ),
-          ),
-          title: Text(
-            'BIOSOFT SIHY 45 CX3',
-            style: Theme.of(context).textTheme.headline5.copyWith(
-                  fontSize: 14,
-                ),
-          ),
-          trailing: Text(
-            'Saldo: 1',
-            style: Theme.of(context).textTheme.headline5.copyWith(
-                  fontSize: 14,
-                ),
-          ),
-        ),
-        Table(
-          border: TableBorder.symmetric(
-            outside: BorderSide(
-              width: 0.2,
-            ),
-          ),
-          children: [
-            TableRow(
-              children: [
-                Text(
-                  'Data',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Colors.black45,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  'Pedido',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Colors.black45,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  'Quantidade',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Colors.black45,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ],
-        ),
-        Table(
-          border: TableBorder.all(
-            width: 0.2,
-          ),
-          children: [
-            {
-              'date': '20/08/2020',
-              'request': '43564564',
-              'value': 2,
-            },
-            {
-              'date': '20/08/2020',
-              'request': '43564564',
-              'value': 10,
-            },
-            {
-              'date': '20/08/2020',
-              'request': '43564564',
-              'value': -2,
-            },
-          ].map((e) {
-            return TableRow(
-              children: [
-                Text(
-                  e['date'],
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Colors.black26,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  e['request'],
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Colors.black26,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  (e['value'] as int) <= 0
-                      ? '${e['value']}'
-                      : '+ ${e['value']}',
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                        fontSize: 14,
-                        color: (e['value'] as int) <= 0
-                            ? Colors.black26
-                            : Theme.of(context).primaryColor,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+    return StreamBuilder(
+        stream: _extractWidgetBloc.extratoProdutoStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.data.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
             );
-          }).toList(),
-        ),
-      ],
-    );
+          } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+            return Center(
+              child: Text("Nao possivel carregar seu extrato no momento."),
+            );
+          }
+
+          return ListView(
+              padding: const EdgeInsets.all(20),
+              children: snapshot.data.data.map<Widget>((e) {
+                return Column(
+                  children: [
+                    ListTileMoreCustomizable(
+                      contentPadding: const EdgeInsets.all(0),
+                      horizontalTitleGap: 0,
+                      leading: CircleAvatar(
+                        backgroundColor: Color(0xffF1F1F1),
+                        radius: 15,
+                        child: Image.asset(
+                          'assets/icons/open_box.png',
+                          width: 25,
+                          height: 25,
+                        ),
+                      ),
+                      title: Text(
+                        "${e.produto}",
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 14,
+                            ),
+                      ),
+                      trailing: Text(
+                        'Saldo: ${e.saldo}',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 14,
+                            ),
+                      ),
+                    ),
+                    Table(
+                      border: TableBorder.symmetric(
+                        outside: BorderSide(
+                          width: 0.2,
+                        ),
+                      ),
+                      children: [
+                        TableRow(
+                          children: [
+                            Text(
+                              'Data',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    color: Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              'Pedido',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    color: Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              'Quantidade',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    color: Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Table(
+                      border: TableBorder.all(
+                        width: 0.2,
+                      ),
+                      children: e.items.map<TableRow>((p) {
+                        return TableRow(
+                          children: [
+                            Text(
+                              "${p['date']}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    color: Colors.black26,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              "${p['pedido']}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    color: Colors.black26,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              (p['quantidade'] as int) <= 0
+                                  ? '${p['quantidade']}'
+                                  : '+ ${p['quantidade']}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 14,
+                                    color: (p['quantidade'] as int) <= 0
+                                        ? Colors.black26
+                                        : Theme.of(context).primaryColor,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    )
+                  ],
+                );
+              }).toList());
+        });
   }
 }

@@ -20,6 +20,10 @@ class _CartScreenState extends State<CartScreen> {
     _homeWidgetBloc.currentTabIndexIn.add(0);
   }
 
+  _removeItem(Map<String, dynamic> data) {
+    _requestsBloc.removeFromCart(data);
+  }
+
   _onSubmit() {
     Modular.to.pushNamed(
       '/cart/payment',
@@ -29,7 +33,8 @@ class _CartScreenState extends State<CartScreen> {
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(
       0,
-      (previousValue, element) => previousValue + element['product'].value,
+      (previousValue, element) =>
+          previousValue + (element['product'].value * element['quantity']),
     );
 
     return Helper.intToMoney(_total);
@@ -41,7 +46,7 @@ class _CartScreenState extends State<CartScreen> {
       child: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
-          StreamBuilder<List<Map<String, dynamic>>>(
+          StreamBuilder(
             stream: _requestsBloc.cartOut,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -49,7 +54,7 @@ class _CartScreenState extends State<CartScreen> {
                   heightFactor: 3,
                   child: CircularProgressIndicator(),
                 );
-              } else if (snapshot.hasData && snapshot.data.isEmpty) {
+              } else if (snapshot.hasData && snapshot.data.length <= 0) {
                 return Center(
                   heightFactor: 3,
                   child: Text(
@@ -81,7 +86,7 @@ class _CartScreenState extends State<CartScreen> {
                       _data[index]['product'].imageUrl,
                     ),
                     title: Text(
-                      _data[index]['product'].title,
+                      '${_data[index]['product'].title}',
                       style: Theme.of(context).textTheme.subtitle1.copyWith(
                             fontSize: 14,
                           ),
@@ -108,10 +113,10 @@ class _CartScreenState extends State<CartScreen> {
                             )['icon']),
                         SizedBox(width: 5),
                         Text(
-                          Helper.buyTypeBuild(
+                          '${Helper.buyTypeBuild(
                             context,
                             _data[index]['type'],
-                          )['title'],
+                          )['title']}',
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
                                 fontSize: 14,
                               ),
@@ -127,11 +132,18 @@ class _CartScreenState extends State<CartScreen> {
                                 fontSize: 14,
                               ),
                         ),
-                        Icon(
-                          Icons.keyboard_arrow_right,
-                          size: 30,
-                          color: Theme.of(context).accentColor,
-                        )
+                        Align(
+                            alignment: Alignment.center,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                size: 30,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                _removeItem(_data[index]);
+                              },
+                            ))
                       ],
                     ),
                   );
@@ -154,7 +166,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
               ),
               Text(
-                'R\$ ${Helper.intToMoney(20000)}',
+                'R\$ ${0}',
                 style: Theme.of(context).textTheme.subtitle1.copyWith(
                       fontSize: 14,
                     ),

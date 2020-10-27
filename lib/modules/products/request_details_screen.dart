@@ -6,22 +6,22 @@ import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+import 'package:random_string/random_string.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   int id;
   String type;
-
-  RequestDetailsScreen({
-    this.id,
-    this.type = 'Avulso',
-  });
+  ProductModel product;
+  RequestDetailsScreen({this.id, this.type = 'Avulso', this.product});
 
   @override
   _RequestDetailsScreenState createState() => _RequestDetailsScreenState();
@@ -31,12 +31,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map> _productParams;
   List<Map> _fieldData;
   TextEditingController _nameController;
   TextEditingController _lensController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
+  Product currentProduct;
 
   _onAddLens() {
     _lensController.text = '${int.parse(_lensController.text) + 1}';
@@ -48,34 +50,129 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
   }
 
+  String _parseType(String type) {
+    return type == "CF" ? "A" : type;
+  }
+
+  String _parseOperation(String type) {
+    if (type == "C") {
+      return "07";
+    } else if (type == "CF") {
+      return "13";
+    } else {
+      return "01";
+    }
+  }
+
+  Widget _checkForAcessorio(Widget widget) {
+    return !currentProduct.product.hasAcessorio ? widget : Container();
+  }
+
+  Future<Map<String, dynamic>> _checkParameters(
+      Map data, ProductModel product) async {
+    Map<String, dynamic> params = {};
+
+    Map<String, dynamic> errors = {};
+
+    data.remove("lenses");
+
+    Map<String, dynamic> allowedParams = {
+      "axis": product.hasEixo ?? false,
+      "cylinder": product.hasCilindrico ?? false,
+      "degree": product.hasEsferico ?? false,
+      "cor": product.hasCor ?? false,
+      "adicao": product.hasAdicao ?? false
+    };
+
+    data.keys.forEach((element) {
+      if (allowedParams[element]) {
+        params[element] = "${data[element]}";
+      }
+    });
+
+    params["group"] = product.group;
+
+    final productAvailable = await _productBloc.checkProduct(params);
+
+    if (!productAvailable) {
+      errors["Produto"] = ["Produto indisponivel no momento."];
+    }
+
+    if (params.keys.any((element) => params[element] == "")) {
+      params.keys.forEach((element) {
+        if (params[element] == "") {
+          String key;
+          switch (element) {
+            case "axis":
+              key = "Eixo";
+              break;
+            case "cylinder":
+              key = "Cilindro";
+              break;
+            case "degree":
+              key = "Esferico";
+              break;
+            case "cor":
+              key = "Cor";
+              break;
+            case "adicao":
+              key = "Adicao";
+              break;
+          }
+          errors[key] = ["Nao pode estar vazio."];
+        }
+      });
+      return errors;
+    }
+
+    return errors;
+  }
+
   _onAddToCart(Map data) async {
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
 
-    Map<String, dynamic> _data = {
-      'quantity': _first['test'] == 'Sim' ? 1 : int.parse(_lensController.text),
-      'product': data['product'],
-      'type': _first['test'] == 'Sim' ? 'test' : widget.type,
-      'pacient': {
-        'name': _nameController.text,
-        'number': _numberController.text,
-        'birthday': _birthdayController.text,
-      },
-      _first['current']: _first[_first['current']],
-    };
+    final errors = await _checkParameters(
+        new Map<String, dynamic>.from(_first[_first['current']]),
+        data['product']);
+    if (errors.keys.length <= 0) {
+      Map<String, dynamic> _data = {
+        '_cart_item': randomString(15),
+        'quantity': int.parse(_lensController.text),
+        'tests': _first['test'],
+        'operation': _parseOperation(widget.type),
+        'product': data['product'],
+        'type': _parseType(widget.type),
+        'pacient': {
+          'name': _nameController.text,
+          'number': _numberController.text,
+          'birthday': _birthdayController.text,
+        },
+        _first['current']: _first[_first['current']],
+      };
 
-    _requestsBloc.addProductToCart(_data);
-
+      _requestsBloc.addProductToCart(_data);
+      Modular.to.pushNamed("/cart/product");
+    } else {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+    }
     // print(_data);
   }
 
   _onBackToPurchase() {
-    Modular.to.popUntil(
-      (route) => route.isFirst,
-    );
+    Modular.to.pushNamed("/home/0");
   }
 
-  _onPurchase() {}
+  _onPurchase() async {
+    await _onAddToCart({'product': currentProduct.product});
+    Modular.to.pushNamed(
+      '/products/${widget.id}/requestDetails',
+      arguments: widget.type,
+    );
+  }
 
   List<Map> _renderButtonData(ProductModel product) {
     return [
@@ -108,9 +205,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           height: 20,
           color: Colors.white,
         ),
-        'onTap': () => _onAddToCart({
-              'product': product,
-            }),
+        'onTap': () {
+          _onAddToCart({
+            'product': product,
+          });
+        },
         'text': 'Adicionar ao Carrinho',
       }
     ];
@@ -136,7 +235,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   _onSelectOption(
     Map<dynamic, dynamic> data,
-    double current, {
+    dynamic current, {
     String key,
   }) async {
     Map<dynamic, dynamic> _first =
@@ -150,7 +249,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         }
       });
     } else {
-      print(_first['Graus diferentes em cada olho']['esquerdo']);
       await _onAddParam({
         await _first['current']: {
           ..._first[_first['current']],
@@ -187,7 +285,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       mask: '00/00/0000',
     );
 
-    _productBloc.showIn.add(widget.id);
+    currentProduct = _productBloc.currentProduct;
 
     _fieldData = [
       {
@@ -214,39 +312,50 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       },
     ];
 
-    _productParams = [
+    _productBloc.fetchParametros(currentProduct.product.group);
+
+    _productWidgetBloc.resetPacientInfo();
+  }
+
+  List<Map<String, dynamic>> generateProductParams(Parametros parametro) {
+    return [
       {
         'labelText': 'Escolha o Grau',
-        'items': [
-          -0.50,
-          -0.75,
-          -1.00,
-          -1.25,
-          -1.50,
-          0.50,
-          0.75,
-          1.00,
-          1.25,
-          1.50,
-        ],
         'key': 'degree',
+        'items': parametro.parametro.grausEsferico,
+        'enabled': currentProduct.product.hasEsferico
       },
       {
         'labelText': 'Escolha o Cilíndro',
-        'items': [1.0, 9.0, 8.0],
         'key': 'cylinder',
+        'items': parametro.parametro.grausCilindrico,
+        'enabled': currentProduct.product.hasCilindrico
       },
       {
         'labelText': 'Escolha o Eixo',
-        'items': [1.0, 0.9, 0.7],
         'key': 'axis',
+        'items': parametro.parametro.grausEixo,
+        'enabled': currentProduct.product.hasEixo
       },
+      {
+        'labelText': 'Escolha a Adicao',
+        'key': 'adicao',
+        'items': parametro.parametro.grausAdicao,
+        'enabled': currentProduct.product.hasAdicao
+      },
+      {
+        'labelText': 'Escolha a Cor',
+        'key': 'cor',
+        'items': parametro.parametro.cor,
+        'enabled': currentProduct.product.hasCor
+      }
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Detalhes do Pedido'),
         centerTitle: false,
@@ -256,40 +365,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              StreamBuilder<ProductModel>(
-                stream: _productBloc.showOut,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  ProductModel _product = snapshot.data;
-
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      CachedNetworkImage(
-                        imageUrl: _product.imageUrl,
-                        width: 120,
-                        height: 100,
-                        alignment: Alignment.center,
-                        fit: BoxFit.contain,
-                      ),
-                      Text(
-                        'R\$ ${Helper.intToMoney(_product.value)}',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 14,
-                            ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              SizedBox(width: 20),
               Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CachedNetworkImage(
+                      imageUrl: currentProduct.product.imageUrl,
+                      width: 120,
+                      height: 100,
+                      alignment: Alignment.center,
+                      fit: BoxFit.contain,
+                    ),
+                    Text(
+                      'R\$ ${Helper.intToMoney(currentProduct.product.value)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                          ),
+                    ),
+                  ]),
+              SizedBox(width: 20),
+              Expanded(
+                  child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -301,22 +397,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           fontWeight: FontWeight.w700,
                         ),
                   ),
-                  StreamBuilder<ProductModel>(
-                      stream: _productBloc.showOut,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Container();
-                        }
-
-                        return Text(
-                          snapshot.data.title,
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                color: Colors.black45,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        );
-                      }),
+                  Text('${currentProduct.product.title}',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black45,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700)),
                   SizedBox(height: 40),
                   Container(
                     height: 30,
@@ -344,7 +429,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     ),
                   )
                 ],
-              ),
+              )),
             ],
           ),
           Divider(
@@ -384,22 +469,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             ).toList(),
           ),
           SizedBox(height: 20),
-          Text(
+          _checkForAcessorio(Text(
             'Parâmetros',
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 10),
-          Text(
+          )),
+          _checkForAcessorio(SizedBox(height: 10)),
+          _checkForAcessorio(Text(
             'Defina os parâmetros do produto',
             style: Theme.of(context).textTheme.subtitle1,
             textAlign: TextAlign.center,
-          ),
+          )),
           SizedBox(height: 30),
-          StreamBuilder<Map<dynamic, dynamic>>(
+          _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
-              return DropdownWidget(
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return _checkForAcessorio(DropdownWidget(
                 labelText: 'Escolha os olhos',
                 items: [
                   'Olho direito',
@@ -411,11 +501,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   'current': value,
                 }),
                 currentValue: snapshot.data['current'],
-              );
+              ));
             },
-          ),
-          SizedBox(height: 20),
-          StreamBuilder<Map<dynamic, dynamic>>(
+          )),
+          _checkForAcessorio(SizedBox(height: 20)),
+          _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -426,37 +516,52 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   'Graus diferentes em cada olho') {
                 return Column(
                   children: <Widget>[
-                    Text(
-                      snapshot.data['current'],
+                    _checkForAcessorio(Text(
+                      '${snapshot.data['current']}',
                       style: Theme.of(context).textTheme.headline5,
                       textAlign: TextAlign.center,
-                    ),
+                    )),
                     SizedBox(height: 30),
-                    ListView.separated(
-                      shrinkWrap: true,
-                      primary: false,
-                      itemCount: _productParams.length,
-                      separatorBuilder: (context, index) => SizedBox(
-                        height: 10,
-                      ),
-                      itemBuilder: (context, index) {
-                        return TextFieldWidget(
-                          readOnly: true,
-                          suffixIcon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Color(0xffa1a1a1),
-                          ),
-                          controller: TextEditingController()
-                            ..text = snapshot.data[snapshot.data['current']]
-                                    [_productParams[index]['key']]
-                                .toString(),
-                          labelText: _productParams[index]['labelText'],
-                          onTap: () => _onShowOptions(
-                            _productParams[index],
-                          ),
-                        );
-                      },
-                    ),
+                    StreamBuilder(
+                        stream: _productBloc.parametroListStream,
+                        builder: (context, parametroSnapshot) {
+                          if (!parametroSnapshot.hasData ||
+                              parametroSnapshot.data.isLoading) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          final _productParams =
+                              generateProductParams(parametroSnapshot.data);
+
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            primary: false,
+                            itemCount: _productParams.length,
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: 10,
+                            ),
+                            itemBuilder: (context, index) {
+                              return _productParams[index]['enabled']
+                                  ? TextFieldWidget(
+                                      readOnly: true,
+                                      suffixIcon: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Color(0xffa1a1a1),
+                                      ),
+                                      controller: TextEditingController()
+                                        ..text =
+                                            "${snapshot.data[snapshot.data['current']][_productParams[index]['key']].toString()}",
+                                      labelText: _productParams[index]
+                                          ['labelText'],
+                                      onTap: () => _onShowOptions(
+                                        _productParams[index],
+                                      ),
+                                    )
+                                  : Container();
+                            },
+                          );
+                        }),
                   ],
                 );
               } else {
@@ -464,90 +569,121 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   children: <Widget>[
                     Column(
                       children: <Widget>[
-                        Text(
+                        _checkForAcessorio(Text(
                           'Olho direito',
                           style: Theme.of(context).textTheme.headline5,
                           textAlign: TextAlign.center,
-                        ),
+                        )),
                         SizedBox(height: 30),
-                        ListView.separated(
-                          shrinkWrap: true,
-                          primary: false,
-                          itemCount: _productParams.length,
-                          separatorBuilder: (context, index) => SizedBox(
-                            height: 10,
-                          ),
-                          itemBuilder: (context, index) {
-                            return TextFieldWidget(
-                              readOnly: true,
-                              suffixIcon: Icon(
-                                Icons.keyboard_arrow_down,
-                                color: Color(0xffa1a1a1),
-                              ),
-                              controller: TextEditingController()
-                                ..text = snapshot
-                                    .data['Graus diferentes em cada olho']
-                                        ['direito']
-                                        [_productParams[index]['key']]
-                                    .toString(),
-                              labelText: _productParams[index]['labelText'],
-                              onTap: () => _onShowOptions(
-                                _productParams[index],
-                                key: 'direito',
-                              ),
-                            );
-                          },
-                        ),
+                        StreamBuilder(
+                            stream: _productBloc.parametroListStream,
+                            builder: (context, parametroSnapshot) {
+                              if (!parametroSnapshot.hasData ||
+                                  parametroSnapshot.data.isLoading) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
+
+                              final _productParams =
+                                  generateProductParams(parametroSnapshot.data);
+
+                              return ListView.separated(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount: _productParams.length,
+                                separatorBuilder: (context, index) => SizedBox(
+                                  height: 10,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return _productParams[index]['enabled']
+                                      ? TextFieldWidget(
+                                          readOnly: true,
+                                          suffixIcon: Icon(
+                                            Icons.keyboard_arrow_down,
+                                            color: Color(0xffa1a1a1),
+                                          ),
+                                          controller: TextEditingController()
+                                            ..text =
+                                                "${snapshot.data['Graus diferentes em cada olho']['direito'][_productParams[index]['key']].toString()}",
+                                          labelText: _productParams[index]
+                                              ['labelText'],
+                                          onTap: () => _onShowOptions(
+                                            _productParams[index],
+                                            key: 'direito',
+                                          ),
+                                        )
+                                      : Container();
+                                },
+                              );
+                            })
                       ],
                     ),
                     Column(
                       children: <Widget>[
-                        Text(
+                        _checkForAcessorio(Text(
                           'Olho esquerdo',
                           style: Theme.of(context).textTheme.headline5,
                           textAlign: TextAlign.center,
-                        ),
+                        )),
                         SizedBox(height: 30),
-                        ListView.separated(
-                          shrinkWrap: true,
-                          primary: false,
-                          itemCount: _productParams.length,
-                          separatorBuilder: (context, index) => SizedBox(
-                            height: 10,
-                          ),
-                          itemBuilder: (context, index) {
-                            return TextFieldWidget(
-                              readOnly: true,
-                              suffixIcon: Icon(
-                                Icons.keyboard_arrow_down,
-                                color: Color(0xffa1a1a1),
-                              ),
-                              controller: TextEditingController()
-                                ..text = snapshot
-                                    .data['Graus diferentes em cada olho']
-                                        ['esquerdo']
-                                        [_productParams[index]['key']]
-                                    .toString(),
-                              labelText: _productParams[index]['labelText'],
-                              onTap: () => _onShowOptions(
-                                _productParams[index],
-                                key: 'esquerdo',
-                              ),
-                            );
-                          },
-                        ),
+                        StreamBuilder(
+                            stream: _productBloc.parametroListStream,
+                            builder: (context, parametroSnapshot) {
+                              if (!parametroSnapshot.hasData ||
+                                  parametroSnapshot.data.isLoading) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
+
+                              final _productParams =
+                                  generateProductParams(parametroSnapshot.data);
+
+                              return ListView.separated(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount: _productParams.length,
+                                separatorBuilder: (context, index) => SizedBox(
+                                  height: 10,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return _productParams[index]['enabled']
+                                      ? TextFieldWidget(
+                                          readOnly: true,
+                                          suffixIcon: Icon(
+                                            Icons.keyboard_arrow_down,
+                                            color: Color(0xffa1a1a1),
+                                          ),
+                                          controller: TextEditingController()
+                                            ..text =
+                                                "${snapshot.data['Graus diferentes em cada olho']['esquerdo'][_productParams[index]['key']].toString()}",
+                                          labelText: _productParams[index]
+                                              ['labelText'],
+                                          onTap: () => _onShowOptions(
+                                            _productParams[index],
+                                            key: 'esquerdo',
+                                          ),
+                                        )
+                                      : Container();
+                                },
+                              );
+                            })
                       ],
                     ),
                   ],
                 );
               }
             },
+          )),
+          SizedBox(
+            height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Quantidade de lentes',
+                !currentProduct.product.hasAcessorio
+                    ? 'Quantidade de caixas'
+                    : 'Quantidade',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               TextFieldWidget(
@@ -574,17 +710,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             ],
           ),
           SizedBox(height: 10),
-          StreamBuilder<Map>(
+          _checkForAcessorio(StreamBuilder<Map>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
               return DropdownWidget(
-                items: ['Sim', 'Não'],
-                currentValue: snapshot.hasData ? snapshot.data['test'] : null,
-                labelText: 'Teste?',
-                onChanged: _onChangedTest,
-              );
+                  items: ['Não', 'Sim'],
+                  currentValue: snapshot.hasData ? snapshot.data['test'] : null,
+                  labelText: 'Teste?',
+                  onChanged: _onChangedTest);
             },
-          ),
+          )),
           Container(
             width: MediaQuery.of(context).size.width,
             margin: const EdgeInsets.symmetric(
@@ -624,7 +759,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                         ),
                         subtitle: Text(
-                          'Rua Madeira de Freitas, 249, Ap 10001, Praia do Canto, Vitória/ES. 29055-320',
+                          '${currentProduct.product.enderecoEntrega}',
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ),
@@ -646,7 +781,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       ),
                       SizedBox(width: 10),
                       Text(
-                        'Consultar Prazo de Entrega',
+                        'Entrega prevista em ${currentProduct.product.previsaoEntrega} dias',
                         style: Theme.of(context).textTheme.headline5.copyWith(
                               fontSize: 16,
                             ),
@@ -657,40 +792,28 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               ],
             ),
           ),
-          StreamBuilder<ProductModel>(
-            stream: _productBloc.showOut,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return Column(
-                children: _renderButtonData(snapshot.data).map(
-                  (e) {
-                    return Container(
-                      margin: const EdgeInsets.only(
-                        top: 20,
-                      ),
-                      child: RaisedButton.icon(
-                        icon: e['icon'],
-                        color: e['color'],
-                        elevation: 0,
-                        onPressed: e['onTap'],
-                        label: Text(
-                          e['text'],
-                          style: Theme.of(context).textTheme.button.copyWith(
-                                color: e['textColor'],
-                              ),
+          Column(
+              children: _renderButtonData(currentProduct.product).map(
+            (e) {
+              return Container(
+                margin: const EdgeInsets.only(
+                  top: 20,
+                ),
+                child: RaisedButton.icon(
+                  icon: e['icon'],
+                  color: e['color'],
+                  elevation: 0,
+                  onPressed: e['onTap'],
+                  label: Text(
+                    e['text'] ?? "-",
+                    style: Theme.of(context).textTheme.button.copyWith(
+                          color: e['textColor'],
                         ),
-                      ),
-                    );
-                  },
-                ).toList(),
+                  ),
+                ),
               );
             },
-          )
+          ).toList())
         ],
       ),
     );

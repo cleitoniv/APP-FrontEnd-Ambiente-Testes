@@ -1,7 +1,10 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -21,6 +24,14 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController;
   TextEditingController _passwordController;
   bool _obscureText = true;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  _showErrors(Map<String, dynamic> errors) {
+    SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
+    _scaffoldKey.currentState.showSnackBar(
+      _snack,
+    );
+  }
 
   _onLogin() async {
     if (_formKey.currentState.validate()) {
@@ -29,24 +40,43 @@ class _LoginScreenState extends State<LoginScreen> {
         'password': _passwordController.text,
       });
 
-      String _first = await _authBloc.loginOut.first;
-      if (_first.contains('ERROR')) {
+      LoginEvent _login = await _authBloc.loginOut.first;
+
+      if (!_login.isValid) {
         String _message = Helper.handleFirebaseError(
-          _first,
+          _login.message,
         );
 
         SnackBar _snackBar = SnackBar(
-          content: Text(_message),
+          content: Text(_login.message),
         );
 
         _scaffoldKey.currentState.showSnackBar(
           _snackBar,
         );
+      } else if (_login.result.user.isEmailVerified) {
+        AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
+        if (!_cliente.data.cadastrado) {
+          _authWidgetBloc.createAccountDataIn
+              .add({'email': _cliente.data.email, 'ddd': '27'});
+          Modular.to.pushNamed('/auth/activityPerformed');
+        } else if (_cliente.isValid) {
+          _authBloc.setLoginEvent(_login);
+
+          Modular.to.pushNamedAndRemoveUntil(
+            '/home/0',
+            (route) => route.isFirst,
+          );
+        } else {
+          Modular.to.pushNamed('/auth/validate');
+        }
       } else {
-        Modular.to.pushNamedAndRemoveUntil(
-          '/home/0',
-          (route) => route.isFirst,
-        );
+        try {
+          await _login.result.user.sendEmailVerification();
+          _showErrors({
+            "Verificar email": ["Te Enviamos um email de verificaçao "]
+          });
+        } catch (e) {}
       }
     }
   }

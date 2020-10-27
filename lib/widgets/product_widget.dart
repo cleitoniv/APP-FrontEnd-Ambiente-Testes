@@ -11,6 +11,7 @@ class ProductWidget extends StatelessWidget {
   String imageUrl;
   double width;
   Function onTap;
+  int boxes;
 
   ProductWidget({
     this.tests = 0,
@@ -38,7 +39,7 @@ class ProductWidget extends StatelessWidget {
               children: <Widget>[
                 credits != 0
                     ? Container(
-                        width: 64,
+                        width: 70,
                         height: 36,
                         decoration: BoxDecoration(
                           color: Color(0xffFAF4E4),
@@ -61,7 +62,10 @@ class ProductWidget extends StatelessWidget {
                           ],
                         ),
                       )
-                    : Container(),
+                    : SizedBox(
+                        width: 70,
+                        height: 36,
+                      ),
                 tests != 0
                     ? Container(
                         width: 64,
@@ -86,7 +90,10 @@ class ProductWidget extends StatelessWidget {
                           ],
                         ),
                       )
-                    : Container(),
+                    : SizedBox(
+                        width: 64,
+                        height: 36,
+                      ),
               ],
             ),
             CachedNetworkImage(

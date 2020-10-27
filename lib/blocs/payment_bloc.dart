@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/repositories/payment_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
@@ -7,14 +8,13 @@ class PaymentBloc extends Disposable {
 
   PaymentBloc(this.repository);
 
-  BehaviorSubject _paymentController = BehaviorSubject.seeded(null);
-  Sink get paymentIn => _paymentController.sink;
-  Stream<String> get paymentOut => _paymentController.stream.asyncMap(
-        (event) => repository.payment(event),
-      );
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
+
+  void payment(Map<String, dynamic> data) async {
+    PaymentMethod _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    await repository.payment(data, _paymentMethod);
+  }
 
   @override
-  void dispose() {
-    _paymentController.close();
-  }
+  void dispose() {}
 }

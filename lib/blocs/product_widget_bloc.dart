@@ -6,38 +6,97 @@ class ProductWidgetBloc extends Disposable {
     'test': 'Não',
     'current': 'Olho direito',
     'Olho direito': {
-      'degree': 1.0,
-      'cylinder': 1.0,
-      'axis': 1.0,
-      'lenses': 1.0,
+      'degree': '',
+      'cylinder': '',
+      'axis': '',
+      'lenses': '',
+      'cor': '',
+      'adicao': ''
     },
     'Olho esquerdo': {
-      'degree': 1.0,
-      'cylinder': 1.0,
-      'axis': 1.0,
-      'lenses': 1.0,
+      'degree': '',
+      'cylinder': '',
+      'axis': '',
+      'lenses': '',
+      'cor': '',
+      'adicao': ''
     },
     'Mesmo grau em ambos': {
-      'degree': 1.0,
-      'cylinder': 1.0,
-      'axis': 1.0,
-      'lenses': 1.0,
+      'degree': '',
+      'cylinder': '',
+      'axis': '',
+      'lenses': '',
+      'cor': '',
+      'adicao': ''
     },
     'Graus diferentes em cada olho': {
       'esquerdo': {
-        'degree': 1.0,
-        'cylinder': 1.0,
-        'axis': 1.0,
-        'lenses': 1.0,
+        'degree': '',
+        'cylinder': '',
+        'axis': '',
+        'lenses': '',
+        'cor': '',
+        'adicao': ''
       },
       'direito': {
-        'degree': 1.0,
-        'cylinder': 1.0,
-        'axis': 1.0,
-        'lenses': 1.0,
+        'degree': '',
+        'cylinder': '',
+        'axis': '',
+        'lenses': '',
+        'cor': '',
+        'adicao': ''
       }
     },
   });
+
+  void resetPacientInfo() {
+    pacientInfoIn.add({
+      'test': 'Não',
+      'current': 'Olho direito',
+      'Olho direito': {
+        'degree': '',
+        'cylinder': '',
+        'axis': '',
+        'lenses': '',
+        'cor': '',
+        'adicao': ''
+      },
+      'Olho esquerdo': {
+        'degree': '',
+        'cylinder': '',
+        'axis': '',
+        'lenses': '',
+        'cor': '',
+        'adicao': ''
+      },
+      'Mesmo grau em ambos': {
+        'degree': '',
+        'cylinder': '',
+        'axis': '',
+        'lenses': '',
+        'cor': '',
+        'adicao': ''
+      },
+      'Graus diferentes em cada olho': {
+        'esquerdo': {
+          'degree': '',
+          'cylinder': '',
+          'axis': '',
+          'lenses': '',
+          'cor': '',
+          'adicao': ''
+        },
+        'direito': {
+          'degree': '',
+          'cylinder': '',
+          'axis': '',
+          'lenses': '',
+          'cor': '',
+          'adicao': ''
+        }
+      },
+    });
+  }
 
   Sink get pacientInfoIn => _pacientInfoController.sink;
   Stream<Map<dynamic, dynamic>> get pacientInfoOut =>

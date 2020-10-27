@@ -15,6 +15,6 @@ class CreditsModule extends ChildModule {
         Router(
           '/',
           child: (_, args) => CreditsScreen(),
-        )
+        ),
       ];
 }

@@ -17,10 +17,10 @@ class NotificationModel {
 
   NotificationModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    isRead = json['is_read'];
+    isRead = json['lido'];
     title = json['title'];
-    subtitle = json['subtitle'];
-    date = json['date'];
+    subtitle = json['mensagem'];
+    date = json['data'];
     type = json['type'];
   }
 

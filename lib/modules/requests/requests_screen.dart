@@ -1,5 +1,6 @@
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -15,16 +16,16 @@ class RequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: StreamBuilder<List<RequestModel>>(
-        stream: _requestsBloc.indexOut,
+      child: StreamBuilder(
+        stream: _requestsBloc.pedidoStream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (!snapshot.hasData || snapshot.data.isLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          List<RequestModel> _requests = snapshot.data;
+          List<PedidoModel> _requests = snapshot.data.list;
           return ListView.separated(
             padding: const EdgeInsets.all(20),
             itemCount: _requests.length,
@@ -32,9 +33,10 @@ class RequestsScreen extends StatelessWidget {
               height: 20,
             ),
             itemBuilder: (context, index) {
+              print(index);
               return ListTileMoreCustomizable(
                 contentPadding: const EdgeInsets.all(0),
-                onTap: (value) => _onShowRequest(1),
+                onTap: (value) => _onShowRequest(_requests[index].numeroPedido),
                 horizontalTitleGap: 10,
                 leading: Container(
                   width: 50,
@@ -46,31 +48,13 @@ class RequestsScreen extends StatelessWidget {
                   ),
                   child: Text(
                     Helper.dateToMonth(
-                      _requests[index].requestDate,
+                      _requests[index].dataInclusao,
                     ).substring(0, 8),
                     style: Theme.of(context).textTheme.subtitle1.copyWith(
                           fontSize: 14,
                         ),
                     textAlign: TextAlign.center,
                   ),
-                ),
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      _requests[index].owner,
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            fontSize: 14,
-                          ),
-                    ),
-                    Text(
-                      'Valor',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            fontSize: 14,
-                          ),
-                    )
-                  ],
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +64,7 @@ class RequestsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          'Pedido ${_requests[index].id}',
+                          'Pedido ${_requests[index].numeroPedido}',
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
                                 color: Colors.black26,
                                 fontSize: 14,
@@ -89,7 +73,17 @@ class RequestsScreen extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             Text(
-                              'R\$ ${Helper.intToMoney(_requests[index].value)}',
+                              'Valor',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontSize: 14,
+                                  ),
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'R\$ ${Helper.intToMoney(_requests[index].valor)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5
@@ -106,7 +100,7 @@ class RequestsScreen extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      'Previsão de entrega: ${Helper.sqlToDate(_requests[index].deliveryForecast)}',
+                      'Previsão de entrega: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
                       style: Theme.of(context).textTheme.subtitle1.copyWith(
                             color: Colors.black26,
                             fontSize: 14,

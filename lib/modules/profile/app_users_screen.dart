@@ -1,19 +1,32 @@
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-class AppUsersScreen extends StatelessWidget {
+class AppUsersScreen extends StatefulWidget {
+  @override
+  _AppUsersScreenState createState() => _AppUsersScreenState();
+}
+
+class _AppUsersScreenState extends State<AppUsersScreen> {
+  UserBloc _userBloc = Modular.get<UserBloc>();
+
   _onAddUser() {
     Modular.to.pushNamed(
       '/profile/appUsers/add',
     );
   }
 
-  _onEditUser() {
-    Modular.to.pushNamed(
-      '/profile/appUsers/edit',
-    );
+  _onEditUser(UsuarioClienteModel usuario) {
+    Modular.to.pushNamed('/profile/appUsers/edit', arguments: usuario);
+  }
+
+  @override
+  void initState() {
+    _userBloc.fetchUsuariosCliente();
+    super.initState();
   }
 
   @override
@@ -38,63 +51,83 @@ class AppUsersScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
-          ListView.separated(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: 2,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 20,
-            ),
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: _onEditUser,
-                child: Stack(
-                  overflow: Overflow.visible,
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
-                      width: MediaQuery.of(context).size.width,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        color: Color(0xffF1F1F1),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: ListTileMoreCustomizable(
-                        contentPadding: const EdgeInsets.all(0),
-                        title: Text(
-                          'Maria Cristina',
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                        subtitle: Text(
-                          'maria@atendimento.com.br',
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 14,
-                                color: Colors.black38,
-                              ),
-                        ),
-                        trailing: Icon(
-                          Icons.keyboard_arrow_right,
-                          size: 30,
-                          color: Theme.of(context).accentColor,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: -10,
-                      top: 20,
-                      child: Icon(
-                        Icons.check_circle,
-                        color: Theme.of(context).accentColor,
-                        size: 25,
-                      ),
-                    )
-                  ],
+          StreamBuilder(
+            stream: _userBloc.usuariosClienteStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data.isLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                return Center(
+                    child: Text("Nao há usuarios cadastrados no momento."));
+              }
+
+              return ListView.separated(
+                shrinkWrap: true,
+                primary: false,
+                itemCount: snapshot.data.usuarios.length,
+                separatorBuilder: (context, index) => SizedBox(
+                  height: 20,
                 ),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      _onEditUser(snapshot.data.usuarios[index]);
+                    },
+                    child: Stack(
+                      overflow: Overflow.visible,
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                          ),
+                          width: MediaQuery.of(context).size.width,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: Color(0xffF1F1F1),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: ListTileMoreCustomizable(
+                            contentPadding: const EdgeInsets.all(0),
+                            title: Text(
+                              "${snapshot.data.usuarios[index].nome}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            subtitle: Text(
+                              "${snapshot.data.usuarios[index].email}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontSize: 14,
+                                    color: Colors.black38,
+                                  ),
+                            ),
+                            trailing: Icon(
+                              Icons.keyboard_arrow_right,
+                              size: 30,
+                              color: Theme.of(context).accentColor,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: -10,
+                          top: 20,
+                          child: Icon(
+                            Icons.check_circle,
+                            color: Theme.of(context).accentColor,
+                            size: 25,
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
               );
             },
           ),

@@ -1,6 +1,8 @@
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/models/endereco_entrega.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/login_screen.dart';
+import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,7 @@ class DeliveryAddressScreen extends StatefulWidget {
 
 class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
   UserBloc _userBloc = Modular.get<UserBloc>();
-  List<Map> _addressInfo;
+  List<Map> _addressInfo = [];
   MaskedTextController _zipCodeController;
   TextEditingController _addressController;
   TextEditingController _houseNumberController;
@@ -23,38 +25,48 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
   TextEditingController _districtController;
   TextEditingController _cityController;
 
+  String getField(EnderecoEntregaModel endereco, String label) {
+    if (label == "CEP") {
+      return endereco.cep;
+    } else if (label == "Endereço") {
+      return endereco.endereco;
+    } else if (label == "Número") {
+      return endereco.numero;
+    } else if (label == "Complemento") {
+      return endereco.complemento;
+    } else if (label == "Bairro") {
+      return endereco.bairro;
+    } else if (label == "Cidade") {
+      return endereco.municipio;
+    }
+  }
+
   _initData() async {
     UserModel _user = await _userBloc.currentUserOut.first;
 
     _addressInfo = [
       {
         'labelText': 'CEP',
-        'value': _user.locale.zipCode,
         'controller': _zipCodeController,
       },
       {
         'labelText': 'Endereço',
-        'value': _user.locale.address,
         'controller': _addressController,
       },
       {
         'labelText': 'Número',
-        'value': _user.locale.number,
         'controller': _houseNumberController,
       },
       {
         'labelText': 'Complemento',
-        'value': _user.locale.adjunct,
         'controller': _adjunctController,
       },
       {
         'labelText': 'Bairro',
-        'value': _user.locale.district,
         'controller': _districtController,
       },
       {
         'labelText': 'Cidade',
-        'value': _user.locale.city,
         'controller': _cityController,
       },
     ];
@@ -71,6 +83,8 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
     _adjunctController = TextEditingController();
     _districtController = TextEditingController();
     _cityController = TextEditingController();
+
+    _userBloc.getEnderecoEntrega();
 
     _initData();
   }
@@ -123,10 +137,10 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
-          StreamBuilder<UserModel>(
-              stream: _userBloc.currentUserOut,
+          StreamBuilder(
+              stream: _userBloc.enderecoEntregaStream,
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (!snapshot.hasData || snapshot.data.isLoading) {
                   return Center(
                     heightFactor: 3,
                     child: CircularProgressIndicator(),
@@ -148,7 +162,8 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                         color: Color(0xffA1A1A1),
                       ),
                       controller: _addressInfo[index]['controller']
-                        ..text = _addressInfo[index]['value'],
+                        ..text =
+                            "${getField(snapshot.data.endereco, _addressInfo[index]['labelText'])}",
                     );
                   },
                 );

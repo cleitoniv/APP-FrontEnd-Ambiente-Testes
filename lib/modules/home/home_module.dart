@@ -18,9 +18,11 @@ class HomeModule extends ChildModule {
   List<Router> get routers => [
         Router(
           '/:index',
-          child: (_, args) => TabsScreen(
-            index: int.parse(args.params['index']),
-          ),
+          child: (_, args) {
+            return TabsScreen(
+              index: int.parse(args.params['index']),
+            );
+          }
         ),
       ];
 }

@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "816933314049",
-    "firebase_url": "https://central-oft-cliente.firebaseio.com",
-    "project_id": "central-oft-cliente",
-    "storage_bucket": "central-oft-cliente.appspot.com"
+    "project_number": "444246563766",
+    "firebase_url": "https://central-oftalmica-dev.firebaseio.com",
+    "project_id": "central-oftalmica-dev",
+    "storage_bucket": "central-oftalmica-dev.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:816933314049:android:3cadbe10018c06731c2a00",
+        "mobilesdk_app_id": "1:444246563766:android:73a2f6c8f0a33908e77f17",
         "android_client_info": {
           "package_name": "br.com.centraloftalmica.cliente"
         }
       },
       "oauth_client": [
         {
-          "client_id": "816933314049-su2emv76f7aom5ucocql65s7ialuaoco.apps.googleusercontent.com",
+          "client_id": "444246563766-6ib1ec68ldj795oephtij8dpposj0n07.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA1PiGXx3FCtCWOMrIE86_LtmDeMK8CTDw"
+          "current_key": "AIzaSyDz9lMXSUtxLxUHRdzl1G47VtlOpCa_ynM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "816933314049-su2emv76f7aom5ucocql65s7ialuaoco.apps.googleusercontent.com",
+              "client_id": "444246563766-6ib1ec68ldj795oephtij8dpposj0n07.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

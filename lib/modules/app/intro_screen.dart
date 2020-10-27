@@ -15,23 +15,23 @@ class _IntroScreenState extends State<IntroScreen> {
     {
       'id': 0,
       'image': 'assets/images/intro_0.png',
-      'title': 'A melhor tecnologia para sua visão',
+      'title': 'Mais tecnologia para a visão',
       'subtitle':
-          'Nosso aplicativo tem como objetivo facilitar a compra e gestão dos nossos produtos para profissionais que trabalham com lentes de contato.',
+          'Nosso aplicativo simplifica o controle dos usuários e produtos para quem trabalha com lentes de contato',
     },
     {
       'id': 1,
       'image': 'assets/images/intro_1.png',
       'title': 'Crédito Financeiro, Crédito de Produto e Compra Avulsa',
       'subtitle':
-          'Três formas de compra, possibilitando você a gerenciar suas lentes da melhor forma.',
+          'Três maneiras de comprar, possibilitando você a gerenciar suas lentes de contato de forma mais dinâmica',
     },
     {
       'id': 2,
       'image': 'assets/images/intro_2.png',
-      'title': 'Pedidos categorizados por pacientes',
+      'title': 'Pedidos com controle por usuários',
       'subtitle':
-          'Categorizando por paciente, você controla o lote das lentes e a data de reavaliação ou reposição. Isto faz você acumular pontos para comprar mais produtos.',
+          'Categorizando por usuário, você controla o lote das lentes e a data de reavaliação e reposição. Isto faz você acumular pontos para compras futuras',
     }
   ];
 

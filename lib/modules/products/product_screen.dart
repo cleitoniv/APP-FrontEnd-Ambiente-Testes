@@ -1,19 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProductScreen extends StatefulWidget {
   int id;
-
-  ProductScreen({
-    this.id,
-  });
+  ProductModel product;
+  ProductScreen({this.id, this.product});
 
   @override
   _ProductScreenState createState() => _ProductScreenState();
@@ -22,6 +23,9 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
+
+  AuthEvent currentUser;
 
   _onShowInfo(bool value) {
     _productWidgetBloc.showInfoIn.add(!value);
@@ -49,14 +53,20 @@ class _ProductScreenState extends State<ProductScreen> {
       onCancel: _onCancelPurchase,
       onConfirm: () {
         Modular.to.pop();
-        _onConfirmPurchase(product, 'singleOrder');
+        _onConfirmPurchase(product, 'A');
       },
     );
   }
 
   @override
   void initState() {
-    _productBloc.showIn.add(widget.id);
+    this.currentUser = _authBloc.getAuthCurrentUser;
+    // _productBloc.fetchProduct(widget.id);
+    final product =
+        Product(product: widget.product, isLoading: false, isEmpty: false);
+    _productBloc.productSink.add(product);
+    _productBloc.setCurrentProduct(product);
+    _productWidgetBloc.showInfoIn.add(false);
     super.initState();
   }
 
@@ -67,280 +77,276 @@ class _ProductScreenState extends State<ProductScreen> {
         title: Text('Detalhes do Produto'),
         centerTitle: false,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: <Widget>[
-          StreamBuilder<ProductModel>(
-            stream: _productBloc.showOut,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return ListTileMoreCustomizable(
-                contentPadding: const EdgeInsets.all(0),
-                horizontalTitleGap: 0,
-                title: Text(
-                  snapshot.data.title,
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        fontSize: 18,
+      body: StreamBuilder(
+        stream: _productBloc.productStream,
+        builder: (context, productSnapshot) {
+          if (!productSnapshot.hasData || productSnapshot.data.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return ListView(
+              padding: const EdgeInsets.all(20),
+              children: <Widget>[
+                ListTileMoreCustomizable(
+                  contentPadding: const EdgeInsets.all(0),
+                  horizontalTitleGap: 0,
+                  title: Text(
+                    productSnapshot.data.product.title,
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          fontSize: 18,
+                        ),
+                  ),
+                  trailing: Column(
+                    children: <Widget>[
+                      Text(
+                        'Valor avulso',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontSize: 14,
+                              color: Colors.black38,
+                            ),
                       ),
+                      Text(
+                        'R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 18,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
-                trailing: Column(
+                Stack(
+                  overflow: Overflow.visible,
                   children: <Widget>[
-                    Text(
-                      'Valor avulso',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            fontSize: 14,
-                            color: Colors.black38,
+                    Container(
+                      margin: const EdgeInsets.only(top: 30),
+                      height: 208,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(
+                            width: 0.5,
+                            color: Colors.black26,
                           ),
+                          bottom: BorderSide(
+                            width: 0.5,
+                            color: Colors.black26,
+                          ),
+                        ),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: productSnapshot.data.product.imageUrl,
+                      ),
                     ),
-                    Text(
-                      'R\$ ${Helper.intToMoney(snapshot.data.value)}',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 18,
-                          ),
+                    Positioned(
+                      width: 67,
+                      height: 32,
+                      left: 20,
+                      top: 15,
+                      child: StreamBuilder(
+                        stream: _productWidgetBloc.showInfoOut,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          return RaisedButton(
+                            onPressed: () => _onShowInfo(
+                              snapshot.data,
+                            ),
+                            padding: const EdgeInsets.all(0),
+                            color: snapshot.data
+                                ? Theme.of(context).accentColor
+                                : Color(0xffA5A5A5),
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Text(
+                              '+INFO',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2
+                                  .copyWith(
+                                    fontSize: 14,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      bottom: -30,
+                      right: 20,
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Color(0xffFD6565),
+                        child: Image.asset(
+                          'assets/icons/heart_outline.png',
+                          width: 30,
+                          height: 30,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              );
-            },
-          ),
-          Stack(
-            overflow: Overflow.visible,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(top: 30),
-                height: 208,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(
-                    top: BorderSide(
-                      width: 0.5,
-                      color: Colors.black26,
+                SizedBox(height: 30),
+                Table(
+                  children: [
+                    TableRow(
+                      children: [
+                        {
+                          'title': 'Financeiro',
+                          'subtitle':
+                              'R\$ ${Helper.intToMoney(this.currentUser.data.money)}',
+                          'color': Theme.of(context).primaryColor,
+                          'widget': Icon(
+                            Icons.attach_money,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        },
+                        {
+                          'title': 'Produto',
+                          'subtitle':
+                              '${productSnapshot.data.product.boxes} caixas',
+                          'color': Color(0xffEFC75E),
+                          'widget': Image.asset(
+                            'assets/icons/open_box.png',
+                            width: 15,
+                            height: 15,
+                            color: Colors.white,
+                          ),
+                        },
+                        {
+                          'title': 'Testes',
+                          'subtitle': "${productSnapshot.data.product.tests}",
+                          'color': Colors.black12,
+                          'widget': Icon(
+                            Icons.remove_red_eye,
+                            color: Colors.black54,
+                            size: 15,
+                          ),
+                        }
+                      ].map(
+                        (item) {
+                          return ListTileMoreCustomizable(
+                            contentPadding: const EdgeInsets.all(0),
+                            horizontalTitleGap: -5,
+                            leading: CircleAvatar(
+                              backgroundColor: item['color'],
+                              radius: 12,
+                              child: item['widget'],
+                            ),
+                            title: Text(
+                              item['title'],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontSize: 14,
+                                  ),
+                            ),
+                            subtitle: Text(
+                              item['subtitle'],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                            ),
+                          );
+                        },
+                      ).toList(),
                     ),
-                    bottom: BorderSide(
-                      width: 0.5,
-                      color: Colors.black26,
-                    ),
-                  ),
+                  ],
                 ),
-                child: CachedNetworkImage(
-                  imageUrl:
-                      'https://onelens.fbitsstatic.net/img/p/lentes-de-contato-bioview-asferica-80342/353788.jpg?w=530&h=530&v=202004021417',
-                ),
-              ),
-              Positioned(
-                width: 67,
-                height: 32,
-                left: 20,
-                top: 15,
-                child: StreamBuilder<bool>(
+                SizedBox(height: 20),
+                StreamBuilder(
                   stream: _productWidgetBloc.showInfoOut,
                   builder: (context, snapshot) {
-                    return RaisedButton(
-                      onPressed: () => _onShowInfo(
-                        snapshot.data,
-                      ),
-                      padding: const EdgeInsets.all(0),
-                      color: snapshot.data
-                          ? Theme.of(context).accentColor
-                          : Color(0xffA5A5A5),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: Text(
-                        '+INFO',
-                        style: Theme.of(context).textTheme.subtitle2.copyWith(
-                              fontSize: 14,
-                            ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Positioned(
-                bottom: -30,
-                right: 20,
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Color(0xffFD6565),
-                  child: Image.asset(
-                    'assets/icons/heart_outline.png',
-                    width: 30,
-                    height: 30,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 30),
-          Table(
-            children: [
-              TableRow(
-                children: [
-                  {
-                    'title': 'Financeiro',
-                    'subtitle': 'R\$ ${Helper.intToMoney(200000)}',
-                    'color': Theme.of(context).primaryColor,
-                    'widget': Icon(
-                      Icons.attach_money,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  },
-                  {
-                    'title': 'Produto',
-                    'subtitle': '0 caixas',
-                    'color': Color(0xffEFC75E),
-                    'widget': Image.asset(
-                      'assets/icons/open_box.png',
-                      width: 15,
-                      height: 15,
-                      color: Colors.white,
-                    ),
-                  },
-                  {
-                    'title': 'Testes',
-                    'subtitle': '30 un.',
-                    'color': Colors.black12,
-                    'widget': Icon(
-                      Icons.remove_red_eye,
-                      color: Colors.black54,
-                      size: 15,
-                    ),
-                  }
-                ].map(
-                  (item) {
-                    return ListTileMoreCustomizable(
-                      contentPadding: const EdgeInsets.all(0),
-                      horizontalTitleGap: -5,
-                      leading: CircleAvatar(
-                        backgroundColor: item['color'],
-                        radius: 12,
-                        child: item['widget'],
-                      ),
-                      title: Text(
-                        item['title'],
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontSize: 14,
-                            ),
-                      ),
-                      subtitle: Text(
-                        item['subtitle'],
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                            ),
-                      ),
-                    );
-                  },
-                ).toList(),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          StreamBuilder<bool>(
-            stream: _productWidgetBloc.showInfoOut,
-            builder: (context, snapshot) {
-              return Container(
-                height: snapshot.data ? null : 0,
-                width: snapshot.data ? null : 0,
-                child: ListView(
-                  primary: false,
-                  shrinkWrap: true,
-                  children: <Widget>[
-                    Text(
-                      'Descrição do produto',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 18,
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    return Container(
+                      height: snapshot.data ? null : 0,
+                      width: snapshot.data ? null : 0,
+                      child: ListView(
+                        primary: false,
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          Text(
+                            'Descrição do produto',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 18,
+                                    ),
+                            textAlign: TextAlign.center,
                           ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 30),
-                    StreamBuilder<ProductModel>(
-                        stream: _productBloc.showOut,
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(
-                              heightFactor: 3,
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-
-                          return Text(
-                            snapshot.data.details.description,
+                          SizedBox(height: 30),
+                          Text(
+                            "${productSnapshot.data.product.descricao}",
                             style:
                                 Theme.of(context).textTheme.subtitle1.copyWith(
                                       color: Color(0xffa1a1a1),
                                     ),
-                          );
-                        }),
-                    SizedBox(height: 20),
-                    Text(
-                      'Especificações',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 18,
                           ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 30),
-                    StreamBuilder<ProductModel>(
-                      stream: _productBloc.showOut,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(
-                            heightFactor: 3,
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        ProductModel _product = snapshot.data;
-
-                        return Table(
-                          children: [
+                          SizedBox(height: 20),
+                          Text(
+                            'Especificações',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 18,
+                                    ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 30),
+                          Table(
+                              children: [
                             {
                               'title': 'Material',
-                              'value': _product.details.material,
+                              'value': productSnapshot.data.product.material,
                             },
                             {
                               'title': 'DK/t',
-                              'value': _product.details.dkt,
+                              'value': productSnapshot.data.product.dkT,
                             },
                             {
-                              'title': 'Vistint',
-                              'value': _product.details.vistint ? 'Sim' : 'Não',
+                              'title': 'Visint',
+                              'value': productSnapshot.data.product.visint
+                                  ? 'Sim'
+                                  : 'Não',
                             },
                             {
                               'title': 'Espessura',
-                              'value': '${_product.details.thickness / 100}mm',
+                              'value':
+                                  '${productSnapshot.data.product.espessura}mm',
                             },
                             {
                               'title': 'Hidratação',
-                              'value': '${_product.details.hydration}%',
+                              'value':
+                                  '${productSnapshot.data.product.hidratacao}%',
                             },
                             {
                               'title': 'Assepsia',
-                              'value': _product.details.assepsis,
+                              'value': productSnapshot.data.product.assepsia,
                             },
                             {
                               'title': 'Descarte',
-                              'value': _product.details.discard,
+                              'value': productSnapshot.data.product.descarte,
                             },
                             {
                               'title': 'Desenho',
-                              'value': _product.details.design,
+                              'value': productSnapshot.data.product.desenho,
                             },
                           ].map(
                             (e) {
                               return TableRow(
                                 children: [
                                   Text(
-                                    e['title'],
+                                    "${e['title']}",
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
@@ -352,52 +358,37 @@ class _ProductScreenState extends State<ProductScreen> {
                                 ],
                               );
                             },
-                          ).toList(),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 30),
-                    Text(
-                      'Parâmetros',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 18,
+                          ).toList()),
+                          SizedBox(height: 30),
+                          Text(
+                            'Parâmetros',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 18,
+                                    ),
+                            textAlign: TextAlign.center,
                           ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20),
-                    StreamBuilder<ProductModel>(
-                      stream: _productBloc.showOut,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(
-                            heightFactor: 3,
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        ProductModel _product = snapshot.data;
-
-                        return Table(
-                          children: [
+                          SizedBox(height: 20),
+                          Table(
+                              children: [
                             {
                               'title': 'Diâmetro (mm)',
-                              'value': _product.details.diameter / 100,
+                              'value': productSnapshot.data.product.diametro,
                             },
                             {
                               'title': 'Curva base (mm)',
-                              'value': _product.details.baseCurve / 100,
+                              'value': productSnapshot.data.product.curvaBase,
                             },
                             {
                               'title': 'Esférico (D)',
-                              'value':
-                                  '${_product.details.spherical[0]} a ${_product.details.spherical[1]}',
+                              'value': productSnapshot.data.product.esferico,
                             },
                           ].map(
                             (e) {
                               return TableRow(
                                 children: [
                                   Text(
-                                    e['title'],
+                                    "${e['title']}",
                                     style:
                                         Theme.of(context).textTheme.subtitle1,
                                   ),
@@ -409,69 +400,63 @@ class _ProductScreenState extends State<ProductScreen> {
                                 ],
                               );
                             },
-                          ).toList(),
-                        );
-                      },
-                    ),
-                  ],
+                          ).toList())
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-          SizedBox(height: 20),
-          StreamBuilder<bool>(
-            stream: _productWidgetBloc.showInfoOut,
-            builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data) {
-                return RaisedButton(
-                  onPressed: () => _onShowInfo(
-                    snapshot.data,
-                  ),
-                  child: Text(
-                    'Voltar aos Detalhes',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                );
-              }
-              return Column(
-                children: <Widget>[
-                  Text(
-                    'Como deseja comprar?',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 18,
+                SizedBox(height: 20),
+                StreamBuilder<bool>(
+                  stream: _productWidgetBloc.showInfoOut,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data) {
+                      return RaisedButton(
+                        onPressed: () => _onShowInfo(
+                          snapshot.data,
                         ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 20),
-                  StreamBuilder<ProductModel>(
-                      stream: _productBloc.showOut,
-                      builder: (context, snapshot) {
-                        return Column(
+                        child: Text(
+                          'Voltar aos Detalhes',
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                      );
+                    }
+                    return Column(
+                      children: <Widget>[
+                        Text(
+                          'Como deseja comprar?',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 18,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 20),
+                        Column(
                           children: [
                             {
                               'title':
-                                  'Pedido Avulso R\$ ${Helper.intToMoney(15100)}',
+                                  'Pedido Avulso R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
                               'color': Color(0xff707070),
                               'onTap': () => _handleSingleOrder(
-                                    snapshot.data,
+                                    productSnapshot.data.product,
                                   ),
                             },
                             {
                               'title':
-                                  'Crédito de Produto R\$ ${Helper.intToMoney(25000)}',
+                                  'Crédito de Produto R\$ ${Helper.intToMoney(productSnapshot.data.product.valueProduto)}',
                               'color': Theme.of(context).primaryColor,
                               'onTap': () => _onConfirmPurchase(
-                                    snapshot.data,
-                                    'productCredit',
+                                    productSnapshot.data.product,
+                                    'C',
                                   ),
                             },
                             {
                               'title':
-                                  'Crédito Financeiro R\$ ${Helper.intToMoney(25000)}',
+                                  'Crédito Financeiro R\$ ${Helper.intToMoney(productSnapshot.data.product.valueFinan)}',
                               'color': Theme.of(context).accentColor,
                               'onTap': () => _onConfirmPurchase(
-                                    snapshot.data,
-                                    'financialCredit',
+                                    productSnapshot.data.product,
+                                    'CF',
                                   ),
                             }
                           ].map(
@@ -483,20 +468,22 @@ class _ProductScreenState extends State<ProductScreen> {
                                   color: item['color'],
                                   elevation: 0,
                                   child: Text(
-                                    item['title'],
+                                    "${item['title']}",
                                     style: Theme.of(context).textTheme.button,
                                   ),
                                 ),
                               );
                             },
                           ).toList(),
-                        );
-                      }),
-                ],
-              );
-            },
-          ),
-        ],
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }

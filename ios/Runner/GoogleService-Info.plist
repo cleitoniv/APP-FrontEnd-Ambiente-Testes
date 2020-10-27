@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>816933314049-c8dtn88rbber5b8rglbjiabfau0blr12.apps.googleusercontent.com</string>
+	<string>444246563766-ksgvh1qp3ac5423c7gj1kephfsdncu4i.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.816933314049-c8dtn88rbber5b8rglbjiabfau0blr12</string>
+	<string>com.googleusercontent.apps.444246563766-ksgvh1qp3ac5423c7gj1kephfsdncu4i</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBYPZA6uTEuePwTgHFc8WehaRKcjmp-GN0</string>
+	<string>AIzaSyCR5Rnu1Q1_S7kNgE9dIWvEzAoemBiwN4U</string>
 	<key>GCM_SENDER_ID</key>
-	<string>816933314049</string>
+	<string>444246563766</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>br.com.centraloftalmica.cliente</string>
 	<key>PROJECT_ID</key>
-	<string>central-oft-cliente</string>
+	<string>central-oftalmica-dev</string>
 	<key>STORAGE_BUCKET</key>
-	<string>central-oft-cliente.appspot.com</string>
+	<string>central-oftalmica-dev.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:816933314049:ios:2bbb82e9628eb0871c2a00</string>
+	<string>1:444246563766:ios:9b1561efe388162ce77f17</string>
 	<key>DATABASE_URL</key>
-	<string>https://central-oft-cliente.firebaseio.com</string>
+	<string>https://central-oftalmica-dev.firebaseio.com</string>
 </dict>
 </plist>

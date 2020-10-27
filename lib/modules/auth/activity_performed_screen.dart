@@ -14,10 +14,10 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   List<Map<String, dynamic>> _activities = [
-    {'id': 1, 'name': 'Oftalmologista'},
-    {'id': 2, 'name': 'Ótica'},
-    {'id': 3, 'name': 'Clínica, Hospital de Olhos ou Afins'},
-    {'id': 4, 'name': 'Usuário de Lente Contato'},
+    {'id': "1", 'name': 'Oftalmologista', 'fisica_jurid': 'F'},
+    {'id': "2", 'name': 'Ótica', 'fisica_jurid': 'J'},
+    {'id': "3", 'name': 'Clínica, Hospital de Olhos ou Afins', 'fisica_jurid': 'J'},
+    {'id': "4", 'name': 'Usuário de Lente Contato', 'fisica_jurid': 'F'},
   ];
 
   _handleActivity(Map<String, dynamic> value) {
@@ -32,6 +32,8 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
 
     _authWidgetBloc.addUserInfo({
       'activity': _first['name'],
+      'ramo': _first['id'],
+      'fisica_jurid': _first['fisica_jurid']
     });
 
     Modular.to.pushNamed(

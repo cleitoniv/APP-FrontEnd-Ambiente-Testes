@@ -73,10 +73,7 @@ class Helper {
   }
 
   static dateToWeek(String date) {
-    int _milliseconds = int.parse(date);
-    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(
-      _milliseconds,
-    );
+    DateTime _dateTime = DateTime.parse(date);
 
     switch (_dateTime.weekday) {
       case 1:
@@ -97,10 +94,7 @@ class Helper {
   }
 
   static String dateToMonth(String date) {
-    int _milliseconds = int.parse(date);
-    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(
-      _milliseconds,
-    );
+    DateTime _dateTime = DateTime.parse(date);
 
     int _day = _dateTime.day;
     String _month;
@@ -147,19 +141,20 @@ class Helper {
   }
 
   static String sqlToDate(String date) {
-    DateFormat _format = DateFormat('dd/MM/yyyy');
-    int _milliseconds = int.parse(date);
-    DateTime _dateTime = DateTime.fromMillisecondsSinceEpoch(
-      _milliseconds,
-    );
-    String _formatDate = _format.format(_dateTime);
+    try {
+      DateFormat _format = DateFormat('dd/MM/yyyy');
+      DateTime _dateTime = DateTime.parse(date);
+      String _formatDate = _format.format(_dateTime);
 
-    return _formatDate;
+      return _formatDate;
+    } catch (error) {
+      return "-";
+    }
   }
 
   static Map<String, dynamic> buyTypeBuild(BuildContext context, String type) {
     switch (type) {
-      case 'singleOrder':
+      case 'A':
         return {
           'title': 'Avulso',
           'color': Color(0xff707070),
@@ -169,7 +164,7 @@ class Helper {
             size: 20,
           )
         };
-      case 'financialCredit':
+      case 'A':
         return {
           'title': 'Financeiro',
           'color': Theme.of(context).primaryColor,
@@ -179,7 +174,7 @@ class Helper {
             size: 20,
           )
         };
-      case 'productCredit':
+      case 'C':
         return {
           'title': 'Produto',
           'color': Theme.of(context).splashColor,
