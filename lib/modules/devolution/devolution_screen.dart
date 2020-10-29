@@ -31,7 +31,6 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
   }
 
   _onAddProduct() {
-    print("-----------");
     _devolutionWidgetBloc.addProduct(_serialController.text);
   }
 

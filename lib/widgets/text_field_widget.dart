@@ -13,6 +13,7 @@ class TextFieldWidget extends StatefulWidget {
   bool readOnly;
   Function onTap;
   String initialValue;
+  String hint;
   FocusNode focus;
 
   TextFieldWidget(
@@ -28,7 +29,8 @@ class TextFieldWidget extends StatefulWidget {
       this.initialValue,
       this.readOnly = false,
       this.onTap,
-      this.focus});
+      this.focus,
+      this.hint = ''});
 
   @override
   _TextFieldWidgetState createState() => _TextFieldWidgetState();
@@ -67,6 +69,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         obscureText: widget.obscureText,
         keyboardType: widget.keyboardType,
         decoration: InputDecoration(
+          hintText: widget.hint,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
               width: 1,

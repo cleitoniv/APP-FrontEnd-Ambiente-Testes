@@ -54,8 +54,6 @@ class AuthRepository {
   Dio dio;
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
-
   AuthRepository(this.dio);
 
   Future<Endereco> getEnderecoByCep(String cep) async {
@@ -204,6 +202,34 @@ class AuthRepository {
       return '';
     } catch (error) {
       return error.code;
+    }
+  }
+
+  Future<bool> checkCode(int code, int phone) async {
+    try {
+      Response response = await dio.get(
+        "/api/confirmation_code?code_sms=${code}&phone_number=55${phone}",
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+      bool matchStatus = response.data["success"];
+      return matchStatus;
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> requireCode(int phone) async {
+    try {
+      Response response = await dio.get(
+        "/api/send_sms?phone_number=55${phone}",
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+      bool matchStatus = response.data["success"];
+      return matchStatus;
+    } catch (error) {
+      print(error);
+      return false;
     }
   }
 }

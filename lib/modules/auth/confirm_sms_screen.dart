@@ -1,14 +1,84 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class ConfirmSmsScreen extends StatefulWidget {
+  String phone;
+
+  ConfirmSmsScreen({this.phone});
   @override
   _ConfirmSmsState createState() => _ConfirmSmsState();
 }
 
 class _ConfirmSmsState extends State<ConfirmSmsScreen> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
+  TextEditingController _confirmSms;
+
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
+  _handleConfirmSms() async {
+    if (_confirmSms.text.trim().length == 0) {
+      _showDialog("Atenção", "Preencha o campo código!");
+      return;
+    }
+    String phonex = widget.phone.replaceAll('-', '');
+    phonex = phonex.replaceAll(' ', '');
+    bool codeMatch = await _authWidgetBloc.confirmSms(
+        int.parse(_confirmSms.text), int.parse(phonex));
+    if (codeMatch) {
+      Modular.to.pushNamed('/auth/activityPerformed');
+    } else {
+      _showDialog("Atenção", "Código Inválido ou expirado!");
+    }
+  }
+
+  _requireCodeSms() async {
+    String userPhone = widget.phone.replaceAll('-', '');
+    userPhone = userPhone.replaceAll(' ', '');
+    bool codeGenerated =
+        await _authWidgetBloc.requireCodeSms(int.parse(userPhone));
+    if (!codeGenerated) {
+      _showDialog("Atenção",
+          "Não foi possível enviar o código! Por favor, tente novamente");
+    }
+  }
+
   @override
+  void initState() {
+    super.initState();
+    _requireCodeSms();
+    _confirmSms = TextEditingController();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Confirme o Código Recebido"),
         centerTitle: false,
@@ -17,7 +87,31 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
           child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          children: [Text("Digite o Código SMS Recebido ")],
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(
+              "Digite o Código SMS Recebido",
+              style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
+            ),
+            TextFieldWidget(
+              hint: '* * * * * * * * *',
+              keyboardType: TextInputType.number,
+              controller: _confirmSms,
+              prefixIcon: Icon(
+                Icons.lock,
+                color: Color(0xffa1a1a1),
+              ),
+            ),
+            SizedBox(height: 30),
+            RaisedButton(
+              onPressed: _handleConfirmSms,
+              child: Text(
+                'Confirmar',
+                style: Theme.of(context).textTheme.button,
+              ),
+            ),
+          ],
         ),
       )),
     );

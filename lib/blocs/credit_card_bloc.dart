@@ -23,7 +23,6 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
       currentPaymentFormIn.add(currentCard);
       _cartWidgetBloc.setPaymentMethodCartao(currentCard);
       this.cartaoCreditoSink.add(list);
-      print(list);
     } catch (e) {
       if (list.list.length > 0) {
         currentPaymentFormIn.add(list.list[0]);
@@ -38,7 +37,6 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   }
 
   Future<CreditCard> addCreditCard(CreditCardModel creditCard) {
-    print(creditCard);
     return repository.addCreditCard(creditCard);
   }
 

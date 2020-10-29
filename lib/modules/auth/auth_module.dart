@@ -41,7 +41,7 @@ class AuthModule extends ChildModule {
         ),
         ModularRouter(
           '/confirmSms',
-          child: (_, args) => ConfirmSmsScreen(),
+          child: (_, args) => ConfirmSmsScreen(phone: args.data),
         ),
       ];
 }

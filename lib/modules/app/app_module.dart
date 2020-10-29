@@ -154,7 +154,7 @@ class AppModule extends MainModule {
           (i) => ProfileWidgetBloc(repository: i.get<UserRepository>()),
         ),
         Bind(
-          (i) => AuthWidgetBloc(),
+          (i) => AuthWidgetBloc(repository: i.get<AuthRepository>()),
         ),
         Bind(
           (i) => DevolutionWidgetBloc(repository: i.get<ProductRepository>()),

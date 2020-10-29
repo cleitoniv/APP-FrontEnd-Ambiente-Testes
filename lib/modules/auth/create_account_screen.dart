@@ -61,7 +61,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         LoginEvent firstAccess =
             await _authBloc.firstAccess({'nome': data['name'], ...data});
         if (firstAccess.isValid) {
-          Modular.to.pushNamed('/auth/activityPerformed');
+          Modular.to
+              .pushNamed('/auth/confirmSms', arguments: _phoneController.text);
+          // Modular.to.pushNamed('/auth/activityPerformed');
         } else {
           _showErrors({
             "Cadastro": [
