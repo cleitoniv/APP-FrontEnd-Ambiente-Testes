@@ -20,12 +20,12 @@ class RequestsModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/',
           child: (_, args) => RequestsScreen(),
         ),
-        Router(
+        ModularRouter(
           '/:id',
           child: (_, args) => RequestInfoScreen(
             id: int.parse(args.params['id']),

@@ -2,6 +2,7 @@ import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/activity_performed_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/complete_create_account_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/auth/confirm_sms_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/create_account_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/login_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/password_reset_screen.dart';
@@ -16,29 +17,31 @@ class AuthModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
-          '/validate', child: (_, args) => ValidationScreen()
-        ),
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter('/validate', child: (_, args) => ValidationScreen()),
+        ModularRouter(
           '/login',
           child: (_, args) => LoginScreen(),
         ),
-        Router(
+        ModularRouter(
           '/createAccount',
           child: (_, args) => CreateAccountScreen(),
         ),
-        Router(
+        ModularRouter(
           '/activityPerformed',
           child: (_, args) => ActivityPerformedScreen(),
         ),
-        Router(
+        ModularRouter(
           '/completeCreateAccount',
           child: (_, args) => CompleteCreateAccountScreen(),
         ),
-        Router(
+        ModularRouter(
           '/passwordReset',
           child: (_, args) => PasswordResetScreen(),
+        ),
+        ModularRouter(
+          '/confirmSms',
+          child: (_, args) => ConfirmSmsScreen(),
         ),
       ];
 }

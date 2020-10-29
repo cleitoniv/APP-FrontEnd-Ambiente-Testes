@@ -6,12 +6,16 @@ import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:intl/intl.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+
+import '../../repositories/credit_card_repository.dart';
+import '../../widgets/snackbar.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override
@@ -25,6 +29,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   PaymentBloc _paymentBloc = Modular.get<PaymentBloc>();
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
   MaskedTextController _creditCardNumberController;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(
       0,
@@ -36,6 +42,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   _onAddCreditCard() {
     Modular.to.pushNamed('/cart/addCreditCard');
+  }
+
+  _onDelete(int id) async {
+    RemoveCard _removeCard = await _creditCardBloc.removeCard(id);
+    if (_removeCard.success) {
+      Map<String, dynamic> success = {
+        "Cartao Removido": [_removeCard.message]
+      };
+      _creditCardBloc.fetchPaymentMethods();
+
+      SnackBar _snackbar = SuccessSnackBar.snackBar(this.context, success);
+      _scaffoldKey.currentState.showSnackBar(_snackbar);
+    } else {
+      Map<String, dynamic> success = {
+        "Atenção": [_removeCard.message]
+      };
+      SnackBar _snackbar = ErrorSnackBar.snackBar(this.context, success);
+      _scaffoldKey.currentState.showSnackBar(_snackbar);
+    }
   }
 
   _onChangePaymentForm(CreditCardModel creditCard) async {
@@ -53,6 +78,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
       '/home/3',
       (route) => route.isFirst,
     );
+  }
+
+  _obfuscateText(String text) {
+    var numOriginal = text.split(" ");
+    numOriginal[1] = "****";
+    numOriginal[2] = "****";
+    var numObfuscated = numOriginal.join(",");
+    return numObfuscated.replaceAll(',', ' ');
   }
 
   @override
@@ -94,6 +127,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(130),
           child: Container(
@@ -163,9 +197,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   StreamBuilder(
                       stream: _creditCardBloc.cartaoCreditoStream,
                       builder: (context, snapshot) {
+                        print(snapshot.hasData);
+                        print(snapshot.data.isLoading);
+                        print(snapshot.data.isEmpty);
                         if (!snapshot.hasData || snapshot.data.isLoading) {
                           return Center(
                             child: CircularProgressIndicator(),
+                          );
+                        } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "Cadastre um cartão!",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(fontSize: 20),
+                            ),
                           );
                         }
                         final _creditCards = snapshot.data.list;
@@ -221,7 +268,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       Icons.credit_card,
                                     ),
                                     title: Text(
-                                      _creditCardNumberController.text,
+                                      _obfuscateText(
+                                          _creditCardNumberController.text),
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle1
@@ -234,13 +282,36 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 : null,
                                           ),
                                     ),
-                                    trailing: _currentPaymentForm.id ==
-                                            _creditCards[index].id
-                                        ? Icon(
-                                            Icons.check,
-                                            color: Colors.white,
+                                    trailing: Container(
+                                      height: 50,
+                                      width: 80,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          _currentPaymentForm.id ==
+                                                  _creditCards[index].id
+                                              ? Icon(
+                                                  Icons.check,
+                                                  color: Colors.white,
+                                                  size: 25,
+                                                )
+                                              : Container(
+                                                  width: 25,
+                                                ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.delete_outline_outlined,
+                                              color:
+                                                  Colors.red.withOpacity(0.7),
+                                            ),
+                                            onPressed: () {
+                                              _onDelete(_creditCards[index].id);
+                                            },
                                           )
-                                        : null,
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 );
                               },

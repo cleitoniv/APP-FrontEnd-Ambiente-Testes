@@ -30,17 +30,17 @@ class CartModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/',
           child: (_, args) => CartScreen(),
         ),
-        Router('/product', child: (_, args) => ProductCartScreen()),
-        Router(
+        ModularRouter('/product', child: (_, args) => ProductCartScreen()),
+        ModularRouter(
           '/payment',
           child: (_, args) => PaymentScreen(),
         ),
-        Router(
+        ModularRouter(
           '/addCreditCard',
           child: (_, args) => AddCreditCardScreen(),
         )

@@ -11,7 +11,7 @@ class PaymentsModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router('/', child: (_, args) => PaymentsScreen()),
+  List<ModularRouter> get routers => [
+        ModularRouter('/', child: (_, args) => PaymentsScreen()),
       ];
 }

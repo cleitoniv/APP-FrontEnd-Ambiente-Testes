@@ -20,12 +20,12 @@ class ProductsModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/:id',
           child: (_, args) => ProductScreen(id: 0, product: args.data),
         ),
-        Router(
+        ModularRouter(
           '/:id/requestDetails',
           child: (_, args) => RequestDetailsScreen(
             id: 0,

@@ -20,28 +20,28 @@ class ProfileModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/',
           child: (_, args) => ProfileScreen(),
         ),
-        Router(
+        ModularRouter(
           '/personalInfo',
           child: (_, args) => PersonalInfoScreen(),
         ),
-        Router(
+        ModularRouter(
           '/deliveryAddress',
           child: (_, args) => DeliveryAddressScreen(),
         ),
-        Router(
+        ModularRouter(
           '/security',
           child: (_, args) => SecurityScreen(),
         ),
-        Router(
+        ModularRouter(
           '/appUsers',
           child: (_, args) => AppUsersScreen(),
         ),
-        Router(
+        ModularRouter(
           '/appUsers/:type',
           child: (_, args) => FormScreen(
             formType: args.params['type'],
