@@ -78,8 +78,6 @@ class CreditCardRepository {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
-      print('errorx');
-
       Response response = await dio.post(
         "/api/cliente/card",
         options: Options(headers: {
@@ -95,17 +93,12 @@ class CreditCardRepository {
           }
         }),
       );
-      print('Response');
 
       CreditCardModel card = CreditCardModel.fromJson(response.data['data']);
-      print('errorxxz');
 
       return CreditCard(isEmpty: false, isLoading: false, cartao: card);
     } catch (error) {
-      print('error');
       final error400 = error as DioError;
-      print(error400.response.data);
-      //   print(error400);
       return CreditCard(isEmpty: true, isLoading: false, errorData: {
         "falha": ["Falha ao criar cartão"]
       });
