@@ -174,68 +174,68 @@ class AppModule extends MainModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/',
           child: (_, args) => MainApp(),
         ),
-        Router(
+        ModularRouter(
           '/intro',
           child: (_, args) => IntroScreen(),
         ),
-        Router(
+        ModularRouter(
           '/help',
           child: (_, args) => HelpScreen(),
         ),
-        Router(
+        ModularRouter(
           '/auth',
           module: AuthModule(),
         ),
-        Router(
+        ModularRouter(
           '/home',
           module: HomeModule(),
         ),
-        Router(
+        ModularRouter(
           '/credits',
           module: CreditsModule(),
         ),
-        Router(
+        ModularRouter(
           '/cart',
           module: CartModule(),
         ),
-        Router(
+        ModularRouter(
           '/requests',
           module: RequestsModule(),
         ),
-        Router(
+        ModularRouter(
           '/profile',
           module: ProfileModule(),
         ),
-        Router(
+        ModularRouter(
           '/points',
           module: PointsModule(),
         ),
-        Router(
+        ModularRouter(
           '/extracts',
           module: ExtractsModule(),
         ),
-        Router(
+        ModularRouter(
           '/notifications',
           module: NotificationsModule(),
         ),
-        Router(
+        ModularRouter(
           '/products',
           module: ProductsModule(),
         ),
-        Router(
+        ModularRouter(
           '/devolution',
           module: DevolutionModule(),
         ),
-        Router(
+        ModularRouter(
           '/payments',
           module: PaymentsModule(),
         ),
-        Router(
+        ModularRouter(
           '/credito_financeiro',
           module: CreditoFinanceiroModule(),
         )

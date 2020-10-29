@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
@@ -38,6 +40,9 @@ class _SecurityScreenState extends State<SecurityScreen> {
         );
       } else {
         _message = 'Senha alterada com sucesso';
+        Timer(Duration(seconds: 2), () {
+          Modular.to.pop();
+        });
       }
 
       SnackBar _snackBar = SnackBar(

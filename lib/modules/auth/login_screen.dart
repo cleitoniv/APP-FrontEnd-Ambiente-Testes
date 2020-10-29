@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -23,8 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _emailController;
   TextEditingController _passwordController;
-  bool _obscureText = true;
   FirebaseAuth _auth = FirebaseAuth.instance;
+
+  bool _remember = false;
+  String _emailStored = null;
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   _showErrors(Map<String, dynamic> errors) {
     SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
@@ -62,10 +66,18 @@ class _LoginScreenState extends State<LoginScreen> {
           Modular.to.pushNamed('/auth/activityPerformed');
         } else if (_cliente.isValid) {
           _authBloc.setLoginEvent(_login);
+          final prefs = await _prefs;
+          final int rememberStatus = prefs.getInt('rememberStatus');
+
+          if (rememberStatus != null) {
+            prefs.setString('emailStored', _emailController.text);
+          } else {
+            prefs.setString('emailStored', null);
+          }
 
           Modular.to.pushNamedAndRemoveUntil(
             '/home/0',
-            (route) => route.isFirst,
+            (route) => route.isFirst, //(Route<dynamic> route) => false
           );
         } else {
           Modular.to.pushNamed('/auth/validate');
@@ -74,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
         try {
           await _login.result.user.sendEmailVerification();
           _showErrors({
-            "Verificar email": ["Te Enviamos um email de verificaçao "]
+            "Verificar email": ["Te enviamos um email de verificaçao"]
           });
         } catch (e) {}
       }
@@ -97,11 +109,44 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<bool> _rememberMe() async {
+    final prefs = await _prefs;
+    final int rememberStatus = prefs.getInt('rememberStatus');
+
+    if (rememberStatus == null) {
+      setState(() {
+        _remember = true;
+      });
+      prefs.setInt('rememberStatus', 1);
+      return true;
+    }
+    prefs.setInt('rememberStatus', null).then((bool success) {
+      setState(() {
+        _remember = false;
+      });
+    });
+
+    return true;
+  }
+
+  Future<String> _getEmailStored() async {
+    final prefs = await _prefs;
+    if (prefs.getString('emailStored') != null) {
+      final TextEditingController emailStored =
+          TextEditingController(text: prefs.getString('emailStored'));
+      setState(() {
+        _emailController = emailStored;
+        _remember = true;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _getEmailStored();
   }
 
   @override
@@ -146,11 +191,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     return TextFieldWidget(
                       labelText: 'Senha',
                       controller: _passwordController,
-                      obscureText: snapshot.data,
+                      obscureText: snapshot.hasData,
                       suffixIcon: IconButton(
                         onPressed: _onShowPassword,
                         icon: Icon(
-                          snapshot.data
+                          snapshot.hasData
                               ? Icons.remove_red_eye
                               : MaterialCommunityIcons.eye_off,
                           color: Color(0xffA1A1A1),
@@ -164,18 +209,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   }),
               SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
-                  onTap: _onPasswordReset,
-                  child: Text(
-                    'Esqueceu a senha?',
-                    style: Theme.of(context).textTheme.subtitle2.copyWith(
-                          color: Theme.of(context).accentColor,
-                          decoration: TextDecoration.underline,
-                        ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _remember,
+                        onChanged: (bool value) => {_rememberMe()},
+                      ),
+                      Text("Lembrar Email")
+                    ],
                   ),
-                ),
+                  GestureDetector(
+                    onTap: _onPasswordReset,
+                    child: Text(
+                      'Esqueceu a senha?',
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                            color: Theme.of(context).accentColor,
+                            decoration: TextDecoration.underline,
+                          ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 30),
               RaisedButton(
@@ -187,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                heightFactor: MediaQuery.of(context).size.height / 75,
+                heightFactor: MediaQuery.of(context).size.height / 145,
                 child: Text.rich(
                   TextSpan(
                     text: 'Não possui conta ainda? ',

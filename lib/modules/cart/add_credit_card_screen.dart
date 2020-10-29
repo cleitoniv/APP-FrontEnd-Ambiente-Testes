@@ -7,6 +7,8 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
+import '../../repositories/credit_card_repository.dart';
+
 class AddCreditCardScreen extends StatefulWidget {
   @override
   _AddCreditCardScreenState createState() => _AddCreditCardScreenState();
@@ -28,7 +30,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
   _onSubmit() async {
     if (_formKey.currentState.validate()) {
-      _creditCardBloc.storeIn.add(
+      CreditCard _storeResult = await _creditCardBloc.addCreditCard(
         CreditCardModel(
           cartao_number: parseCartaoNumber(_creditCardNumberController.text),
           ano_validade: _anoValidadeController.text,
@@ -37,22 +39,16 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         ),
       );
 
-      String _data = await _creditCardBloc.storeOut.first;
-      print(_data);
-      if (_data != null) {
+      if (_storeResult.errorData != null) {
         SnackBar _snackBar = SnackBar(
           content: Text(
-            'Cartão de crédito adicionado com sucesso',
+            'Falha ao adicionar cartão',
           ),
         );
 
         _scaffoldKey.currentState.showSnackBar(_snackBar);
-
-        await Future.delayed(
-          Duration(seconds: 2),
-        );
-        _creditCardBloc.fetchPaymentMethods();
-        Modular.to.pop();
+      } else {
+        Modular.to.pushNamed("/cart/payment");
       }
     }
   }
@@ -86,6 +82,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
               length: 14,
               message: 'Número de cartão inválido',
             ),
+        'keyboard_type': TextInputType.number
       },
       {
         'labelText': 'Mes',
@@ -96,6 +93,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
               length: 2,
               message: 'Data inválida',
             ),
+        'keyboard_type': TextInputType.number
       },
       {
         'labelText': 'Ano',
@@ -106,6 +104,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
               length: 4,
               message: 'Ano invalido',
             ),
+        'keyboard_type': TextInputType.number
       }
     ];
   }
@@ -154,6 +153,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
                   ),
                   validator: _data[index]['validator'],
                   controller: _data[index]['controller'],
+                  keyboardType: _data[index]['keyboard_type'],
                 );
               },
             ),
@@ -174,6 +174,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
                       color: Color(0xffA1A1A1),
                     ),
                     controller: e['controller'],
+                    keyboardType: e['keyboard_type'],
                   );
                 },
               ).toList(),

@@ -11,16 +11,16 @@ class PointsModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/',
           child: (_, args) => PointsScreen(),
         ),
-        Router(
+        ModularRouter(
           '/add',
           child: (_, args) => AddPointsScreen(),
         ),
-        Router(
+        ModularRouter(
           '/rescue',
           child: (_, args) => RescuePointsScreen(),
         )

@@ -15,14 +15,11 @@ class HomeModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
-          '/:index',
-          child: (_, args) {
-            return TabsScreen(
-              index: int.parse(args.params['index']),
-            );
-          }
-        ),
+  List<ModularRouter> get routers => [
+        ModularRouter('/:index', child: (_, args) {
+          return TabsScreen(
+            index: int.parse(args.params['index']),
+          );
+        }),
       ];
 }

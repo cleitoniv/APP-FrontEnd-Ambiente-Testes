@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-class ErrorSnackBar {
+class SuccessSnackBar {
   static SnackBar snackBar(
       BuildContext context, Map<String, dynamic> errorData) {
-    print('errorData.length');
-    print(errorData.keys);
     return SnackBar(
       backgroundColor: Colors.white,
       content: Container(
@@ -33,8 +31,8 @@ class ErrorSnackBar {
                           Expanded(
                               flex: 1,
                               child: Icon(
-                                Icons.close,
-                                color: Colors.red,
+                                Icons.check,
+                                color: Colors.green,
                                 size: 40,
                               )),
                           Expanded(

@@ -14,18 +14,20 @@ class CreditoFinanceiroModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/',
           child: (_, args) => CreditoFinanceiroScreen(),
         ),
-        Router('/pagamento', child: (_, args) => CreditoPagamentoScreen()),
-        Router('/produto', child: (_, args) => CreditProductGridScreen()),
-        Router(
+        ModularRouter('/pagamento',
+            child: (_, args) => CreditoPagamentoScreen()),
+        ModularRouter('/produto',
+            child: (_, args) => CreditProductGridScreen()),
+        ModularRouter(
           '/produto/:id',
           child: (_, args) => ProductDetailScreen(id: 0, product: args.data),
         ),
-        Router(
+        ModularRouter(
           '/cart',
           child: (_, args) => CreditCartScreen(),
         ),

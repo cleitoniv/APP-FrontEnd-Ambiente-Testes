@@ -110,7 +110,7 @@ class AuthRepository {
       );
       return LoginEvent(message: "OK", isValid: true, result: result);
     } catch (error) {
-      return LoginEvent(message: "Ocorreu um problema.", isValid: false);
+      return LoginEvent(message: "Credenciais Inválidas.", isValid: false);
     }
   }
 
