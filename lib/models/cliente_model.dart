@@ -4,12 +4,13 @@ class ClienteModel {
   String codigo;
   String loja;
   String cnpjCpf;
+  String ddd;
   String sitApp;
   String dataNascimento;
   String email;
   String phone;
   String diaRemessa;
-  String confirmationSms;
+  int confirmationSms;
   int money;
   int points;
   bool cadastrado;
@@ -20,6 +21,7 @@ class ClienteModel {
     id = json['id'];
     nome = json['nome'];
     codigo = json['codigo'];
+    ddd = json['ddd'];
     loja = json['loja'];
     cnpjCpf = json['cnpj_cpf'];
     dataNascimento = json['data_nascimento'];
