@@ -254,6 +254,18 @@ class _CompleteCreateAccountScreenState
         'enabled': this.dataNascimentoEnabled
       },
       {
+        'labelText': 'Email para info. Fiscais',
+        'prefixIcon': Icon(
+          Icons.email,
+          color: Color(0xffA1A1A1),
+        ),
+        'suffixIcon': null,
+        'controller': _emailFiscalController,
+        'validator': Helper.emailValidator,
+        'keyboardType': TextInputType.emailAddress,
+        'enabled': this.cnaeCrmEnabled
+      },
+      {
         'labelText': "CNAE",
         'prefixIcon': Icon(
           Icons.person,
@@ -267,17 +279,6 @@ class _CompleteCreateAccountScreenState
             ),
         'keyboardType': TextInputType.text,
         'enabled': this.cnaeCrmEnabled
-      },
-      {
-        'labelText': 'Email para info. Fiscais',
-        'prefixIcon': Icon(
-          Icons.email,
-          color: Color(0xffA1A1A1),
-        ),
-        'suffixIcon': null,
-        'controller': _emailFiscalController,
-        'validator': Helper.emailValidator,
-        'keyboardType': TextInputType.emailAddress,
       },
     ];
 
