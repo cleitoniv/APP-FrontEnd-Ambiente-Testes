@@ -20,6 +20,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
   TextEditingController _confirmSms;
   MaskedTextController _phoneController;
   String _requestCodeController;
+  bool _lock = false;
 
   _showDialog(String title, String content) {
     showDialog(
@@ -73,13 +74,18 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     if (!codeGenerated) {
       _showDialog("Atenção",
           "Não foi possível enviar o código! Por favor, tente novamente");
+    } else {
+      setState(() {
+        _lock = true;
+        _requestCodeController = "60 seg...";
+      });
+      Timer(Duration(seconds: 60), () {
+        setState(() {
+          _lock = false;
+          _requestCodeController = "Receber";
+        });
+      });
     }
-    // else {
-    //   setState(() {
-    //     _requestCodeController = "60 seg...";
-    //   });
-    //   Timer(Duration(seconds: 60), () => print('done'));
-    // }
   }
 
   @override
@@ -124,7 +130,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
               width: 100,
               margin: EdgeInsets.only(left: 270),
               child: RaisedButton(
-                onPressed: _requireCodeSms,
+                onPressed: _lock ? null : _requireCodeSms,
                 child: Text(
                   _requestCodeController,
                   style: Theme.of(context).textTheme.button,
