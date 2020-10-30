@@ -174,7 +174,7 @@ class AuthRepository {
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
 
-      if (cliente.confirmationSms == "0" || cliente.confirmationSms == null) {
+      if (cliente.confirmationSms != "1") {
         return AuthEvent(isValid: false, data: cliente, loading: true);
       } else if (cliente.sitApp == "N" || cliente.sitApp == "E") {
         return AuthEvent(isValid: false, data: cliente, loading: true);
