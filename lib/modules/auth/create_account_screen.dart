@@ -24,7 +24,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController _nameController;
   TextEditingController _emailController;
-  TextEditingController _emailPromoController;
   MaskedTextController _phoneController;
   TextEditingController _passwordController;
   List<Map> _fieldData;
@@ -51,7 +50,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       final Map<String, dynamic> data = {
         'name': _nameController.text,
         'email': _emailController.text,
-        'email_fiscal': _emailPromoController.text,
         'telefone': _phoneController.text,
         'ddd': '27',
         'password': _passwordController.text,
@@ -99,7 +97,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     super.initState();
     _nameController = TextEditingController();
     _emailController = TextEditingController();
-    _emailPromoController = TextEditingController();
     _phoneController = MaskedTextController(
       mask: '00 00000-0000',
     );
@@ -139,17 +136,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               text,
               value: _emailController.text,
             ),
-        'keyboardType': TextInputType.emailAddress,
-      },
-      {
-        'labelText': 'Email para info. Fiscais',
-        'prefixIcon': Icon(
-          Icons.email,
-          color: Color(0xffA1A1A1),
-        ),
-        'suffixIcon': null,
-        'controller': _emailPromoController,
-        'validator': Helper.emailValidator,
         'keyboardType': TextInputType.emailAddress,
       },
       {
@@ -244,7 +230,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 textAlign: TextAlign.center,
               ),
               Column(
-                children: _fieldData.take(5).map(
+                children: _fieldData.take(4).map(
                   (e) {
                     return Container(
                       margin: const EdgeInsets.only(top: 20),
@@ -266,7 +252,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 textAlign: TextAlign.center,
               ),
               Column(
-                children: _fieldData.skip(5).map(
+                children: _fieldData.skip(4).map(
                   (e) {
                     return Container(
                       margin: const EdgeInsets.only(top: 20),

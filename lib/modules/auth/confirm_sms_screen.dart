@@ -2,6 +2,7 @@ import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class ConfirmSmsScreen extends StatefulWidget {
   String phone;
@@ -15,6 +16,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   TextEditingController _confirmSms;
+  MaskedTextController _phoneController;
 
   _showDialog(String title, String content) {
     showDialog(
@@ -74,6 +76,10 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     super.initState();
     _requireCodeSms();
     _confirmSms = TextEditingController();
+    _phoneController = MaskedTextController(
+      mask: '00 00000-0000',
+    );
+    _phoneController.text = widget.phone;
   }
 
   Widget build(BuildContext context) {
@@ -89,6 +95,30 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            Text(
+              "Digite o telefone utilizado no seu cadastro",
+              style: Theme.of(context).textTheme.subtitle1,
+              textAlign: TextAlign.center,
+            ),
+            TextFieldWidget(
+              keyboardType: TextInputType.number,
+              controller: _phoneController,
+              prefixIcon: Icon(
+                Icons.lock,
+                color: Color(0xffa1a1a1),
+              ),
+            ),
+            Container(
+              width: 100,
+              margin: EdgeInsets.only(left: 270),
+              child: RaisedButton(
+                onPressed: _handleConfirmSms,
+                child: Text(
+                  'Receber',
+                  style: Theme.of(context).textTheme.button,
+                ),
+              ),
+            ),
             Text(
               "Digite o Código SMS Recebido",
               style: Theme.of(context).textTheme.headline5,

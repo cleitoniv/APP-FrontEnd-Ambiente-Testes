@@ -197,9 +197,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   StreamBuilder(
                       stream: _creditCardBloc.cartaoCreditoStream,
                       builder: (context, snapshot) {
-                        print(snapshot.hasData);
-                        print(snapshot.data.isLoading);
-                        print(snapshot.data.isEmpty);
                         if (!snapshot.hasData || snapshot.data.isLoading) {
                           return Center(
                             child: CircularProgressIndicator(),

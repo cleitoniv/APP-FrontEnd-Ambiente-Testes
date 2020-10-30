@@ -9,6 +9,7 @@ class ClienteModel {
   String email;
   String phone;
   String diaRemessa;
+  String confirmationSms;
   int money;
   int points;
   bool cadastrado;
@@ -30,6 +31,7 @@ class ClienteModel {
     points = json['points'];
     notifications = json['notifications'];
     cadastrado = json['cadastrado'];
+    confirmationSms = json['confirmation_sms'];
   }
 
   Map<String, dynamic> toJson() {

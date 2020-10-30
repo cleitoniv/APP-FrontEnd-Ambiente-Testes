@@ -39,6 +39,7 @@ class _CompleteCreateAccountScreenState
   TextEditingController _ufController;
   TextEditingController _codMunicipioController;
   TextEditingController _dataNascimentoController;
+  TextEditingController _emailFiscalController;
 
   StreamSubscription atualizacaoEndereco;
 
@@ -69,7 +70,8 @@ class _CompleteCreateAccountScreenState
         'cod_cnae': sanitize(_cnaeController.text),
         'nome_empresarial': sanitize(_nameController.text),
         'complemento': _adjunctController.text,
-        'data_nascimento': _dataNascimentoController.text
+        'data_nascimento': _dataNascimentoController.text,
+        'email_fiscal': _emailFiscalController.text
       };
 
       Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
@@ -266,6 +268,17 @@ class _CompleteCreateAccountScreenState
         'keyboardType': TextInputType.text,
         'enabled': this.cnaeCrmEnabled
       },
+      {
+        'labelText': 'Email para info. Fiscais',
+        'prefixIcon': Icon(
+          Icons.email,
+          color: Color(0xffA1A1A1),
+        ),
+        'suffixIcon': null,
+        'controller': _emailFiscalController,
+        'validator': Helper.emailValidator,
+        'keyboardType': TextInputType.emailAddress,
+      },
     ];
 
     if (ramo != "2" && ramo != "3") {
@@ -330,6 +343,7 @@ class _CompleteCreateAccountScreenState
     _cityController = TextEditingController();
     _ufController = TextEditingController();
     _codMunicipioController = TextEditingController();
+    _emailFiscalController = TextEditingController();
 
     _fieldData = [
       {
@@ -427,6 +441,7 @@ class _CompleteCreateAccountScreenState
     _cpfController.dispose();
     _nameController.dispose();
     _crmController.dispose();
+    _emailFiscalController.dispose();
     _zipCodeController.dispose();
     _addressController.dispose();
     _houseNumberController.dispose();
