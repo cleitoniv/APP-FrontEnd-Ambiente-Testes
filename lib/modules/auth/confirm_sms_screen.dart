@@ -69,6 +69,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     userPhone = userPhone.replaceAll(' ', '');
     bool codeGenerated =
         await _authWidgetBloc.requireCodeSms(int.parse(userPhone));
+    print(codeGenerated);
     if (!codeGenerated) {
       _showDialog("Atenção",
           "Não foi possível enviar o código! Por favor, tente novamente");
