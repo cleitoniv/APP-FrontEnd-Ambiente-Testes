@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   TextEditingController _confirmSms;
   MaskedTextController _phoneController;
+  String _requestCodeController;
 
   _showDialog(String title, String content) {
     showDialog(
@@ -53,6 +56,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     phonex = phonex.replaceAll(' ', '');
     bool codeMatch = await _authWidgetBloc.confirmSms(
         int.parse(_confirmSms.text), int.parse(phonex));
+
     if (codeMatch) {
       Modular.to.pushNamed('/auth/activityPerformed');
     } else {
@@ -69,17 +73,24 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
       _showDialog("Atenção",
           "Não foi possível enviar o código! Por favor, tente novamente");
     }
+    // else {
+    //   setState(() {
+    //     _requestCodeController = "60 seg...";
+    //   });
+    //   Timer(Duration(seconds: 60), () => print('done'));
+    // }
   }
 
   @override
   void initState() {
     super.initState();
-    _requireCodeSms();
+    // _requireCodeSms();
     _confirmSms = TextEditingController();
     _phoneController = MaskedTextController(
       mask: '00 00000-0000',
     );
     _phoneController.text = widget.phone;
+    _requestCodeController = "Receber";
   }
 
   Widget build(BuildContext context) {
@@ -112,9 +123,9 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
               width: 100,
               margin: EdgeInsets.only(left: 270),
               child: RaisedButton(
-                onPressed: _handleConfirmSms,
+                onPressed: _requireCodeSms,
                 child: Text(
-                  'Receber',
+                  _requestCodeController,
                   style: Theme.of(context).textTheme.button,
                 ),
               ),
