@@ -147,6 +147,7 @@ class AuthRepository {
     IdTokenResult token = await user.getIdToken();
 
     try {
+      print(data);
       Response response = await dio.post('/api/cliente',
           data: jsonEncode({"param": data}),
           options: Options(headers: {
@@ -174,7 +175,7 @@ class AuthRepository {
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
 
-      if (cliente.confirmationSms != "1") {
+      if (cliente.confirmationSms != 1) {
         return AuthEvent(isValid: false, data: cliente, loading: true);
       } else if (cliente.sitApp == "N" || cliente.sitApp == "E") {
         return AuthEvent(isValid: false, data: cliente, loading: true);
@@ -182,6 +183,7 @@ class AuthRepository {
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
+      print(error);
       return AuthEvent(isValid: false, data: null, loading: true);
     }
   }

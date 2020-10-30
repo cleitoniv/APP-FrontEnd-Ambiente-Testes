@@ -60,8 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else if (_login.result.user.isEmailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
-        print('_cliente.data');
-        print(_cliente.data.cadastrado);
         if (_cliente.data.confirmationSms == "0" ||
             _cliente.data.confirmationSms == null) {
           Modular.to

@@ -9,7 +9,7 @@ class ClienteModel {
   String email;
   String phone;
   String diaRemessa;
-  String confirmationSms;
+  int confirmationSms;
   int money;
   int points;
   bool cadastrado;

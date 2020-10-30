@@ -72,6 +72,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       Map data, ProductModel product) async {
     Map<String, dynamic> params = {};
 
+    print(data);
+
     Map<String, dynamic> errors = {};
 
     data.remove("lenses");
@@ -83,6 +85,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       "cor": product.hasCor ?? false,
       "adicao": product.hasAdicao ?? false
     };
+    print(data);
+    print(allowedParams);
 
     data.keys.forEach((element) {
       if (allowedParams[element]) {
