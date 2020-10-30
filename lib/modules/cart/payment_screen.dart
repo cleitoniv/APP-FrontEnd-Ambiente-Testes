@@ -298,7 +298,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 ),
                                           IconButton(
                                             icon: Icon(
-                                              Icons.delete_outline_outlined,
+                                              Icons.delete_outline,
                                               color:
                                                   Colors.red.withOpacity(0.7),
                                             ),
