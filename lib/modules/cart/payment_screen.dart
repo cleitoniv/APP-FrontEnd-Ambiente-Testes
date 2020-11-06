@@ -35,12 +35,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
   bool billing = false;
 
   String _totalToPay(List<Map<String, dynamic>> data) {
+    int _taxaEntrega = _requestBloc.taxaEntregaValue;
+    print("taxa entrega");
+    print(_taxaEntrega);
     int _total = data.fold(
       0,
-      (previousValue, element) => previousValue + element['product'].value,
+      (previousValue, element) =>
+          previousValue + element['product'].value * element['quantity'],
     );
-
-    return Helper.intToMoney(_total);
+    print(_total + _taxaEntrega);
+    return Helper.intToMoney(_total + _taxaEntrega);
   }
 
   _onAddCreditCard() {

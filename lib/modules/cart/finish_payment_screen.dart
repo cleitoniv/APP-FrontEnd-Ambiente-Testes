@@ -39,13 +39,17 @@ class _FinishPaymentState extends State<FinishPayment> {
   int _totalPay = 0;
   bool _paymentMethod = true;
   List<String> _installments = [];
+
   String _totalToPay(List<Map<String, dynamic>> data) {
+    int _taxaEntrega = _requestBloc.taxaEntregaValue;
+
     int _total = data.fold(
       0,
-      (previousValue, element) => previousValue + element['product'].value,
+      (previousValue, element) =>
+          previousValue + element['product'].value * element['quantity'],
     );
 
-    return Helper.intToMoney(_total);
+    return Helper.intToMoney(_total + _taxaEntrega);
   }
 
   _onSubmitDialog() {
@@ -86,6 +90,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
+    final _taxaEntrega = _requestBloc.taxaEntregaValue;
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
       SnackBar _snackBar = SnackBar(
@@ -109,6 +114,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       'payment_data': _paymentMethod,
       'value': _value,
       'cart': _cart,
+      'taxa_entrega': _taxaEntrega,
       'ccv': _ccvController.text,
       'installment': _installmentsSelected
     }, _paymentMethod.isBoleto);
@@ -133,6 +139,8 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _calcPaymentInstallment() async {
+    int _taxaEntrega = _requestBloc.taxaEntregaValue;
+
     final _paymentMethod = await _cartWidgetBloc.currentPaymentMethod;
 
     final _cart = await _requestBloc.cartOut.first;
@@ -143,8 +151,8 @@ class _FinishPaymentState extends State<FinishPayment> {
     });
 
     final _installmentsList = await _creditCardBloc.fetchInstallments(
-        _totalPay, _paymentMethod.isBoleto);
-    print(_installmentsList);
+        _totalPay + _taxaEntrega, _paymentMethod.isBoleto);
+
     if (_installmentsList.length > 0) {
       setState(() {
         dropdownValue = _installmentsList[0]['parcela'];

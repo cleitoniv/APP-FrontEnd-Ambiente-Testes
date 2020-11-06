@@ -16,11 +16,14 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
+  int _taxaEntrega = 100;
+
   _onBackToPurchase() {
     Modular.to.pushNamed("/home/0");
   }
 
   _onSubmit() {
+    _requestsBloc.taxaEntregaSink.add(_taxaEntrega);
     Modular.to.pushNamed(
       '/cart/payment',
     );
@@ -37,7 +40,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
           previousValue + (element['product'].value * element['quantity']),
     );
 
-    return Helper.intToMoney(_total);
+    return Helper.intToMoney(_total + _taxaEntrega);
   }
 
   @override
@@ -177,7 +180,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                         ),
                   ),
                   Text(
-                    'R\$ ${Helper.intToMoney(20000)}',
+                    'R\$ ${Helper.intToMoney(_taxaEntrega)}',
                     style: Theme.of(context).textTheme.subtitle1.copyWith(
                           fontSize: 14,
                         ),

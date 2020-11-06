@@ -100,12 +100,14 @@ class PaymentRepository {
           paymentMethod.creditCard != null ? paymentMethod.creditCard.id : 0,
       'ccv': data['ccv'],
       'installment': data['installment'],
+      'taxa_entrega': data['taxa_entrega']
     };
   }
 
   Future<bool> payment(Map<String, dynamic> data, PaymentMethod paymentMethod,
       bool isBoleto) async {
     Map<String, dynamic> params = generate_params(data, paymentMethod);
+    print(params);
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {

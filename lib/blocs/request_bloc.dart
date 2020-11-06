@@ -45,6 +45,12 @@ class RequestsBloc extends Disposable {
   Sink get pedidoSink => _pedidoController.sink;
   Stream get pedidoStream => _pedidoController.stream;
 
+  BehaviorSubject _taxaEntregaController = BehaviorSubject();
+  Sink get taxaEntregaSink => _taxaEntregaController.sink;
+  Stream get taxaEntregaStream => _taxaEntregaController.stream;
+
+  get taxaEntregaValue => _taxaEntregaController.value;
+
   BehaviorSubject _indexController = BehaviorSubject.seeded(null);
   Sink get indexIn => _indexController.sink;
   Stream<List<RequestModel>> get indexOut => _indexController.stream.asyncMap(

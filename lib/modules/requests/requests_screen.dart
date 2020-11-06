@@ -24,7 +24,6 @@ class RequestsScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-
           List<PedidoModel> _requests = snapshot.data.list;
           return ListView.separated(
             padding: const EdgeInsets.all(20),

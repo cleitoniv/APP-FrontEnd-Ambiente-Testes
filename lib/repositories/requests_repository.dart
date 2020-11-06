@@ -87,13 +87,15 @@ class RequestsRepository {
           }));
 
       List<PedidoModel> pedidos = response.data['data'].map<PedidoModel>((e) {
+        print(e);
         return PedidoModel.fromJson(e);
       }).toList();
 
       return PedidosList(
           isEmpty: pedidos.length <= 0, isLoading: false, list: pedidos);
     } catch (error) {
-      return PedidosList(isEmpty: false, isLoading: true, list: null);
+      print(error);
+      return PedidosList(isEmpty: true, isLoading: false, list: null);
     }
   }
 
