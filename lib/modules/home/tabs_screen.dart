@@ -405,9 +405,10 @@ class _TabsScreenState extends State<TabsScreen>
 
     int filter = _requestsBloc.currentFilter;
     _requestsBloc.getPedidosList(filter);
-
     _homeWidgetBloc.currentTabIndexOut.listen((int event) {
       if (event != null && event != _tabController.index) {
+        print('_initState tabsscreen');
+        print(event);
         _tabController.index = event;
       }
     });

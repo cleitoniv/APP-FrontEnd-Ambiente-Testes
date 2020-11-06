@@ -29,8 +29,9 @@ class LoginEvent implements Authentication {
 
 class AuthEvent implements Authentication {
   ClienteModel data;
+  Map<String, dynamic> errorData;
   bool isValid;
-  AuthEvent({this.data, this.isValid, this.loading});
+  AuthEvent({this.data, this.isValid, this.loading, this.errorData});
   bool loading;
 }
 
@@ -108,6 +109,7 @@ class AuthRepository {
       );
       return LoginEvent(message: "OK", isValid: true, result: result);
     } catch (error) {
+      print(error);
       return LoginEvent(message: "Credenciais Inválidas.", isValid: false);
     }
   }
@@ -130,6 +132,7 @@ class AuthRepository {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": "application/json"
           }));
+      print('response.data firstAccess');
       print(response.data);
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
@@ -173,17 +176,28 @@ class AuthRepository {
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
-
-      if (cliente.confirmationSms != 1) {
-        return AuthEvent(isValid: false, data: cliente, loading: true);
+      if (cliente.confirmationSms == 1 && cliente.sitApp == "A") {
+        return AuthEvent(isValid: true, data: cliente, loading: false);
       } else if (cliente.sitApp == "N" || cliente.sitApp == "E") {
-        return AuthEvent(isValid: false, data: cliente, loading: true);
+        return AuthEvent(
+            isValid: false,
+            data: cliente,
+            loading: true,
+            errorData: {
+              "Cadastro": [
+                "Erro no seu cadastro. Entre em contato com a Central Oftalmica."
+              ]
+            });
       } else {
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
       print(error);
-      return AuthEvent(isValid: false, data: null, loading: true);
+      final error400 = error as DioError;
+      print(error400.response.data['data']);
+      return AuthEvent(isValid: false, data: null, loading: true, errorData: {
+        "Cadastro": [error400.response.data['data']]
+      });
     }
   }
 

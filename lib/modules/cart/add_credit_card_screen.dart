@@ -40,6 +40,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
       );
 
       if (_storeResult.errorData != null) {
+        print(_storeResult.errorData);
         SnackBar _snackBar = SnackBar(
           content: Text(
             'Falha ao adicionar cartão',
@@ -48,7 +49,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {
-        Modular.to.pushNamed("/cart/payment");
+        Modular.to.popAndPushNamed("/cart/payment");
       }
     }
   }

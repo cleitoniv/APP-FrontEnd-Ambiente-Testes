@@ -94,10 +94,15 @@ class PaymentRepository {
         };
       }
     }).toList();
-    return {'items': items, 'id_cartao': paymentMethod.creditCard.id};
+    return {
+      'items': items,
+      'id_cartao': paymentMethod.creditCard.id,
+      'ccv': data['ccv'],
+      'installment': data['installment'],
+    };
   }
 
-  Future<String> payment(
+  Future<bool> payment(
       Map<String, dynamic> data, PaymentMethod paymentMethod) async {
     Map<String, dynamic> params = generate_params(data, paymentMethod);
     FirebaseUser user = await _auth.currentUser();
@@ -110,9 +115,9 @@ class PaymentRepository {
             "Authorization": "Bearer ${idToken.token}"
           }));
 
-      return response.data['data'];
+      return true;
     } catch (error) {
-      return null;
+      return false;
     }
   }
 }

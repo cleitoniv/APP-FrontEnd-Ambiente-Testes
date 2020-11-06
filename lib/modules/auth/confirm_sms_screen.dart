@@ -56,7 +56,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     String phonex = widget.phone["phone"].replaceAll('-', '');
     String ddd = widget.phone["ddd"];
     phonex = phonex.replaceAll(' ', '');
-    phonex = "${ddd + phonex}";
+    // phonex = "${ddd + phonex}";
     bool codeMatch = await _authWidgetBloc.confirmSms(
         int.parse(_confirmSms.text), int.parse(phonex));
 
@@ -72,8 +72,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     String ddd = widget.phone["ddd"];
 
     userPhone = userPhone.replaceAll(' ', '');
-    userPhone = "${ddd + userPhone}";
-
+    print(userPhone);
     bool codeGenerated =
         await _authWidgetBloc.requireCodeSms(int.parse(userPhone));
     print(codeGenerated);
@@ -85,7 +84,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
         _lock = true;
         _requestCodeController = "60 seg...";
       });
-      Timer(Duration(seconds: 60), () {
+      Timer(Duration(seconds: 10), () {
         setState(() {
           _lock = false;
           _requestCodeController = "Receber";
@@ -102,7 +101,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     _phoneController = MaskedTextController(
       mask: '00 00000-0000',
     );
-    _phoneController.text = "${widget.phone["ddd"] + widget.phone["phone"]}";
+    _phoneController.text = widget.phone["phone"];
     _requestCodeController = "Receber";
   }
 

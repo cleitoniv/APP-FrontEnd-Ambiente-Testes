@@ -60,37 +60,36 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else if (_login.result.user.isEmailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
-        print('_cliente.data');
-        print(_cliente.data.ddd);
-        if (_cliente.data.confirmationSms == 0 ||
-            _cliente.data.confirmationSms == null) {
-          print(_cliente.data.phone);
-          print(_cliente.data.ddd);
-          Modular.to.pushNamed('/auth/confirmSms', arguments: {
-            "phone": _cliente.data.phone,
-            "ddd": _cliente.data.ddd
-          });
-        } else if (!_cliente.data.cadastrado) {
-          _authWidgetBloc.createAccountDataIn
-              .add({'email': _cliente.data.email, 'ddd': '27'});
-          Modular.to.pushNamed('/auth/activityPerformed');
-        } else if (_cliente.isValid) {
-          _authBloc.setLoginEvent(_login);
-          final prefs = await _prefs;
-          final int rememberStatus = prefs.getInt('rememberStatus');
+        if (_cliente.isValid) {
+          if (_cliente.data.confirmationSms != 1) {
+            Modular.to.pushNamed('/auth/confirmSms', arguments: {
+              "phone": _cliente.data.phone,
+              "ddd": _cliente.data.ddd
+            });
+          } else if (!_cliente.data.cadastrado) {
+            _authWidgetBloc.createAccountDataIn
+                .add({'email': _cliente.data.email, 'ddd': '27'});
+            Modular.to.pushNamed('/auth/activityPerformed');
+          } else if (_cliente.isValid) {
+            _authBloc.setLoginEvent(_login);
+            final prefs = await _prefs;
+            final int rememberStatus = prefs.getInt('rememberStatus');
 
-          if (rememberStatus != null) {
-            prefs.setString('emailStored', _emailController.text);
+            if (rememberStatus != null) {
+              prefs.setString('emailStored', _emailController.text);
+            } else {
+              prefs.setString('emailStored', null);
+            }
+
+            Modular.to.pushNamedAndRemoveUntil(
+              '/home/0',
+              (route) => route.isFirst, //(Route<dynamic> route) => false
+            );
           } else {
-            prefs.setString('emailStored', null);
+            Modular.to.pushNamed('/auth/validate');
           }
-
-          Modular.to.pushNamedAndRemoveUntil(
-            '/home/0',
-            (route) => route.isFirst, //(Route<dynamic> route) => false
-          );
         } else {
-          Modular.to.pushNamed('/auth/validate');
+          _showErrors(_cliente.errorData);
         }
       } else {
         try {

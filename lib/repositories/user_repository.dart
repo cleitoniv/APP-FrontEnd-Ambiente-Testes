@@ -51,6 +51,14 @@ class UpdateUsuarioCliente {
   UpdateUsuarioCliente({this.isValid, this.data, this.errorMessage});
 }
 
+class DeleteUsuarioCliente {
+  bool isValid;
+  String errorMessage;
+  Map<String, dynamic> data;
+
+  DeleteUsuarioCliente({this.isValid, this.data, this.errorMessage});
+}
+
 class UserRepository {
   Dio dio;
 
@@ -82,10 +90,33 @@ class UserRepository {
     }
   }
 
-  Future<AddUsuarioCliente> addUsuarioCliente(Map<String, dynamic> data) async {
+  Future<DeleteUsuarioCliente> deleteUsuarioCliente(int id) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
 
+    try {
+      Response response = await dio.delete("/api/usuarios_cliente/$id",
+          options: Options(headers: {
+            "Authorization": "Bearer ${token.token}",
+            "Content-Type": "application/json"
+          }));
+      if (response.statusCode == 200) {
+        return DeleteUsuarioCliente(isValid: true);
+      } else {
+        return DeleteUsuarioCliente(
+            isValid: false, errorMessage: "Erro na exclusão do cliente.");
+      }
+    } catch (error) {
+      return DeleteUsuarioCliente(
+          isValid: false, errorMessage: "Erro na exclusão do cliente.");
+    }
+  }
+
+  Future<AddUsuarioCliente> addUsuarioCliente(Map<String, dynamic> data) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult token = await user.getIdToken();
+    print('...................................');
+    print(data);
     try {
       Response response = await dio.post("/api/cliente/cliente_user",
           data: jsonEncode({"param": data}),
@@ -101,6 +132,8 @@ class UserRepository {
             errorMessage: "Erro no cadastro. Talvez o email esteja duplicado");
       }
     } catch (error) {
+      print('-----------------');
+      print(error);
       return AddUsuarioCliente(
           isValid: false, errorMessage: "Erro inesperado no cadastro.");
     }
