@@ -37,6 +37,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   int _installmentsSelected = 1;
   String dropdownValue = '';
   int _totalPay = 0;
+  bool _paymentMethod = true;
   List<String> _installments = [];
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(
@@ -68,6 +69,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     );
     _ccvController = TextEditingController();
     _calcPaymentInstallment();
+    _getPaymentMethod();
   }
 
   @override
@@ -76,8 +78,16 @@ class _FinishPaymentState extends State<FinishPayment> {
     _ccvController.dispose();
   }
 
+  _getPaymentMethod() async {
+    final paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    setState(() {
+      _paymentMethod = paymentMethod.isBoleto;
+    });
+  }
+
   _onSubmit() async {
-    if (_ccvController.text.trim().length == 0) {
+    final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
       SnackBar _snackBar = SnackBar(
         content: Text(
           'Preencha o Código de Segurança do Cartão',
@@ -87,8 +97,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       _scaffoldKey.currentState.showSnackBar(_snackBar);
       return;
     }
-    final _paymentMethod = await _cartWidgetBloc.currentPaymentMethod;
-    if (_paymentMethod.creditCard == null) {
+    if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       return;
     }
     final _cart = await _requestBloc.cartOut.first;
@@ -102,7 +111,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       'cart': _cart,
       'ccv': _ccvController.text,
       'installment': _installmentsSelected
-    });
+    }, _paymentMethod.isBoleto);
     _ccvController.text = '';
     if (statusPayment != null && statusPayment == true) {
       _requestBloc.resetCart();
@@ -285,36 +294,42 @@ class _FinishPaymentState extends State<FinishPayment> {
                   Container(
                     height: 10,
                   ),
-                  Text(
-                    "Código CCV do Cartão",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5
-                        .copyWith(fontSize: 18),
-                  ),
-                  Container(
-                    height: 20,
-                  ),
-                  Container(
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            width: 1.0,
-                            style: BorderStyle.solid,
-                            color: Theme.of(context).primaryColor),
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                    ),
-                    child: TextFieldWidget(
-                      controller: _ccvController,
-                      prefixIcon: Icon(
-                        Icons.lock,
-                        color: Color(0xffA1A1A1),
-                      ),
-                      width: 120,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
+                  !_paymentMethod
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Código CCV do Cartão",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(fontSize: 18),
+                            ),
+                            Container(height: 20),
+                            Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Theme.of(context).primaryColor),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              ),
+                              child: TextFieldWidget(
+                                controller: _ccvController,
+                                prefixIcon: Icon(
+                                  Icons.lock,
+                                  color: Color(0xffA1A1A1),
+                                ),
+                                width: 120,
+                                keyboardType: TextInputType.number,
+                              ),
+                            )
+                          ],
+                        )
+                      : Container(height: 20),
                 ],
               ),
               RaisedButton(

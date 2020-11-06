@@ -115,8 +115,6 @@ class UserRepository {
   Future<AddUsuarioCliente> addUsuarioCliente(Map<String, dynamic> data) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
-    print('...................................');
-    print(data);
     try {
       Response response = await dio.post("/api/cliente/cliente_user",
           data: jsonEncode({"param": data}),
@@ -132,8 +130,6 @@ class UserRepository {
             errorMessage: "Erro no cadastro. Talvez o email esteja duplicado");
       }
     } catch (error) {
-      print('-----------------');
-      print(error);
       return AddUsuarioCliente(
           isValid: false, errorMessage: "Erro inesperado no cadastro.");
     }

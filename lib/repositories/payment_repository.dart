@@ -96,25 +96,35 @@ class PaymentRepository {
     }).toList();
     return {
       'items': items,
-      'id_cartao': paymentMethod.creditCard.id,
+      'id_cartao':
+          paymentMethod.creditCard != null ? paymentMethod.creditCard.id : 0,
       'ccv': data['ccv'],
       'installment': data['installment'],
     };
   }
 
-  Future<bool> payment(
-      Map<String, dynamic> data, PaymentMethod paymentMethod) async {
+  Future<bool> payment(Map<String, dynamic> data, PaymentMethod paymentMethod,
+      bool isBoleto) async {
     Map<String, dynamic> params = generate_params(data, paymentMethod);
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
-      Response response = await dio.post('/api/cliente/pedidos',
+      if (!isBoleto) {
+        Response response = await dio.post('/api/cliente/pedidos',
+            data: jsonEncode(params),
+            options: Options(headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer ${idToken.token}"
+            }));
+
+        return true;
+      }
+      Response response = await dio.post('/api/cliente/pedido_boleto',
           data: jsonEncode(params),
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
           }));
-
       return true;
     } catch (error) {
       return false;

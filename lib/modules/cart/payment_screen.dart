@@ -142,7 +142,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       'value': _value,
       'cart': _cart,
       'ccv': _ccvController.text
-    });
+    }, billing);
     _ccvController.text = '';
     if (statusPayment != null && statusPayment == true) {
       _requestBloc.resetCart();

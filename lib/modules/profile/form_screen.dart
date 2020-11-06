@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
@@ -25,6 +26,7 @@ class _FormScreenState extends State<FormScreen> {
 
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   UserBloc _userBloc = Modular.get<UserBloc>();
+  AuthBloc _authBlock = Modular.get<AuthBloc>();
   List<Map> _data;
   TextEditingController _nameController;
   TextEditingController _emailController;
@@ -39,8 +41,6 @@ class _FormScreenState extends State<FormScreen> {
     };
     AddUsuarioCliente addUser = await _userBloc.addUsuario(params);
     _userBloc.fetchUsuariosCliente();
-    print('addUser.isValid');
-    print(addUser.isValid);
     if (addUser.isValid) {
       Modular.to.pop();
     } else {
@@ -232,19 +232,23 @@ class _FormScreenState extends State<FormScreen> {
                   trailing: StreamBuilder<bool>(
                     stream: _profileWidgetBloc.userStatusOut,
                     builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Switch(
-                          value: snapshot.data,
-                          activeColor: Theme.of(context).primaryColor,
-                          onChanged: (value) => _onChangeUserStatus(value),
-                        );
-                      } else {
-                        return Switch(
-                          value: false,
-                          activeColor: Theme.of(context).primaryColor,
-                          onChanged: (value) => _onChangeUserStatus(value),
-                        );
+                      if (_authBlock.getAuthCurrentUser.data.role ==
+                          'CLIENTE') {
+                        if (snapshot.hasData) {
+                          return Switch(
+                            value: snapshot.data,
+                            activeColor: Theme.of(context).primaryColor,
+                            onChanged: (value) => _onChangeUserStatus(value),
+                          );
+                        } else {
+                          return Switch(
+                            value: false,
+                            activeColor: Theme.of(context).primaryColor,
+                            onChanged: (value) => _onChangeUserStatus(value),
+                          );
+                        }
                       }
+                      return Container();
                     },
                   ),
                 )
@@ -261,16 +265,18 @@ class _FormScreenState extends State<FormScreen> {
             ),
           ),
           SizedBox(height: 30),
-          widget.formType == 'edit'
-              ? RaisedButton(
-                  color: Colors.red,
-                  onPressed: _showDialog,
-                  elevation: 0,
-                  child: Text(
-                    'Excluir Usuário',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                )
+          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
+              ? widget.formType == 'edit'
+                  ? RaisedButton(
+                      color: Colors.red,
+                      onPressed: _showDialog,
+                      elevation: 0,
+                      child: Text(
+                        'Excluir Usuário',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    )
+                  : Container()
               : Container()
         ],
       ),
