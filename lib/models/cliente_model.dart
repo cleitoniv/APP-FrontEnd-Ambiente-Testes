@@ -13,9 +13,10 @@ class ClienteModel {
   int confirmationSms;
   int money;
   int points;
+  String role;
   bool cadastrado;
   Map<String, dynamic> notifications;
-  ClienteModel({this.id, this.codigo, this.loja, this.cnpjCpf});
+  ClienteModel({this.id, this.codigo, this.loja, this.cnpjCpf, this.role});
 
   ClienteModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -34,6 +35,7 @@ class ClienteModel {
     notifications = json['notifications'];
     cadastrado = json['cadastrado'];
     confirmationSms = json['confirmation_sms'];
+    role = json['role'];
   }
 
   Map<String, dynamic> toJson() {
