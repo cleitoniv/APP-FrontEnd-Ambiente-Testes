@@ -98,6 +98,7 @@ class CreditCardRepository {
 
       return CreditCard(isEmpty: false, isLoading: false, cartao: card);
     } catch (error) {
+      print(error);
       final error400 = error as DioError;
       return CreditCard(isEmpty: true, isLoading: false, errorData: {
         "falha": ["Falha ao criar cartão"]
@@ -151,6 +152,36 @@ class CreditCardRepository {
 
       return response.data['data'];
     } catch (error) {
+      return null;
+    }
+  }
+
+  Future<List> fetchInstallments(int valor, bool isBoleto) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try {
+      if (isBoleto) {
+        Response response = await dio.get(
+          "/api/cliente/generate_boleto?valor=$valor",
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${idToken.token}"
+          }),
+        );
+
+        return response.data['data'];
+      }
+      Response response = await dio.get(
+        "/api/cliente/taxa?valor=$valor",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${idToken.token}"
+        }),
+      );
+
+      return response.data['data'];
+    } catch (error) {
+      print(error);
       return null;
     }
   }

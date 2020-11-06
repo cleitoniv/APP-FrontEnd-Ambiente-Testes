@@ -33,6 +33,10 @@ class UserBloc extends Disposable {
     return repository.updateUsuarioCliente(id, data);
   }
 
+  Future<DeleteUsuarioCliente> deleteUsuarioCliente(int id) async {
+    return repository.deleteUsuarioCliente(id);
+  }
+
   BehaviorSubject _usuariosClienteController = BehaviorSubject();
   Sink get usuariosClienteSink => _usuariosClienteController.sink;
   Stream get usuariosClienteStream => _usuariosClienteController.stream;

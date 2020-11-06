@@ -21,6 +21,8 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   UserBloc _userBloc = Modular.get<UserBloc>();
   List<Map> _data;
@@ -36,9 +38,19 @@ class _FormScreenState extends State<FormScreen> {
       "cargo": _officeController.text
     };
     AddUsuarioCliente addUser = await _userBloc.addUsuario(params);
-
+    _userBloc.fetchUsuariosCliente();
+    print('addUser.isValid');
+    print(addUser.isValid);
     if (addUser.isValid) {
       Modular.to.pop();
+    } else {
+      SnackBar _snackBar = SnackBar(
+        content: Text(
+          'Falha ao salvar dados!',
+        ),
+      );
+
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
     }
   }
 
@@ -52,6 +64,50 @@ class _FormScreenState extends State<FormScreen> {
 
     UpdateUsuarioCliente updateUser =
         await _userBloc.updateUsuario(widget.usuario.id, params);
+    if (updateUser.isValid) {
+      _userBloc.fetchUsuariosCliente();
+      Modular.to.pop();
+    }
+  }
+
+  _showDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Remoção de Usuário",
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text("Essa ação não pode ser desfeita! Continuar?"),
+          actions: [
+            RaisedButton(
+              color: Colors.red,
+              child: Text(
+                "Sim",
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: _onDeleteUser,
+            ),
+            RaisedButton(
+                child: Text(
+                  "Cancelar",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
+  _onDeleteUser() async {
+    Modular.to.pop();
+    DeleteUsuarioCliente updateUser =
+        await _userBloc.deleteUsuarioCliente(widget.usuario.id);
     if (updateUser.isValid) {
       _userBloc.fetchUsuariosCliente();
       Modular.to.pop();
@@ -112,6 +168,7 @@ class _FormScreenState extends State<FormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Usuários do Aplicativo'),
         centerTitle: false,
@@ -203,6 +260,18 @@ class _FormScreenState extends State<FormScreen> {
               style: Theme.of(context).textTheme.button,
             ),
           ),
+          SizedBox(height: 30),
+          widget.formType == 'edit'
+              ? RaisedButton(
+                  color: Colors.red,
+                  onPressed: _showDialog,
+                  elevation: 0,
+                  child: Text(
+                    'Excluir Usuário',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                )
+              : Container()
         ],
       ),
     );

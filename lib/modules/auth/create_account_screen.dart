@@ -27,7 +27,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   MaskedTextController _phoneController;
   TextEditingController _passwordController;
   List<Map> _fieldData;
-
+  bool _lock = true;
   _handleObscureText() async {
     bool _first = await _authWidgetBloc.createAccountShowPasswordOut.first;
 
@@ -87,6 +87,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   _handleAcceptTerm(bool value) {
+    setState(() {
+      _lock = !value;
+    });
+
     _authWidgetBloc.createAccountTermIn.add(
       value,
     );
@@ -259,6 +263,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       child: StreamBuilder<bool>(
                         stream: _authWidgetBloc.createAccountShowPasswordOut,
                         builder: (context, snapshot) {
+                          print(snapshot.data);
                           return TextFieldWidget(
                             labelText: e['labelText'],
                             prefixIcon: e['prefixIcon'],
@@ -310,7 +315,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
               SizedBox(height: 30),
               RaisedButton(
-                onPressed: _handleSubmit,
+                onPressed: _lock ? null : _handleSubmit,
                 child: Text(
                   'Cadastrar',
                   style: Theme.of(context).textTheme.button,

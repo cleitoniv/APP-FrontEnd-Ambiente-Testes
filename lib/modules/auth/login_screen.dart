@@ -62,10 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
         print('_cliente.data');
         print(_cliente.data.ddd);
-        if (_cliente.data.confirmationSms == 0 ||
-            _cliente.data.confirmationSms == null) {
-          print(_cliente.data.phone);
-          print(_cliente.data.ddd);
+        if (_cliente.data.confirmationSms != 1) {
           Modular.to.pushNamed('/auth/confirmSms', arguments: {
             "phone": _cliente.data.phone,
             "ddd": _cliente.data.ddd

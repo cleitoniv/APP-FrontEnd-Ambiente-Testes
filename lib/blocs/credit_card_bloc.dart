@@ -36,6 +36,10 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
     }
   }
 
+  Future<List> fetchInstallments(int valor, bool isBoleto) async {
+    return repository.fetchInstallments(valor, isBoleto);
+  }
+
   Future<CreditCard> addCreditCard(CreditCardModel creditCard) {
     return repository.addCreditCard(creditCard);
   }

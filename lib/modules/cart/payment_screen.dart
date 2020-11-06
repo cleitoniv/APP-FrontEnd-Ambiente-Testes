@@ -28,8 +28,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
   PaymentBloc _paymentBloc = Modular.get<PaymentBloc>();
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
+  TextEditingController _ccvController;
   MaskedTextController _creditCardNumberController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _lock = false;
+  bool billing = false;
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(
@@ -64,6 +67,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _onChangePaymentForm(CreditCardModel creditCard) async {
+    setState(() {
+      billing = false;
+    });
     bool selectedCard =
         await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
     if (selectedCard) {
@@ -80,12 +86,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
+  _onBack() {
+    Modular.to.pop();
+  }
+
+  _blockFinaliza() {
+    Future.delayed(
+        Duration.zero,
+        () => setState(() {
+              _lock = true;
+            }));
+  }
+
   _obfuscateText(String text) {
     var numOriginal = text.split(" ");
     numOriginal[1] = "****";
     numOriginal[2] = "****";
     var numObfuscated = numOriginal.join(",");
     return numObfuscated.replaceAll(',', ' ');
+  }
+
+  _colorizeCredCardList(index, idSelected) {
+    if (index == idSelected && !billing) {
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -95,11 +120,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _creditCardNumberController = new MaskedTextController(
       mask: '0000 0000 0000 0000',
     );
+    _ccvController = TextEditingController();
   }
 
   @override
   void dispose() {
     _creditCardNumberController.dispose();
+    _ccvController.dispose();
   }
 
   _onSubmit() async {
@@ -110,17 +137,68 @@ class _PaymentScreenState extends State<PaymentScreen> {
     int _value = int.parse(
       _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
     );
+    bool statusPayment = await _paymentBloc.payment({
+      'payment_data': _paymentMethod,
+      'value': _value,
+      'cart': _cart,
+      'ccv': _ccvController.text
+    });
+    _ccvController.text = '';
+    if (statusPayment != null && statusPayment == true) {
+      _requestBloc.resetCart();
+      Dialogs.success(
+        context,
+        subtitle: 'Compra efetuada com sucesso!',
+        buttonText: 'Ir para Meus Pedidos',
+        onTap: _onSubmitDialog,
+      );
+    } else {
+      Dialogs.error(
+        context,
+        title: "Atenção",
+        subtitle: 'Erro ao Processar Compra! Verifique os dados do cartão!',
+        buttonText: 'Voltar',
+        onTap: _onBack,
+      );
+    }
+  }
 
-    _paymentBloc.payment(
-        {'payment_data': _paymentMethod, 'value': _value, 'cart': _cart});
+  _finishPayment() {
+    Modular.to.pushNamed("/cart/finishPayment");
+  }
 
-    _requestBloc.resetCart();
+  _showCcvDialog() async {
+    final _paymentMethod = await _cartWidgetBloc.currentPaymentMethod;
 
-    Dialogs.success(
-      context,
-      subtitle: 'Compra efetuada com sucesso!',
-      buttonText: 'Ir para Meus Pedidos',
-      onTap: _onSubmitDialog,
+    if (_paymentMethod.creditCard == null) {
+      return;
+    }
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                controller: _ccvController,
+                keyboardType: TextInputType.number,
+                autofocus: true,
+                decoration: new InputDecoration(
+                    labelText: 'Digite o Código de Segurança', hintText: '000'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(child: const Text('ENVIAR'), onPressed: _onSubmit),
+          new FlatButton(
+              child: const Text('CANCELAR'),
+              onPressed: () {
+                Navigator.pop(context);
+              })
+        ],
+      ),
     );
   }
 
@@ -202,6 +280,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             child: CircularProgressIndicator(),
                           );
                         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                          _blockFinaliza();
                           return Center(
                             child: Text(
                               "Cadastre um cartão!",
@@ -243,8 +322,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     horizontal: 20,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: _currentPaymentForm.id ==
-                                            _creditCards[index].id
+                                    color: _colorizeCredCardList(
+                                            _currentPaymentForm.id,
+                                            _creditCards[index].id)
                                         ? Theme.of(context).accentColor
                                         : Color(0xffF1F1F1),
                                     borderRadius: BorderRadius.circular(5),
@@ -273,8 +353,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           .copyWith(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
-                                            color: _currentPaymentForm.id ==
-                                                    _creditCards[index].id
+                                            color: _colorizeCredCardList(
+                                                    _currentPaymentForm.id,
+                                                    _creditCards[index].id)
                                                 ? Colors.white
                                                 : null,
                                           ),
@@ -320,6 +401,62 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
             ),
             Padding(
+              padding: EdgeInsets.all(20),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    billing = true;
+                    _cartWidgetBloc.setPaymentMethodBoleto(billing);
+                  });
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: billing
+                        ? Theme.of(context).accentColor
+                        : Color(0xffF1F1F1),
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 2),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0),
+                        child: Text(
+                          'Boleto',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: null,
+                              ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.check,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            billing = true;
+                            _cartWidgetBloc.setPaymentMethodBoleto(billing);
+                          });
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
                 padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                 child: RaisedButton.icon(
                   onPressed: _onAddCreditCard,
@@ -346,7 +483,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Padding(
               padding: EdgeInsets.all(20.0),
               child: RaisedButton(
-                  onPressed: _onSubmit,
+                  onPressed: !_lock
+                      ? _finishPayment
+                      : null, // _showCcvDialog  _onSubmit,
                   child: Text(
                     'Finalizar Pedido',
                     style: Theme.of(context).textTheme.button,

@@ -108,6 +108,7 @@ class AuthRepository {
       );
       return LoginEvent(message: "OK", isValid: true, result: result);
     } catch (error) {
+      print(error);
       return LoginEvent(message: "Credenciais Inválidas.", isValid: false);
     }
   }
@@ -130,6 +131,7 @@ class AuthRepository {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": "application/json"
           }));
+      print('response.data firstAccess');
       print(response.data);
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
@@ -173,9 +175,8 @@ class AuthRepository {
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
-
-      if (cliente.confirmationSms != "1") {
-        return AuthEvent(isValid: false, data: cliente, loading: true);
+      if (cliente.confirmationSms == 1 && cliente.sitApp == "A") {
+        return AuthEvent(isValid: true, data: cliente, loading: false);
       } else if (cliente.sitApp == "N" || cliente.sitApp == "E") {
         return AuthEvent(isValid: false, data: cliente, loading: true);
       } else {
