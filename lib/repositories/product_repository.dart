@@ -79,6 +79,28 @@ class ProductRepository {
     }
   }
 
+  Future<Map<String, dynamic>> checkProductGrausDiferentes(
+      Map<String, dynamic> data, Map<String, dynamic> allowedParams) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    print(data);
+    try {
+      Response response = await dio.post("/api/cliente/verify_graus",
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${idToken.token}"
+          }),
+          data: jsonEncode({
+            "param": {"data": data, "allowed_params": allowedParams}
+          }));
+      print(response.data);
+      return {};
+    } catch (error) {
+      final error400 = error as DioError;
+      return error400.response.data['data']['errors'];
+    }
+  }
+
   Future<Parametros> getParametros(String group) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();

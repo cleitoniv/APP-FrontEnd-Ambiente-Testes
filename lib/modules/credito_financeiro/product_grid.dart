@@ -184,47 +184,60 @@ class _CreditProductGridScreenState extends State<CreditProductGridScreen>
   }
 
   Widget _renderHeaderFilters(int index) {
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      scrollDirection: Axis.horizontal,
-      itemCount: _sightProblems.length,
-      separatorBuilder: (context, index) => SizedBox(
-        width: 10,
-      ),
-      itemBuilder: (context, index) {
-        return StreamBuilder<String>(
-          stream: _homeWidgetBloc.sightProblemOut,
-          builder: (context, snapshot) {
-            return GestureDetector(
-              onTap: () => _onChangeSightProblem(
-                _sightProblems[index],
-              ),
-              child: AnimatedContainer(
-                duration: Duration(
-                  milliseconds: 50,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                ),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: _sightProblems[index] == snapshot.data
-                      ? Theme.of(context).accentColor
-                      : Color(0xffF1F1F1),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  _sightProblems[index],
-                  style: Theme.of(context).textTheme.subtitle2.copyWith(
-                        color: _sightProblems[index] == snapshot.data
-                            ? Color(0xffF1F1F1)
-                            : Theme.of(context).accentColor,
-                      ),
-                ),
-              ),
+    return StreamBuilder(
+      stream: _productBloc.productListStream,
+      builder: (context, productSnapshot) {
+        if (!productSnapshot.hasData || productSnapshot.data.isLoading) {
+          return Center(child: CircularProgressIndicator());
+        } else if (!productSnapshot.hasData || productSnapshot.data.isEmpty) {
+          return Container();
+        }
+
+        return ListView.separated(
+          shrinkWrap: true,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
+          scrollDirection: Axis.horizontal,
+          itemCount: productSnapshot.data.filters.length,
+          separatorBuilder: (context, index) => SizedBox(
+            width: 10,
+          ),
+          itemBuilder: (context, index) {
+            return StreamBuilder<String>(
+              stream: _homeWidgetBloc.sightProblemOut,
+              builder: (context, snapshot) {
+                return GestureDetector(
+                  onTap: () => _onChangeSightProblem(
+                    productSnapshot.data.filters[index],
+                  ),
+                  child: AnimatedContainer(
+                    duration: Duration(
+                      milliseconds: 50,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                    ),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color:
+                          productSnapshot.data.filters[index] == snapshot.data
+                              ? Theme.of(context).accentColor
+                              : Color(0xffF1F1F1),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      productSnapshot.data.filters[index],
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                            color: productSnapshot.data.filters[index] ==
+                                    snapshot.data
+                                ? Color(0xffF1F1F1)
+                                : Theme.of(context).accentColor,
+                          ),
+                    ),
+                  ),
+                );
+              },
             );
           },
         );

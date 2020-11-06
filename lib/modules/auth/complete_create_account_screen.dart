@@ -11,6 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:cpfcnpj/cpfcnpj.dart';
 
 class CompleteCreateAccountScreen extends StatefulWidget {
   @override
@@ -56,7 +57,17 @@ class _CompleteCreateAccountScreenState
   }
 
   _handleSubmit() async {
+    if (_cnpjController.text.length <= 13 &&
+        !_verifyCpfCnpj(_cpfController.text, "CPF")) {
+      return;
+    } else if (_cnpjController.text.length >= 13 &&
+        !_verifyCpfCnpj(_cnpjController.text, "CNPJ")) {
+      return;
+    }
     if (_formKey.currentState.validate()) {
+      Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
+      final cnpjCpf = cpfCnpjLabel(currentData["ramo"]);
+
       Map<String, dynamic> completeFormdata = {
         'nome': sanitize(_nameController.text),
         'cep': sanitize(_zipCodeController.text),
@@ -73,10 +84,6 @@ class _CompleteCreateAccountScreenState
         'data_nascimento': _dataNascimentoController.text,
         'email_fiscal': _emailFiscalController.text
       };
-
-      Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
-
-      final cnpjCpf = cpfCnpjLabel(currentData["ramo"]);
 
       if (cnpjCpf["ramo"] == "CPF") {
         completeFormdata['cnpj_cpf'] = sanitize(_cpfController.text);
@@ -171,6 +178,48 @@ class _CompleteCreateAccountScreenState
         );
       }
     }
+  }
+
+  bool _verifyCpfCnpj(String cpfCnpj, String type) {
+    if (type == "CPF") {
+      if (!CPF.isValid(cpfCnpj)) {
+        _showDialog("Atenção", "${type} inválido ou incompleto.");
+        return false;
+      }
+      return true;
+    } else {
+      if (!CNPJ.isValid(cpfCnpj)) {
+        _showDialog("Atenção", "${type} inválido ou incompleto.");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
   }
 
   Map<String, dynamic> cpfCnpjLabel(String ramo) {
@@ -407,6 +456,8 @@ class _CompleteCreateAccountScreenState
 
     cnpjFocus.addListener(() {
       if (!cnpjFocus.hasFocus) {
+        _verifyCpfCnpj(cnpjCpf['controller'].text, cnpjCpf["ramo"]);
+
         completeCadastro(cnpjCpf['controller']);
       }
     });

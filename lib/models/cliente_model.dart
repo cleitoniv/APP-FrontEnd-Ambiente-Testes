@@ -4,6 +4,7 @@ class ClienteModel {
   String codigo;
   String loja;
   String cnpjCpf;
+  String ddd;
   String sitApp;
   String dataNascimento;
   String email;
@@ -20,6 +21,7 @@ class ClienteModel {
     id = json['id'];
     nome = json['nome'];
     codigo = json['codigo'];
+    ddd = json['ddd'];
     loja = json['loja'];
     cnpjCpf = json['cnpj_cpf'];
     dataNascimento = json['data_nascimento'];

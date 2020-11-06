@@ -60,10 +60,16 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else if (_login.result.user.isEmailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
-        if (_cliente.data.confirmationSms == "0" ||
+        print('_cliente.data');
+        print(_cliente.data.ddd);
+        if (_cliente.data.confirmationSms == 0 ||
             _cliente.data.confirmationSms == null) {
-          Modular.to
-              .pushNamed('/auth/confirmSms', arguments: _cliente.data.phone);
+          print(_cliente.data.phone);
+          print(_cliente.data.ddd);
+          Modular.to.pushNamed('/auth/confirmSms', arguments: {
+            "phone": _cliente.data.phone,
+            "ddd": _cliente.data.ddd
+          });
         } else if (!_cliente.data.cadastrado) {
           _authWidgetBloc.createAccountDataIn
               .add({'email': _cliente.data.email, 'ddd': '27'});

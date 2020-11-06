@@ -68,12 +68,49 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return !currentProduct.product.hasAcessorio ? widget : Container();
   }
 
+  Future<Map<String, dynamic>> _checkParametersGrausDiferentes(
+      Map<String, dynamic> data, Map<String, dynamic> allowedParams) async {
+    Map<String, dynamic> errorParams = {};
+
+    data.keys.forEach((olho) {
+      if (olho != "group") {
+        if (data[olho].keys.any((element) => data[olho][element] == "")) {
+          data[olho].keys.forEach((element) {
+            String key;
+            if (data[olho][element] == "") {
+              if (allowedParams[element] ?? false) {
+                switch (element) {
+                  case "axis":
+                    key = "Eixo ${olho}";
+                    break;
+                  case "cylinder":
+                    key = "Cilindro ${olho}";
+                    break;
+                  case "degree":
+                    key = "Esferico ${olho}";
+                    break;
+                  case "cor":
+                    key = "Cor ${olho}";
+                    break;
+                  case "adicao":
+                    key = "Adicao ${olho}";
+                    break;
+                }
+                errorParams[key] = ["Nao pode estar vazio."];
+              }
+            }
+          });
+        }
+      }
+    });
+    Map<String, dynamic> errors =
+        await _productBloc.checkProductGrausDiferentes(data, allowedParams);
+    return {...errors, ...errorParams};
+  }
+
   Future<Map<String, dynamic>> _checkParameters(
-      Map data, ProductModel product) async {
+      Map data, ProductModel product, Map<String, dynamic> first) async {
     Map<String, dynamic> params = {};
-
-    print(data);
-
     Map<String, dynamic> errors = {};
 
     data.remove("lenses");
@@ -85,8 +122,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       "cor": product.hasCor ?? false,
       "adicao": product.hasAdicao ?? false
     };
-    print(data);
-    print(allowedParams);
+
+    if (first['current'] == "Graus diferentes em cada olho") {
+      data["group"] = product.group;
+      return _checkParametersGrausDiferentes(
+          new Map<String, dynamic>.from(data), allowedParams);
+    }
 
     data.keys.forEach((element) {
       if (allowedParams[element]) {
@@ -95,7 +136,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     });
 
     params["group"] = product.group;
-
     final productAvailable = await _productBloc.checkProduct(params);
 
     if (!productAvailable) {
@@ -135,10 +175,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   _onAddToCart(Map data) async {
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
-
     final errors = await _checkParameters(
         new Map<String, dynamic>.from(_first[_first['current']]),
-        data['product']);
+        data['product'],
+        new Map<String, dynamic>.from(_first));
     if (errors.keys.length <= 0) {
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),
