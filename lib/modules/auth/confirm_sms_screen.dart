@@ -86,7 +86,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
       Timer(Duration(seconds: 10), () {
         setState(() {
           _lock = false;
-          _requestCodeController = "Receber";
+          _requestCodeController = "Receber Código";
         });
       });
     }
@@ -100,8 +100,8 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     _phoneController = MaskedTextController(
       mask: '00 00000-0000',
     );
-    _phoneController.text = widget.phone["phone"];
-    _requestCodeController = "Receber";
+    _phoneController.text = widget.phone["ddd"] + widget.phone["phone"];
+    _requestCodeController = "Receber Código";
   }
 
   Widget build(BuildContext context) {
@@ -131,8 +131,8 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
               ),
             ),
             Container(
-              width: 100,
-              margin: EdgeInsets.only(left: 270),
+              width: 500,
+              margin: EdgeInsets.only(left: 200),
               child: RaisedButton(
                 onPressed: _lock ? null : _requireCodeSms,
                 child: Text(
