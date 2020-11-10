@@ -280,11 +280,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       stream: _creditCardBloc.cartaoCreditoStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData || snapshot.data.isLoading) {
+                          _blockFinaliza();
                           return Center(
                             child: CircularProgressIndicator(),
                           );
                         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                          _blockFinaliza();
                           return Center(
                             child: Text(
                               "Cadastre um cartão!",
@@ -409,6 +409,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
+                    _lock = false;
                     billing = true;
                     _cartWidgetBloc.setPaymentMethodBoleto(billing);
                   });

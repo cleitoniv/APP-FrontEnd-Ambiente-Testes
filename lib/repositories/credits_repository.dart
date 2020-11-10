@@ -114,7 +114,7 @@ class CreditsRepository {
   }
 
   Future<CreditoPagamento> creditoFinanceiroPagamento(
-      CreditoFinanceiro credito, int cartaoId) async {
+      CreditoFinanceiro credito, int cartaoId, bool isBoleto) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
 
