@@ -133,7 +133,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
             ),
             Container(
               width: 500,
-              margin: EdgeInsets.only(left: 200),
+              margin: EdgeInsets.only(left: 100),
               child: RaisedButton(
                 onPressed: _lock ? null : _requireCodeSms,
                 child: Text(

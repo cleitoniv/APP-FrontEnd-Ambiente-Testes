@@ -199,11 +199,10 @@ class AuthRepository {
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
       print(cliente.confirmationSms);
       print(cliente.sitApp);
-      if (cliente.confirmationSms == 0 && cliente.sitApp == "A") {
+      if (cliente.confirmationSms == 0 && cliente.sitApp == "A" ||
+          cliente.sitApp == "E") {
         return AuthEvent(isValid: true, data: cliente, loading: false);
-      } else if (cliente.sitApp == "N" ||
-          cliente.sitApp == "E" ||
-          cliente.sitApp == "I") {
+      } else if (cliente.sitApp == "N" || cliente.sitApp == "I") {
         return AuthEvent(
             isValid: false,
             data: cliente,

@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (_cliente.isValid) {
           if (_cliente.data.confirmationSms != 1) {
             Modular.to.pushNamed('/auth/confirmSms', arguments: {
-              "phone": _cliente.data.phone,
+              "phone": _cliente.data.ddd + _cliente.data.phone,
               "ddd": _cliente.data.ddd
             });
           } else if (!_cliente.data.cadastrado) {
