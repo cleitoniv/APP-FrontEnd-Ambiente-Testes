@@ -113,8 +113,8 @@ class CreditsRepository {
     }
   }
 
-  Future<CreditoPagamento> creditoFinanceiroPagamento(
-      CreditoFinanceiro credito, int cartaoId) async {
+  Future<bool> creditoFinanceiroPagamento(
+      CreditoFinanceiro credito, int cartaoId, bool isBoleto) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
 
@@ -133,9 +133,9 @@ class CreditsRepository {
           }),
           options:
               Options(headers: {"Authorization": "Bearer ${idToken.token}"}));
-      return CreditoPagamento(success: true);
+      return true;
     } catch (error) {
-      return CreditoPagamento(success: false);
+      return false;
     }
   }
 

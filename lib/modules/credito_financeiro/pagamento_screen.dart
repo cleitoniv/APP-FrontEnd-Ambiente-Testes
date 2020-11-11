@@ -6,6 +6,8 @@ import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar_success.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:intl/intl.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+import '../../widgets/snackbar.dart';
 
 class CreditoPagamentoScreen extends StatefulWidget {
   @override
@@ -24,9 +27,12 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
       Modular.get<CreditoFinanceiroBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PaymentBloc _paymentBloc = Modular.get<PaymentBloc>();
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
+  bool billing = false;
+  bool _lock = false;
   MaskedTextController _creditCardNumberController;
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(
@@ -41,10 +47,45 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
     Modular.to.pushNamed('/cart/addCreditCard');
   }
 
-  _onChangePaymentForm(CreditCardModel creditCard) {
-    _cartWidgetBloc.currentPaymentFormIn.add(
-      creditCard,
-    );
+  _onChangePaymentForm(CreditCardModel creditCard) async {
+    setState(() {
+      billing = false;
+    });
+    bool selectedCard =
+        await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
+    if (selectedCard) {
+      _creditCardBloc.fetchPaymentMethods();
+    }
+  }
+
+  _onDelete(int id) async {
+    RemoveCard _removeCard = await _creditCardBloc.removeCard(id);
+    if (_removeCard.success) {
+      Map<String, dynamic> success = {
+        "Cartao Removido": [_removeCard.message]
+      };
+      _creditCardBloc.fetchPaymentMethods();
+
+      SnackBar _snackbar = SuccessSnackBar.snackBar(this.context, success);
+      _scaffoldKey.currentState.showSnackBar(_snackbar);
+    } else {
+      Map<String, dynamic> success = {
+        "Atenção": [_removeCard.message]
+      };
+      SnackBar _snackbar = ErrorSnackBar.snackBar(this.context, success);
+      _scaffoldKey.currentState.showSnackBar(_snackbar);
+    }
+  }
+
+  _colorizeCredCardList(index, idSelected) {
+    if (index == idSelected && !billing) {
+      return true;
+    }
+    return false;
+  }
+
+  _finishPayment() {
+    Modular.to.pushNamed("/credito_financeiro/finishPayment");
   }
 
   _onSubmitDialog() {
@@ -53,6 +94,14 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
       '/home/3',
       (route) => route.isFirst,
     );
+  }
+
+  _blockFinaliza() {
+    Future.delayed(
+        Duration.zero,
+        () => setState(() {
+              _lock = true;
+            }));
   }
 
   @override
@@ -78,7 +127,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
 
     try {
       _creditoFinanceiroBloc.pagamento(
-          creditoFinan, _paymentMethod.creditCard.id);
+          creditoFinan, _paymentMethod.creditCard.id, billing);
     } catch (error) {
       print(error);
     }
@@ -91,9 +140,18 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
     );
   }
 
+  _obfuscateText(String text) {
+    var numOriginal = text.split(" ");
+    numOriginal[1] = "****";
+    numOriginal[2] = "****";
+    var numObfuscated = numOriginal.join(",");
+    return numObfuscated.replaceAll(',', ' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(130),
           child: Container(
@@ -167,6 +225,17 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                           return Center(
                             child: CircularProgressIndicator(),
                           );
+                        } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                          _blockFinaliza();
+                          return Center(
+                            child: Text(
+                              "Cadastre um cartão!",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(fontSize: 20),
+                            ),
+                          );
                         }
                         final _creditCards = snapshot.data.list;
 
@@ -182,10 +251,6 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                               stream: _creditCardBloc.currentPaymentFormOut,
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
-                                  _onChangePaymentForm(
-                                    _creditCards[index],
-                                  );
-
                                   return Container();
                                 }
 
@@ -204,8 +269,9 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                     horizontal: 20,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: _currentPaymentForm.id ==
-                                            _creditCards[index].id
+                                    color: _colorizeCredCardList(
+                                            _currentPaymentForm.id,
+                                            _creditCards[index].id)
                                         ? Theme.of(context).accentColor
                                         : Color(0xffF1F1F1),
                                     borderRadius: BorderRadius.circular(5),
@@ -226,26 +292,51 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                       Icons.credit_card,
                                     ),
                                     title: Text(
-                                      _creditCardNumberController.text,
+                                      _obfuscateText(
+                                          _creditCardNumberController.text),
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle1
                                           .copyWith(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
-                                            color: _currentPaymentForm.id ==
-                                                    _creditCards[index].id
+                                            color: _colorizeCredCardList(
+                                                    _currentPaymentForm.id,
+                                                    _creditCards[index].id)
                                                 ? Colors.white
                                                 : null,
                                           ),
                                     ),
-                                    trailing: _currentPaymentForm.id ==
-                                            _creditCards[index].id
-                                        ? Icon(
-                                            Icons.check,
-                                            color: Colors.white,
+                                    trailing: Container(
+                                      height: 50,
+                                      width: 80,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          _currentPaymentForm.id ==
+                                                  _creditCards[index].id
+                                              ? Icon(
+                                                  Icons.check,
+                                                  color: Colors.white,
+                                                  size: 25,
+                                                )
+                                              : Container(
+                                                  width: 25,
+                                                ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.delete_outline,
+                                              color:
+                                                  Colors.red.withOpacity(0.7),
+                                            ),
+                                            onPressed: () {
+                                              _onDelete(_creditCards[index].id);
+                                            },
                                           )
-                                        : null,
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 );
                               },
@@ -256,6 +347,62 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                 ],
               ),
             ),
+            // Padding(
+            //   padding: EdgeInsets.all(20),
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       setState(() {
+            //         billing = true;
+            //         _cartWidgetBloc.setPaymentMethodBoleto(billing);
+            //       });
+            //     },
+            //     child: Container(
+            //       height: 50,
+            //       decoration: BoxDecoration(
+            //         color: billing
+            //             ? Theme.of(context).accentColor
+            //             : Color(0xffF1F1F1),
+            //         borderRadius: BorderRadius.all(Radius.circular(5)),
+            //         boxShadow: [
+            //           BoxShadow(
+            //             color: Colors.black12,
+            //             offset: Offset(0, 2),
+            //             blurRadius: 10,
+            //             spreadRadius: 1,
+            //           ),
+            //         ],
+            //       ),
+            //       child: Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           Padding(
+            //             padding: const EdgeInsets.only(left: 25.0),
+            //             child: Text(
+            //               'Boleto',
+            //               style: Theme.of(context).textTheme.subtitle1.copyWith(
+            //                     fontSize: 14,
+            //                     fontWeight: FontWeight.w600,
+            //                     color: null,
+            //                   ),
+            //             ),
+            //           ),
+            //           IconButton(
+            //             icon: Icon(
+            //               Icons.check,
+            //               color: Colors.black,
+            //             ),
+            //             onPressed: () {
+            //               setState(() {
+            //                 billing = true;
+            //                 _cartWidgetBloc.setPaymentMethodBoleto(billing);
+            //               });
+            //             },
+            //           )
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Padding(
                 padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                 child: RaisedButton.icon(
@@ -283,7 +430,9 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
             Padding(
               padding: EdgeInsets.all(20.0),
               child: RaisedButton(
-                  onPressed: _onSubmit,
+                  onPressed: !_lock
+                      ? _finishPayment
+                      : null, // _showCcvDialog  _onSubmit,
                   child: Text(
                     'Finalizar Pedido',
                     style: Theme.of(context).textTheme.button,

@@ -267,6 +267,7 @@ class _CompleteCreateAccountScreenState
       },
       {
         'labelText': 'Nome completo',
+        'textCapitalization': TextCapitalization.words,
         'prefixIcon': Icon(
           MaterialCommunityIcons.domain,
           color: Color(0xffA1A1A1),
@@ -588,6 +589,7 @@ class _CompleteCreateAccountScreenState
                       return Container(
                         margin: const EdgeInsets.only(top: 20),
                         child: TextFieldWidget(
+                          textCapitalization: e['textCapitalization'],
                           focus: e['focus'],
                           labelText: e['labelText'],
                           prefixIcon: e['prefixIcon'],

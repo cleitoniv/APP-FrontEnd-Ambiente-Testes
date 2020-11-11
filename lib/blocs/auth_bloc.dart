@@ -5,9 +5,12 @@ import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:dio/dio.dart';
 import 'package:rxdart/subjects.dart';
 
 class AuthBloc extends Disposable {
+  Dio dio;
+
   AuthRepository repository;
 
   LoginEvent login;
@@ -20,6 +23,11 @@ class AuthBloc extends Disposable {
 
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
 
+  bool acceptTerms = false;
+  BehaviorSubject _accetpTerms = BehaviorSubject();
+  Sink get acceptTermSink => _accetpTerms.sink;
+  Stream get getTermsOfResponsabilityStream => _accetpTerms.stream;
+
   Future<Cadastro> fetchCadastro(String cnpj) async {
     return repository.getDados(cnpj);
   }
@@ -27,6 +35,21 @@ class AuthBloc extends Disposable {
   void getEnderecoCep(String cep) async {
     Endereco endereco = await repository.getEnderecoByCep(cep);
     enderecoSink.add(endereco);
+  }
+
+  acceptTerm() {
+    this.acceptTerms = !this.acceptTerms;
+  }
+
+  bool acceptTermGetter() {
+    return acceptTerms;
+  }
+
+  void getTermsOfResponsability() async {
+    _accetpTerms.add(AcceptTerms(isLoading: true));
+    final response = await repository.getTermsOfResponsability();
+    print(response);
+    _accetpTerms.add(response);
   }
 
   BehaviorSubject _cadastroController = BehaviorSubject();
@@ -119,5 +142,6 @@ class AuthBloc extends Disposable {
     _passwordResetController.close();
     _updatePasswordController.close();
     _signOutController.close();
+    _accetpTerms.close();
   }
 }

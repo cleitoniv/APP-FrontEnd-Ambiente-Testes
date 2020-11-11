@@ -18,6 +18,13 @@ class Authentication {
   bool loading;
 }
 
+class AcceptTerms {
+  List<String> data;
+  bool isEmpty;
+  bool isLoading;
+  AcceptTerms({this.data, this.isEmpty, this.isLoading});
+}
+
 class LoginEvent implements Authentication {
   String message;
   bool isValid;
@@ -101,6 +108,19 @@ class AuthRepository {
     }
   }
 
+  Future<AcceptTerms> getTermsOfResponsability() async {
+    try {
+      final response = await dio.get('/api/termo_responsabilidade');
+      List<String> responseTerm =
+          (response.data["data"] as List).map<String>((e) => e).toList();
+      return AcceptTerms(data: responseTerm, isEmpty: false, isLoading: false);
+    } catch (e) {
+      print('+++++++');
+      print(e);
+      return AcceptTerms(isLoading: false, isEmpty: true);
+    }
+  }
+
   Future<LoginEvent> login({
     String email,
     String password,
@@ -140,6 +160,7 @@ class AuthRepository {
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
       final error400 = error as DioError;
+      print(error400.response.data['data']);
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",
           isValid: false,
@@ -180,7 +201,9 @@ class AuthRepository {
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
-      if (cliente.confirmationSms == 1 && cliente.sitApp == "A") {
+      print(cliente.confirmationSms);
+      print(cliente.sitApp);
+      if (cliente.confirmationSms == 0 && cliente.sitApp == "A") {
         return AuthEvent(isValid: true, data: cliente, loading: false);
       } else if (cliente.sitApp == "N" ||
           cliente.sitApp == "E" ||

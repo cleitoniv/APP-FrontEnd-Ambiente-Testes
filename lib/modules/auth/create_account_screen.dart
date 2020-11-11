@@ -28,6 +28,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   TextEditingController _passwordController;
   List<Map> _fieldData;
   bool _lock = true;
+
   _handleObscureText() async {
     bool _first = await _authWidgetBloc.createAccountShowPasswordOut.first;
 
@@ -36,7 +37,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     );
   }
 
-  _handleShowTerm() {}
+  _handleShowTerm() {
+    Modular.to.pushNamed('/auth/terms');
+  }
 
   _showErrors(Map<String, dynamic> errors) {
     SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
@@ -58,9 +61,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       if (authResult == "ok") {
         LoginEvent firstAccess =
             await _authBloc.firstAccess({'nome': data['name'], ...data});
-        if (firstAccess.isValid) {
+        // print(firstAccess.errorData["TELEFONE"]);
+        if (!firstAccess.isValid && firstAccess.errorData["TELEFONE"] != '') {
+          _showErrors({
+            "Telefone": ["Esse número de telefone já está cadastrado."]
+          });
+        } else if (firstAccess.isValid) {
           Modular.to.pushNamed('/auth/confirmSms',
-              arguments: {"phone": _phoneController.text, "ddd": "27"});
+              arguments: {"phone": _phoneController.text});
           // Modular.to.pushNamed('/auth/activityPerformed');
         } else {
           _showErrors({
@@ -87,8 +95,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   _handleAcceptTerm(bool value) {
+    _authBloc.acceptTerm();
     setState(() {
-      _lock = !value;
+      _lock = _authBloc.acceptTermGetter();
     });
 
     _authWidgetBloc.createAccountTermIn.add(
@@ -108,6 +117,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
     _fieldData = [
       {
+        'textCapitalization': TextCapitalization.words,
         'labelText': 'Nome completo',
         'prefixIcon': Icon(
           Icons.person,
@@ -239,6 +249,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     return Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: TextFieldWidget(
+                        textCapitalization: e['textCapitalization'],
                         labelText: e['labelText'],
                         prefixIcon: e['prefixIcon'],
                         controller: e['controller'],
@@ -271,7 +282,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             suffixIcon: e['suffixIcon'],
                             validator: e['validator'],
                             keyboardType: e['keyboardType'],
-                            obscureText: snapshot.data,
+                            obscureText: snapshot.data ?? true,
                           );
                         },
                       ),
@@ -286,7 +297,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     stream: _authWidgetBloc.createAccountTermOut,
                     builder: (context, snapshot) {
                       return Checkbox(
-                        value: snapshot.hasData ? snapshot.data : false,
+                        value:
+                            _lock, // snapshot.hasData ? snapshot.data : false,
                         onChanged: _handleAcceptTerm,
                       );
                     },
@@ -315,7 +327,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
               SizedBox(height: 30),
               RaisedButton(
-                onPressed: _lock ? null : _handleSubmit,
+                onPressed: !_lock ? null : _handleSubmit,
                 child: Text(
                   'Cadastrar',
                   style: Theme.of(context).textTheme.button,

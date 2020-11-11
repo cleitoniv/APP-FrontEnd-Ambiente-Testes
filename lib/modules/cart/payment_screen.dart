@@ -277,6 +277,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       stream: _creditCardBloc.cartaoCreditoStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData || snapshot.data.isLoading) {
+                          _blockFinaliza();
                           return Center(
                             child: CircularProgressIndicator(),
                           );
@@ -408,6 +409,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
+                    _lock = false;
                     billing = true;
                     this._lock = false;
                     _cartWidgetBloc.setPaymentMethodBoleto(billing);

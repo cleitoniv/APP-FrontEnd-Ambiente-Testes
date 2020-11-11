@@ -30,7 +30,6 @@ class CartWidgetBloc extends Disposable {
   bool setPaymentMethodBoleto(bool billing) {
     if (billing) {
       this._paymentMethod = PaymentMethod(isBoleto: billing);
-
       return true;
     } else {
       return false;

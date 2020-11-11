@@ -6,6 +6,7 @@ import 'package:central_oftalmica_app_cliente/modules/auth/confirm_sms_screen.da
 import 'package:central_oftalmica_app_cliente/modules/auth/create_account_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/login_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/password_reset_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/auth/terms_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/validation_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -42,6 +43,10 @@ class AuthModule extends ChildModule {
         ModularRouter(
           '/confirmSms',
           child: (_, args) => ConfirmSmsScreen(phone: args.data),
+        ),
+        ModularRouter(
+          '/terms',
+          child: (_, args) => TermsResponsability(),
         ),
       ];
 }

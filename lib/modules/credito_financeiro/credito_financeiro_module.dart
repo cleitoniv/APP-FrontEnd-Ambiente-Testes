@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/cart.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/pagamento_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/finish_payment_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/product.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/product_grid.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -31,5 +32,9 @@ class CreditoFinanceiroModule extends ChildModule {
           '/cart',
           child: (_, args) => CreditCartScreen(),
         ),
+        ModularRouter(
+          '/finishPayment',
+          child: (_, args) => FinishPayment(),
+        )
       ];
 }
