@@ -35,6 +35,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   List<Map> _productParams;
   List<Map> _fieldData;
   TextEditingController _nameController;
+  TextEditingController _lensDireitoController;
+  TextEditingController _lensEsquerdoController;
   TextEditingController _lensController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
@@ -47,6 +49,30 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   _onRemoveLens() {
     if (int.parse(_lensController.text) > 1) {
       _lensController.text = '${int.parse(_lensController.text) - 1}';
+    }
+  }
+
+  _onAddLensDireito() {
+    _lensDireitoController.text =
+        '${int.parse(_lensDireitoController.text) + 1}';
+  }
+
+  _onAddLensEsquerdo() {
+    _lensEsquerdoController.text =
+        '${int.parse(_lensEsquerdoController.text) + 1}';
+  }
+
+  _onRemoveLensDireito() {
+    if (int.parse(_lensDireitoController.text) > 1) {
+      _lensDireitoController.text =
+          '${int.parse(_lensDireitoController.text) - 1}';
+    }
+  }
+
+  _onRemoveLensEsquerdo() {
+    if (int.parse(_lensEsquerdoController.text) > 1) {
+      _lensEsquerdoController.text =
+          '${int.parse(_lensEsquerdoController.text) - 1}';
     }
   }
 
@@ -179,10 +205,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         new Map<String, dynamic>.from(_first[_first['current']]),
         data['product'],
         new Map<String, dynamic>.from(_first));
+
+    print(_first[_first['current']]);
+
     if (errors.keys.length <= 0) {
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),
-        'quantity': int.parse(_lensController.text),
+        'quantity': int.parse(_lensDireitoController.text) +
+            int.parse(_lensEsquerdoController.text) +
+            int.parse(_lensController.text),
+        'quantity_for_eye': {
+          'esquerdo': int.parse(_lensEsquerdoController.text),
+          'direito': int.parse(_lensDireitoController.text)
+        },
         'tests': _first['test'],
         'operation': _parseOperation(widget.type),
         'product': data['product'],
@@ -194,7 +229,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
-
+      print("_data_");
+      print(_data);
       _requestsBloc.addProductToCart(_data);
       Modular.to.pushNamed("/cart/product");
     } else {
@@ -257,6 +293,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'text': 'Adicionar ao Carrinho',
       }
     ];
+  }
+
+  _onAddCurrentParam(Map<dynamic, dynamic> data) async {
+    if (data['current'] == 'Graus diferentes em cada olho') {
+      _lensDireitoController.text = '1';
+      _lensEsquerdoController.text = '1';
+      _lensController.text = '0';
+    } else {
+      _lensDireitoController.text = '0';
+      _lensEsquerdoController.text = '0';
+      _lensController.text = '1';
+    }
+    _onAddParam(data);
   }
 
   _onAddParam(Map<dynamic, dynamic> data) async {
@@ -324,6 +373,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
     _lensController = TextEditingController(
       text: '1',
+    );
+    _lensEsquerdoController = TextEditingController(
+      text: '0',
+    );
+    _lensDireitoController = TextEditingController(
+      text: '0',
     );
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
@@ -541,7 +596,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   'Mesmo grau em ambos',
                   'Graus diferentes em cada olho',
                 ],
-                onChanged: (value) => _onAddParam({
+                onChanged: (value) => _onAddCurrentParam({
                   'current': value,
                 }),
                 currentValue: snapshot.data['current'],
@@ -659,9 +714,42 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       : Container();
                                 },
                               );
-                            })
+                            }),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              !currentProduct.product.hasAcessorio
+                                  ? 'Quantidade de caixas'
+                                  : 'Quantidade',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            TextFieldWidget(
+                              width: 120,
+                              controller: _lensDireitoController,
+                              readOnly: true,
+                              prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.remove,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onRemoveLensDireito,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onAddLensDireito,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
+                    SizedBox(height: 20),
                     Column(
                       children: <Widget>[
                         _checkForAcessorio(Text(
@@ -710,7 +798,39 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       : Container();
                                 },
                               );
-                            })
+                            }),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              !currentProduct.product.hasAcessorio
+                                  ? 'Quantidade de caixas'
+                                  : 'Quantidade',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            TextFieldWidget(
+                              width: 120,
+                              controller: _lensEsquerdoController,
+                              readOnly: true,
+                              prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.remove,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onRemoveLensEsquerdo,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onAddLensEsquerdo,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ],
@@ -721,49 +841,65 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           SizedBox(
             height: 20,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                !currentProduct.product.hasAcessorio
-                    ? 'Quantidade de caixas'
-                    : 'Quantidade',
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              TextFieldWidget(
-                width: 120,
-                controller: _lensController,
-                readOnly: true,
-                prefixIcon: IconButton(
-                  icon: Icon(
-                    Icons.remove,
-                    color: Colors.black26,
-                    size: 30,
-                  ),
-                  onPressed: _onRemoveLens,
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    Icons.add,
-                    color: Colors.black26,
-                    size: 30,
-                  ),
-                  onPressed: _onAddLens,
-                ),
-              ),
-            ],
-          ),
+          StreamBuilder(
+              stream: _productWidgetBloc.pacientInfoOut,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Container();
+                }
+
+                if (snapshot.data['current'] !=
+                    'Graus diferentes em cada olho') {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        !currentProduct.product.hasAcessorio
+                            ? 'Quantidade de caixas'
+                            : 'Quantidade',
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                      TextFieldWidget(
+                        width: 120,
+                        controller: _lensController,
+                        readOnly: true,
+                        prefixIcon: IconButton(
+                          icon: Icon(
+                            Icons.remove,
+                            color: Colors.black26,
+                            size: 30,
+                          ),
+                          onPressed: _onRemoveLens,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            Icons.add,
+                            color: Colors.black26,
+                            size: 30,
+                          ),
+                          onPressed: _onAddLens,
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              }),
           SizedBox(height: 10),
-          _checkForAcessorio(StreamBuilder<Map>(
-            stream: _productWidgetBloc.pacientInfoOut,
-            builder: (context, snapshot) {
-              return DropdownWidget(
-                  items: ['Não', 'Sim'],
-                  currentValue: snapshot.hasData ? snapshot.data['test'] : null,
-                  labelText: 'Teste?',
-                  onChanged: _onChangedTest);
-            },
-          )),
+          currentProduct.product.hasTest
+              ? _checkForAcessorio(StreamBuilder<Map>(
+                  stream: _productWidgetBloc.pacientInfoOut,
+                  builder: (context, snapshot) {
+                    return DropdownWidget(
+                        items: ['Não', 'Sim'],
+                        currentValue:
+                            snapshot.hasData ? snapshot.data['test'] : null,
+                        labelText: 'Teste?',
+                        onChanged: _onChangedTest);
+                  },
+                ))
+              : Container(),
           Container(
             width: MediaQuery.of(context).size.width,
             margin: const EdgeInsets.symmetric(

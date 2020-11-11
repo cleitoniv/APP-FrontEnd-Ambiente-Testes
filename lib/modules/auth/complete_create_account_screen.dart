@@ -64,9 +64,12 @@ class _CompleteCreateAccountScreenState
         !_verifyCpfCnpj(_cnpjController.text, "CNPJ")) {
       return;
     }
+    print("form validate");
+    print(_formKey.currentState.validate());
     if (_formKey.currentState.validate()) {
       Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
       final cnpjCpf = cpfCnpjLabel(currentData["ramo"]);
+      print("ok");
 
       Map<String, dynamic> completeFormdata = {
         'nome': sanitize(_nameController.text),
@@ -342,9 +345,7 @@ class _CompleteCreateAccountScreenState
   void completeCadastro(TextEditingController controller) async {
     Cadastro cadastro =
         await _authBloc.fetchCadastro(sanitize(controller.text));
-
     if (!cadastro.isEmpty) {
-      print(cadastro.dados.dataNascimento);
       _cnaeController.text = cadastro.dados.crmCnae;
       _crmController.text = cadastro.dados.crmCnae;
       _nameController.text = cadastro.dados.nome;
@@ -355,14 +356,16 @@ class _CompleteCreateAccountScreenState
       _cityController.text = cadastro.dados.cidade;
       _districtController.text = cadastro.dados.bairro;
       _dataNascimentoController.text = cadastro.dados.dataNascimento;
-      setState(() {
-        if (cadastro.dados.crmCnae != '000000000') {
-          this.cnaeCrmEnabled = false;
-        } else if (cadastro.dados.dataNascimento != null) {
-          this.dataNascimentoEnabled = false;
-        }
-        this.enabled = false;
-      });
+      _ufController.text = cadastro.dados.estado;
+      _emailFiscalController.text = cadastro.dados.emailFiscal;
+      // setState(() {
+      //   if (cadastro.dados.crmCnae != '000000000') {
+      //     this.cnaeCrmEnabled = false;
+      //   } else if (cadastro.dados.dataNascimento != null) {
+      //     this.dataNascimentoEnabled = false;
+      //   }
+      //   this.enabled = false;
+      // });
     }
   }
 
@@ -469,7 +472,6 @@ class _CompleteCreateAccountScreenState
     });
 
     atualizacaoEndereco = _authBloc.enderecoStream.listen((event) {
-      print(event);
       if (!event.isEmpty) {
         setState(() {
           _ufController.text = event.endereco.uf;
@@ -522,8 +524,6 @@ class _CompleteCreateAccountScreenState
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             }
-            print("aqui");
-            print(snapshot.data);
 
             if (snapshot.data["activity"] == "Usuário de Lente Contato") {
               return Column(
