@@ -101,7 +101,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     _phoneController = MaskedTextController(
       mask: '00 00000-0000',
     );
-    _phoneController.text = widget.phone["ddd"] + widget.phone["phone"];
+    _phoneController.text = widget.phone["phone"];
     _requestCodeController = "Receber Código";
   }
 

@@ -7,6 +7,7 @@ import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar_success.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -52,14 +53,14 @@ class _FinishPaymentState extends State<FinishPayment> {
           previousValue + element['product'].value * element['quantity'],
     );
 
-    return Helper.intToMoney(_total + _taxaEntrega);
+    return Helper.intToMoney(_total);
   }
 
   _onSubmitDialog() {
     _requestBloc.getPedidosList(0);
     _authBloc.fetchCurrentUser();
     Modular.to.pushNamedAndRemoveUntil(
-      '/home/3',
+      '/home/1',
       (route) => route.isFirst,
     );
   }
@@ -118,7 +119,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     final creditoFinan =
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
     print(creditoFinan);
-    _creditoFinanceiroBloc.pagamento(
+    bool statusPayment = await _creditoFinanceiroBloc.pagamento(
         creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
 
     // bool statusPayment = await _paymentBloc.payment({
@@ -130,61 +131,57 @@ class _FinishPaymentState extends State<FinishPayment> {
     //   'installment': _installmentsSelected
     // }, _paymentMethod.isBoleto);
     _ccvController.text = '';
-    // if (statusPayment != null && statusPayment == true) {
-    //   _requestBloc.resetCart();
-    //   Dialogs.success(
-    //     context,
-    //     subtitle: 'Compra efetuada com sucesso!',
-    //     buttonText: 'Ir para Meus Pedidos',
-    //     onTap: _onSubmitDialog,
-    //   );
-    // } else {
-    //   Dialogs.error(
-    //     context,
-    //     title: "Atenção",
-    //     subtitle: 'Erro ao Processar Compra! Verifique os dados do cartão!',
-    //     buttonText: 'Voltar',
-    //     onTap: _onBack,
-    //   );
-    // }
+    if (statusPayment != null && statusPayment == true) {
+      _requestBloc.resetCart();
+      Dialogs.success(
+        context,
+        subtitle: 'Compra efetuada com sucesso!',
+        buttonText: 'Ir para Meus Pedidos',
+        onTap: _onSubmitDialog,
+      );
+    } else {
+      Dialogs.error(
+        context,
+        title: "Atenção",
+        subtitle: 'Erro ao Processar Compra! Verifique os dados do cartão!',
+        buttonText: 'Voltar',
+        onTap: _onBack,
+      );
+    }
   }
 
   _calcPaymentInstallment() async {
     final creditoFinan =
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
-    print(creditoFinan.installmentCount);
     int _taxaEntrega = _requestBloc.taxaEntregaValue;
 
     final _paymentMethod = await _cartWidgetBloc.currentPaymentMethod;
 
-    final _cart = await _requestBloc.cartOut.first;
-    setState(() {
-      _totalPay = int.parse(
-        _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
-      );
-    });
+    // final _cart = await _requestBloc.cartOut.first;
+    // setState(() {
+    //   _totalPay = int.parse(
+    //     _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
+    //   );
+    // });
     final _installmentsList = [];
-    if (creditoFinan.installmentCount > 1) {
-      for (var i = 0; i < creditoFinan.installmentCount; i++) {
-        _installmentsList.add({"parcela": "1x de $_totalPay"});
-      }
-    }
+    // if (creditoFinan.installmentCount > 1) {
+    //   for (var i = 0; i < creditoFinan.installmentCount; i++) {
+    //     _installmentsList.add({"parcela": "1x de $_totalPay"});
+    //   }
+    // }
+    // _totalPay = Helper.intToMoney(creditoFinan.valor);
+    final totalPay = Helper.intToMoney(creditoFinan.valor);
+    setState(() {
+      dropdownValue = '1x de $totalPay';
+    });
 
     if (creditoFinan.installmentCount > 1) {
-      print('1x de $_totalPay');
-      print('+++++++++++++++++++++');
-      print(creditoFinan.installmentCount);
-      setState(() {
-        dropdownValue = '1 de $_totalPay';
-      });
-
-      for (var i = 0; i < creditoFinan.installmentCount; i++) {
-        var value = _totalPay / i;
-        _installments.add("$i de $value");
+      for (var i = 1; i < creditoFinan.installmentCount + 1; i++) {
+        var value = Helper.intToMoney((creditoFinan.valor / i).round());
+        _installments.add("$i" + "x de $value");
       }
     } else {
-      dropdownValue = '1x $_totalPay';
-      _installments.add('1x $_totalPay');
+      _installments.add('1x de $totalPay');
     }
   }
 
@@ -229,8 +226,8 @@ class _FinishPaymentState extends State<FinishPayment> {
                               fontSize: 18,
                             ),
                       ),
-                      StreamBuilder<List<Map<String, dynamic>>>(
-                        stream: _requestBloc.cartOut,
+                      StreamBuilder(
+                        stream: _creditoFinanceiroBloc.creditoFinaceiroStream,
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return Center(
@@ -239,7 +236,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                           }
 
                           return Text(
-                            'R\$ ${_totalToPay(snapshot.data)}',
+                            'R\$ ${Helper.intToMoney(snapshot.data.valor - snapshot.data.desconto)}',
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
                                       fontSize: 18,
@@ -304,9 +301,6 @@ class _FinishPaymentState extends State<FinishPayment> {
                                   _installments.indexOf(newValue) + 1;
                               dropdownValue = newValue;
                             });
-                            print('_installmentsSelected');
-                            print(_installmentsSelected);
-                            print('_installmentsSelected');
                           },
                           items: _installments
                               .map<DropdownMenuItem<String>>((String value) {

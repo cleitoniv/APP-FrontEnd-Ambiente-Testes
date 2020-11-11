@@ -18,8 +18,9 @@ class CreditoFinanceiroBloc extends Disposable {
   Sink get creditoFinaceiroSink => _creditoFinanceiroController.sink;
   Stream get creditoFinaceiroStream => _creditoFinanceiroController.stream;
 
-  void pagamento(CreditoFinanceiro credit, int cartaoId, bool isBoleto) {
-    repository.creditoFinanceiroPagamento(credit, cartaoId, isBoleto);
+  Future<bool> pagamento(
+      CreditoFinanceiro credit, int cartaoId, bool isBoleto) {
+    return repository.creditoFinanceiroPagamento(credit, cartaoId, isBoleto);
   }
 
   @override

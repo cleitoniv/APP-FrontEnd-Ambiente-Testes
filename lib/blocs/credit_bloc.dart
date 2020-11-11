@@ -20,7 +20,7 @@ class CreditsBloc extends Disposable {
   }
 
   void setCurrentProductFromList(ProductList products) {
-    if (!products.isLoading && !products.isEmpty) {
+    if (!products.isLoading && !products.isEmpty && products.list.length > 0) {
       currentProductSink.add(products.list[0]);
     }
   }
