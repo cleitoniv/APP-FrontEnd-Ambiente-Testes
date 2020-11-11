@@ -4,6 +4,7 @@ class TextFieldWidget extends StatefulWidget {
   String labelText;
   Widget prefixIcon;
   Widget suffixIcon;
+  TextCapitalization textCapitalization;
   TextEditingController controller;
   Function validator;
   double width;
@@ -17,7 +18,8 @@ class TextFieldWidget extends StatefulWidget {
   FocusNode focus;
 
   TextFieldWidget(
-      {this.labelText,
+      {this.textCapitalization,
+      this.labelText,
       this.prefixIcon,
       this.suffixIcon,
       this.controller,
@@ -59,6 +61,8 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     return Container(
       width: widget.width,
       child: TextFormField(
+        textCapitalization:
+            widget.textCapitalization ?? TextCapitalization.none,
         initialValue: widget.initialValue,
         enabled: widget.enabled,
         controller: widget.controller,

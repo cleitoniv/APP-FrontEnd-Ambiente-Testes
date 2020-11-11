@@ -8,6 +8,7 @@ class CadastroModel {
   String numero;
   String crmCnae;
   String complemento;
+  String emailFiscal;
   String cep;
   String dataNascimento;
 
@@ -20,6 +21,7 @@ class CadastroModel {
     cgc = json['A1_CGC'];
     cidade = json['A1_MUN'];
     endereco = json['A1_END'];
+    emailFiscal = json['A1_EMAIL'];
     numero = json['A1_NUM'];
     estado = json['A1_EST'];
     crmCnae = json['A1_YCRM_CNAE'];

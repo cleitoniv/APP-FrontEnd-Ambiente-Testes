@@ -49,7 +49,7 @@ class _FinishPaymentState extends State<FinishPayment> {
           previousValue + element['product'].value * element['quantity'],
     );
 
-    return Helper.intToMoney(_total + _taxaEntrega);
+    return Helper.intToMoney(_total);
   }
 
   _onSubmitDialog() {
@@ -150,8 +150,11 @@ class _FinishPaymentState extends State<FinishPayment> {
       );
     });
 
+    print("Valor de parcelas");
+    print(_totalPay + _taxaEntrega);
+
     final _installmentsList = await _creditCardBloc.fetchInstallments(
-        _totalPay + _taxaEntrega, _paymentMethod.isBoleto);
+        _totalPay, _paymentMethod.isBoleto);
 
     if (_installmentsList.length > 0) {
       setState(() {

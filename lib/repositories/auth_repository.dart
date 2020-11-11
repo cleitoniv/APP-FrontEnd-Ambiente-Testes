@@ -94,13 +94,16 @@ class AuthRepository {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": ""
           }));
+      print(response.data);
       if (response.data["success"]) {
+        print(response.data);
         CadastroModel cadastro = CadastroModel.fromJson(response.data["data"]);
         return Cadastro(isLoading: false, isEmpty: false, dados: cadastro);
       } else {
         return Cadastro(isLoading: false, isEmpty: true);
       }
     } catch (error) {
+      print(error);
       return Cadastro(isEmpty: true, isLoading: false);
     }
   }
@@ -166,11 +169,11 @@ class AuthRepository {
   }
 
   Future<LoginEvent> createAccount(Map<String, dynamic> data) async {
+    print("ok");
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
-
+    print("ok");
     try {
-      print(data);
       Response response = await dio.post('/api/cliente',
           data: jsonEncode({"param": data}),
           options: Options(headers: {
@@ -179,6 +182,7 @@ class AuthRepository {
           }));
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
+      print(error);
       final error400 = error as DioError;
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",

@@ -117,6 +117,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
     _fieldData = [
       {
+        'textCapitalization': TextCapitalization.words,
         'labelText': 'Nome completo',
         'prefixIcon': Icon(
           Icons.person,
@@ -248,6 +249,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     return Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: TextFieldWidget(
+                        textCapitalization: e['textCapitalization'],
                         labelText: e['labelText'],
                         prefixIcon: e['prefixIcon'],
                         controller: e['controller'],

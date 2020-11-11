@@ -9,6 +9,7 @@ class ProductModel {
   int tests;
   int credits;
   String imageUrl;
+  bool hasTest;
   String type;
   int boxes;
   String descricao;
@@ -67,6 +68,7 @@ class ProductModel {
       this.valueProduto,
       this.group,
       this.quantidade,
+      this.hasTest,
       this.hasCilindrico,
       this.hasEixo,
       this.hasEsferico,
@@ -103,6 +105,7 @@ class ProductModel {
     espessura = json['espessura'];
     desenho = json['desenho'];
     dkT = json['dk_t'];
+    hasTest = json['has_teste'] ?? false;
     numSerie = json["num_serie"];
     produto = json['produto'];
     descricao = json['description'];

@@ -36,14 +36,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _taxaEntrega = _requestBloc.taxaEntregaValue;
-    print("taxa entrega");
-    print(_taxaEntrega);
     int _total = data.fold(
       0,
       (previousValue, element) =>
           previousValue + element['product'].value * element['quantity'],
     );
-    print(_total + _taxaEntrega);
     return Helper.intToMoney(_total + _taxaEntrega);
   }
 
@@ -285,6 +282,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             child: CircularProgressIndicator(),
                           );
                         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                          if (!billing) {
+                            _blockFinaliza();
+                          }
                           return Center(
                             child: Text(
                               "Cadastre um cartão!",
@@ -411,6 +411,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   setState(() {
                     _lock = false;
                     billing = true;
+                    this._lock = false;
                     _cartWidgetBloc.setPaymentMethodBoleto(billing);
                   });
                 },
@@ -444,17 +445,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.black,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            billing = true;
-                            _cartWidgetBloc.setPaymentMethodBoleto(billing);
-                          });
-                        },
+                      Icon(
+                        Icons.check,
+                        color: Colors.white,
                       )
                     ],
                   ),
