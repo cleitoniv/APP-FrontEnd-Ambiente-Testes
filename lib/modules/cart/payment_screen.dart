@@ -41,7 +41,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
       (previousValue, element) =>
           previousValue + element['product'].value * element['quantity'],
     );
-    return Helper.intToMoney(_total + _taxaEntrega);
+    if (_taxaEntrega != null) return Helper.intToMoney(_total + _taxaEntrega);
+    return Helper.intToMoney(_total);
   }
 
   _onAddCreditCard() {
@@ -70,6 +71,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   _onChangePaymentForm(CreditCardModel creditCard) async {
     setState(() {
       billing = false;
+      _lock = false;
     });
     bool selectedCard =
         await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
@@ -138,6 +140,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     int _value = int.parse(
       _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
     );
+    print('++++++++++++++++++++++++++');
     bool statusPayment = await _paymentBloc.payment({
       'payment_data': _paymentMethod,
       'value': _value,
@@ -246,6 +249,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       StreamBuilder<List<Map<String, dynamic>>>(
                         stream: _requestBloc.cartOut,
                         builder: (context, snapshot) {
+                          print(snapshot.data);
                           if (!snapshot.hasData) {
                             return Center(
                               child: CircularProgressIndicator(),
@@ -278,13 +282,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       builder: (context, snapshot) {
                         if (!snapshot.hasData || snapshot.data.isLoading) {
                           _blockFinaliza();
+
                           return Center(
                             child: CircularProgressIndicator(),
                           );
                         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                          if (!billing) {
-                            _blockFinaliza();
-                          }
+                          print('++++++++++++snapshot.hasData++++++++++++');
+
                           return Center(
                             child: Text(
                               "Cadastre um cartão!",
