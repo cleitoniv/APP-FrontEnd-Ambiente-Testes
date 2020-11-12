@@ -10,6 +10,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 import '../../repositories/credit_card_repository.dart';
 
 class AddCreditCardScreen extends StatefulWidget {
+  Map<String, dynamic> screen;
+  AddCreditCardScreen({this.screen});
+
   @override
   _AddCreditCardScreenState createState() => _AddCreditCardScreenState();
 }
@@ -40,7 +43,6 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
       );
 
       if (_storeResult.errorData != null) {
-        print(_storeResult.errorData);
         SnackBar _snackBar = SnackBar(
           content: Text(
             'Falha ao adicionar cartão',
@@ -49,6 +51,10 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {
+        if (widget.screen["screen"] == 'payment') {
+          Modular.to.popAndPushNamed("/cart/payment");
+          return;
+        }
         Modular.to.popAndPushNamed("/credito_financeiro/pagamento");
       }
     }
