@@ -72,10 +72,8 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
     String ddd = widget.phone["ddd"];
 
     userPhone = userPhone.replaceAll(' ', '');
-    print(userPhone);
     bool codeGenerated =
         await _authWidgetBloc.requireCodeSms(int.parse(userPhone));
-    print(codeGenerated);
     if (!codeGenerated) {
       _showDialog("Atenção",
           "Não foi possível enviar o código! Por favor, tente novamente");

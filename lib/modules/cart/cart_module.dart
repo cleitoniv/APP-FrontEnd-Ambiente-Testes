@@ -43,7 +43,7 @@ class CartModule extends ChildModule {
         ),
         ModularRouter(
           '/addCreditCard',
-          child: (_, args) => AddCreditCardScreen(),
+          child: (_, args) => AddCreditCardScreen(screen: args.data),
         ),
         ModularRouter(
           '/finishPayment',

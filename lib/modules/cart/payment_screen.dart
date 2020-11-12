@@ -46,7 +46,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _onAddCreditCard() {
-    Modular.to.pushNamed('/cart/addCreditCard');
+    Modular.to
+        .pushNamed('/cart/addCreditCard', arguments: {"screen": "payment"});
   }
 
   _onDelete(int id) async {
@@ -140,7 +141,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
     int _value = int.parse(
       _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
     );
-    print('++++++++++++++++++++++++++');
     bool statusPayment = await _paymentBloc.payment({
       'payment_data': _paymentMethod,
       'value': _value,
@@ -249,7 +249,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       StreamBuilder<List<Map<String, dynamic>>>(
                         stream: _requestBloc.cartOut,
                         builder: (context, snapshot) {
-                          print(snapshot.data);
                           if (!snapshot.hasData) {
                             return Center(
                               child: CircularProgressIndicator(),
@@ -287,8 +286,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             child: CircularProgressIndicator(),
                           );
                         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                          print('++++++++++++snapshot.hasData++++++++++++');
-
                           return Center(
                             child: Text(
                               "Cadastre um cartão!",
