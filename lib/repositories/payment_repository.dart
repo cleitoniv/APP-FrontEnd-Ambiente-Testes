@@ -70,6 +70,7 @@ class PaymentRepository {
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
               'grupo': e['product'].group,
+              'duracao': e['product'].duracao,
               'prc_unitario': e['product'].value,
               'tests': e['tests']
             }

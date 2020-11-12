@@ -14,6 +14,7 @@ class ProductModel {
   int boxes;
   String descricao;
   String material;
+  String duracao;
   int dkT;
   bool visint;
   String espessura;
@@ -47,6 +48,7 @@ class ProductModel {
       {this.id,
       this.title,
       this.value,
+      this.duracao,
       this.tests,
       this.imageUrl,
       this.credits,
@@ -113,6 +115,7 @@ class ProductModel {
     valueProduto = json['value_produto'];
     group = json["group"];
     quantidade = json["quantidade"];
+    duracao = json['duracao'];
     hasEsferico = json["has_esferico"];
     hasEixo = json["has_eixo"];
     hasCilindrico = json["has_cilindrico"];
@@ -145,6 +148,7 @@ class ProductModel {
     data['esferico'] = this.esferico;
     data['diametro'] = this.diametro;
     data['material'] = this.material;
+    data['duracao'] = this.duracao;
     data['visint'] = this.visint;
     data['espessura'] = this.espessura;
     data['desenho'] = this.desenho;
