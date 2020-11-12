@@ -89,6 +89,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Modular.to.pushNamed('/auth/validate');
           }
         } else {
+          if (_cliente.integrated) {
+            Modular.to.pushNamed('/auth/validate');
+          }
           _showErrors(_cliente.errorData);
         }
       } else {
