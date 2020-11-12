@@ -131,7 +131,6 @@ class UserRepository {
       }
     } catch (error) {
       final error400 = error as DioError;
-      print(error400.response.data);
       final message = error400.response.data['errors'];
       return AddUsuarioCliente(
           isValid: false,
