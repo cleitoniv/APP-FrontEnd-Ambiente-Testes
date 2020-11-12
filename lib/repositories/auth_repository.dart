@@ -146,6 +146,7 @@ class AuthRepository {
   }
 
   Future<LoginEvent> firstAccess(Map<String, dynamic> data) async {
+    print(data);
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
     try {
@@ -204,9 +205,9 @@ class AuthRepository {
       print(cliente.confirmationSms);
       print(cliente.sitApp);
       if (cliente.confirmationSms == 0 && cliente.sitApp == "A" ||
-          cliente.sitApp == "E") {
+          cliente.confirmationSms == 0 && cliente.sitApp == "E") {
         return AuthEvent(isValid: true, data: cliente, loading: false);
-      } else if (cliente.sitApp == "N" || cliente.sitApp == "I") {
+      } else if (cliente.sitApp == "N") {
         return AuthEvent(
             isValid: false,
             data: cliente,
@@ -222,7 +223,6 @@ class AuthRepository {
     } catch (error) {
       print(error);
       final error400 = error as DioError;
-      print(error400.response.data['data']);
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
         "Cadastro": [error400.response.data['data']]
       });

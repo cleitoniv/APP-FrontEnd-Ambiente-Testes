@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
@@ -17,6 +19,9 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
+  String _requestCodeController;
+  TextEditingController _confirmSms;
+
   FirebaseAuth _auth = FirebaseAuth.instance;
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
@@ -48,6 +53,121 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     );
   }
 
+  _handleConfirmSms() async {
+    if (_confirmSms.text.trim().length == 0) {
+      Modular.to.pop();
+      _showDialog("Atenção", "Preencha o campo código!");
+      return;
+    }
+
+    String phonex = _phoneController.text.replaceAll('-', '');
+    phonex = phonex.replaceAll(' ', '');
+    // phonex = "${ddd + phonex}";
+    bool codeMatch = await _authWidgetBloc.confirmSms(
+        int.parse(_confirmSms.text), int.parse(phonex));
+
+    if (codeMatch) {
+      Modular.to.pop();
+
+      _handleSubmit();
+      // Modular.to.pushNamed('/auth/activityPerformed');
+    } else {
+      Modular.to.pop();
+
+      _showDialog("Atenção", "Código Inválido ou expirado!");
+    }
+  }
+
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
+  _confirmSmsDialog() async {
+    if (_formKey.currentState.validate()) {
+      String phonex = _phoneController.text.replaceAll('-', '');
+      phonex = phonex.replaceAll(' ', '');
+      bool codeGenerated =
+          await _authWidgetBloc.requireCodeSms(int.parse(phonex));
+      if (!codeGenerated) {
+        _showDialog(
+            "Atenção", "Falha ao enviar código! Telefone já cadastrado!");
+        return;
+      }
+      setState(() {
+        _lock = true;
+        _requestCodeController = "Aguarde 30 seg...";
+        _confirmSms.text = '';
+      });
+      Timer(Duration(seconds: 10), () {
+        setState(() {
+          _lock = false;
+          _requestCodeController = "Cadastrar";
+        });
+      });
+      await showDialog<String>(
+        context: context,
+        child: AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          content: new Row(
+            children: <Widget>[
+              Flexible(
+                child: Container(
+                  height: 120,
+                  child: Column(
+                    children: [
+                      Text(
+                          "Digite o Código que Enviamos ao Celular Informado!"),
+                      new Expanded(
+                        child: new TextField(
+                          controller: _confirmSms,
+                          autofocus: true,
+                          decoration: new InputDecoration(
+                              labelText: _phoneController.text,
+                              hintText: '* * * *'),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+                child: const Text('EDITAR TELEFONE'),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            new FlatButton(
+                child: const Text('CONFIRMAR'), onPressed: _handleConfirmSms)
+          ],
+        ),
+      );
+    }
+  }
+
   _handleSubmit() async {
     if (_formKey.currentState.validate()) {
       final Map<String, dynamic> data = {
@@ -67,9 +187,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             "Telefone": ["Esse número de telefone já está cadastrado."]
           });
         } else if (firstAccess.isValid) {
-          Modular.to.pushNamed('/auth/confirmSms',
-              arguments: {"phone": _phoneController.text});
-          // Modular.to.pushNamed('/auth/activityPerformed');
+          Modular.to.pushNamed('/auth/activityPerformed');
         } else {
           _showErrors({
             "Cadastro": [
@@ -110,10 +228,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     super.initState();
     _nameController = TextEditingController();
     _emailController = TextEditingController();
+    _confirmSms = TextEditingController();
+
     _phoneController = MaskedTextController(
       mask: '00 00000-0000',
     );
     _passwordController = TextEditingController();
+    _requestCodeController = "Cadastrar";
 
     _fieldData = [
       {
@@ -327,9 +448,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
               SizedBox(height: 30),
               RaisedButton(
-                onPressed: !_lock ? null : _handleSubmit,
+                onPressed: _confirmSmsDialog, // !_lock ? null : _handleSubmit,
                 child: Text(
-                  'Cadastrar',
+                  _requestCodeController,
                   style: Theme.of(context).textTheme.button,
                 ),
               ),
