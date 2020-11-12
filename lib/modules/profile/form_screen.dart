@@ -44,9 +44,10 @@ class _FormScreenState extends State<FormScreen> {
     if (addUser.isValid) {
       Modular.to.pop();
     } else {
+      print(addUser.errorMessage);
       SnackBar _snackBar = SnackBar(
         content: Text(
-          'Falha ao salvar dados!',
+          addUser.errorMessage,
         ),
       );
 

@@ -448,7 +448,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
               SizedBox(height: 30),
               RaisedButton(
-                onPressed: _confirmSmsDialog, // !_lock ? null : _handleSubmit,
+                onPressed: !_lock ? null : _confirmSmsDialog, //  _handleSubmit,
                 child: Text(
                   _requestCodeController,
                   style: Theme.of(context).textTheme.button,

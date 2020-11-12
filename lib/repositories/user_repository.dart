@@ -130,8 +130,14 @@ class UserRepository {
             errorMessage: "Erro no cadastro. Talvez o email esteja duplicado");
       }
     } catch (error) {
+      final error400 = error as DioError;
+      print(error400.response.data);
+      final message = error400.response.data['errors'];
       return AddUsuarioCliente(
-          isValid: false, errorMessage: "Erro inesperado no cadastro.");
+          isValid: false,
+          errorMessage: message["EMAIL"] != null
+              ? message["EMAIL"][0]
+              : "Falha ao salvar dados.");
     }
   }
 

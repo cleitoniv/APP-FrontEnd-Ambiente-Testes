@@ -10,10 +10,6 @@ class TermsResponsability extends StatefulWidget {
 
 class _TermsResponsabilityState extends State<TermsResponsability> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-  _handleAcceptTerm() {
-    _authBloc.acceptTerm();
-    Modular.to.pushNamed('/auth/createAccount');
-  }
 
   @override
   void initState() {
@@ -48,7 +44,7 @@ class _TermsResponsabilityState extends State<TermsResponsability> {
                   children: [
                     Container(
                       constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height * 0.8),
+                          maxHeight: MediaQuery.of(context).size.height * 0.83),
                       child: ListView(
                           children: snapshot.data.data.map<Widget>(
                         (e) {
@@ -66,13 +62,6 @@ class _TermsResponsabilityState extends State<TermsResponsability> {
                           );
                         },
                       ).toList()),
-                    ),
-                    Container(
-                      child: RaisedButton(
-                        onPressed: _handleAcceptTerm,
-                        child: Text("Aceitar Termos",
-                            style: Theme.of(context).textTheme.button),
-                      ),
                     )
                   ],
                 ),
