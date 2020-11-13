@@ -41,8 +41,6 @@ class _FinishPaymentState extends State<FinishPayment> {
   List<String> _installments = [];
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    int _taxaEntrega = _requestBloc.taxaEntregaValue;
-
     int _total = data.fold(
       0,
       (previousValue, element) =>
@@ -90,7 +88,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
-    final _taxaEntrega = _requestBloc.taxaEntregaValue;
+    final _taxaEntrega = 0; //_requestBloc.taxaEntregaValue;
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
       SnackBar _snackBar = SnackBar(
@@ -139,8 +137,6 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _calcPaymentInstallment() async {
-    int _taxaEntrega = _requestBloc.taxaEntregaValue;
-
     final _paymentMethod = await _cartWidgetBloc.currentPaymentMethod;
 
     final _cart = await _requestBloc.cartOut.first;
@@ -149,9 +145,6 @@ class _FinishPaymentState extends State<FinishPayment> {
         _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
       );
     });
-
-    print("Valor de parcelas");
-    print(_totalPay + _taxaEntrega);
 
     final _installmentsList = await _creditCardBloc.fetchInstallments(
         _totalPay, _paymentMethod.isBoleto);

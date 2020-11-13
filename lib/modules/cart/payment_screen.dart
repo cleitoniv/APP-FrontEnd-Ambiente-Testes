@@ -95,11 +95,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _blockFinaliza() {
-    Future.delayed(
-        Duration.zero,
-        () => setState(() {
-              _lock = true;
-            }));
+    if (!_lock && !billing) {
+      Future.delayed(
+          Duration.zero,
+          () => setState(() {
+                _lock = true;
+              }));
+    }
   }
 
   _obfuscateText(String text) {
@@ -280,12 +282,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       stream: _creditCardBloc.cartaoCreditoStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData || snapshot.data.isLoading) {
-                          // _blockFinaliza();
-
                           return Center(
                             child: CircularProgressIndicator(),
                           );
                         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                          _blockFinaliza();
                           return Center(
                             child: Text(
                               "Cadastre um cartão!",
@@ -412,7 +413,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   setState(() {
                     _lock = false;
                     billing = true;
-                    this._lock = false;
                     _cartWidgetBloc.setPaymentMethodBoleto(billing);
                   });
                 },
@@ -446,9 +446,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                         ),
                       ),
-                      Icon(
-                        Icons.check,
-                        color: Colors.white,
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        ),
                       )
                     ],
                   ),

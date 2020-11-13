@@ -131,6 +131,10 @@ class PaymentRepository {
           }));
       return true;
     } catch (error) {
+      print('...............................');
+      final error400 = error as DioError;
+      print(error400.response.data);
+      print(error);
       return false;
     }
   }
