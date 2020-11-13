@@ -35,7 +35,17 @@ class _ProductScreenState extends State<ProductScreen> {
     Modular.to.pop();
   }
 
-  _onConfirmPurchase(ProductModel product, String type) {
+  _onConfirmPurchase(ProductModel product, String type, int value) {
+    print(type);
+    if (type == 'C') {
+      if (value == 0) {
+        return;
+      }
+    } else if (type == 'CF') {
+      if (value == 0) {
+        return;
+      }
+    }
     Modular.to.pushNamed(
       '/products/${product.id}/requestDetails',
       arguments: type,
@@ -53,7 +63,7 @@ class _ProductScreenState extends State<ProductScreen> {
       onCancel: _onCancelPurchase,
       onConfirm: () {
         Modular.to.pop();
-        _onConfirmPurchase(product, 'A');
+        _onConfirmPurchase(product, 'A', 999);
       },
     );
   }
@@ -450,18 +460,18 @@ class _ProductScreenState extends State<ProductScreen> {
                                   'Crédito de Produto R\$ ${Helper.intToMoney(productSnapshot.data.product.valueProduto)}',
                               'color': Theme.of(context).primaryColor,
                               'onTap': () => _onConfirmPurchase(
-                                    productSnapshot.data.product,
-                                    'C',
-                                  ),
+                                  productSnapshot.data.product,
+                                  'C',
+                                  productSnapshot.data.product.boxes),
                             },
                             {
                               'title':
                                   'Crédito Financeiro R\$ ${Helper.intToMoney(productSnapshot.data.product.valueFinan)}',
                               'color': Theme.of(context).accentColor,
                               'onTap': () => _onConfirmPurchase(
-                                    productSnapshot.data.product,
-                                    'CF',
-                                  ),
+                                  productSnapshot.data.product,
+                                  'CF',
+                                  productSnapshot.data.product.valueFinan),
                             }
                           ].map(
                             (item) {

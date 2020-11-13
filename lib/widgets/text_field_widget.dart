@@ -79,7 +79,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         inputFormatters: [
           widget.inputFormattersActivated
               ? FilteringTextInputFormatter.allow(RegExp("[0-9]"))
-              : FilteringTextInputFormatter.allow(RegExp("^[a-zA-Z0-9_]*"))
+              : FilteringTextInputFormatter.allow(RegExp(".*"))
         ],
         decoration: InputDecoration(
           hintText: widget.hint,
