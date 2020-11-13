@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TextFieldWidget extends StatefulWidget {
   String labelText;
@@ -16,7 +17,8 @@ class TextFieldWidget extends StatefulWidget {
   String initialValue;
   String hint;
   FocusNode focus;
-
+  TextInputFormatter inputFormatters;
+  bool inputFormattersActivated;
   TextFieldWidget(
       {this.textCapitalization,
       this.labelText,
@@ -32,7 +34,9 @@ class TextFieldWidget extends StatefulWidget {
       this.readOnly = false,
       this.onTap,
       this.focus,
-      this.hint = ''});
+      this.hint = '',
+      this.inputFormatters,
+      this.inputFormattersActivated = false});
 
   @override
   _TextFieldWidgetState createState() => _TextFieldWidgetState();
@@ -72,6 +76,11 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         readOnly: widget.readOnly,
         obscureText: widget.obscureText,
         keyboardType: widget.keyboardType,
+        inputFormatters: [
+          widget.inputFormattersActivated
+              ? FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+              : FilteringTextInputFormatter.allow(RegExp("^[a-zA-Z0-9_]*"))
+        ],
         decoration: InputDecoration(
           hintText: widget.hint,
           enabledBorder: UnderlineInputBorder(
