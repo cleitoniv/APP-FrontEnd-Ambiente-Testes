@@ -12,13 +12,14 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestInfoScreen extends StatelessWidget {
   int id;
+  int itemPedido;
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   ProductBloc _productBloc = Modular.get<ProductBloc>();
 
-  RequestInfoScreen({
-    this.id,
-  }) {
-    _requestsBloc.getPedido(this.id);
+  RequestInfoScreen({this.id, this.itemPedido}) {
+    print('-------------');
+    print(this.itemPedido);
+    _requestsBloc.getPedido(this.id, this.itemPedido);
   }
 
   Map<String, String> parseOlho(Map<String, dynamic> item, String olho) {
@@ -480,6 +481,81 @@ class RequestInfoScreen extends StatelessWidget {
                                                                             .normal,
                                                                   ),
                                                             ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                'Adicao',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["adicaoE"] ?? "-"}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text('Cor',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["corE"] ?? "-"}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ))
                                                       ])
                                                 ],
                                               ),
@@ -588,6 +664,81 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["eixoD"]}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                'Adicao',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["adicaoD"] ?? "-"}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text('Cor',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["corD"] ?? "-"}',
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme

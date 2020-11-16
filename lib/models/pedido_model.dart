@@ -6,6 +6,7 @@ class PedidoModel {
   int numeroPedido;
   int frete;
   int valorTotal;
+  int itemPedido;
   String previsaoEntrega;
   String type;
   List<ItemPedidoModel> items;
@@ -15,6 +16,7 @@ class PedidoModel {
     valorTotal = json['valor_total'];
     frete = json['frete'];
     type = json['type'];
+    itemPedido = json['item_pedido'];
     previsaoEntrega = json['previsao_entrega'];
     dataInclusao = json['data_inclusao'];
     numeroPedido = json['num_pedido'];

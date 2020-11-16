@@ -29,6 +29,7 @@ class HomeWidgetBloc extends Disposable {
       _currentRequestTypeController.stream.map(
         (event) => event,
       );
+  get currentRequestType => _currentRequestTypeController.value;
 
   BehaviorSubject _currentTabIndexController = BehaviorSubject.seeded(0);
   Sink get currentTabIndexIn => _currentTabIndexController.sink;
