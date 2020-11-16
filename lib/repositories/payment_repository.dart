@@ -71,7 +71,8 @@ class PaymentRepository {
               'quantity_for_eye': e['quantity_for_eye'],
               'grupo': e['product'].group,
               'prc_unitario': e['product'].value,
-              'tests': e['tests']
+              'tests': e['tests'],
+              'duracao': e['product'].duracao
             }
           ],
           'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
@@ -89,7 +90,8 @@ class PaymentRepository {
               'codigo': e['product'].produto,
               'grupo': e['product'].group,
               'quantidade': e['quantity'],
-              'prc_unitario': e['product'].value
+              'prc_unitario': e['product'].value,
+              'duracao': e['product'].duracao
             }
           ]
         };
