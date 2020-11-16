@@ -88,6 +88,9 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
+    setState(() {
+      _lock = true;
+    });
     final _taxaEntrega = 0; //_requestBloc.taxaEntregaValue;
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
@@ -126,6 +129,10 @@ class _FinishPaymentState extends State<FinishPayment> {
         onTap: _onSubmitDialog,
       );
     } else {
+      setState(() {
+        _lock = false;
+      });
+
       Dialogs.error(
         context,
         title: "Atenção",
@@ -337,7 +344,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                 ],
               ),
               RaisedButton(
-                onPressed: _onSubmit, // _onSubmit,
+                onPressed: !_lock ? _onSubmit : null, // _onSubmit,
                 child: Text(
                   'Finalizar Pedido',
                   style: Theme.of(context).textTheme.button,

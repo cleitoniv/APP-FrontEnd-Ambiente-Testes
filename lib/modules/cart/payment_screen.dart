@@ -42,6 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           previousValue + element['product'].value * element['quantity'],
     );
     if (_taxaEntrega != null) return Helper.intToMoney(_total + _taxaEntrega);
+    print(data);
     return Helper.intToMoney(_total);
   }
 

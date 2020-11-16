@@ -332,7 +332,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                       TextFieldWidget(
                           width: 120,
                           controller: _lensController,
-                          readOnly: true,
+                          readOnly: false,
+                          keyboardType: TextInputType.number,
+                          inputFormattersActivated: true,
                           prefixIcon: IconButton(
                             icon: Icon(
                               Icons.remove,

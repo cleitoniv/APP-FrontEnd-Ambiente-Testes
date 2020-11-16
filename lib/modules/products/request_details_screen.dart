@@ -199,6 +199,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onAddToCart(Map data) async {
+    if (int.parse(_lensDireitoController.text) +
+            int.parse(_lensEsquerdoController.text) +
+            int.parse(_lensController.text) ==
+        0) {
+      return;
+    }
+
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
     final errors = await _checkParameters(
@@ -229,7 +236,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
-      print("_data_");
+      print("_data__data__data__data__data_");
       print(_data);
       _requestsBloc.addProductToCart(_data);
       Modular.to.pushNamed("/cart/product");
@@ -727,7 +734,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             TextFieldWidget(
                               width: 120,
                               controller: _lensDireitoController,
-                              readOnly: true,
+                              readOnly: false,
+                              keyboardType: TextInputType.number,
+                              inputFormattersActivated: true,
                               prefixIcon: IconButton(
                                 icon: Icon(
                                   Icons.remove,
@@ -811,7 +820,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             TextFieldWidget(
                               width: 120,
                               controller: _lensEsquerdoController,
-                              readOnly: true,
+                              readOnly: false,
+                              keyboardType: TextInputType.number,
+                              inputFormattersActivated: true,
                               prefixIcon: IconButton(
                                 icon: Icon(
                                   Icons.remove,
@@ -860,9 +871,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                       TextFieldWidget(
-                        width: 120,
+                        width: 150,
                         controller: _lensController,
-                        readOnly: true,
+                        readOnly: false,
+                        keyboardType: TextInputType.number,
+                        inputFormattersActivated: true,
                         prefixIcon: IconButton(
                           icon: Icon(
                             Icons.remove,
