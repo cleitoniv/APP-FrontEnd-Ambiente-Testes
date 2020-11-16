@@ -9,8 +9,8 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 class RequestsScreen extends StatelessWidget {
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
-  _onShowRequest(int id) {
-    Modular.to.pushNamed('/requests/$id');
+  _onShowRequest(int id, itemPedido) {
+    Modular.to.pushNamed('/requests/${id}', arguments: itemPedido);
   }
 
   @override
@@ -24,7 +24,7 @@ class RequestsScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          List<PedidoModel> _requests = snapshot.data.list;
+          List<PedidoModel> _requests = snapshot.data.list ?? [];
           return ListView.separated(
             padding: const EdgeInsets.all(20),
             itemCount: _requests.length,
@@ -35,7 +35,8 @@ class RequestsScreen extends StatelessWidget {
               print(index);
               return ListTileMoreCustomizable(
                 contentPadding: const EdgeInsets.all(0),
-                onTap: (value) => _onShowRequest(_requests[index].numeroPedido),
+                onTap: (value) => _onShowRequest(
+                    _requests[index].numeroPedido, _requests[index].itemPedido),
                 horizontalTitleGap: 10,
                 leading: Container(
                   width: 50,

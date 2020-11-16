@@ -12,13 +12,14 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestInfoScreen extends StatelessWidget {
   int id;
+  int itemPedido;
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   ProductBloc _productBloc = Modular.get<ProductBloc>();
 
-  RequestInfoScreen({
-    this.id,
-  }) {
-    _requestsBloc.getPedido(this.id);
+  RequestInfoScreen({this.id, this.itemPedido}) {
+    print('-------------');
+    print(this.itemPedido);
+    _requestsBloc.getPedido(this.id, this.itemPedido);
   }
 
   Map<String, String> parseOlho(Map<String, dynamic> item, String olho) {

@@ -9,9 +9,9 @@ class RequestsBloc extends Disposable {
 
   RequestsBloc(this.repository);
 
-  void getPedido(int id) async {
+  void getPedido(int id, itemPedido) async {
     pedidoInfoSink.add(Pedido(isLoading: true));
-    Pedido pedido = await repository.getPedido(id);
+    Pedido pedido = await repository.getPedido(id, itemPedido);
     pedidoInfoSink.add(pedido);
   }
 

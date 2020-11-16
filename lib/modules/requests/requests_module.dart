@@ -29,6 +29,7 @@ class RequestsModule extends ChildModule {
           '/:id',
           child: (_, args) => RequestInfoScreen(
             id: int.parse(args.params['id']),
+            itemPedido: args.data,
           ),
         )
       ];

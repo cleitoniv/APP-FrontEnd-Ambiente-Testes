@@ -57,12 +57,13 @@ class RequestsRepository {
     }
   }
 
-  Future<Pedido> getPedido(int id) async {
+  Future<Pedido> getPedido(int id, itemPedido) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/pedido/${id}',
+          queryParameters: {"item_pedido": itemPedido},
           options: Options(headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
@@ -78,6 +79,8 @@ class RequestsRepository {
   Future<PedidosList> getPedidos(int filtro) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
+    print("===========");
+    print(filtro);
     try {
       Response response = await dio.get(
           '/api/cliente/detail_order?filtro=${filtro}',
@@ -85,16 +88,14 @@ class RequestsRepository {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
           }));
-
+      print(response.data["data"]);
       List<PedidoModel> pedidos = response.data['data'].map<PedidoModel>((e) {
-        print(e);
         return PedidoModel.fromJson(e);
       }).toList();
 
       return PedidosList(
           isEmpty: pedidos.length <= 0, isLoading: false, list: pedidos);
     } catch (error) {
-      print(error);
       return PedidosList(isEmpty: true, isLoading: false, list: null);
     }
   }
