@@ -1,7 +1,11 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -15,8 +19,10 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
 
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int _taxaEntrega = 100;
+  int _taxaEntrega = 0;
 
   _onBackToPurchase() {
     Modular.to.pushNamed("/home/0");
@@ -24,9 +30,58 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   _onSubmit() {
     _requestsBloc.taxaEntregaSink.add(_taxaEntrega);
+
+    List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
+
+    int _total = _data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07") {
+        return previousValue;
+      }
+      return previousValue + (element['product'].value * element['quantity']);
+    });
+
+    if (_total == 0) {
+      return _orderFinish(_data);
+    }
+
     Modular.to.pushNamed(
       '/cart/payment',
     );
+  }
+
+  _onSubmitDialog() {
+    _requestsBloc.getPedidosList(0);
+    _authBloc.fetchCurrentUser();
+    Modular.to.pushNamedAndRemoveUntil(
+      '/home/3',
+      (route) => route.isFirst,
+    );
+  }
+
+  _orderFinish(List<Map<String, dynamic>> _data) async {
+    OrderPayment _order = await _requestsBloc.orderPayment(_data);
+
+    if (_order.isValid) {
+      _requestsBloc.resetCart();
+      Dialogs.success(
+        context,
+        subtitle: 'Compra efetuada com sucesso!',
+        buttonText: 'Ir para Meus Pedidos',
+        onTap: _onSubmitDialog,
+      );
+    } else {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, _order.error);
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+    }
+  }
+
+  String selectPrice(Map<String, dynamic> item) {
+    if (item["operation"] == "07") {
+      return Helper.intToMoney(item['product'].valueProduto);
+    }
+    return Helper.intToMoney(item['product'].value);
   }
 
   _removeItem(Map<String, dynamic> data) {
@@ -34,11 +89,12 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    int _total = data.fold(
-      0,
-      (previousValue, element) =>
-          previousValue + (element['product'].value * element['quantity']),
-    );
+    int _total = data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07") {
+        return previousValue;
+      }
+      return previousValue + (element['product'].value * element['quantity']);
+    });
 
     return Helper.intToMoney(_total + _taxaEntrega);
   }
@@ -46,6 +102,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Carrinho', style: Theme.of(context).textTheme.headline4),
         ),
@@ -140,7 +197,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text(
-                              'R\$ ${Helper.intToMoney(_data[index]['product'].value)}',
+                              'R\$ ${selectPrice(_data[index])}',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5
@@ -170,23 +227,23 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 thickness: 1,
                 color: Colors.black12,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Taxa de entrega',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                  Text(
-                    'R\$ ${Helper.intToMoney(_taxaEntrega)}',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: <Widget>[
+              //     Text(
+              //       'Taxa de entrega',
+              //       style: Theme.of(context).textTheme.subtitle1.copyWith(
+              //             fontSize: 14,
+              //           ),
+              //     ),
+              //     Text(
+              //       'R\$ ${Helper.intToMoney(_taxaEntrega)}',
+              //       style: Theme.of(context).textTheme.subtitle1.copyWith(
+              //             fontSize: 14,
+              //           ),
+              //     ),
+              //   ],
+              // ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

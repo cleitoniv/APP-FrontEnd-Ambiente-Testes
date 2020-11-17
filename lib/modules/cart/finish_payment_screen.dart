@@ -41,11 +41,12 @@ class _FinishPaymentState extends State<FinishPayment> {
   List<String> _installments = [];
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    int _total = data.fold(
-      0,
-      (previousValue, element) =>
-          previousValue + element['product'].value * element['quantity'],
-    );
+    int _total = data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07") {
+        return previousValue;
+      }
+      return previousValue + element['product'].value * element['quantity'];
+    });
 
     return Helper.intToMoney(_total);
   }
