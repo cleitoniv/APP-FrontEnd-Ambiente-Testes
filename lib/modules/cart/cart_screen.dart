@@ -31,13 +31,21 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    int _total = data.fold(
-      0,
-      (previousValue, element) =>
-          previousValue + (element['product'].value * element['quantity']),
-    );
+    int _total = data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07") {
+        return previousValue;
+      }
+      return previousValue + (element['product'].value * element['quantity']);
+    });
 
     return Helper.intToMoney(_total);
+  }
+
+  String selectPrice(Map<String, dynamic> item) {
+    if (item["operation"] == "07") {
+      return Helper.intToMoney(item['product'].valueProduto);
+    }
+    return Helper.intToMoney(item['product'].value);
   }
 
   @override
@@ -127,7 +135,7 @@ class _CartScreenState extends State<CartScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text(
-                          'R\$ ${Helper.intToMoney(_data[index]['product'].value)}',
+                          'R\$ ${selectPrice(_data[index])}',
                           style: Theme.of(context).textTheme.headline5.copyWith(
                                 fontSize: 14,
                               ),
@@ -156,23 +164,23 @@ class _CartScreenState extends State<CartScreen> {
             thickness: 1,
             color: Colors.black12,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Taxa de entrega',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      fontSize: 14,
-                    ),
-              ),
-              Text(
-                'R\$ ${0}',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      fontSize: 14,
-                    ),
-              ),
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: <Widget>[
+          //     Text(
+          //       'Taxa de entrega',
+          //       style: Theme.of(context).textTheme.subtitle1.copyWith(
+          //             fontSize: 14,
+          //           ),
+          //     ),
+          //     Text(
+          //       'R\$ ${0}',
+          //       style: Theme.of(context).textTheme.subtitle1.copyWith(
+          //             fontSize: 14,
+          //           ),
+          //     ),
+          //   ],
+          // ),
           SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

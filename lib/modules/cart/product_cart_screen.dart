@@ -16,7 +16,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
-  int _taxaEntrega = 100;
+  int _taxaEntrega = 0;
 
   _onBackToPurchase() {
     Modular.to.pushNamed("/home/0");
@@ -29,16 +29,25 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     );
   }
 
+  String selectPrice(Map<String, dynamic> item) {
+    if (item["operation"] == "07") {
+      return Helper.intToMoney(item['product'].valueProduto);
+    }
+    return Helper.intToMoney(item['product'].value);
+  }
+
   _removeItem(Map<String, dynamic> data) {
     _requestsBloc.removeFromCart(data);
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    int _total = data.fold(
-      0,
-      (previousValue, element) =>
-          previousValue + (element['product'].value * element['quantity']),
-    );
+    print("----------------------");
+    int _total = data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07") {
+        return previousValue;
+      }
+      return previousValue + (element['product'].value * element['quantity']);
+    });
 
     return Helper.intToMoney(_total + _taxaEntrega);
   }
@@ -140,7 +149,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text(
-                              'R\$ ${Helper.intToMoney(_data[index]['product'].value)}',
+                              'R\$ ${selectPrice(_data[index])}',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5
@@ -170,23 +179,23 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 thickness: 1,
                 color: Colors.black12,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Taxa de entrega',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                  Text(
-                    'R\$ ${Helper.intToMoney(_taxaEntrega)}',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: <Widget>[
+              //     Text(
+              //       'Taxa de entrega',
+              //       style: Theme.of(context).textTheme.subtitle1.copyWith(
+              //             fontSize: 14,
+              //           ),
+              //     ),
+              //     Text(
+              //       'R\$ ${Helper.intToMoney(_taxaEntrega)}',
+              //       style: Theme.of(context).textTheme.subtitle1.copyWith(
+              //             fontSize: 14,
+              //           ),
+              //     ),
+              //   ],
+              // ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
