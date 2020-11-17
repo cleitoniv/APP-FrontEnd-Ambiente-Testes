@@ -30,6 +30,32 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
     _devolutionWidgetBloc.devolutionTypeIn.add(value);
   }
 
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
   _onAddProduct() async {
     if (_devolutionWidgetBloc.currentProductList.list == null) {
       _devolutionWidgetBloc.addProduct(_serialController.text);
@@ -41,10 +67,17 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           orElse: () => null);
       if (hasItem?.numSerie == null) {
         _devolutionWidgetBloc.addProduct(_serialController.text);
+        if (_devolutionWidgetBloc.productError["message"] != null) {
+          Dialogs.error(this.context,
+              title: "Ops...",
+              subtitle: _devolutionWidgetBloc.productError["message"],
+              buttonText: "OK", onTap: () {
+            Navigator.pop(this.context);
+          });
+        }
       } else {
-        print('tem');
+        _showDialog('Atenção', 'Produto já está na lista.');
       }
-      _devolutionWidgetBloc.addProduct(_serialController.text);
     }
   }
 
