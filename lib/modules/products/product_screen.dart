@@ -458,7 +458,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             {
                               'title':
                                   'Crédito de Produto R\$ ${Helper.intToMoney(productSnapshot.data.product.valueProduto)}',
-                              'color': Theme.of(context).primaryColor,
+                              'color': Theme.of(context).accentColor,
                               'onTap': () => _onConfirmPurchase(
                                   productSnapshot.data.product,
                                   'C',
@@ -467,7 +467,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             {
                               'title':
                                   'Crédito Financeiro R\$ ${Helper.intToMoney(productSnapshot.data.product.valueFinan)}',
-                              'color': Theme.of(context).accentColor,
+                              'color': Theme.of(context).primaryColor,
                               'onTap': () => _onConfirmPurchase(
                                   productSnapshot.data.product,
                                   'CF',

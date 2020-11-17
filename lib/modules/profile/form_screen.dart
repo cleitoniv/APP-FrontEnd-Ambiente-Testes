@@ -219,41 +219,41 @@ class _FormScreenState extends State<FormScreen> {
                   ),
             ),
           ),
-          widget.formType == 'edit'
-              ? ListTileMoreCustomizable(
-                  dense: true,
-                  contentPadding: const EdgeInsets.all(0),
-                  horizontalTitleGap: 0,
-                  title: Text(
-                    'Ativar/Desativar Usuário',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                  trailing: StreamBuilder<bool>(
-                    stream: _profileWidgetBloc.userStatusOut,
-                    builder: (context, snapshot) {
-                      if (_authBlock.getAuthCurrentUser.data.role ==
-                          'CLIENTE') {
-                        if (snapshot.hasData) {
-                          return Switch(
-                            value: snapshot.data,
-                            activeColor: Theme.of(context).primaryColor,
-                            onChanged: (value) => _onChangeUserStatus(value),
-                          );
-                        } else {
-                          return Switch(
-                            value: false,
-                            activeColor: Theme.of(context).primaryColor,
-                            onChanged: (value) => _onChangeUserStatus(value),
-                          );
-                        }
-                      }
-                      return Container();
-                    },
-                  ),
-                )
-              : Container(),
+          // widget.formType == 'edit'
+          //     ? ListTileMoreCustomizable(
+          //         dense: true,
+          //         contentPadding: const EdgeInsets.all(0),
+          //         horizontalTitleGap: 0,
+          //         title: Text(
+          //           'Ativar/Desativar Usuário',
+          //           style: Theme.of(context).textTheme.subtitle1.copyWith(
+          //                 fontSize: 14,
+          //               ),
+          //         ),
+          //         trailing: StreamBuilder<bool>(
+          //           stream: _profileWidgetBloc.userStatusOut,
+          //           builder: (context, snapshot) {
+          //             if (_authBlock.getAuthCurrentUser.data.role ==
+          //                 'CLIENTE') {
+          //               if (snapshot.hasData) {
+          //                 return Switch(
+          //                   value: snapshot.data,
+          //                   activeColor: Theme.of(context).primaryColor,
+          //                   onChanged: (value) => _onChangeUserStatus(value),
+          //                 );
+          //               } else {
+          //                 return Switch(
+          //                   value: false,
+          //                   activeColor: Theme.of(context).primaryColor,
+          //                   onChanged: (value) => _onChangeUserStatus(value),
+          //                 );
+          //               }
+          //             }
+          //             return Container();
+          //           },
+          //         ),
+          //       ):
+          Container(),
           SizedBox(height: 30),
           RaisedButton(
             onPressed: widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
