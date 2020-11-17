@@ -77,6 +77,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     });
     bool selectedCard =
         await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
+    _cartWidgetBloc.setPaymentMethodBoleto(billing);
     if (selectedCard) {
       _creditCardBloc.fetchPaymentMethods();
     }

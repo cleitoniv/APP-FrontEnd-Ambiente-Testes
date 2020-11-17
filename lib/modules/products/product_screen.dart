@@ -35,16 +35,47 @@ class _ProductScreenState extends State<ProductScreen> {
     Modular.to.pop();
   }
 
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
   _onConfirmPurchase(ProductModel product, String type, int value) {
     print(type);
     if (type == 'C') {
       if (value == 0) {
+        _showDialog(
+            'Atenção', 'Adiquira Credito de Produto para comprar esse item!');
+
         return;
       }
     } else if (type == 'CF') {
       if (value == 0) {
-        return;
+        _showDialog(
+            'Atenção', 'Adiquira Credito Financeiro para comprar esse item!');
       }
+      return;
     }
     Modular.to.pushNamed(
       '/products/${product.id}/requestDetails',

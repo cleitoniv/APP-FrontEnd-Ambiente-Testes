@@ -43,12 +43,17 @@ class DevolutionWidgetBloc extends Disposable {
         product.product.valid != null &&
         product.product.valid) {
       this.productsPreDevolucao.list.add(product.product);
+      //
     } else if (product.isEmpty) {
-      productErrorAddSink.add({"message": null});
+      print('.............product.isEmpt.................');
+
+      productErrorAddSink.add({"message": 'Produto Inexistente!'});
+      //
     } else if (product.product != null &&
         product.product.valid != null &&
         !product.product.valid) {
       productErrorSink.add({"message": product.product.message});
+      //
     }
     this.productsPreDevolucao.isEmpty =
         this.productsPreDevolucao.list.length <= 0;
