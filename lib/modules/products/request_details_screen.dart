@@ -42,8 +42,38 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   MaskedTextController _birthdayController;
   Product currentProduct;
 
+  int _calculateCreditProduct() {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+
+    int _total = _cart.fold(0, (previousValue, element) {
+      if (element["operation"] == "07" &&
+          element['product'].group == currentProduct.product.group) {
+        return previousValue + element['quantity'];
+      }
+      return previousValue;
+    });
+
+    return _total;
+  }
+
   _onAddLens() {
-    _lensController.text = '${int.parse(_lensController.text) + 1}';
+    int cartTotal = _calculateCreditProduct();
+
+    if (widget.type == "C") {
+      int olho = int.parse(_lensController.text);
+      if (currentProduct.product.boxes > olho + cartTotal) {
+        _lensController.text = '${int.parse(_lensController.text) + 1}';
+      } else {
+        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+          "Limite atingido": ["Limite de caixas atingido"]
+        });
+        _scaffoldKey.currentState.showSnackBar(
+          _snack,
+        );
+      }
+    } else {
+      _lensController.text = '${int.parse(_lensController.text) + 1}';
+    }
   }
 
   _onRemoveLens() {
@@ -53,13 +83,51 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onAddLensDireito() {
-    _lensDireitoController.text =
-        '${int.parse(_lensDireitoController.text) + 1}';
+    int cartTotal = _calculateCreditProduct();
+
+    if (widget.type == "C") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (currentProduct.product.boxes >
+          olhoDireito + olhoEsquerdo + cartTotal) {
+        _lensDireitoController.text =
+            '${int.parse(_lensDireitoController.text) + 1}';
+      } else {
+        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+          "Limite atingido": ["Limite de caixas atingido"]
+        });
+        _scaffoldKey.currentState.showSnackBar(
+          _snack,
+        );
+      }
+    } else {
+      _lensDireitoController.text =
+          '${int.parse(_lensDireitoController.text) + 1}';
+    }
   }
 
   _onAddLensEsquerdo() {
-    _lensEsquerdoController.text =
-        '${int.parse(_lensEsquerdoController.text) + 1}';
+    int cartTotal = _calculateCreditProduct();
+
+    if (widget.type == "C") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (currentProduct.product.boxes >
+          olhoDireito + olhoEsquerdo + cartTotal) {
+        _lensEsquerdoController.text =
+            '${int.parse(_lensEsquerdoController.text) + 1}';
+      } else {
+        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+          "Limite atingido": ["Limite de caixas atingido"]
+        });
+        _scaffoldKey.currentState.showSnackBar(
+          _snack,
+        );
+      }
+    } else {
+      _lensEsquerdoController.text =
+          '${int.parse(_lensEsquerdoController.text) + 1}';
+    }
   }
 
   _onRemoveLensDireito() {
@@ -236,8 +304,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
-      print("_data__data__data__data__data_");
-      print(_data);
       _requestsBloc.addProductToCart(_data);
       Modular.to.pushNamed("/cart/product");
     } else {
@@ -303,16 +369,40 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onAddCurrentParam(Map<dynamic, dynamic> data) async {
-    if (data['current'] == 'Graus diferentes em cada olho') {
-      _lensDireitoController.text = '1';
-      _lensEsquerdoController.text = '1';
-      _lensController.text = '0';
+    if (widget.type == "C") {
+      if (data['current'] == 'Graus diferentes em cada olho' &&
+          currentProduct.product.boxes < 2) {
+        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+          "Credito Insuficiente": [
+            "Voce nao tem credito para comprar nessa modalidade"
+          ]
+        });
+        _scaffoldKey.currentState.showSnackBar(
+          _snack,
+        );
+      } else if (data['current'] == 'Graus diferentes em cada olho') {
+        _lensDireitoController.text = '1';
+        _lensEsquerdoController.text = '1';
+        _lensController.text = '0';
+        _onAddParam(data);
+      } else {
+        _lensDireitoController.text = '0';
+        _lensEsquerdoController.text = '0';
+        _lensController.text = '1';
+        _onAddParam(data);
+      }
     } else {
-      _lensDireitoController.text = '0';
-      _lensEsquerdoController.text = '0';
-      _lensController.text = '1';
+      if (data['current'] == 'Graus diferentes em cada olho') {
+        _lensDireitoController.text = '1';
+        _lensEsquerdoController.text = '1';
+        _lensController.text = '0';
+      } else {
+        _lensDireitoController.text = '0';
+        _lensEsquerdoController.text = '0';
+        _lensController.text = '1';
+      }
+      _onAddParam(data);
     }
-    _onAddParam(data);
   }
 
   _onAddParam(Map<dynamic, dynamic> data) async {
@@ -900,7 +990,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 }
               }),
           SizedBox(height: 10),
-          currentProduct.product.hasTest
+          currentProduct.product.hasTest && currentProduct.product.tests > 0
               ? _checkForAcessorio(StreamBuilder<Map>(
                   stream: _productWidgetBloc.pacientInfoOut,
                   builder: (context, snapshot) {
