@@ -175,8 +175,15 @@ class ProductRepository {
             "Authorization": "Bearer ${idToken.token}"
           }));
       ProductModel product = ProductModel.fromJson(response.data['data']);
-      return Product(isEmpty: false, isLoading: false, product: product);
+      print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+      print(response.data['data']);
+      print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+      return Product(
+          isEmpty: response.data['data'].length > 0 ? false : true,
+          isLoading: false,
+          product: product);
     } catch (error) {
+      print('..............................');
       return Product(isEmpty: true, isLoading: false, product: null);
     }
   }

@@ -38,12 +38,22 @@ class DevolutionWidgetBloc extends Disposable {
   void addProduct(String serie) async {
     productsListSink.add(ProductList(isLoading: true));
     Product product = await repository.getProductBySerie(serie: serie);
-    if (product.product != null && product.product.valid) {
-      print(this.productsPreDevolucao.list);
-      print('product.product');
+
+    if (product.product != null &&
+        product.product.valid != null &&
+        product.product.valid) {
       this.productsPreDevolucao.list.add(product.product);
-    } else if (product.product != null && !product.product.valid) {
+      //
+    } else if (product.isEmpty) {
+      print('.............product.isEmpt.................');
+
+      productErrorAddSink.add({"message": 'Produto Inexistente!'});
+      //
+    } else if (product.product != null &&
+        product.product.valid != null &&
+        !product.product.valid) {
       productErrorSink.add({"message": product.product.message});
+      //
     }
     this.productsPreDevolucao.isEmpty =
         this.productsPreDevolucao.list.length <= 0;
@@ -67,6 +77,11 @@ class DevolutionWidgetBloc extends Disposable {
   BehaviorSubject _productError = BehaviorSubject();
   Sink get productErrorSink => _productError.sink;
   Stream get productErrorStream => _productError.stream;
+
+  BehaviorSubject _productErrorAdd = BehaviorSubject();
+  Sink get productErrorAddSink => _productErrorAdd.sink;
+  Stream get productErrorAddStream => _productErrorAdd.stream;
+  get productError => _productErrorAdd.value;
 
   BehaviorSubject _devolutionController = BehaviorSubject();
   Sink get currentDevolutionSink => _devolutionController.sink;

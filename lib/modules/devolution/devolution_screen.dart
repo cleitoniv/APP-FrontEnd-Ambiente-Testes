@@ -30,6 +30,32 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
     _devolutionWidgetBloc.devolutionTypeIn.add(value);
   }
 
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
   _onAddProduct() async {
     if (_devolutionWidgetBloc.currentProductList.list == null) {
       _devolutionWidgetBloc.addProduct(_serialController.text);
@@ -41,10 +67,17 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           orElse: () => null);
       if (hasItem?.numSerie == null) {
         _devolutionWidgetBloc.addProduct(_serialController.text);
+        if (_devolutionWidgetBloc.productError["message"] != null) {
+          Dialogs.error(this.context,
+              title: "Ops...",
+              subtitle: _devolutionWidgetBloc.productError["message"],
+              buttonText: "OK", onTap: () {
+            Navigator.pop(this.context);
+          });
+        }
       } else {
-        print('tem');
+        _showDialog('Atenção', 'Produto já está na lista.');
       }
-      _devolutionWidgetBloc.addProduct(_serialController.text);
     }
   }
 
@@ -55,6 +88,17 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
   _qrCodeRead() async {
     ScanResult qrCode = await BarcodeScanner.scan();
     _devolutionWidgetBloc.addProduct(qrCode.rawContent);
+  }
+
+  _removeItem(int index, String numSerie) {
+    final prod = _devolutionWidgetBloc.currentProductList.list;
+
+    final hasItem =
+        prod.firstWhere((e) => e.numSerie == numSerie, orElse: () => null);
+    if (hasItem?.numSerie != null) {
+      _devolutionWidgetBloc.currentProductList.list.removeAt(index);
+      setState(() {});
+    }
   }
 
   @override
@@ -83,6 +127,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int i = -1;
     return Scaffold(
       appBar: AppBar(
         title: Text('Devolução'),
@@ -181,6 +226,11 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
           ),
+          Text(
+            'Toque para Remover',
+            style: Theme.of(context).textTheme.subtitle1,
+            textAlign: TextAlign.center,
+          ),
           StreamBuilder(
             stream: _devolutionWidgetBloc.productsListStream,
             builder: (context, snapshot) {
@@ -196,25 +246,41 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                   child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: snapshot.data.list.map<Widget>((e) {
+                        i++;
                         print(e.imageUrl);
-                        return Container(
-                            width: 300,
-                            height: 90,
-                            child: ListTileMoreCustomizable(
-                              contentPadding: const EdgeInsets.all(5),
-                              leading: CachedNetworkImage(
-                                imageUrl: "${e.imageUrl}",
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
+                        return Row(
+                          children: [
+                            Container(
+                              width: 300,
+                              height: 90,
+                              child: ListTileMoreCustomizable(
+                                contentPadding: const EdgeInsets.all(5),
+                                leading: CachedNetworkImage(
+                                  imageUrl: "${e.imageUrl}",
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                                title: Text("'${e.title}'"),
+                                subtitle: Text("NF ${e.nf}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(fontSize: 15)),
                               ),
-                              title: Text("${e.title}"),
-                              subtitle: Text("NF ${e.nf}",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      .copyWith(fontSize: 15)),
-                            ));
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                size: 30,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                _removeItem(i, e.numSerie);
+                              },
+                            )
+                          ],
+                        );
                       }).toList()));
               // print(snapshot.data.list);
               // return Column(
