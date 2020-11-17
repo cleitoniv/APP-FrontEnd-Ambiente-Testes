@@ -83,6 +83,8 @@ class _FinishPaymentState extends State<FinishPayment> {
   _getPaymentMethod() async {
     final paymentMethod = _cartWidgetBloc.currentPaymentMethod;
     setState(() {
+      print('paymentMethod.isBoleto');
+      print(paymentMethod.isBoleto);
       _paymentMethod = paymentMethod.isBoleto;
     });
   }

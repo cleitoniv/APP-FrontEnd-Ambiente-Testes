@@ -39,6 +39,8 @@ class DevolutionWidgetBloc extends Disposable {
     productsListSink.add(ProductList(isLoading: true));
     Product product = await repository.getProductBySerie(serie: serie);
     if (product.product != null && product.product.valid) {
+      print(this.productsPreDevolucao.list);
+      print('product.product');
       this.productsPreDevolucao.list.add(product.product);
     } else if (product.product != null && !product.product.valid) {
       productErrorSink.add({"message": product.product.message});
@@ -103,6 +105,8 @@ class DevolutionWidgetBloc extends Disposable {
   BehaviorSubject _productsListController = BehaviorSubject();
   Sink get productsListSink => _productsListController.sink;
   Stream get productsListStream => _productsListController.stream;
+
+  ProductList get currentProductList => _productsListController.value;
 
   @override
   void dispose() {

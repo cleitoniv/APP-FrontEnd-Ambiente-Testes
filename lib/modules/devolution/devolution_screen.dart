@@ -30,8 +30,22 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
     _devolutionWidgetBloc.devolutionTypeIn.add(value);
   }
 
-  _onAddProduct() {
-    _devolutionWidgetBloc.addProduct(_serialController.text);
+  _onAddProduct() async {
+    if (_devolutionWidgetBloc.currentProductList.list == null) {
+      _devolutionWidgetBloc.addProduct(_serialController.text);
+    } else {
+      final prod = _devolutionWidgetBloc.currentProductList.list;
+
+      final hasItem = prod.firstWhere(
+          (e) => e.numSerie == _serialController.text,
+          orElse: () => null);
+      if (hasItem?.numSerie == null) {
+        _devolutionWidgetBloc.addProduct(_serialController.text);
+      } else {
+        print('tem');
+      }
+      _devolutionWidgetBloc.addProduct(_serialController.text);
+    }
   }
 
   _onSubmit() async {
