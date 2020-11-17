@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
 import 'package:central_oftalmica_app_cliente/models/points_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_details_model.dart';
@@ -29,12 +31,98 @@ class PointsList {
   PointsList({this.isEmpty, this.isLoading, this.list});
 }
 
+class OrderPayment {
+  bool isLoading;
+  bool isValid;
+  Map<String, dynamic> error;
+
+  OrderPayment({this.isLoading, this.isValid, this.error});
+}
+
 class RequestsRepository {
   Dio dio;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   RequestsRepository(this.dio);
+
+  String parseDtNascimento(String dtNascimento) {
+    try {
+      List dtSplited = dtNascimento.split("/");
+      return "${dtSplited[2]}-${dtSplited[1]}-${dtSplited[0]}";
+    } catch (error) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic> generate_params(Map data) {
+    List items = data['cart'].map<Map>((e) {
+      if (e["operation"] == "01" ||
+          e["operation"] == "13" ||
+          e["operation"] == "07") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['product'].group,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['product'].value,
+              'tests': e['tests'],
+              'duracao': e['product'].duracao
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
+      } else {
+        return {
+          'operation': e['operation'],
+          'type': e['type'],
+          'items': [
+            {
+              'produto': e['product'].title,
+              'codigo': e['product'].produto,
+              'grupo': e['product'].group,
+              'quantidade': e['quantity'],
+              'prc_unitario': e['product'].value,
+              'duracao': e['product'].duracao
+            }
+          ]
+        };
+      }
+    }).toList();
+    return {'items': items, 'valor': 0};
+  }
+
+  Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try {
+      Response response = await dio.post('/api/cliente/pedido_produto',
+          data: jsonEncode(generate_params({'cart': _data})),
+          options: Options(headers: {
+            "Authorization": "Bearer ${idToken.token}",
+            "Content-Type": "application/json"
+          }));
+      return OrderPayment(isValid: response.data["success"], isLoading: false);
+    } catch (e) {
+      final error400 = e as DioError;
+      return OrderPayment(isValid: false, isLoading: false, error: {
+        "Pedido": [error400.response.data["data"]]
+      });
+    }
+  }
 
   Future<PointsList> fetchPoints() async {
     FirebaseUser user = await _auth.currentUser();

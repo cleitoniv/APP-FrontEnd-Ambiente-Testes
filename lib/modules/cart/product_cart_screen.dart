@@ -1,7 +1,11 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -15,6 +19,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
 
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int _taxaEntrega = 0;
 
@@ -24,9 +30,51 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   _onSubmit() {
     _requestsBloc.taxaEntregaSink.add(_taxaEntrega);
+
+    List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
+
+    int _total = _data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07") {
+        return previousValue;
+      }
+      return previousValue + (element['product'].value * element['quantity']);
+    });
+
+    if (_total == 0) {
+      return _orderFinish(_data);
+    }
+
     Modular.to.pushNamed(
       '/cart/payment',
     );
+  }
+
+  _onSubmitDialog() {
+    _requestsBloc.getPedidosList(0);
+    _authBloc.fetchCurrentUser();
+    Modular.to.pushNamedAndRemoveUntil(
+      '/home/3',
+      (route) => route.isFirst,
+    );
+  }
+
+  _orderFinish(List<Map<String, dynamic>> _data) async {
+    OrderPayment _order = await _requestsBloc.orderPayment(_data);
+
+    if (_order.isValid) {
+      _requestsBloc.resetCart();
+      Dialogs.success(
+        context,
+        subtitle: 'Compra efetuada com sucesso!',
+        buttonText: 'Ir para Meus Pedidos',
+        onTap: _onSubmitDialog,
+      );
+    } else {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, _order.error);
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+    }
   }
 
   String selectPrice(Map<String, dynamic> item) {
@@ -41,7 +89,6 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    print("----------------------");
     int _total = data.fold(0, (previousValue, element) {
       if (element["operation"] == "07") {
         return previousValue;
@@ -55,6 +102,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Carrinho', style: Theme.of(context).textTheme.headline4),
         ),

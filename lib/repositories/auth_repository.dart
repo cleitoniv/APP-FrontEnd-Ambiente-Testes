@@ -208,8 +208,6 @@ class AuthRepository {
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
-      print(cliente.confirmationSms);
-      print(cliente.sitApp);
       if (cliente.confirmationSms == 0 && cliente.sitApp == "A" ||
           cliente.confirmationSms == 0 && cliente.sitApp == "E") {
         return AuthEvent(isValid: true, data: cliente, loading: false);
@@ -228,7 +226,6 @@ class AuthRepository {
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
-      print(error);
       final error400 = error as DioError;
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
         "Cadastro": [error400.response.data['data']]

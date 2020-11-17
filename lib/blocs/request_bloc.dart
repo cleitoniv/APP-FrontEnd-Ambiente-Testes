@@ -81,6 +81,10 @@ class RequestsBloc extends Disposable {
     cartIn.add(<Map<String, dynamic>>[]);
   }
 
+  Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
+    return repository.orderPayment(_data);
+  }
+
   void removeFromCart(data) {
     List<Map<String, dynamic>> itens = _cartController.value;
     List<Map<String, dynamic>> novosItens =
