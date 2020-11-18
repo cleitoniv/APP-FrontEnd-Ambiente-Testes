@@ -13,6 +13,8 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
+int numItem = 0;
+
 class DevolutionScreen extends StatefulWidget {
   @override
   _DevolutionScreenState createState() => _DevolutionScreenState();
@@ -67,14 +69,16 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           orElse: () => null);
       if (hasItem?.numSerie == null) {
         _devolutionWidgetBloc.addProduct(_serialController.text);
-        if (_devolutionWidgetBloc.productError["message"] != null) {
-          Dialogs.error(this.context,
-              title: "Ops...",
-              subtitle: _devolutionWidgetBloc.productError["message"],
-              buttonText: "OK", onTap: () {
-            Navigator.pop(this.context);
-          });
-        }
+        Timer(Duration(seconds: 2), () {
+          if (_devolutionWidgetBloc.productError["message"] != null) {
+            Dialogs.error(this.context,
+                title: "Ops...",
+                subtitle: _devolutionWidgetBloc.productError["message"],
+                buttonText: "OK", onTap: () {
+              Navigator.pop(this.context);
+            });
+          }
+        });
       } else {
         _showDialog('Atenção', 'Produto já está na lista.');
       }
@@ -90,13 +94,14 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
     _devolutionWidgetBloc.addProduct(qrCode.rawContent);
   }
 
-  _removeItem(int index, String numSerie) {
+  _removeItem(String numSerie) {
     final prod = _devolutionWidgetBloc.currentProductList.list;
 
     final hasItem =
         prod.firstWhere((e) => e.numSerie == numSerie, orElse: () => null);
     if (hasItem?.numSerie != null) {
-      _devolutionWidgetBloc.currentProductList.list.removeAt(index);
+      _devolutionWidgetBloc.currentProductList.list
+          .removeWhere((element) => element.numSerie == numSerie);
       setState(() {});
     }
   }
@@ -116,6 +121,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
       }
     });
     _serialController = TextEditingController();
+    _devolutionWidgetBloc.resetPreDevolucao();
   }
 
   @override
@@ -226,11 +232,6 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
           ),
-          Text(
-            'Toque para Remover',
-            style: Theme.of(context).textTheme.subtitle1,
-            textAlign: TextAlign.center,
-          ),
           StreamBuilder(
             stream: _devolutionWidgetBloc.productsListStream,
             builder: (context, snapshot) {
@@ -246,8 +247,6 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                   child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: snapshot.data.list.map<Widget>((e) {
-                        i++;
-                        print(e.imageUrl);
                         return Row(
                           children: [
                             Container(
@@ -276,7 +275,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                                 color: Colors.red,
                               ),
                               onPressed: () {
-                                _removeItem(i, e.numSerie);
+                                _removeItem(e.numSerie);
                               },
                             )
                           ],
