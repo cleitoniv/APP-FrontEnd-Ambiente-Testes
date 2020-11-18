@@ -83,7 +83,6 @@ class ProductRepository {
       Map<String, dynamic> data, Map<String, dynamic> allowedParams) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
-    print(data);
     try {
       Response response = await dio.post("/api/cliente/verify_graus",
           options: Options(headers: {
@@ -93,7 +92,6 @@ class ProductRepository {
           data: jsonEncode({
             "param": {"data": data, "allowed_params": allowedParams}
           }));
-      print(response.data);
       return {};
     } catch (error) {
       final error400 = error as DioError;
@@ -175,15 +173,11 @@ class ProductRepository {
             "Authorization": "Bearer ${idToken.token}"
           }));
       ProductModel product = ProductModel.fromJson(response.data['data']);
-      print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-      print(response.data['data']);
-      print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
       return Product(
           isEmpty: response.data['data'].length > 0 ? false : true,
           isLoading: false,
           product: product);
     } catch (error) {
-      print('..............................');
       return Product(isEmpty: true, isLoading: false, product: null);
     }
   }

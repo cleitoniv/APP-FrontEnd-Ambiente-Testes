@@ -29,6 +29,10 @@ class DevolutionWidgetBloc extends Disposable {
 
   set updateCurrentproductIndex(int index) => this.currentProductIndex = index;
 
+  void fetchProducts(String filtro) async {
+    productsListSink.add(ProductList(isEmpty: true, isLoading: true));
+  }
+
   void resetPreDevolucao() async {
     this.productsPreDevolucao =
         ProductList(isEmpty: true, list: [], isLoading: false);
@@ -36,17 +40,16 @@ class DevolutionWidgetBloc extends Disposable {
   }
 
   void addProduct(String serie) async {
-    productsListSink.add(ProductList(isLoading: true));
+    productsListSink.add(ProductList(isLoading: true, isEmpty: false));
     Product product = await repository.getProductBySerie(serie: serie);
 
     if (product.product != null &&
         product.product.valid != null &&
         product.product.valid) {
+      productErrorAddSink.add({"message": null});
       this.productsPreDevolucao.list.add(product.product);
       //
     } else if (product.isEmpty) {
-      print('.............product.isEmpt.................');
-
       productErrorAddSink.add({"message": 'Produto Inexistente!'});
       //
     } else if (product.product != null &&
@@ -55,6 +58,7 @@ class DevolutionWidgetBloc extends Disposable {
       productErrorSink.add({"message": product.product.message});
       //
     }
+
     this.productsPreDevolucao.isEmpty =
         this.productsPreDevolucao.list.length <= 0;
     productsListSink.add(this.productsPreDevolucao);
