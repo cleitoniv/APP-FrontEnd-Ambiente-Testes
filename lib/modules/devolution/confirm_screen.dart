@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
+import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
@@ -26,7 +27,13 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   MaskedTextController _birthdayController;
   TextEditingController _lensController;
 
-  _onChangeParams(Map<String, dynamic> data) async {
+  _onChangeParams(
+    Map<String, dynamic> data, {
+    String key,
+  }) async {
+    print('data');
+    print(key);
+    print('data');
     Map<String, dynamic> _first =
         await _devolutionWidgetBloc.productParamsOut.first;
 
@@ -49,6 +56,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
         _updatedFirst['addition'] != null) {
       _devolutionWidgetBloc.buttonCartStatusIn.add(true);
     }
+    Modular.to.pop();
   }
 
   _addOlho(String olho) {
@@ -113,6 +121,46 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     }
   }
 
+  List<Map<String, dynamic>> generateProductParams(Parametros parametro) {
+    return [
+      {
+        'labelText': 'Escolha o Grau',
+        'key': 'degree',
+        'items': parametro.parametro.grausEsferico,
+      },
+      {
+        'labelText': 'Escolha o Cilíndro',
+        'key': 'cylinder',
+        'items': parametro.parametro.grausCilindrico,
+      },
+      {
+        'labelText': 'Escolha o Eixo',
+        'key': 'axis',
+        'items': parametro.parametro.grausEixo,
+      },
+      {
+        'labelText': 'Escolha a Adicao',
+        'key': 'adicao',
+        'items': parametro.parametro.grausAdicao,
+      },
+      {
+        'labelText': 'Escolha a Cor',
+        'key': 'cor',
+        'items': parametro.parametro.cor,
+      }
+    ];
+  }
+
+  _onShowOptions(Map<dynamic, dynamic> data, {String key}) {
+    print(key);
+    Modals.params(
+      context,
+      items: data,
+      onTap: (data, current) => _onChangeParams(data, key: key),
+      title: data['labelText'],
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -125,6 +173,15 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
     );
+
+    _devolutionWidgetBloc.currentDevolutionStream.listen((event) {
+      if (!event.isLoading) {
+        _devolutionWidgetBloc
+            .fetchParametros(event.devolution.product["group"]);
+      }
+    });
+    // _devolutionWidgetBloc.fetchParametros(currentProduct.product.group);
+
     _pacientInfo = [
       {
         'labelText': 'Nome do paciente',
@@ -258,58 +315,108 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                     },
                   ),
                   SizedBox(height: 20.0),
-                  DropdownWidget(
-                    labelText: 'Escolha o olho',
-                    items: [
-                      'Olho direito',
-                      'Olho esquerdo',
-                    ],
-                    onChanged: (value) => _addOlho(value),
-                    currentValue: 'Olho direito',
-                  ),
-                  SizedBox(height: 20.0),
-                  Text(
-                    'Parâmetros',
-                    style: Theme.of(context).textTheme.headline5,
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    'Defina os parâmetros do produto',
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 30),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    primary: false,
-                    itemCount: _productParams.length,
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: 10,
-                    ),
-                    itemBuilder: (context, index) {
-                      return StreamBuilder<Map<String, dynamic>>(
-                        stream: _devolutionWidgetBloc.productParamsOut,
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
+                  StreamBuilder(
+                      stream: _devolutionWidgetBloc.parametroListStream,
+                      builder: (context, paramsSnapshot) {
+                        if (!paramsSnapshot.hasData ||
+                            paramsSnapshot.data.isLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        final _productParams =
+                            generateProductParams(paramsSnapshot.data);
 
-                          return DropdownWidget(
-                            items: _productParams[index]['items'],
-                            labelText: _productParams[index]['labelText'],
-                            prefixIcon: SizedBox(),
-                            currentValue:
-                                snapshot.data[_productParams[index]['key']],
-                            onChanged: (value) => _onChangeParams({
-                              _productParams[index]['key']: value,
-                            }),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                        return Column(
+                          children: [
+                            DropdownWidget(
+                              labelText: 'Escolha o olho',
+                              items: [
+                                'Olho direito',
+                                'Olho esquerdo',
+                              ],
+                              onChanged: (value) => _addOlho(value),
+                              currentValue: 'Olho direito',
+                            ),
+                            SizedBox(height: 20.0),
+                            Text(
+                              'Parâmetros',
+                              style: Theme.of(context).textTheme.headline5,
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              'Defina os parâmetros do produto',
+                              style: Theme.of(context).textTheme.subtitle1,
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 30),
+                            ListView.separated(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: _productParams.length,
+                              separatorBuilder: (context, index) => SizedBox(
+                                height: 10,
+                              ),
+                              itemBuilder: (context, index) {
+                                return StreamBuilder<Map<String, dynamic>>(
+                                  stream:
+                                      _devolutionWidgetBloc.productParamsOut,
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                    print('snapshot.data');
+                                    print(_productParams);
+                                    return TextFieldWidget(
+                                      readOnly: true,
+                                      labelText: _productParams[index]
+                                          ['labelText'],
+                                      suffixIcon: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Color(0xffa1a1a1),
+                                      ),
+                                      controller: TextEditingController()
+                                        ..text = "${[
+                                          _productParams[index]['item']
+                                        ].toString()}",
+                                      onTap: () => _onShowOptions(
+                                        _productParams[index],
+                                        key: 'esquerdo',
+                                      ),
+                                    );
+                                    // return TextFieldWidget(
+                                    //   readOnly: true,
+                                    //   suffixIcon: Icon(
+                                    //     Icons.keyboard_arrow_down,
+                                    //     color: Color(0xffa1a1a1),
+                                    //   ),
+                                    //   controller: TextEditingController(),
+                                    //   labelText: _productParams[index]
+                                    //       ['labelText'],
+                                    //   onTap: (value) => _onChangeParams({
+                                    //     _productParams[index]['key']: value,
+                                    //   }),
+                                    // );
+
+                                    return DropdownWidget(
+                                      items: _productParams[index]['items'],
+                                      labelText: _productParams[index]
+                                          ['labelText'],
+                                      prefixIcon: SizedBox(),
+                                      currentValue: snapshot
+                                          .data[_productParams[index]['key']],
+                                      onChanged: (value) => _onChangeParams({
+                                        _productParams[index]['key']: value,
+                                      }),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }),
+
                   SizedBox(height: 30),
                   // Row(
                   //   mainAxisAlignment: MainAxisAlignment.spaceBetween,

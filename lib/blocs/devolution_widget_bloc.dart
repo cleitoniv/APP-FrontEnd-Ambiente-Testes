@@ -101,6 +101,15 @@ class DevolutionWidgetBloc extends Disposable {
         (event) => event,
       );
 
+  BehaviorSubject _parametroList = BehaviorSubject();
+  Sink get parametroListSink => _parametroList.sink;
+  Stream get parametroListStream => _parametroList.stream;
+  void fetchParametros(String group) async {
+    parametroListSink.add(Parametros(isLoading: true));
+    Parametros parametros = await repository.getParametros(group);
+    parametroListSink.add(parametros);
+  }
+
   BehaviorSubject _productParamsController = BehaviorSubject.seeded({
     'esferico': null,
     'cilindrico': null,
