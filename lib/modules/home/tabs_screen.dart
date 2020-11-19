@@ -97,7 +97,7 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _onChangeRequestType(String type) async {
-    String _first = await _homeWidgetBloc.currentRequestTypeOut.first;
+    String _first = await _homeWidgetBloc.currentRequestType;
 
     _homeWidgetBloc.currentRequestTypeIn.add(type);
 
@@ -115,7 +115,7 @@ class _TabsScreenState extends State<TabsScreen>
           _status = 2;
           break;
       }
-
+      _requestsBloc.currentRequestFilterSink.add(_status);
       _requestsBloc.getPedidosList(_status);
     }
   }
@@ -407,8 +407,6 @@ class _TabsScreenState extends State<TabsScreen>
     _requestsBloc.getPedidosList(filter);
     _homeWidgetBloc.currentTabIndexOut.listen((int event) {
       if (event != null && event != _tabController.index) {
-        print('_initState tabsscreen');
-        print(event);
         _tabController.index = event;
       }
     });

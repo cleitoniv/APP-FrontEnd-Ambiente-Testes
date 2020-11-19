@@ -76,6 +76,8 @@ class RequestsRepository {
               'grupo': e['product'].group,
               'duracao': e['product'].duracao,
               'prc_unitario': e['product'].value,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
               'tests': e['tests'],
               'duracao': e['product'].duracao
             }
@@ -96,6 +98,8 @@ class RequestsRepository {
               'grupo': e['product'].group,
               'quantidade': e['quantity'],
               'prc_unitario': e['product'].value,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
               'duracao': e['product'].duracao
             }
           ]
@@ -145,13 +149,18 @@ class RequestsRepository {
     }
   }
 
-  Future<Pedido> getPedido(int id, itemPedido) async {
+  Future<Pedido> getPedido(int id, PedidoModel pedidoData,
+      {bool reposicao = false}) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/pedido/${id}',
-          queryParameters: {"item_pedido": itemPedido},
+          queryParameters: {
+            "data_nascimento": pedidoData.dataNascimento,
+            "nome": pedidoData.paciente,
+            "reposicao": reposicao
+          },
           options: Options(headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
@@ -167,8 +176,7 @@ class RequestsRepository {
   Future<PedidosList> getPedidos(int filtro) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
-    print("===========");
-    print(filtro);
+
     try {
       Response response = await dio.get(
           '/api/cliente/detail_order?filtro=${filtro}',
@@ -176,11 +184,9 @@ class RequestsRepository {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
           }));
-      print(response.data["data"]);
       List<PedidoModel> pedidos = response.data['data'].map<PedidoModel>((e) {
         return PedidoModel.fromJson(e);
       }).toList();
-
       return PedidosList(
           isEmpty: pedidos.length <= 0, isLoading: false, list: pedidos);
     } catch (error) {

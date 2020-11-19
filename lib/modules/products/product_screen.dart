@@ -62,7 +62,6 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   _onConfirmPurchase(ProductModel product, String type, int value) {
-    print(type);
     if (type == 'C') {
       if (value == 0) {
         _showDialog(

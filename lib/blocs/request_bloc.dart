@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_details_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
@@ -9,9 +10,10 @@ class RequestsBloc extends Disposable {
 
   RequestsBloc(this.repository);
 
-  void getPedido(int id, itemPedido) async {
+  void getPedido(int id, PedidoModel pedidoData, bool reposicao) async {
     pedidoInfoSink.add(Pedido(isLoading: true));
-    Pedido pedido = await repository.getPedido(id, itemPedido);
+    Pedido pedido =
+        await repository.getPedido(id, pedidoData, reposicao: reposicao);
     pedidoInfoSink.add(pedido);
   }
 

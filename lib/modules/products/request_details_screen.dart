@@ -281,8 +281,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         data['product'],
         new Map<String, dynamic>.from(_first));
 
-    print(_first[_first['current']]);
-
     if (errors.keys.length <= 0) {
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),

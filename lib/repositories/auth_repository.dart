@@ -100,16 +100,13 @@ class AuthRepository {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": ""
           }));
-      print(response.data);
       if (response.data["success"]) {
-        print(response.data);
         CadastroModel cadastro = CadastroModel.fromJson(response.data["data"]);
         return Cadastro(isLoading: false, isEmpty: false, dados: cadastro);
       } else {
         return Cadastro(isLoading: false, isEmpty: true);
       }
     } catch (error) {
-      print(error);
       return Cadastro(isEmpty: true, isLoading: false);
     }
   }
@@ -121,8 +118,6 @@ class AuthRepository {
           (response.data["data"] as List).map<String>((e) => e).toList();
       return AcceptTerms(data: responseTerm, isEmpty: false, isLoading: false);
     } catch (e) {
-      print('+++++++');
-      print(e);
       return AcceptTerms(isLoading: false, isEmpty: true);
     }
   }
@@ -138,7 +133,6 @@ class AuthRepository {
       );
       return LoginEvent(message: "OK", isValid: true, result: result);
     } catch (error) {
-      print(error);
       return LoginEvent(message: "Credenciais Inválidas.", isValid: false);
     }
   }
@@ -152,7 +146,6 @@ class AuthRepository {
   }
 
   Future<LoginEvent> firstAccess(Map<String, dynamic> data) async {
-    print(data);
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
     try {
@@ -162,12 +155,10 @@ class AuthRepository {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": "application/json"
           }));
-      print('response.data firstAccess');
-      print(response.data);
+
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
       final error400 = error as DioError;
-      print(error400.response.data['data']);
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",
           isValid: false,
@@ -176,10 +167,8 @@ class AuthRepository {
   }
 
   Future<LoginEvent> createAccount(Map<String, dynamic> data) async {
-    print("ok");
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
-    print("ok");
     try {
       Response response = await dio.post('/api/cliente',
           data: jsonEncode({"param": data}),
@@ -189,7 +178,6 @@ class AuthRepository {
           }));
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
-      print(error);
       final error400 = error as DioError;
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",
@@ -265,7 +253,6 @@ class AuthRepository {
       bool matchStatus = response.data["success"];
       return matchStatus;
     } catch (error) {
-      print(error);
       return false;
     }
   }
@@ -279,7 +266,6 @@ class AuthRepository {
       bool matchStatus = response.data["success"];
       return matchStatus;
     } catch (error) {
-      print(error);
       return false;
     }
   }

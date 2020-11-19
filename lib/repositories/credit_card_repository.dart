@@ -98,7 +98,6 @@ class CreditCardRepository {
 
       return CreditCard(isEmpty: false, isLoading: false, cartao: card);
     } catch (error) {
-      print(error);
       final error400 = error as DioError;
       return CreditCard(isEmpty: true, isLoading: false, errorData: {
         "falha": ["Falha ao criar cartão"]

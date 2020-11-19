@@ -70,6 +70,8 @@ class PaymentRepository {
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
               'grupo': e['product'].group,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
               'duracao': e['product'].duracao,
               'prc_unitario': e['product'].value,
               'tests': e['tests']
@@ -90,6 +92,8 @@ class PaymentRepository {
               'codigo': e['product'].produto,
               'grupo': e['product'].group,
               'quantidade': e['quantity'],
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
               'prc_unitario': e['product'].value,
               'duracao': e['product'].duracao
             }
