@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Modals {
+  static parseNumero(double numero) {
+    if (numero > 0) {
+      return "+$numero";
+    } else if (numero == 0) {
+      return "$numero";
+    }
+    return "$numero";
+  }
+
   static params(
     BuildContext context, {
     Map<dynamic, dynamic> items,
@@ -55,7 +64,7 @@ class Modals {
                             ),
                           ),
                           child: Text(
-                            '${items['items'][index]}',
+                            '${Modals.parseNumero(items['items'][index])}',
                             style: Theme.of(context).textTheme.subtitle1,
                             textAlign: TextAlign.center,
                           ),

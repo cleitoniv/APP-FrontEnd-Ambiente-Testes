@@ -21,6 +21,7 @@ class HomeWidgetBloc extends Disposable {
       _currentCreditTypeController.stream.map(
         (event) => event,
       );
+  get currentCreditType => _currentCreditTypeController.value;
 
   BehaviorSubject _currentRequestTypeController =
       BehaviorSubject.seeded('Pendentes');

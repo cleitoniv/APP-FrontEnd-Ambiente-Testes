@@ -51,6 +51,15 @@ class _FinishPaymentState extends State<FinishPayment> {
     return Helper.intToMoney(_total);
   }
 
+  int _totalToPayNumeric(List<Map<String, dynamic>> data) {
+    return data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07") {
+        return previousValue;
+      }
+      return previousValue + element['product'].value * element['quantity'];
+    });
+  }
+
   _onSubmitDialog() {
     _requestBloc.getPedidosList(0);
     _authBloc.fetchCurrentUser();
@@ -104,9 +113,15 @@ class _FinishPaymentState extends State<FinishPayment> {
       );
 
       _scaffoldKey.currentState.showSnackBar(_snackBar);
+      setState(() {
+        _lock = false;
+      });
       return;
     }
     if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
+      setState(() {
+        _lock = false;
+      });
       return;
     }
     final _cart = await _requestBloc.cartOut.first;
@@ -157,7 +172,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     });
 
     final _installmentsList = await _creditCardBloc.fetchInstallments(
-        _totalPay, _paymentMethod.isBoleto);
+        _totalToPayNumeric(_cart), _paymentMethod.isBoleto);
 
     if (_installmentsList.length > 0) {
       setState(() {

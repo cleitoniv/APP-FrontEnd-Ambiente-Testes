@@ -3,6 +3,7 @@ import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
@@ -282,11 +283,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         new Map<String, dynamic>.from(_first));
 
     if (errors.keys.length <= 0) {
+      int _quantity = int.parse(_lensDireitoController.text) +
+          int.parse(_lensEsquerdoController.text) +
+          int.parse(_lensController.text);
+
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),
-        'quantity': int.parse(_lensDireitoController.text) +
-            int.parse(_lensEsquerdoController.text) +
-            int.parse(_lensController.text),
+        'quantity': _first['current'] == "Mesmo grau em ambos"
+            ? int.parse(_lensController.text) * 2
+            : _quantity,
         'quantity_for_eye': {
           'esquerdo': int.parse(_lensEsquerdoController.text),
           'direito': int.parse(_lensDireitoController.text)
@@ -460,11 +465,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     );
   }
 
+  _pacienteInfo(BuildContext context) {
+    Dialogs.pacienteInfo(context, onTap: () {
+      Modular.to.pop();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
-    _numberController = TextEditingController();
+    _numberController = MaskedTextController(
+      mask: '000.000.000-00',
+    );
 
     _lensController = TextEditingController(
       text: '1',
@@ -488,7 +501,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'controller': _nameController,
       },
       {
-        'labelText': 'Número do Cliente',
+        'labelText': 'CPF(opcional)',
         'icon': MaterialCommunityIcons.numeric,
         'controller': _numberController,
         'keyboardType': TextInputType.number,
@@ -553,6 +566,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       appBar: AppBar(
         title: Text('Detalhes do Pedido'),
         centerTitle: false,
+        actions: [
+          Padding(
+              padding: EdgeInsets.only(right: 40, top: 5),
+              child: IconButton(
+                icon: Icon(Icons.shopping_cart,
+                    size: 40, color: Colors.green[300]),
+                onPressed: () {
+                  Modular.to.pushNamed("/cart/product");
+                },
+              ))
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -631,11 +655,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             thickness: 0.2,
             color: Color(0xffa1a1a1),
           ),
-          Text(
-            'Informações do Paciente',
-            style: Theme.of(context).textTheme.headline5,
-            textAlign: TextAlign.center,
-          ),
+          Container(
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Informações do Paciente',
+                    style: Theme.of(context).textTheme.headline5,
+                    textAlign: TextAlign.center,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.help_outline,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      _pacienteInfo(context);
+                    },
+                  ),
+                ],
+              )),
           SizedBox(height: 10),
           Text(
             'Categorizando seus pedidos por paciente, enviaremos um alerta com o período para reavaliação. Você também acumulara pontos para compras futuras!',
@@ -769,6 +809,40 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              !currentProduct.product.hasAcessorio
+                                  ? 'Quantidade de caixas'
+                                  : 'Quantidade',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            TextFieldWidget(
+                              width: 120,
+                              controller: _lensDireitoController,
+                              readOnly: false,
+                              keyboardType: TextInputType.number,
+                              inputFormattersActivated: true,
+                              prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.remove,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onRemoveLensDireito,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onAddLensDireito,
+                              ),
+                            ),
+                          ],
+                        ),
                         StreamBuilder(
                             stream: _productBloc.parametroListStream,
                             builder: (context, parametroSnapshot) {
@@ -810,40 +884,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 },
                               );
                             }),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              !currentProduct.product.hasAcessorio
-                                  ? 'Quantidade de caixas'
-                                  : 'Quantidade',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            TextFieldWidget(
-                              width: 120,
-                              controller: _lensDireitoController,
-                              readOnly: false,
-                              keyboardType: TextInputType.number,
-                              inputFormattersActivated: true,
-                              prefixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.remove,
-                                  color: Colors.black26,
-                                  size: 30,
-                                ),
-                                onPressed: _onRemoveLensDireito,
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.add,
-                                  color: Colors.black26,
-                                  size: 30,
-                                ),
-                                onPressed: _onAddLensDireito,
-                              ),
-                            ),
-                          ],
-                        )
                       ],
                     ),
                     SizedBox(height: 20),
@@ -855,6 +895,40 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              !currentProduct.product.hasAcessorio
+                                  ? 'Quantidade de caixas'
+                                  : 'Quantidade',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            TextFieldWidget(
+                              width: 120,
+                              controller: _lensEsquerdoController,
+                              readOnly: false,
+                              keyboardType: TextInputType.number,
+                              inputFormattersActivated: true,
+                              prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.remove,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onRemoveLensEsquerdo,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onAddLensEsquerdo,
+                              ),
+                            ),
+                          ],
+                        ),
                         StreamBuilder(
                             stream: _productBloc.parametroListStream,
                             builder: (context, parametroSnapshot) {
@@ -896,40 +970,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 },
                               );
                             }),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              !currentProduct.product.hasAcessorio
-                                  ? 'Quantidade de caixas'
-                                  : 'Quantidade',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            TextFieldWidget(
-                              width: 120,
-                              controller: _lensEsquerdoController,
-                              readOnly: false,
-                              keyboardType: TextInputType.number,
-                              inputFormattersActivated: true,
-                              prefixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.remove,
-                                  color: Colors.black26,
-                                  size: 30,
-                                ),
-                                onPressed: _onRemoveLensEsquerdo,
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.add,
-                                  color: Colors.black26,
-                                  size: 30,
-                                ),
-                                onPressed: _onAddLensEsquerdo,
-                              ),
-                            ),
-                          ],
-                        )
                       ],
                     ),
                   ],

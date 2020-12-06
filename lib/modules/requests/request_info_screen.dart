@@ -776,60 +776,62 @@ class RequestInfoScreen extends StatelessWidget {
                     thickness: 0.2,
                     color: Colors.black38,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                    child: Table(
-                      children: [
-                        TableRow(
-                          children: [
-                            Text(
-                              'Previsão de Entrega',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
+                  !this.reposicao
+                      ? Padding(
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Table(
+                            children: [
+                              TableRow(
+                                children: [
+                                  Text(
+                                    'Previsão de Entrega',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        ),
                                   ),
-                            ),
-                            Text(
-                              'Total + Frete',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
+                                  Text(
+                                    'Total + Frete',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                  )
+                                ],
+                              ),
+                              TableRow(
+                                children: [
+                                  Text(
+                                    pedidoInfo.data.pedido.previsaoEntrega ??
+                                        "Não informado.",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
                                   ),
-                            )
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Text(
-                              pedidoInfo.data.pedido.previsaoEntrega ??
-                                  "Não informado.",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
-                            ),
-                            Text(
-                              'R\$ ${Helper.intToMoney(pedidoInfo.data.pedido.valorTotal)}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
+                                  Text(
+                                    'R\$ ${Helper.intToMoney(pedidoInfo.data.pedido.valorTotal)}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container()
                 ],
               );
             }

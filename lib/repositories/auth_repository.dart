@@ -216,6 +216,7 @@ class AuthRepository {
       }
     } catch (error) {
       final error400 = error as DioError;
+      print(error400.response.data['data']);
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
         "Cadastro": [error400.response.data['data']]
       });

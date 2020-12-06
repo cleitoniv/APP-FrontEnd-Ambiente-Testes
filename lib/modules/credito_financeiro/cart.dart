@@ -18,14 +18,19 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
   _onBackToPurchase() {
-    _homeWidgetBloc.currentTabIndexIn.add(0);
-    Modular.to.pushNamed("/credito_financeiro/produto");
+    _homeWidgetBloc.currentTabIndexIn.add(1);
+    _homeWidgetBloc.currentRequestTypeIn.add("Produto");
+    Modular.to.pushNamed("/home/1");
   }
 
   _onSubmit() {
     Modular.to.pushNamed(
       '/cart/payment',
     );
+  }
+
+  _removeItem(Map<String, dynamic> data) {
+    _requestsBloc.removeFromCart(data);
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
@@ -137,11 +142,18 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                                       fontSize: 14,
                                     ),
                           ),
-                          Icon(
-                            Icons.keyboard_arrow_right,
-                            size: 30,
-                            color: Theme.of(context).accentColor,
-                          )
+                          Align(
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  size: 30,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  _removeItem(_data[index]);
+                                },
+                              ))
                         ],
                       ),
                     );

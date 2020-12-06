@@ -14,8 +14,9 @@ class Offers {
   bool isLoading;
   bool isEmpty;
   List<OfferModel> offers;
+  String type;
 
-  Offers({this.isEmpty, this.isLoading, this.offers});
+  Offers({this.isEmpty, this.isLoading, this.offers, this.type});
 }
 
 class ExtratoFinanceiro {
@@ -152,9 +153,34 @@ class CreditsRepository {
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
       }).toList();
-      return Offers(isLoading: false, isEmpty: false, offers: offers);
+      return Offers(
+          isLoading: false, isEmpty: false, offers: offers, type: "FINAN");
     } catch (error) {
-      return Offers(isLoading: false, isEmpty: true, offers: null);
+      return Offers(
+          isLoading: false, isEmpty: true, offers: null, type: "FINAN");
+    }
+  }
+
+  Future<Offers> getOffersCreditProduct(String group) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+
+    try {
+      Response response = await dio.get('/api/cliente/get_pacote',
+          queryParameters: {"grupo": group},
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${idToken.token}"
+          }));
+      print(response.data['data']);
+      final offers = response.data['data'].map<OfferModel>((e) {
+        return OfferModel.fromJson(e);
+      }).toList();
+      return Offers(
+          isLoading: false, isEmpty: false, offers: offers, type: "CREDIT");
+    } catch (error) {
+      return Offers(
+          isLoading: false, isEmpty: true, offers: null, type: "CREDIT");
     }
   }
 

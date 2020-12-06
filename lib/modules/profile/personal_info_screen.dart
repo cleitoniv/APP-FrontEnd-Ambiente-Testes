@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
@@ -32,14 +33,29 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     _profileWidgetBloc.visitHourIn.add(value);
   }
 
-  _onSaveNewSchedule() async {
+  _onSaveNewSchedule(BuildContext context) async {
     String _hour = _profileWidgetBloc.currentVisitHour;
 
     _hour = _hour.replaceAll("ã", 'a').toLowerCase();
 
     AtendPref result = await _profileWidgetBloc.updateVisitHour(_hour);
 
-    print(result);
+    if (result.isValid) {
+      Dialogs.success(context,
+          title: "Horario de visita",
+          buttonText: "Voltar",
+          subtitle: "Seu horario de visita foi alterado!", onTap: () {
+        Modular.to.pop();
+      });
+    } else {
+      Dialogs.error(context, onTap: () {
+        Modular.to.pop();
+      },
+          title: "Erro",
+          buttonText: "Entendi",
+          subtitle:
+              '''Houve um erro inesperado na alteração, tente denovo em alguns instantes ou entre em contato com a Central.''');
+    }
   }
 
   _initData() async {
@@ -206,7 +222,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 SizedBox(height: 30),
                 RaisedButton(
                   elevation: 0,
-                  onPressed: _onSaveNewSchedule,
+                  onPressed: () {
+                    _onSaveNewSchedule(context);
+                  },
                   child: Text(
                     'Salvar Novo Horário',
                     style: Theme.of(context).textTheme.button,

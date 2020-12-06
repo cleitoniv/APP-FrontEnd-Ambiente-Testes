@@ -74,3 +74,83 @@ class CardWidget extends StatelessWidget {
     );
   }
 }
+
+class CreditProductCardWidget extends StatelessWidget {
+  int value;
+  int parcels;
+  int caixas;
+  int precoUnitario;
+
+  CreditProductCardWidget(
+      {this.precoUnitario = 20000,
+      this.value = 20000,
+      this.parcels = 1,
+      this.caixas = 20});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.loose,
+      overflow: Overflow.visible,
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.all(20),
+          width: 180,
+          height: 170,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Color(0xffF1F1F1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text.rich(
+                TextSpan(
+                  text: "${this.caixas}",
+                  style: Theme.of(context).textTheme.headline5.copyWith(
+                      color: Theme.of(context).primaryColor, fontSize: 40),
+                  children: [
+                    TextSpan(
+                      text: ' Caixas',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          .copyWith(color: Colors.black45, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                "R\$ ${Helper.intToMoney(this.precoUnitario)} por Cx.",
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      color: Colors.black45,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+              ),
+              Spacer(),
+              Text(
+                "Por ${Helper.intToMoney(this.value)}",
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      color: Theme.of(context).accentColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 100,
+          right: -10,
+          child: Icon(
+            MaterialCommunityIcons.plus_circle,
+            color: Theme.of(context).primaryColor,
+            size: 50,
+          ),
+        )
+      ],
+    );
+  }
+}

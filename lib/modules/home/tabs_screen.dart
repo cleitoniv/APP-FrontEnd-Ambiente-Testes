@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/products/products_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_screen.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -39,6 +41,7 @@ class _TabsScreenState extends State<TabsScreen>
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   TabController _tabController;
+  CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> _sightProblems = [
     'Todos',
@@ -83,6 +86,12 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _onChangeCreditType(String type) {
+    if (type == "Produto") {
+      _creditsBloc.offersSink
+          .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
+    } else {
+      _creditsBloc.fetchOffers();
+    }
     _homeWidgetBloc.currentCreditTypeIn.add(type);
   }
 
@@ -464,7 +473,7 @@ class _TabsScreenState extends State<TabsScreen>
                 backgroundColor: snapshot2.data == 1
                     ? snapshot.data == 'Financeiro'
                         ? Theme.of(context).primaryColor
-                        : Color(0xffEFC75E)
+                        : Colors.white
                     : Theme.of(context).scaffoldBackgroundColor,
                 drawer: DrawerWidget(
                   onClose: _onCloseDrawer,

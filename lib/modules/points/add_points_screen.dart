@@ -77,6 +77,15 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
     ];
   }
 
+  _pacienteInfo(BuildContext context) {
+    Dialogs.pacienteInfo(context, onTap: () {
+      Modular.to.pop();
+    },
+        title: "Pontuação",
+        subtitle:
+            '''Inserindo os dados do seu paciente referente ao produto, voce recebe pontos que podem ser convertidos em créditos para compras futuras!''');
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -98,11 +107,27 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: <Widget>[
-            Text(
-              'Como adicionar Pontos',
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
-            ),
+            Container(
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Como adicionar pontos',
+                      style: Theme.of(context).textTheme.headline5,
+                      textAlign: TextAlign.center,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.help_outline,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        _pacienteInfo(context);
+                      },
+                    ),
+                  ],
+                )),
             SizedBox(height: 10),
             Text(
               'Digite o número de série do produto, nome, número de referência (opcional) e data de nascimento do paciente que receberá e acumule pontos!',

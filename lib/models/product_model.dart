@@ -130,6 +130,8 @@ class ProductModel {
     message = json['mensagem'];
   }
 
+  void setValue(int val) => this.value = val;
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;

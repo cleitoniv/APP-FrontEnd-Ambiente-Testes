@@ -59,16 +59,28 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
   }
 
   _onAddProduct() async {
+    if (_serialController.text.trim() == "") {
+      Dialogs.error(
+        context,
+        title: "Atenção",
+        subtitle: 'Voce precisa digitar uma serie valida.',
+        buttonText: 'Voltar',
+        onTap: () {
+          Modular.to.pop();
+        },
+      );
+      return;
+    }
     if (_devolutionWidgetBloc.currentProductList.list == null) {
-      _devolutionWidgetBloc.addProduct(_serialController.text);
+      _devolutionWidgetBloc.addProduct(_serialController.text.trim());
     } else {
       final prod = _devolutionWidgetBloc.currentProductList.list;
 
       final hasItem = prod.firstWhere(
-          (e) => e.numSerie == _serialController.text,
+          (e) => e.numSerie == _serialController.text.trim(),
           orElse: () => null);
       if (hasItem?.numSerie == null) {
-        _devolutionWidgetBloc.addProduct(_serialController.text);
+        _devolutionWidgetBloc.addProduct(_serialController.text.trim());
         Timer(Duration(seconds: 2), () {
           if (_devolutionWidgetBloc.productError["message"] != null) {
             Dialogs.error(this.context,
@@ -86,12 +98,67 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
   }
 
   _onSubmit() async {
-    _devolutionWidgetBloc.confirmDevolution();
+    String type = _devolutionWidgetBloc.devolutionTypeValue;
+
+    ProductList products = _devolutionWidgetBloc.productsPreDevolucao;
+
+    if (type == 'Crédito') {
+      Devolution devol = await _devolutionWidgetBloc.confirmCreditDevolution();
+
+      if (devol.status) {
+        _devolutionWidgetBloc.resetPreDevolucao();
+        _serialController.text = "";
+        Dialogs.success(
+          context,
+          onTap: () {
+            Modular.to.pop();
+          },
+        );
+        return;
+      } else {
+        Dialogs.error(
+          context,
+          title: "Atenção",
+          subtitle:
+              'Erro ao Processar Devolução! Verifique os produtos selecionados.',
+          buttonText: 'Voltar',
+          onTap: () {
+            Modular.to.pop();
+          },
+        );
+        return;
+      }
+    }
+    return _devolutionWidgetBloc.confirmDevolution();
   }
 
   _qrCodeRead() async {
     ScanResult qrCode = await BarcodeScanner.scan();
-    _devolutionWidgetBloc.addProduct(qrCode.rawContent);
+
+    if (_devolutionWidgetBloc.currentProductList.list == null) {
+      _devolutionWidgetBloc.addProduct(qrCode.rawContent.trim());
+    } else {
+      final prod = _devolutionWidgetBloc.currentProductList.list;
+
+      final hasItem = prod.firstWhere(
+          (e) => e.numSerie == qrCode.rawContent.trim(),
+          orElse: () => null);
+      if (hasItem?.numSerie == null) {
+        _devolutionWidgetBloc.addProduct(qrCode.rawContent.trim());
+        Timer(Duration(seconds: 2), () {
+          if (_devolutionWidgetBloc.productError["message"] != null) {
+            Dialogs.error(this.context,
+                title: "Ops...",
+                subtitle: _devolutionWidgetBloc.productError["message"],
+                buttonText: "OK", onTap: () {
+              Navigator.pop(this.context);
+            });
+          }
+        });
+      } else {
+        _showDialog('Atenção', 'Produto já está na lista.');
+      }
+    }
   }
 
   _removeItem(String numSerie) {
@@ -207,6 +274,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           ),
           SizedBox(height: 20),
           TextFieldWidget(
+            textCapitalization: TextCapitalization.words,
             controller: _serialController,
             labelText: 'Número de Série do Produto',
             prefixIcon: Padding(

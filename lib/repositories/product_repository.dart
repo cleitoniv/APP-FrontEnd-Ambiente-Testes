@@ -230,7 +230,7 @@ class ProductRepository {
         productList.list.map<Map<String, dynamic>>((e) {
       return e.toJson();
     }).toList();
-
+    print(products);
     try {
       Response response = await dio.post('/api/cliente/devolution_continue',
           data: jsonEncode({"products": products, "tipo": tipo}),
@@ -238,11 +238,16 @@ class ProductRepository {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
           }));
-      DevolutionModel devol = DevolutionModel.fromJson(response.data["data"]);
+      DevolutionModel devol = null;
+      if (tipo != "C") {
+        devol = DevolutionModel.fromJson(response.data["data"]);
+        return Devolution(
+            isLoading: false,
+            devolution: devol,
+            status: response.data["success"]);
+      }
       return Devolution(
-          isLoading: false,
-          devolution: devol,
-          status: response.data["success"]);
+          isLoading: false, devolution: null, status: response.data["success"]);
     } catch (error) {
       return Devolution(isLoading: false, status: false);
     }

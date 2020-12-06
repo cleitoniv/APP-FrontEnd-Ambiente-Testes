@@ -76,6 +76,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       mask: '0000 0000 0000 0000',
     );
     _ccvController = TextEditingController();
+    _ccvController.addListener(() {});
     _calcPaymentInstallment();
     _getPaymentMethod();
   }

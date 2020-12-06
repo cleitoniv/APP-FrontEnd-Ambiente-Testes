@@ -15,6 +15,11 @@ class CreditsBloc extends Disposable {
   Sink get currentProductSink => _currentProduct.sink;
   Stream get currentProductStream => _currentProduct.stream;
 
+  BehaviorSubject _creditProductSelected = BehaviorSubject.seeded(
+      {"selected": false, "group": null, "packages": []});
+  Sink get creditProductSelectedSink => _creditProductSelected.sink;
+  Stream get creditProductSelectedStream => _creditProductSelected.stream;
+
   void setCurrentProduct(ProductModel product) {
     currentProductSink.add(product);
   }
@@ -26,8 +31,14 @@ class CreditsBloc extends Disposable {
   }
 
   void fetchOffers() async {
-    offersSink.add(Offers(isLoading: true));
+    offersSink.add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
     Offers offers = await repository.getOffers();
+    offersSink.add(offers);
+  }
+
+  void fetchCreditOffers(String group) async {
+    offersSink.add(Offers(isLoading: true, isEmpty: true, type: "CREDIT"));
+    Offers offers = await repository.getOffersCreditProduct(group);
     offersSink.add(offers);
   }
 
@@ -55,6 +66,7 @@ class CreditsBloc extends Disposable {
 
   @override
   void dispose() {
+    _creditProductSelected.close();
     _currentProduct.close();
     _offersController.close();
     _indexFinancialController.close();

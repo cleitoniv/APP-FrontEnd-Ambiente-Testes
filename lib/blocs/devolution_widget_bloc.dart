@@ -11,6 +11,8 @@ class DevolutionWidgetBloc extends Disposable {
 
   String tipoTroca = "C";
 
+  get productsPreDevolucaoList => this.productsPreDevolucao;
+
   void setTipoTroca(String tipo) {
     if (tipo == "Crédito") {
       this.tipoTroca = "C";
@@ -49,14 +51,10 @@ class DevolutionWidgetBloc extends Disposable {
       productErrorAddSink.add({"message": null});
       this.productsPreDevolucao.list.add(product.product);
       //
-    } else if (product.isEmpty) {
-      productErrorAddSink.add({"message": 'Produto Inexistente!'});
-      //
     } else if (product.product != null &&
         product.product.valid != null &&
         !product.product.valid) {
       productErrorSink.add({"message": product.product.message});
-      //
     }
 
     this.productsPreDevolucao.isEmpty =
@@ -71,6 +69,11 @@ class DevolutionWidgetBloc extends Disposable {
       currentDevolutionSink.add(devol);
       Modular.to.pushNamed("/devolution/confirm");
     }
+  }
+
+  Future<Devolution> confirmCreditDevolution() async {
+    return repository.confirmDevolution(
+        this.productsPreDevolucao, this.tipoTroca);
   }
 
   Future<Devolution> nextStepDevolution(Map<String, dynamic> params) async {
@@ -100,6 +103,7 @@ class DevolutionWidgetBloc extends Disposable {
   Stream<String> get devolutionTypeOut => _devolutionTypeController.stream.map(
         (event) => event,
       );
+  get devolutionTypeValue => _devolutionTypeController.value;
 
   BehaviorSubject _parametroList = BehaviorSubject();
   Sink get parametroListSink => _parametroList.sink;
@@ -110,13 +114,7 @@ class DevolutionWidgetBloc extends Disposable {
     parametroListSink.add(parametros);
   }
 
-  BehaviorSubject _productParamsController = BehaviorSubject.seeded({
-    'esferico': null,
-    'cilindrico': null,
-    'eixo': null,
-    'color': null,
-    'adicao': null,
-  });
+  BehaviorSubject _productParamsController = BehaviorSubject();
   Sink get productParamsIn => _productParamsController.sink;
   Stream<Map<String, dynamic>> get productParamsOut =>
       _productParamsController.stream.map(

@@ -173,15 +173,18 @@ class _LoginScreenState extends State<LoginScreen> {
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                heightFactor: 4,
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  height: 50,
-                  fit: BoxFit.contain,
-                ),
-              ),
+              Padding(
+                  padding: EdgeInsets.only(top: 90, bottom: 90),
+                  child: Container(
+                      height: 90,
+                      child: Align(
+                        alignment: Alignment.center,
+                        heightFactor: 4,
+                        child: Image.asset(
+                          'assets/images/logo_alinhada_2.png',
+                          fit: BoxFit.scaleDown,
+                        ),
+                      ))),
               TextFieldWidget(
                 labelText: 'Email',
                 controller: _emailController,
