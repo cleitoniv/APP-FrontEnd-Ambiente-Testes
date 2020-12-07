@@ -268,6 +268,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onAddToCart(Map data) async {
+    if (isValidDate(_birthdayController.text)) {
+      return;
+    }
     if (int.parse(_lensDireitoController.text) +
             int.parse(_lensEsquerdoController.text) +
             int.parse(_lensController.text) ==
@@ -323,6 +326,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onPurchase() async {
+    if (isValidDate(_birthdayController.text)) {
+      return;
+    }
     await _onAddToCart({'product': currentProduct.product});
     Modular.to.pushNamed(
       '/products/${widget.id}/requestDetails',
@@ -469,6 +475,60 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Dialogs.pacienteInfo(context, onTap: () {
       Modular.to.pop();
     });
+  }
+
+  bool isValidDate(String input) {
+    SnackBar _snackBar;
+    DateTime now = new DateTime.now();
+    var splitDate = input.split("/");
+
+    if (input == '') {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return true;
+    }
+    if (int.parse(splitDate[2]) > (now.year - 18)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (int.parse(splitDate[2]) <= 1900) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+
+    var splitedDate = "${splitDate[2]}${splitDate[1]}${splitDate[0]}";
+
+    final date = DateTime.parse(splitedDate);
+    final originalFormatString = toOriginalFormatString(date);
+    if (!(splitedDate == originalFormatString)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (_snackBar != null) {
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return true;
+    }
+    return false;
+  }
+
+  String toOriginalFormatString(DateTime dateTime) {
+    final y = dateTime.year.toString().padLeft(4, '0');
+    final m = dateTime.month.toString().padLeft(2, '0');
+    final d = dateTime.day.toString().padLeft(2, '0');
+    return "$y$m$d";
   }
 
   @override
