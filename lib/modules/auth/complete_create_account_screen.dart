@@ -56,7 +56,55 @@ class _CompleteCreateAccountScreenState
     return str.replaceAll('.', '').replaceAll('-', '').replaceAll('/', '');
   }
 
+  bool isValidDate(String input) {
+    SnackBar _snackBar;
+    DateTime now = new DateTime.now();
+    var splitDate = input.split("/");
+    if (int.parse(splitDate[2]) > (now.year - 18)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (int.parse(splitDate[2]) <= 1900) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+
+    var splitedDate = "${splitDate[2]}${splitDate[1]}${splitDate[0]}";
+
+    final date = DateTime.parse(splitedDate);
+    final originalFormatString = toOriginalFormatString(date);
+    if (!(splitedDate == originalFormatString)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (_snackBar != null) {
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return true;
+    }
+    return false;
+  }
+
+  String toOriginalFormatString(DateTime dateTime) {
+    final y = dateTime.year.toString().padLeft(4, '0');
+    final m = dateTime.month.toString().padLeft(2, '0');
+    final d = dateTime.day.toString().padLeft(2, '0');
+    return "$y$m$d";
+  }
+
   _handleSubmit() async {
+    if (isValidDate(_dataNascimentoController.text)) {
+      return;
+    }
+
     if (_cnpjController.text.length <= 13 &&
         !_verifyCpfCnpj(_cpfController.text, "CPF")) {
       return;
