@@ -112,12 +112,9 @@ class _CompleteCreateAccountScreenState
         !_verifyCpfCnpj(_cnpjController.text, "CNPJ")) {
       return;
     }
-    print("form validate");
-    print(_formKey.currentState.validate());
     if (_formKey.currentState.validate()) {
       Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
       final cnpjCpf = cpfCnpjLabel(currentData["ramo"]);
-      print("ok");
 
       Map<String, dynamic> completeFormdata = {
         'nome': sanitize(_nameController.text),

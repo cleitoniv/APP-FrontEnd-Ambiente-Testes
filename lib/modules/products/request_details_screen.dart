@@ -318,7 +318,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _snack,
       );
     }
-    // print(_data);
   }
 
   _onBackToPurchase() {
@@ -329,6 +328,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     if (isValidDate(_birthdayController.text)) {
       return;
     }
+
     await _onAddToCart({'product': currentProduct.product});
     Modular.to.pushNamed(
       '/products/${widget.id}/requestDetails',

@@ -172,7 +172,6 @@ class CreditsRepository {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
           }));
-      print(response.data['data']);
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
       }).toList();

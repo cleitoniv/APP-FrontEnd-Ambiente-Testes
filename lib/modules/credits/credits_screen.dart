@@ -116,8 +116,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
   _onNavigate() async {
     String _currentType = await _homeBloc.currentCreditType;
-    print("888888888888888");
-    print(_currentType);
     if (_currentType == "Produto") {
       _creditsBloc.offersSink
           .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
@@ -447,9 +445,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                 }
                                 List<OfferModel> _financialCredits =
                                     offerSnapshot.data.offers;
-                                print("------------------------------");
-                                print(offerSnapshot.data.isEmpty);
-                                print(offerSnapshot.data.type);
+
                                 return Column(
                                   children: [
                                     Text(
