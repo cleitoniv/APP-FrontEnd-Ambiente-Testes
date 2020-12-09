@@ -35,6 +35,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map> _productParams;
   List<Map> _fieldData;
+  bool isInvalid = false;
   TextEditingController _nameController;
   TextEditingController _lensDireitoController;
   TextEditingController _lensEsquerdoController;
@@ -313,10 +314,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       _requestsBloc.addProductToCart(_data);
       Modular.to.pushNamed("/cart/product");
     } else {
+      setState((){
+        this.isInvalid = true;
+      });
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
       _scaffoldKey.currentState.showSnackBar(
         _snack,
       );
+
     }
   }
 
@@ -330,6 +335,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
 
     await _onAddToCart({'product': currentProduct.product});
+    if(this.isInvalid ){
+       setState((){
+        this.isInvalid = false;
+      });
+      return;
+    }
     Modular.to.pushNamed(
       '/products/${widget.id}/requestDetails',
       arguments: widget.type,
@@ -483,6 +494,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     var splitDate = input.split("/");
 
     if (input == '') {
+      return false;
       _snackBar = SnackBar(
         content: Text(
           'Data de nascimento inválida.',
