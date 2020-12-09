@@ -59,12 +59,40 @@ class DeleteUsuarioCliente {
   DeleteUsuarioCliente({this.isValid, this.data, this.errorMessage});
 }
 
+class Periodos {
+  bool isLoading;
+  bool isValid;
+  Map<String, dynamic> errorData;
+  List<dynamic> list;
+
+  Periodos({this.isLoading, this.isValid, this.list, this.errorData});
+}
+
 class UserRepository {
   Dio dio;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   UserRepository(this.dio);
+
+  Future<Periodos> periodosAtendimento() async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult token = await user.getIdToken();
+
+    try {
+      Response resp = await dio.get("/api/cliente/period",
+          options: Options(headers: {
+            "Authorization": "Bearer ${token.token}",
+            "Content-Type": "application/json"
+          }));
+      return Periodos(isLoading: false, isValid: true, list: resp.data['data']);
+    } catch (error) {
+      print(error);
+      final error400 = error as DioError;
+      final message = error400.response.data["data"]['errors'];
+      return Periodos(isLoading: false, isValid: true, errorData: message);
+    }
+  }
 
   Future<UpdateUsuarioCliente> updateUsuarioCliente(
       int id, Map<String, dynamic> data) async {

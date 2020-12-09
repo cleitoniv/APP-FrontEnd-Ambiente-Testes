@@ -61,6 +61,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   _initData() async {
     AuthEvent _user = _authBloc.getAuthCurrentUser;
 
+    _userBloc.getPeriodosAtendimento();
+
     _personalInfo = [
       {
         'labelText': 'Nome completo',
@@ -89,7 +91,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       {
         'labelText': 'Celular',
         'icon': MaterialCommunityIcons.cellphone,
-        'value': _user.data.phone,
+        'value': "${_user.data.ddd}${_user.data.phone}",
         'controller': _phoneController,
       },
     ];
@@ -107,7 +109,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     );
     _emailController = TextEditingController();
     _phoneController = MaskedTextController(
-      mask: '00 00000-0000',
+      mask: '(00) 00000-0000',
     );
 
     _initData();
@@ -198,24 +200,51 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 ),
                 SizedBox(height: 30),
                 Text(
-                  'Selecione o melhor horário de visita',
+                  'Selecione o melhor período para atende-lo',
                   style: Theme.of(context).textTheme.headline5,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10),
                 Text(
-                  'Caso tenha um representante Central Oftálmica informe abaixo o melhor horário para o mesmo visita-lo',
+                  'Informe o período mais adequado para que possamos atende-lo.',
                   style: Theme.of(context).textTheme.subtitle1,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
-                StreamBuilder<String>(
-                  stream: _profileWidgetBloc.visitHourOut,
+                // StreamBuilder<String>(
+                //   stream: _profileWidgetBloc.visitHourOut,
+                //   builder: (context, snapshot) {
+                //     return DropdownWidget(
+                //       items: ['Manhã', 'Tarde', 'Manhã e Tarde'],
+                //       currentValue: snapshot.hasData ? snapshot.data : null,
+                //       onChanged: _onChangeVisitHour,
+                //     );
+                //   },
+                // ),
+                StreamBuilder(
+                  stream: _userBloc.periodoAtendimentoStream,
                   builder: (context, snapshot) {
-                    return DropdownWidget(
-                      items: ['Manhã', 'Tarde'],
-                      currentValue: snapshot.hasData ? snapshot.data : null,
-                      onChanged: _onChangeVisitHour,
+                    if (!snapshot.hasData || snapshot.data.isLoading) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasData && !snapshot.data.isValid) {
+                      return Center(child: Text("Falha no carregamento."));
+                    }
+                    print(snapshot.data);
+
+                    return StreamBuilder(
+                      stream: _profileWidgetBloc.visitHourOut,
+                      builder: (context, visitSnapshot) {
+                        if (!snapshot.hasData) {
+                          return Container();
+                        }
+                        return DropdownWidget(
+                          items: snapshot.data.list,
+                          currentValue:
+                              snapshot.hasData && snapshot.data.isValid
+                                  ? visitSnapshot.data
+                                  : null,
+                          onChanged: _onChangeVisitHour,
+                        );
+                      },
                     );
                   },
                 ),
@@ -226,7 +255,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     _onSaveNewSchedule(context);
                   },
                   child: Text(
-                    'Salvar Novo Horário',
+                    'Salvar Novo Período',
                     style: Theme.of(context).textTheme.button,
                   ),
                 ),

@@ -32,6 +32,10 @@ class AuthBloc extends Disposable {
     return repository.getDados(cnpj);
   }
 
+  Future<ResetPassword> checkUserEmail(String email) async {
+    return repository.checkUserEmail(email);
+  }
+
   void getEnderecoCep(String cep) async {
     Endereco endereco = await repository.getEnderecoByCep(cep);
     enderecoSink.add(endereco);

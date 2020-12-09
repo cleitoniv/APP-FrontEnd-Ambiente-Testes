@@ -64,6 +64,14 @@ class Endereco {
   Endereco({this.isEmpty, this.isLoading, this.endereco});
 }
 
+class ResetPassword {
+  bool isLoading;
+  bool canReset;
+  Map<String, dynamic> errorData;
+
+  ResetPassword({this.isLoading, this.canReset, this.errorData});
+}
+
 class AuthRepository {
   Dio dio;
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -216,10 +224,26 @@ class AuthRepository {
       }
     } catch (error) {
       final error400 = error as DioError;
-      print(error400.response.data['data']);
+      print(error400.response.data);
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
         "Cadastro": [error400.response.data['data']]
       });
+    }
+  }
+
+  Future<ResetPassword> checkUserEmail(String email) async {
+    try {
+      Response resp = await dio.post("/api/verify_email",
+          data: jsonEncode({"email": email}));
+      print(resp.data);
+      return ResetPassword(canReset: resp.data['success'], isLoading: false);
+    } catch (error) {
+      final error400 = error as DioError;
+      print(error400.response);
+      return ResetPassword(
+          canReset: false,
+          isLoading: true,
+          errorData: error400.response.data['data']['errors']);
     }
   }
 
