@@ -194,6 +194,24 @@ class AuthRepository {
     }
   }
 
+Future<int> currentUserStatus() async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try { 
+      Response resp = await dio.get("/api/cliente/current_user",
+          options: Options(headers: {
+            "Authorization": "Bearer ${idToken.token}",
+            "Content-Type": "application/json"
+          }));
+           
+          return resp.data["status"]; 
+      
+    } catch (error) { 
+      print(error);
+      return 0;
+    }
+  }
+
   Future<AuthEvent> currentUser(LoginEvent login) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
