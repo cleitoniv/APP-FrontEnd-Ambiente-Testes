@@ -20,9 +20,23 @@ class _SecurityScreenState extends State<SecurityScreen> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   TextEditingController _passwordController;
   List<Map> _data;
+  bool _passwordObscure = true;
+  bool _passwordConfirmObscure = true;
 
   _onShowPassword(bool value) {
     _profileWidgetBloc.securityShowPasswordIn.add(value);
+  }
+
+  _onShowPasswordType(String type) {
+    if (type == 'senha') {
+      setState(() {
+        this._passwordObscure = !this._passwordObscure;
+      });
+    } else {
+      setState(() {
+        this._passwordConfirmObscure = !this._passwordConfirmObscure;
+      });
+    }
   }
 
   _onSubmit() async {
@@ -62,6 +76,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
     _data = [
       {
         'labelText': 'Digite uma senha',
+        'type': 'senha',
         'controller': _passwordController,
         'validator': (String text) => Helper.lengthValidator(
               text,
@@ -71,6 +86,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
       },
       {
         'labelText': 'Confirme a senha',
+        'type': 'confirm',
         'validator': (String text) => Helper.equalValidator(
               text,
               value: _passwordController.text,
@@ -112,39 +128,62 @@ class _SecurityScreenState extends State<SecurityScreen> {
           Form(
             key: _formKey,
             child: ListView.separated(
-              shrinkWrap: true,
-              primary: false,
-              itemCount: _data.length,
-              separatorBuilder: (context, index) => SizedBox(
-                height: 10,
-              ),
-              itemBuilder: (context, index) {
-                return StreamBuilder<bool>(
-                  stream: _profileWidgetBloc.securityShowPasswordOut,
-                  builder: (context, snapshot) {
-                    return TextFieldWidget(
-                      obscureText: snapshot.data,
-                      labelText: _data[index]['labelText'],
-                      suffixIcon: IconButton(
-                        onPressed: () => _onShowPassword(!snapshot.data),
-                        icon: Icon(
-                          snapshot.data
-                              ? MaterialCommunityIcons.eye
-                              : MaterialCommunityIcons.eye_off,
-                          color: Color(0xffa1a1a1),
-                        ),
-                      ),
-                      prefixIcon: Icon(
-                        MaterialCommunityIcons.lock,
-                        color: Color(0xffA1A1A1),
-                      ),
-                      controller: _data[index]['controller'],
-                      validator: _data[index]['validator'],
-                    );
-                  },
-                );
-              },
-            ),
+                shrinkWrap: true,
+                primary: false,
+                itemCount: _data.length,
+                separatorBuilder: (context, index) => SizedBox(
+                      height: 10,
+                    ),
+                itemBuilder: (context, index) {
+                  return StreamBuilder<bool>(
+                    stream: _profileWidgetBloc.securityShowPasswordOut,
+                    builder: (context, snapshot) {
+                      if (_data[index]['type'] == 'senha') {
+                        return TextFieldWidget(
+                          obscureText: _passwordObscure,
+                          labelText: _data[index]['labelText'],
+                          suffixIcon: IconButton(
+                            onPressed: () =>
+                                _onShowPasswordType(_data[index]['type']),
+                            icon: Icon(
+                              snapshot.data
+                                  ? MaterialCommunityIcons.eye
+                                  : MaterialCommunityIcons.eye_off,
+                              color: Color(0xffa1a1a1),
+                            ),
+                          ),
+                          prefixIcon: Icon(
+                            MaterialCommunityIcons.lock,
+                            color: Color(0xffA1A1A1),
+                          ),
+                          controller: _data[index]['controller'],
+                          validator: _data[index]['validator'],
+                        );
+                      } else {
+                        return TextFieldWidget(
+                          obscureText: _passwordConfirmObscure,
+                          labelText: _data[index]['labelText'],
+                          suffixIcon: IconButton(
+                            onPressed: () =>
+                                _onShowPasswordType(_data[index]['type']),
+                            icon: Icon(
+                              snapshot.data
+                                  ? MaterialCommunityIcons.eye
+                                  : MaterialCommunityIcons.eye_off,
+                              color: Color(0xffa1a1a1),
+                            ),
+                          ),
+                          prefixIcon: Icon(
+                            MaterialCommunityIcons.lock,
+                            color: Color(0xffA1A1A1),
+                          ),
+                          controller: _data[index]['controller'],
+                          validator: _data[index]['validator'],
+                        );
+                      }
+                    },
+                  );
+                }),
           ),
           SizedBox(height: 30),
           RaisedButton(

@@ -28,6 +28,12 @@ class UserBloc extends Disposable {
     return repository.addUsuarioCliente(data);
   }
 
+  void getPeriodosAtendimento() async {
+    periodoAtendimentoSink.add(Periodos(isLoading: true, isValid: true));
+    Periodos _per = await repository.periodosAtendimento();
+    periodoAtendimentoSink.add(_per);
+  }
+
   Future<UpdateUsuarioCliente> updateUsuario(
       int id, Map<String, dynamic> data) async {
     return repository.updateUsuarioCliente(id, data);
@@ -36,6 +42,10 @@ class UserBloc extends Disposable {
   Future<DeleteUsuarioCliente> deleteUsuarioCliente(int id) async {
     return repository.deleteUsuarioCliente(id);
   }
+
+  BehaviorSubject _periodoAtendimentoController = BehaviorSubject();
+  Sink get periodoAtendimentoSink => _periodoAtendimentoController.sink;
+  Stream get periodoAtendimentoStream => _periodoAtendimentoController.stream;
 
   BehaviorSubject _usuariosClienteController = BehaviorSubject();
   Sink get usuariosClienteSink => _usuariosClienteController.sink;
