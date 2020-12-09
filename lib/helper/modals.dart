@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
 class Modals {
-  static parseNumero(double numero) {
-    if (numero > 0) {
-      return "+$numero";
-    } else if (numero == 0) {
+  static parseNumero(dynamic numero) {
+    if (numero is double) {
+      if (numero > 0) {
+        return "+$numero";
+      } else if (numero == 0) {
+        return "$numero";
+      }
       return "$numero";
+    } else if (numero is String) {
+      return numero;
     }
-    return "$numero";
   }
 
   static params(

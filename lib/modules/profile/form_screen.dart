@@ -140,6 +140,7 @@ class _FormScreenState extends State<FormScreen> {
     _data = [
       {
         'labelText': 'Nome completo',
+        'capitalization': TextCapitalization.words,
         'controller': _nameController,
         'icon': Icons.person,
         'enabled': true,
@@ -153,7 +154,8 @@ class _FormScreenState extends State<FormScreen> {
       {
         'labelText': 'Cargo (opcional)',
         'controller': _officeController,
-        'icon': MaterialCommunityIcons.cake_layered,
+        'capitalization': TextCapitalization.words,
+        'icon': Icons.assignment,
         'enabled': true,
       }
     ];
@@ -194,6 +196,7 @@ class _FormScreenState extends State<FormScreen> {
             ),
             itemBuilder: (context, index) {
               return TextFieldWidget(
+                textCapitalization: _data[index]['capitalization'],
                 enabled: _data[index]['enabled'],
                 labelText: _data[index]['labelText'],
                 prefixIcon: Icon(

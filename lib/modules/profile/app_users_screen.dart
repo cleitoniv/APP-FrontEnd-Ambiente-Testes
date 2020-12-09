@@ -46,7 +46,7 @@ class _AppUsersScreenState extends State<AppUsersScreen> {
           ),
           SizedBox(height: 10),
           Text(
-            'Crie e gerencie acessos diretos para seus colaboradores fazerem pedidos através da sua conta:',
+            'Inclua, exclua e gerencie acesso para seus colaboradores fazerem pedidos através da sua conta.',
             style: Theme.of(context).textTheme.subtitle1,
             textAlign: TextAlign.center,
           ),

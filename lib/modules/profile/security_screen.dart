@@ -120,7 +120,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
           ),
           SizedBox(height: 10),
           Text(
-            'Crie e gerencie acessos diretos para seus colaboradores fazerem pedidos através da sua conta:',
+            'Para alterar sua senha, digite a nova senha e confirme.',
             style: Theme.of(context).textTheme.subtitle1,
             textAlign: TextAlign.center,
           ),

@@ -126,6 +126,7 @@ class _CartScreenState extends State<CartScreen> {
                 }
 
                 List<Map<String, dynamic>> _data = snapshot.data;
+                print(_data);
                 return ListView.separated(
                   primary: false,
                   addSemanticIndexes: true,

@@ -265,6 +265,7 @@ class AuthRepository {
 
       return '';
     } catch (error) {
+      print(error);
       return error.code;
     }
   }
