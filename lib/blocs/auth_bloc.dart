@@ -66,6 +66,10 @@ class AuthBloc extends Disposable {
     return repository.currentUser(login);
   }
 
+    Future<int> getCurrentStatus( ) async {
+    return repository.currentUserStatus();
+  }
+
   AuthEvent get getAuthCurrentUser => this._currentUser;
 
   void setLoginEvent(LoginEvent login) => this.login = login;

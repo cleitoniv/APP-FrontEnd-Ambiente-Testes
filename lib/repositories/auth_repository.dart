@@ -186,6 +186,24 @@ class AuthRepository {
     }
   }
 
+Future<int> currentUserStatus() async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try { 
+      Response resp = await dio.get("/api/cliente/current_user",
+          options: Options(headers: {
+            "Authorization": "Bearer ${idToken.token}",
+            "Content-Type": "application/json"
+          }));
+           
+          return resp.data["status"]; 
+      
+    } catch (error) { 
+      print(error);
+      return 0;
+    }
+  }
+
   Future<AuthEvent> currentUser(LoginEvent login) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
@@ -215,8 +233,7 @@ class AuthRepository {
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
-      final error400 = error as DioError;
-      print(error400.response.data['data']);
+      final error400 = error as DioError; 
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
         "Cadastro": [error400.response.data['data']]
       });

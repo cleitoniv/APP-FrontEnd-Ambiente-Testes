@@ -421,6 +421,18 @@ class _TabsScreenState extends State<TabsScreen>
     });
   }
 
+  _getCurrentStatus()async {
+    var _cliente = await _authBloc.getCurrentStatus();
+    if(_cliente==0){
+           await _authBloc.signOutOut.first;
+
+    Modular.to.pushNamedAndRemoveUntil(
+      '/auth/login',
+      (route) => route.isFirst,
+    );
+
+     } 
+  }
   @override
   void initState() {
     super.initState();
@@ -507,6 +519,8 @@ class _TabsScreenState extends State<TabsScreen>
                               child: CircularProgressIndicator(),
                             );
                           } else {
+                            print( authEventSnapshot.data.data.nome_usuario);
+                            _getCurrentStatus(); 
                             return SafeArea(
                                 child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -526,7 +540,7 @@ class _TabsScreenState extends State<TabsScreen>
                                         ),
                                       ),
                                       Text(
-                                        authEventSnapshot.data.data.nome,
+                                        authEventSnapshot.data.data.nome_usuario!=null?authEventSnapshot.data.data.nome_usuario:authEventSnapshot.data.data.nome,
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline4,
