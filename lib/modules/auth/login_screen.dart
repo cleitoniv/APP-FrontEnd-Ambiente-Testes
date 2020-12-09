@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController;
   TextEditingController _passwordController;
   FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _enabledPassword = true;
 
   bool _remember = false;
   String _emailStored = null;
@@ -109,11 +110,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _onShowPassword() async {
-    bool _first = await _authWidgetBloc.loginShowPasswordOut.first;
-
-    _authWidgetBloc.loginShowPasswordIn.add(
-      !_first,
-    );
+    setState(() {
+      this._enabledPassword = !this._enabledPassword;
+    });
   }
 
   Future<bool> _rememberMe() async {
@@ -195,29 +194,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 validator: Helper.emailValidator,
               ),
               SizedBox(height: 20),
-              StreamBuilder<bool>(
-                  stream: _authWidgetBloc.loginShowPasswordOut,
-                  builder: (context, snapshot) {
-                    return TextFieldWidget(
-                      labelText: 'Senha',
-                      controller: _passwordController,
-                      obscureText: snapshot.hasData,
-                      suffixIcon: IconButton(
-                        onPressed: _onShowPassword,
-                        icon: Icon(
-                          snapshot.hasData
-                              ? Icons.remove_red_eye
-                              : MaterialCommunityIcons.eye_off,
-                          color: Color(0xffA1A1A1),
-                        ),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.lock,
-                        color: Color(0xffA1A1A1),
-                      ),
-                      validator: Helper.lengthValidator,
-                    );
-                  }),
+              TextFieldWidget(
+                labelText: 'Senha',
+                controller: _passwordController,
+                obscureText: this._enabledPassword,
+                suffixIcon: IconButton(
+                  onPressed: _onShowPassword,
+                  icon: Icon(
+                    this._enabledPassword
+                        ? Icons.remove_red_eye
+                        : MaterialCommunityIcons.eye_off,
+                    color: Color(0xffA1A1A1),
+                  ),
+                ),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Color(0xffA1A1A1),
+                ),
+                validator: Helper.lengthValidator,
+              ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

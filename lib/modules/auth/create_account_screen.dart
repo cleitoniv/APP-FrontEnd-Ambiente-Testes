@@ -31,15 +31,39 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   TextEditingController _emailController;
   MaskedTextController _phoneController;
   TextEditingController _passwordController;
+  TextEditingController _passwordConfirmController;
+  bool _passwordObscure = true;
+  bool _passwordConfirmObscure = true;
+  String _currentVerficationId;
+  bool _isLoading = false;
   List<Map> _fieldData;
   bool _lock = true;
 
-  _handleObscureText() async {
-    bool _first = await _authWidgetBloc.createAccountShowPasswordOut.first;
+  _startLoad() {
+    setState(() {
+      this._isLoading = true;
+    });
+  }
 
-    _authWidgetBloc.createAccountShowPasswordIn.add(
-      !_first,
-    );
+  _endLoad() {
+    setState(() {
+      this._isLoading = false;
+    });
+  }
+
+  _handleObscureText() async {
+    print("ok");
+    setState(() {
+      this._passwordObscure = !this._passwordObscure;
+    });
+  }
+
+  _handleConfirmObscureText() async {
+    print("ok");
+
+    setState(() {
+      this._passwordConfirmObscure = !this._passwordConfirmObscure;
+    });
   }
 
   _handleShowTerm() {
@@ -106,15 +130,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   _confirmSmsDialog() async {
     if (_formKey.currentState.validate()) {
+      _startLoad();
       String phonex = _phoneController.text.replaceAll('-', '');
       phonex = phonex.replaceAll(' ', '');
       bool codeGenerated =
           await _authWidgetBloc.requireCodeSms(int.parse(phonex));
       if (!codeGenerated) {
-        _showDialog(
-            "Atenção", "Falha ao enviar código! Telefone já cadastrado!");
+        _endLoad();
+        _showDialog("Atenção", "Falha ao enviar código!");
         return;
       }
+
       setState(() {
         _lock = true;
         _requestCodeController = "Aguarde 30 seg...";
@@ -126,6 +152,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           _requestCodeController = "Cadastrar";
         });
       });
+      _endLoad();
       await showDialog<String>(
         context: context,
         child: AlertDialog(
@@ -168,6 +195,21 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     }
   }
 
+  _firebaseHandler() async {
+    await _auth.verifyPhoneNumber(
+        timeout: Duration(seconds: 60),
+        phoneNumber: "+55 27997942858",
+        verificationCompleted: null,
+        codeAutoRetrievalTimeout: null,
+        verificationFailed: null,
+        codeSent: (String verficationId, [int resendToken]) {
+          print("entrei aqui");
+          setState(() {
+            this._currentVerficationId = verficationId;
+          });
+        });
+  }
+
   _handleSubmit() async {
     if (_formKey.currentState.validate()) {
       final Map<String, dynamic> data = {
@@ -181,7 +223,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       if (authResult == "ok") {
         LoginEvent firstAccess =
             await _authBloc.firstAccess({'nome': data['name'], ...data});
-        // print(firstAccess.errorData["TELEFONE"]);
+        print(firstAccess.errorData["TELEFONE"]);
         if (!firstAccess.isValid && firstAccess.errorData["TELEFONE"] != '') {
           _showErrors({
             "Telefone": ["Esse número de telefone já está cadastrado."]
@@ -290,6 +332,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       },
       {
         'labelText': 'Digite uma senha',
+        'type': 'password',
+        'obscureText': this._passwordObscure,
         'prefixIcon': Icon(
           MaterialCommunityIcons.lock,
           color: Color(0xffA1A1A1),
@@ -307,6 +351,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       },
       {
         'labelText': 'Confirme a senha',
+        'type': 'confirm',
+        'obscureText': this._passwordConfirmObscure,
         'prefixIcon': Icon(
           MaterialCommunityIcons.lock,
           color: Color(0xffA1A1A1),
@@ -316,9 +362,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             MaterialCommunityIcons.eye,
             color: Color(0xffA1A1A1),
           ),
-          onPressed: _handleObscureText,
+          onPressed: _handleConfirmObscureText,
         ),
-        'controller': null,
+        'controller': _passwordConfirmController,
         'validator': (String text) => Helper.equalValidator(
               text,
               value: _passwordController.text,
@@ -390,24 +436,30 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               Column(
                 children: _fieldData.skip(4).map(
                   (e) {
-                    return Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: StreamBuilder<bool>(
-                        stream: _authWidgetBloc.createAccountShowPasswordOut,
-                        builder: (context, snapshot) {
-                          print(snapshot.data);
-                          return TextFieldWidget(
+                    if (e['type'] == 'confirm') {
+                      return Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: TextFieldWidget(
                             labelText: e['labelText'],
                             prefixIcon: e['prefixIcon'],
                             controller: e['controller'],
                             suffixIcon: e['suffixIcon'],
                             validator: e['validator'],
                             keyboardType: e['keyboardType'],
-                            obscureText: snapshot.data ?? true,
-                          );
-                        },
-                      ),
-                    );
+                            obscureText: this._passwordConfirmObscure,
+                          ));
+                    } else {
+                      return Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: TextFieldWidget(
+                              labelText: e['labelText'],
+                              prefixIcon: e['prefixIcon'],
+                              controller: e['controller'],
+                              suffixIcon: e['suffixIcon'],
+                              validator: e['validator'],
+                              keyboardType: e['keyboardType'],
+                              obscureText: this._passwordObscure));
+                    }
                   },
                 ).toList(),
               ),
@@ -447,13 +499,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 ],
               ),
               SizedBox(height: 30),
-              RaisedButton(
-                onPressed: !_lock ? null : _confirmSmsDialog, //  _handleSubmit,
-                child: Text(
-                  _requestCodeController,
-                  style: Theme.of(context).textTheme.button,
-                ),
-              ),
+              !this._isLoading
+                  ? RaisedButton(
+                      onPressed:
+                          !_lock ? null : _confirmSmsDialog, //  _handleSubmit,
+                      child: Text(
+                        _requestCodeController,
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    )
+                  : Center(child: CircularProgressIndicator()),
             ],
           ),
         ),

@@ -135,6 +135,8 @@ class _FormScreenState extends State<FormScreen> {
       _officeController.text = widget.usuario.cargo;
     }
 
+    print(_authBlock.getAuthCurrentUser.data.role);
+
     _data = [
       {
         'labelText': 'Nome completo',

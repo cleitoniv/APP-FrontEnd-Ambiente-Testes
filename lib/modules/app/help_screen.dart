@@ -42,7 +42,7 @@ class _HelpScreenState extends State<HelpScreen> {
         padding: const EdgeInsets.all(20),
         children: <Widget>[
           Image.asset(
-            'assets/images/logo.png',
+            'assets/images/logo_alinhada_2.png',
             width: MediaQuery.of(context).size.width / 2,
             height: 50,
           ),

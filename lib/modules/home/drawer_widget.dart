@@ -74,7 +74,7 @@ class DrawerWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Image.asset(
-                  'assets/images/logo.png',
+                  'assets/images/logo_alinhada_2.png',
                   height: 40,
                 ),
                 IconButton(
