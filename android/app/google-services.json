@@ -1,34 +1,62 @@
 {
   "project_info": {
-    "project_number": "444246563766",
-    "firebase_url": "https://central-oftalmica-dev.firebaseio.com",
-    "project_id": "central-oftalmica-dev",
-    "storage_bucket": "central-oftalmica-dev.appspot.com"
+    "project_number": "1069429401976",
+    "project_id": "central-app-28410",
+    "storage_bucket": "central-app-28410.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:444246563766:android:73a2f6c8f0a33908e77f17",
+        "mobilesdk_app_id": "1:1069429401976:android:1992f87e24cc4c24b9808d",
         "android_client_info": {
-          "package_name": "br.com.centraloftalmica.cliente"
+          "package_name": "TecNovix.APP0301"
         }
       },
       "oauth_client": [
         {
-          "client_id": "444246563766-6ib1ec68ldj795oephtij8dpposj0n07.apps.googleusercontent.com",
+          "client_id": "1069429401976-aus3bp6hmh7l7323497j0hr3tascgcs3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDz9lMXSUtxLxUHRdzl1G47VtlOpCa_ynM"
+          "current_key": "AIzaSyADayA3jTgwWee7_3C2h4YSTo6nScuAQaI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "444246563766-6ib1ec68ldj795oephtij8dpposj0n07.apps.googleusercontent.com",
+              "client_id": "1069429401976-aus3bp6hmh7l7323497j0hr3tascgcs3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069429401976:android:bf3c84d65358b650b9808d",
+        "android_client_info": {
+          "package_name": "br.com.centraloftalmica.cliente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069429401976-aus3bp6hmh7l7323497j0hr3tascgcs3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADayA3jTgwWee7_3C2h4YSTo6nScuAQaI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069429401976-aus3bp6hmh7l7323497j0hr3tascgcs3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
