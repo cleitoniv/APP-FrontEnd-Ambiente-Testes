@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
@@ -24,6 +25,8 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
   DevolutionWidgetBloc _devolutionWidgetBloc =
       Modular.get<DevolutionWidgetBloc>();
   TextEditingController _serialController;
+
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   StreamSubscription errorHandler;
 
@@ -368,7 +371,12 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           ),
           SizedBox(height: 20),
           RaisedButton.icon(
-            onPressed: _onAddProduct,
+            onPressed: () async {
+              bool blocked = await _authBloc.checkBlockedUser(context);
+              if (!blocked) {
+                _onAddProduct();
+              }
+            },
             elevation: 0,
             color: Colors.white,
             shape: RoundedRectangleBorder(
@@ -391,7 +399,12 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           ),
           SizedBox(height: 30),
           RaisedButton(
-            onPressed: _onSubmit,
+            onPressed: () async {
+              bool blocked = await _authBloc.checkBlockedUser(context);
+              if (!blocked) {
+                _onSubmit();
+              }
+            },
             child: Text(
               'Continuar Solicitação',
               style: Theme.of(context).textTheme.button,

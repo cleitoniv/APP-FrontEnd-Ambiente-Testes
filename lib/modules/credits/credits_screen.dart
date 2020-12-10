@@ -267,9 +267,13 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                   ),
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
-                                        onTap: () {
-                                          _onTapSelectCreditProduct(
-                                              _productCredits.list[index]);
+                                        onTap: () async {
+                                          bool blocked = await _authBloc
+                                              .checkBlockedUser(context);
+                                          if (!blocked) {
+                                            _onTapSelectCreditProduct(
+                                                _productCredits.list[index]);
+                                          }
                                         },
                                         child: ProductWidget(
                                           credits:
@@ -469,10 +473,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                         itemBuilder: (context, index) {
                                           return _currentType == 'Financeiro'
                                               ? InkWell(
-                                                  onTap: () {
-                                                    _addCreditoFinanceiro(
-                                                        _financialCredits[
-                                                            index]);
+                                                  onTap: () async {
+                                                    bool blocked =
+                                                        await _authBloc
+                                                            .checkBlockedUser(
+                                                                context);
+                                                    if (!blocked) {
+                                                      _addCreditoFinanceiro(
+                                                          _financialCredits[
+                                                              index]);
+                                                    }
                                                   },
                                                   child: CardWidget(
                                                     parcels:
@@ -484,10 +494,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                   ),
                                                 )
                                               : InkWell(
-                                                  onTap: () {
-                                                    _addCreditoProduct(
-                                                        _financialCredits[
-                                                            index]);
+                                                  onTap: () async {
+                                                    bool blocked =
+                                                        await _authBloc
+                                                            .checkBlockedUser(
+                                                                context);
+                                                    if (!blocked) {
+                                                      _addCreditoProduct(
+                                                          _financialCredits[
+                                                              index]);
+                                                    }
                                                   },
                                                   child:
                                                       CreditProductCardWidget(

@@ -1,4 +1,6 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 class ProductsScreen extends StatelessWidget {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
 
-  onChangeProduct(ProductModel product) {
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
+
+  onChangeProduct(ProductModel product, BuildContext context) async {
     Modular.to.pushNamed('/products/${product.id}', arguments: product);
   }
 
@@ -40,9 +44,12 @@ class ProductsScreen extends StatelessWidget {
                 tests: _products[index].tests,
                 imageUrl: _products[index].imageUrl,
                 credits: _products[index].boxes,
-                onTap: () => onChangeProduct(
-                  _products[index],
-                ),
+                onTap: () async {
+                  bool blocked = await _authBloc.checkBlockedUser(context);
+                  if (!blocked) {
+                    onChangeProduct(_products[index], context);
+                  }
+                },
               );
             },
           );

@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:dio/dio.dart';
 import 'package:rxdart/subjects.dart';
@@ -49,6 +51,22 @@ class AuthBloc extends Disposable {
     return acceptTerms;
   }
 
+  Future<bool> checkBlockedUser(BuildContext context) async {
+    bool blocked = await repository.currentUserIsBlocked();
+
+    if (!blocked) {
+      return false;
+    } else {
+      Dialogs.error(context, onTap: () {
+        Modular.to.pop();
+      },
+          buttonText: "Entendi",
+          title: "Bloqueado!",
+          subtitle: "No momento voce nao pode acessar este recurso.");
+      return true;
+    }
+  }
+
   void getTermsOfResponsability() async {
     _accetpTerms.add(AcceptTerms(isLoading: true));
     final response = await repository.getTermsOfResponsability();
@@ -70,7 +88,7 @@ class AuthBloc extends Disposable {
     return repository.currentUser(login);
   }
 
-    Future<int> getCurrentStatus( ) async {
+  Future<int> getCurrentStatus() async {
     return repository.currentUserStatus();
   }
 

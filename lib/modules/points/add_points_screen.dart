@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
@@ -15,6 +16,7 @@ class AddPointsScreen extends StatefulWidget {
 
 class _AddPointsScreenState extends State<AddPointsScreen> {
   UserBloc _userBloc = Modular.get<UserBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   List<Map> _data;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _nameController;
@@ -37,7 +39,6 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
       };
 
       PointsResult _result = await _userBloc.addPoints(params);
-      print(_result);
       if (_result.isValid) {
         Dialogs.success(
           context,
@@ -171,7 +172,12 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
             ),
             SizedBox(height: 30),
             RaisedButton(
-              onPressed: _onSubmit,
+              onPressed: () async {
+                bool blocked = await _authBloc.checkBlockedUser(context);
+                if (!blocked) {
+                  _onSubmit();
+                }
+              },
               child: Text(
                 'Solicitar Pontos',
                 style: Theme.of(context).textTheme.button,

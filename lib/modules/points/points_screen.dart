@@ -229,7 +229,12 @@ class _PointsScreenState extends State<PointsScreen> {
                         color: item['textColor'],
                       ),
                     ),
-                    onPressed: item['onTap'],
+                    onPressed: () async {
+                      bool blocked = await _authBloc.checkBlockedUser(context);
+                      if (!blocked) {
+                        item['onTap'];
+                      }
+                    },
                     color: item['color'],
                     elevation: 0,
                     label: Text(

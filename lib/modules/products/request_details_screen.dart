@@ -314,14 +314,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       _requestsBloc.addProductToCart(_data);
       Modular.to.pushNamed("/cart/product");
     } else {
-      setState((){
+      setState(() {
         this.isInvalid = true;
       });
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
       _scaffoldKey.currentState.showSnackBar(
         _snack,
       );
-
     }
   }
 
@@ -335,8 +334,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
 
     await _onAddToCart({'product': currentProduct.product});
-    if(this.isInvalid ){
-       setState((){
+    if (this.isInvalid) {
+      setState(() {
         this.isInvalid = false;
       });
       return;
@@ -636,7 +635,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Detalhes do Pedido'),
+        title: Text('Detalhes do Pedido X'),
         centerTitle: false,
         actions: [
           Padding(
@@ -827,6 +826,41 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       style: Theme.of(context).textTheme.headline5,
                       textAlign: TextAlign.center,
                     )),
+                    SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          !currentProduct.product.hasAcessorio
+                              ? 'Quantidade de caixas'
+                              : 'Quantidade',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        TextFieldWidget(
+                          width: 150,
+                          controller: _lensController,
+                          readOnly: false,
+                          keyboardType: TextInputType.number,
+                          inputFormattersActivated: true,
+                          prefixIcon: IconButton(
+                            icon: Icon(
+                              Icons.remove,
+                              color: Colors.black26,
+                              size: 30,
+                            ),
+                            onPressed: _onRemoveLens,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.black26,
+                              size: 30,
+                            ),
+                            onPressed: _onAddLens,
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 30),
                     StreamBuilder(
                         stream: _productBloc.parametroListStream,
@@ -1042,6 +1076,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 },
                               );
                             }),
+                        Text("hello")
                       ],
                     ),
                   ],
@@ -1052,53 +1087,53 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           SizedBox(
             height: 20,
           ),
-          StreamBuilder(
-              stream: _productWidgetBloc.pacientInfoOut,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Container();
-                }
+          // StreamBuilder(
+          //     stream: _productWidgetBloc.pacientInfoOut,
+          //     builder: (context, snapshot) {
+          //       if (!snapshot.hasData) {
+          //         return Container();
+          //       }
 
-                if (snapshot.data['current'] !=
-                    'Graus diferentes em cada olho') {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        !currentProduct.product.hasAcessorio
-                            ? 'Quantidade de caixas'
-                            : 'Quantidade',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      TextFieldWidget(
-                        width: 150,
-                        controller: _lensController,
-                        readOnly: false,
-                        keyboardType: TextInputType.number,
-                        inputFormattersActivated: true,
-                        prefixIcon: IconButton(
-                          icon: Icon(
-                            Icons.remove,
-                            color: Colors.black26,
-                            size: 30,
-                          ),
-                          onPressed: _onRemoveLens,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.add,
-                            color: Colors.black26,
-                            size: 30,
-                          ),
-                          onPressed: _onAddLens,
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Container();
-                }
-              }),
+          //       if (snapshot.data['current'] !=
+          //           'Graus diferentes em cada olho') {
+          //         return Row(
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           children: <Widget>[
+          //             Text(
+          //               !currentProduct.product.hasAcessorio
+          //                   ? 'Quantidade de caixas'
+          //                   : 'Quantidade',
+          //               style: Theme.of(context).textTheme.subtitle1,
+          //             ),
+          //             TextFieldWidget(
+          //               width: 150,
+          //               controller: _lensController,
+          //               readOnly: false,
+          //               keyboardType: TextInputType.number,
+          //               inputFormattersActivated: true,
+          //               prefixIcon: IconButton(
+          //                 icon: Icon(
+          //                   Icons.remove,
+          //                   color: Colors.black26,
+          //                   size: 30,
+          //                 ),
+          //                 onPressed: _onRemoveLens,
+          //               ),
+          //               suffixIcon: IconButton(
+          //                 icon: Icon(
+          //                   Icons.add,
+          //                   color: Colors.black26,
+          //                   size: 30,
+          //                 ),
+          //                 onPressed: _onAddLens,
+          //               ),
+          //             ),
+          //           ],
+          //         );
+          //       } else {
+          //         return Container();
+          //       }
+          //     }),
           SizedBox(height: 10),
           currentProduct.product.hasTest && currentProduct.product.tests > 0
               ? _checkForAcessorio(StreamBuilder<Map>(

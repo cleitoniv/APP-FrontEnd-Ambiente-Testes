@@ -194,21 +194,36 @@ class AuthRepository {
     }
   }
 
-Future<int> currentUserStatus() async {
+  Future<int> currentUserStatus() async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
-    try { 
+    try {
       Response resp = await dio.get("/api/cliente/current_user",
           options: Options(headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
           }));
-           
-          return resp.data["status"]; 
-      
-    } catch (error) { 
-      print(error);
+
+      return resp.data["status"];
+    } catch (error) {
       return 0;
+    }
+  }
+
+  Future<bool> currentUserIsBlocked() async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try {
+      Response resp = await dio.get("/api/cliente/current_user",
+          options: Options(headers: {
+            "Authorization": "Bearer ${idToken.token}",
+            "Content-Type": "application/json"
+          }));
+      ClienteModel cliente = ClienteModel.fromJson(resp.data);
+
+      return cliente.sitApp == "B";
+    } catch (error) {
+      return true;
     }
   }
 

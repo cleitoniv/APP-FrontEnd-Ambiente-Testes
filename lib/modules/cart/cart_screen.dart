@@ -291,7 +291,15 @@ class _CartScreenState extends State<CartScreen> {
                       style: Theme.of(context).textTheme.button,
                     ),
                     disabledColor: Theme.of(context).accentColor,
-                    onPressed: snapshot.data.isEmpty ? null : _onSubmit,
+                    onPressed: snapshot.data.isEmpty
+                        ? null
+                        : () async {
+                            bool blocked =
+                                await _authBloc.checkBlockedUser(context);
+                            if (!blocked) {
+                              _onSubmit();
+                            }
+                          },
                   ),
                 );
               },

@@ -114,7 +114,8 @@ class PaymentRepository {
   Future<bool> payment(Map<String, dynamic> data, PaymentMethod paymentMethod,
       bool isBoleto) async {
     Map<String, dynamic> params = generate_params(data, paymentMethod);
-    print(params);
+    // print("paraaammms-----------");
+    // print(params);
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
