@@ -133,11 +133,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       _startLoad();
       String phonex = _phoneController.text.replaceAll('-', '');
       phonex = phonex.replaceAll(' ', '');
-      bool codeGenerated =
+      var codeGenerated =
           await _authWidgetBloc.requireCodeSms(int.parse(phonex));
-      if (!codeGenerated) {
+
+      if (!codeGenerated["success"]) {
         _endLoad();
-        _showDialog("Atenção", "Falha ao enviar código!");
+        _showDialog("Atenção", codeGenerated["data"]);
         return;
       }
 

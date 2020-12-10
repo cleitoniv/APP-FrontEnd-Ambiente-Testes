@@ -194,19 +194,18 @@ class AuthRepository {
     }
   }
 
-Future<int> currentUserStatus() async {
+  Future<int> currentUserStatus() async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
-    try { 
+    try {
       Response resp = await dio.get("/api/cliente/current_user",
           options: Options(headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
           }));
-           
-          return resp.data["status"]; 
-      
-    } catch (error) { 
+
+      return resp.data["status"];
+    } catch (error) {
       print(error);
       return 0;
     }
@@ -300,15 +299,19 @@ Future<int> currentUserStatus() async {
     }
   }
 
-  Future<bool> requireCode(int phone) async {
+  Future<dynamic> requireCode(int phone) async {
     try {
       Response response = await dio.get(
         "/api/send_sms?phone_number=55${phone}",
         options: Options(headers: {"Content-Type": "application/json"}),
       );
-      bool matchStatus = response.data["success"];
-      return matchStatus;
+      return response.data;
+      // bool matchStatus = response.data["success"];
+      // return matchStatus;
     } catch (error) {
+      final error400 = error as DioError;
+      return error400.response.data;
+      // print(error);
       return false;
     }
   }
