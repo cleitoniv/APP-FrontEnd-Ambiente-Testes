@@ -477,13 +477,11 @@ class _ProductScreenState extends State<ProductScreen> {
                               'title':
                                   'Pedido Avulso R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
                               'color': Color(0xff707070),
-                              'onTap': productSnapshot.data.product.boxes <= 0
-                                  ? () {
-                                      _handleSingleOrder(
-                                        productSnapshot.data.product,
-                                      );
-                                    }
-                                  : null,
+                              'onTap': () {
+                                _handleSingleOrder(
+                                  productSnapshot.data.product,
+                                );
+                              },
                             },
                             {
                               'title':
