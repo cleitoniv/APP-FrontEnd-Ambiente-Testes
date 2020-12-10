@@ -135,8 +135,6 @@ class _FormScreenState extends State<FormScreen> {
       _officeController.text = widget.usuario.cargo;
     }
 
-    print(_authBlock.getAuthCurrentUser.data.role);
-
     _data = [
       {
         'labelText': 'Nome completo',
@@ -260,16 +258,19 @@ class _FormScreenState extends State<FormScreen> {
           //       ):
           Container(),
           SizedBox(height: 30),
-          RaisedButton(
-            onPressed: widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
-            elevation: 0,
-            child: Text(
-              widget.formType == 'edit'
-                  ? 'Salvar Alterações de Usuário'
-                  : 'Cadastrar Novo Usuário',
-              style: Theme.of(context).textTheme.button,
-            ),
-          ),
+          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
+              ? RaisedButton(
+                  onPressed:
+                      widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
+                  elevation: 0,
+                  child: Text(
+                    widget.formType == 'edit'
+                        ? 'Salvar Alterações de Usuário'
+                        : 'Cadastrar Novo Usuário',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                )
+              : Container(),
           SizedBox(height: 30),
           _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
               ? widget.formType == 'edit'

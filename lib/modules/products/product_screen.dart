@@ -65,14 +65,14 @@ class _ProductScreenState extends State<ProductScreen> {
     if (type == 'C') {
       if (value == 0) {
         _showDialog(
-            'Atenção', 'Adiquira Credito de Produto para comprar esse item!');
+            'Atenção', 'Adquira Credito de Produto para comprar esse item!');
 
         return;
       }
     } else if (type == 'CF') {
       if (value == 0) {
         _showDialog(
-            'Atenção', 'Adiquira Credito Financeiro para comprar esse item!');
+            'Atenção', 'Adquira Credito Financeiro para comprar esse item!');
       }
       return;
     }
