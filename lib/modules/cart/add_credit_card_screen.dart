@@ -76,6 +76,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
     _data = [
       {
         'labelText': 'Nome impresso no cartão',
+        'capitalization': TextCapitalization.words,
         'icon': Icons.person,
         'controller': _ownerController,
         'validator': Helper.lengthValidator,
