@@ -95,6 +95,7 @@ class RequestsBloc extends Disposable {
   }
 
   addProductToCart(Map<String, dynamic> data) async {
+    print(data);
     List<Map<String, dynamic>> _first = await cartOut.first;
     if (_first.isEmpty) {
       _first.add(data);
@@ -132,6 +133,7 @@ class RequestsBloc extends Disposable {
 
   @override
   void dispose() {
+    _creditProductCartController.close();
     _pedidoController.close();
     _cartController.close();
     _showController.close();

@@ -30,10 +30,14 @@ class ErrorSnackBar {
                         children: [
                           Expanded(
                               flex: 1,
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.red,
-                                size: 40,
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Colors.red.withOpacity(0.2),
+                                child: Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                  size: 40,
+                                ),
                               )),
                           Expanded(
                               flex: 3,

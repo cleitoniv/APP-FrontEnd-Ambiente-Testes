@@ -2,6 +2,7 @@ import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_card_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credito_financeiro.dart';
+import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
@@ -29,6 +30,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   CreditoFinanceiroBloc _creditoFinanceiroBloc =
       Modular.get<CreditoFinanceiroBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
+  ExtractWidgetBloc _extract = Modular.get<ExtractWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
   PaymentBloc _paymentBloc = Modular.get<PaymentBloc>();
@@ -59,8 +61,9 @@ class _FinishPaymentState extends State<FinishPayment> {
   _onSubmitDialog() {
     _requestBloc.getPedidosList(0);
     _authBloc.fetchCurrentUser();
+    _extract.extractTypeIn.add("Financeiro");
     Modular.to.pushNamedAndRemoveUntil(
-      '/home/1',
+      '/extracts',
       (route) => route.isFirst,
     );
   }

@@ -1076,7 +1076,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 },
                               );
                             }),
-                        Text("hello")
                       ],
                     ),
                   ],
