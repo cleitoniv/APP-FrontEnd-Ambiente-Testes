@@ -171,6 +171,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         child: new TextField(
                           controller: _confirmSms,
                           autofocus: true,
+                          keyboardType: TextInputType.number,
                           decoration: new InputDecoration(
                               labelText: _phoneController.text,
                               hintText: '* * * *'),

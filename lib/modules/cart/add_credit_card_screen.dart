@@ -32,6 +32,29 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
   }
 
   _onSubmit() async {
+    SnackBar _snackBar;
+
+    DateTime now = new DateTime.now();
+    if (int.parse(_mesValidadeController.text) < 1 ||
+        int.parse(_mesValidadeController.text) > 12) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Mês de vencimento inválido.',
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return;
+    }
+    if (int.parse(_anoValidadeController.text) < now.year ||
+        int.parse(_anoValidadeController.text) > now.year + 10) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Ano de vencimento inválido.',
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return;
+    }
     if (_formKey.currentState.validate()) {
       CreditCard _storeResult = await _creditCardBloc.addCreditCard(
         CreditCardModel(
