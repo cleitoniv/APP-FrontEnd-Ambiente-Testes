@@ -635,7 +635,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Detalhes do Pedido X'),
+        title: Text('Detalhes do Pedido'),
         centerTitle: false,
         actions: [
           Padding(

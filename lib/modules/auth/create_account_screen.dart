@@ -171,6 +171,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         child: new TextField(
                           controller: _confirmSms,
                           autofocus: true,
+                          keyboardType: TextInputType.number,
                           decoration: new InputDecoration(
                               labelText: _phoneController.text,
                               hintText: '* * * *'),
@@ -224,7 +225,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       if (authResult == "ok") {
         LoginEvent firstAccess =
             await _authBloc.firstAccess({'nome': data['name'], ...data});
-        print(firstAccess.errorData["TELEFONE"]);
         if (!firstAccess.isValid && firstAccess.errorData["TELEFONE"] != '') {
           _showErrors({
             "Telefone": ["Esse número de telefone já está cadastrado."]

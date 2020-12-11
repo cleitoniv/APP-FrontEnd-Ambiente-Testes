@@ -118,6 +118,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       });
       return;
     }
+
     if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       setState(() {
         _lock = false;
