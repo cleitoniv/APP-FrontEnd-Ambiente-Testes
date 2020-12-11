@@ -10,6 +10,9 @@ class Helper {
     if (text.isEmpty || text.length < length) {
       return message;
     }
+    if (text[0] == '0') {
+      return 'DDD não pode iniciar com zero';
+    }
 
     return null;
   }
