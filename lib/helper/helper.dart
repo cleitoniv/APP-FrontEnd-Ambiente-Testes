@@ -10,6 +10,18 @@ class Helper {
     if (text.isEmpty || text.length < length) {
       return message;
     }
+
+    return null;
+  }
+
+  static String lengthValidatorDdd(
+    String text, {
+    int length = 0,
+    String message = 'Campo Obrigatório',
+  }) {
+    if (text.isEmpty || text.length < length) {
+      return message;
+    }
     if (text[0] == '0') {
       return 'DDD não pode iniciar com zero';
     }

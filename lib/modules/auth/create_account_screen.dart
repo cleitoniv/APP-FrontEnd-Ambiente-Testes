@@ -324,7 +324,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
         'suffixIcon': null,
         'controller': _phoneController,
-        'validator': (String text) => Helper.lengthValidator(
+        'validator': (String text) => Helper.lengthValidatorDdd(
               text,
               length: 13,
               message: 'Celular deve possuir 11 dígitos',
