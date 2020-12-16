@@ -3,6 +3,7 @@ class ClienteModel {
   String nome;
   String codigo;
   String loja;
+  String apelido;
   String cnpjCpf;
   String ddd;
   String sitApp;
@@ -18,12 +19,20 @@ class ClienteModel {
   String nome_usuario;
   bool cadastrado;
   Map<String, dynamic> notifications;
-  ClienteModel({this.id, this.codigo, this.loja, this.cnpjCpf, this.role, this.status, this.nome_usuario});
+  ClienteModel(
+      {this.id,
+      this.codigo,
+      this.loja,
+      this.cnpjCpf,
+      this.role,
+      this.status,
+      this.nome_usuario});
 
   ClienteModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     nome = json['nome'];
     codigo = json['codigo'];
+    apelido = json['apelido'];
     ddd = json['ddd'];
     loja = json['loja'];
     cnpjCpf = json['cnpj_cpf'];

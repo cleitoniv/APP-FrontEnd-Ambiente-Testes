@@ -32,6 +32,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   MaskedTextController _phoneController;
   TextEditingController _passwordController;
   TextEditingController _passwordConfirmController;
+  TextEditingController _nicknameController;
   bool _passwordObscure = true;
   bool _passwordConfirmObscure = true;
   String _currentVerficationId;
@@ -52,15 +53,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   _handleObscureText() async {
-    print("ok");
     setState(() {
       this._passwordObscure = !this._passwordObscure;
     });
   }
 
   _handleConfirmObscureText() async {
-    print("ok");
-
     setState(() {
       this._passwordConfirmObscure = !this._passwordConfirmObscure;
     });
@@ -217,6 +215,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       final Map<String, dynamic> data = {
         'name': _nameController.text,
         'email': _emailController.text,
+        'apelido': _nicknameController.text,
         'telefone': _phoneController.text,
         'ddd': '27',
         'password': _passwordController.text,
@@ -277,6 +276,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       mask: '00 00000-0000',
     );
     _passwordController = TextEditingController();
+    _nicknameController = TextEditingController();
     _requestCodeController = "Cadastrar";
 
     _fieldData = [
@@ -289,6 +289,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
         'suffixIcon': null,
         'controller': _nameController,
+        'validator': Helper.lengthValidator,
+      },
+      {
+        'textCapitalization': TextCapitalization.words,
+        'maxLength': 15,
+        'maxLengthEnforce': true,
+        'labelText': 'Como gostaria de ser chamado?',
+        'prefixIcon': Icon(
+          Icons.person,
+          color: Color(0xffA1A1A1),
+        ),
+        'suffixIcon': null,
+        'controller': _nicknameController,
         'validator': Helper.lengthValidator,
       },
       {
@@ -380,6 +393,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
+    _nicknameController.dispose();
     super.dispose();
   }
 
@@ -412,11 +426,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 textAlign: TextAlign.center,
               ),
               Column(
-                children: _fieldData.take(4).map(
+                children: _fieldData.take(5).map(
                   (e) {
                     return Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: TextFieldWidget(
+                        maxLength: e['maxLength'],
+                        maxLengthEnforce: e['maxLengthEnforce'],
                         textCapitalization: e['textCapitalization'],
                         labelText: e['labelText'],
                         prefixIcon: e['prefixIcon'],
@@ -435,7 +451,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 textAlign: TextAlign.center,
               ),
               Column(
-                children: _fieldData.skip(4).map(
+                children: _fieldData.skip(5).map(
                   (e) {
                     if (e['type'] == 'confirm') {
                       return Container(

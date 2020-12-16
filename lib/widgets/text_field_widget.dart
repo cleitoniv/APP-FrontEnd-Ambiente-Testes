@@ -18,6 +18,8 @@ class TextFieldWidget extends StatefulWidget {
   String hint;
   FocusNode focus;
   TextInputFormatter inputFormatters;
+  int maxLength;
+  bool maxLengthEnforce;
   bool inputFormattersActivated;
   TextFieldWidget(
       {this.textCapitalization,
@@ -34,6 +36,8 @@ class TextFieldWidget extends StatefulWidget {
       this.readOnly = false,
       this.onTap,
       this.focus,
+      this.maxLength,
+      this.maxLengthEnforce = false,
       this.hint = '',
       this.inputFormatters,
       this.inputFormattersActivated = false});
@@ -65,6 +69,8 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     return Container(
       width: widget.width,
       child: TextFormField(
+        maxLength: widget.maxLength,
+        maxLengthEnforced: widget.maxLengthEnforce ?? false,
         textCapitalization:
             widget.textCapitalization ?? TextCapitalization.none,
         initialValue: widget.initialValue,

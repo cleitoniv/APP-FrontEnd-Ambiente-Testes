@@ -137,7 +137,9 @@ class _FormScreenState extends State<FormScreen> {
 
     _data = [
       {
-        'labelText': 'Nome completo',
+        'labelText': 'Nome',
+        'maxLength': 15,
+        'maxLengthEnforce': true,
         'capitalization': TextCapitalization.words,
         'controller': _nameController,
         'icon': Icons.person,
@@ -194,6 +196,8 @@ class _FormScreenState extends State<FormScreen> {
             ),
             itemBuilder: (context, index) {
               return TextFieldWidget(
+                maxLength: _data[index]['maxLength'],
+                maxLengthEnforce: _data[index]['maxLengthEnforce'],
                 textCapitalization: _data[index]['capitalization'],
                 enabled: _data[index]['enabled'],
                 labelText: _data[index]['labelText'],

@@ -9,8 +9,10 @@ class DrawerWidget extends StatelessWidget {
     },
     {'title': 'Meus Pedidos', 'image': 'drawer_1.png'},
     {
-      'title': 'Meus Créditos',
+      'title': 'Créditos',
       'image': 'drawer_2.png',
+      'is_icon': true,
+      'icon': Icons.add
     },
     {
       'title': 'Notificações',
@@ -29,7 +31,7 @@ class DrawerWidget extends StatelessWidget {
       'image': 'drawer_6.png',
     },
     {
-      'title': 'Extratos de Créditos',
+      'title': 'Meus Créditos',
       'image': 'drawer_7.png',
     },
     {
@@ -96,20 +98,38 @@ class DrawerWidget extends StatelessWidget {
                 height: 10,
               ),
               itemBuilder: (context, index) {
-                return ListTileMoreCustomizable(
-                  onTap: (value) => _handleTap(index),
-                  contentPadding: const EdgeInsets.all(0),
-                  horizontalTitleGap: 0,
-                  leading: Image.asset(
-                    'assets/icons/${_data[index]['image']}',
-                    width: 25,
-                    height: 25,
-                  ),
-                  title: Text(
-                    _data[index]['title'],
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                );
+                bool isIcon = _data[index]['is_icon'] ?? false;
+                if (!isIcon) {
+                  return ListTileMoreCustomizable(
+                    onTap: (value) => _handleTap(index),
+                    contentPadding: const EdgeInsets.all(0),
+                    horizontalTitleGap: 0,
+                    leading: Image.asset(
+                      'assets/icons/${_data[index]['image']}',
+                      width: 25,
+                      height: 25,
+                    ),
+                    title: Text(
+                      _data[index]['title'],
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  );
+                } else {
+                  return ListTileMoreCustomizable(
+                    onTap: (value) => _handleTap(index),
+                    contentPadding: const EdgeInsets.all(0),
+                    horizontalTitleGap: 0,
+                    leading: Icon(
+                      _data[index]['icon'],
+                      size: 35,
+                      color: Colors.blue[300],
+                    ),
+                    title: Text(
+                      _data[index]['title'],
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  );
+                }
               },
             )
           ],

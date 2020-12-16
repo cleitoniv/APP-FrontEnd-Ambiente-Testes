@@ -145,6 +145,10 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                     heightFactor: 3,
                     child: CircularProgressIndicator(),
                   );
+                } else if (snapshot.hasData && snapshot.data.isEmpty) {
+                  return Center(
+                      child: Text(
+                          "Erro ao carregar endereço, tente novamente mais tarde"));
                 }
                 return ListView.separated(
                   shrinkWrap: true,
