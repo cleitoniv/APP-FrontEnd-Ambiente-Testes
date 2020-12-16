@@ -119,10 +119,17 @@ class DrawerWidget extends StatelessWidget {
                     onTap: (value) => _handleTap(index),
                     contentPadding: const EdgeInsets.all(0),
                     horizontalTitleGap: 0,
-                    leading: Icon(
-                      _data[index]['icon'],
-                      size: 35,
-                      color: Colors.blue,
+                    leading: ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        colors: [Color(0xFF30a2cf), Color(0XFF08e9cf)],
+                        tileMode: TileMode.mirror,
+                      ).createShader(bounds),
+                      child: Icon(
+                        _data[index]['icon'],
+                        size: 35,
+                        color: Color(0xFFFFFFFF),
+                      ),
                     ),
                     title: Text(
                       _data[index]['title'],
