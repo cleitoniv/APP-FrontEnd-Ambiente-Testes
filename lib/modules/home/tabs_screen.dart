@@ -89,6 +89,7 @@ class _TabsScreenState extends State<TabsScreen>
     if (type == "Produto") {
       _creditsBloc.offersSink
           .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
+      _creditsBloc.creditProductSelectedSink.add(false);
     } else {
       _creditsBloc.fetchOffers();
     }

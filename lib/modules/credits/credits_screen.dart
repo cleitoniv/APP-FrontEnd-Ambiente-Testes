@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credito_financeiro.dart';
@@ -46,6 +48,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
   Map<String, dynamic> _currentProduct;
 
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+
+  StreamSubscription _productReset;
 
   _onAddCredit() async {
     _creditsBloc.storeFinancialIn.add(
@@ -131,6 +135,11 @@ class _CreditsScreenState extends State<CreditsScreen> {
     _productsBloc.fetchCreditProducts("Todos");
     _currentUser = _authBloc.getAuthCurrentUser;
     _creditsBloc.indexFinancialIn.add(_currentUser);
+    _productReset = _creditsBloc.creditProductSelectedStream.listen((event) {
+      if (!event) {
+        _currentProduct = {"selected": false};
+      }
+    });
     _onNavigate();
     _creditValueController = MoneyMaskedTextController(
       decimalSeparator: ',',
@@ -141,6 +150,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
   @override
   void dispose() {
+    _productReset.cancel();
     _creditValueController.dispose();
     super.dispose();
   }

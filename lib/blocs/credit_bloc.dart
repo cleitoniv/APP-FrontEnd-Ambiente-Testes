@@ -15,8 +15,7 @@ class CreditsBloc extends Disposable {
   Sink get currentProductSink => _currentProduct.sink;
   Stream get currentProductStream => _currentProduct.stream;
 
-  BehaviorSubject _creditProductSelected = BehaviorSubject.seeded(
-      {"selected": false, "group": null, "packages": []});
+  BehaviorSubject _creditProductSelected = BehaviorSubject();
   Sink get creditProductSelectedSink => _creditProductSelected.sink;
   Stream get creditProductSelectedStream => _creditProductSelected.stream;
 

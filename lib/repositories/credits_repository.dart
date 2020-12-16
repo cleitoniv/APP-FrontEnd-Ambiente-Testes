@@ -31,8 +31,9 @@ class ExtratoProduto {
   bool isLoading;
   bool isEmpty;
   List<ExtratoProdutoModel> data;
+  String date;
 
-  ExtratoProduto({this.isLoading, this.isEmpty, this.data});
+  ExtratoProduto({this.date, this.isLoading, this.isEmpty, this.data});
 }
 
 class CreditoPagamento {
@@ -63,7 +64,10 @@ class CreditsRepository {
         return ExtratoProdutoModel.fromJson(e);
       }).toList();
       return ExtratoProduto(
-          data: extrato, isEmpty: extrato.length <= 0, isLoading: false);
+          data: extrato,
+          isEmpty: extrato.length <= 0,
+          isLoading: false,
+          date: response.data['date']);
     } catch (error) {
       return ExtratoProduto(isEmpty: true, isLoading: false);
     }
