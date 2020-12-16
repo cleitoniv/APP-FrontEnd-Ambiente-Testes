@@ -122,7 +122,7 @@ class DrawerWidget extends StatelessWidget {
                     leading: Icon(
                       _data[index]['icon'],
                       size: 35,
-                      color: Colors.blue[300],
+                      color: Colors.blue,
                     ),
                     title: Text(
                       _data[index]['title'],
