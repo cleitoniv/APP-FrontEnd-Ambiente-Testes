@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/modules/requests/reposicao_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/request_info_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -24,6 +25,10 @@ class RequestsModule extends ChildModule {
         ModularRouter(
           '/',
           child: (_, args) => RequestsScreen(),
+        ),
+        ModularRouter(
+          '/reposition',
+          child: (_, args) => RepositionScreen(),
         ),
         ModularRouter(
           '/:id',

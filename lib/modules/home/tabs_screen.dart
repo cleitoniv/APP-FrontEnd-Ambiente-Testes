@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
@@ -42,6 +43,7 @@ class _TabsScreenState extends State<TabsScreen>
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   TabController _tabController;
   CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> _sightProblems = [
     'Todos',
@@ -178,6 +180,9 @@ class _TabsScreenState extends State<TabsScreen>
         _route = '/extracts';
         break;
       case 8:
+        _route = '/requests/reposition';
+        break;
+      case 9:
         _route = '/help';
         break;
       default:
@@ -724,28 +729,80 @@ class _TabsScreenState extends State<TabsScreen>
                           return StreamBuilder<int>(
                             stream: _homeWidgetBloc.currentTabIndexOut,
                             builder: (context, snapshot) {
-                              return Tab(
-                                child: Text(
-                                  e['title'],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1
-                                      .copyWith(
+                              if (e['id'] != 2) {
+                                return Tab(
+                                  child: Text(
+                                    e['title'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          color: e['id'] == snapshot.data
+                                              ? Theme.of(context).accentColor
+                                              : Color(0xffBFBFBF),
+                                          fontSize: 12,
+                                        ),
+                                  ),
+                                  icon: Image.asset(
+                                    'assets/icons/${e['iconName']}',
+                                    width: 20,
+                                    height: 20,
+                                    color: e['id'] == snapshot.data
+                                        ? Theme.of(context).accentColor
+                                        : Color(0xffBFBFBF),
+                                  ),
+                                );
+                              } else {
+                                return Tab(
+                                  child: Text(
+                                    e['title'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          color: e['id'] == snapshot.data
+                                              ? Theme.of(context).accentColor
+                                              : Color(0xffBFBFBF),
+                                          fontSize: 12,
+                                        ),
+                                  ),
+                                  icon: Stack(
+                                    children: [
+                                      StreamBuilder(
+                                        stream: _cartWidgetBloc
+                                            .cartTotalItemsStream,
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData ||
+                                              snapshot.data == 0) {
+                                            return Container();
+                                          }
+                                          return Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: CircleAvatar(
+                                                  radius: 12,
+                                                  backgroundColor: Colors.red,
+                                                  child: Text(
+                                                    "${snapshot.data}",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )));
+                                        },
+                                      ),
+                                      Center(
+                                          child: Image.asset(
+                                        'assets/icons/${e['iconName']}',
+                                        width: 23,
+                                        height: 23,
                                         color: e['id'] == snapshot.data
                                             ? Theme.of(context).accentColor
                                             : Color(0xffBFBFBF),
-                                        fontSize: 12,
-                                      ),
-                                ),
-                                icon: Image.asset(
-                                  'assets/icons/${e['iconName']}',
-                                  width: 20,
-                                  height: 20,
-                                  color: e['id'] == snapshot.data
-                                      ? Theme.of(context).accentColor
-                                      : Color(0xffBFBFBF),
-                                ),
-                              );
+                                      ))
+                                    ],
+                                  ),
+                                );
+                              }
                             },
                           );
                         },

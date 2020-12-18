@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cpfcnpj/cpfcnpj.dart';
 
 class Helper {
   static String lengthValidator(
@@ -43,6 +44,18 @@ class Helper {
     String message = 'Campos não coincidem',
   }) {
     if (text != value) {
+      return message;
+    }
+    return null;
+  }
+
+  static String cpfValidator(
+    String text, {
+    String message = 'CPF Inválido!',
+  }) {
+    print("cpff---------------------");
+    print(CPF.isValid(text));
+    if (!CPF.isValid(text)) {
       return message;
     }
     return null;

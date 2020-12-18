@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
@@ -14,7 +15,7 @@ class CreditCartScreen extends StatefulWidget {
 
 class _CreditCartScreenState extends State<CreditCartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
-
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
   _onBackToPurchase() {
@@ -30,6 +31,8 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   }
 
   _removeItem(Map<String, dynamic> data) {
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+    _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
     _requestsBloc.removeFromCart(data);
   }
 

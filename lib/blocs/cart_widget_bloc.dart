@@ -33,6 +33,11 @@ class CartWidgetBloc extends Disposable {
 
   PaymentMethod get currentPaymentMethod => this._paymentMethod;
 
+  BehaviorSubject _cartTotalItems = BehaviorSubject.seeded(0);
+  Sink get cartTotalItemsSink => _cartTotalItems.sink;
+  Stream get cartTotalItemsStream => _cartTotalItems.stream;
+  get currentCartTotalItems => _cartTotalItems.value;
+
   BehaviorSubject _currentPaymentFormController = BehaviorSubject.seeded(null);
   Sink get currentPaymentFormIn => _currentPaymentFormController.sink;
   Stream<CreditCardModel> get currentPaymentFormOut =>

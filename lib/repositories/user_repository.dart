@@ -206,8 +206,6 @@ class UserRepository {
           EnderecoEntregaModel.fromJson(response.data['data']);
       return Endereco(isEmpty: false, isLoading: false, endereco: endereco);
     } catch (error) {
-      print("--------------");
-      print(error);
       return Endereco(isEmpty: true, isLoading: false);
     }
   }

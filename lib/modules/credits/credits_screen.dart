@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credito_financeiro.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
@@ -31,6 +32,8 @@ class CreditsScreen extends StatefulWidget {
 
 class _CreditsScreenState extends State<CreditsScreen> {
   HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
+
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
 
@@ -75,6 +78,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
       'type': "C",
       'operation': "06"
     };
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+    _cartWidgetBloc.cartTotalItemsSink.add(_total + 1);
     _requestsBloc.addProductToCart(_data);
     // print(_data);
   }

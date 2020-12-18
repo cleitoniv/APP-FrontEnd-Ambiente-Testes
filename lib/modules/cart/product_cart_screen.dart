@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
@@ -21,6 +22,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   int _taxaEntrega = 0;
 
@@ -85,6 +87,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   }
 
   _removeItem(Map<String, dynamic> data) {
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+    _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
     _requestsBloc.removeFromCart(data);
   }
 

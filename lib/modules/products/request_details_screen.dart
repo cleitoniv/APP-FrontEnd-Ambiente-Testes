@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
@@ -30,6 +31,7 @@ class RequestDetailsScreen extends StatefulWidget {
 
 class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -269,6 +271,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onAddToCart(Map data) async {
+    if (_numberController.text != "" &&
+        Helper.cpfValidator(_numberController.text) != null) {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "CPF": ["CPF Invalido!"]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
     if (isValidDate(_birthdayController.text)) {
       return;
     }
@@ -311,6 +324,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
+      int _currentTotal = _cartWidgetBloc.currentCartTotalItems;
+      _cartWidgetBloc.cartTotalItemsSink.add(_currentTotal + 1);
       _requestsBloc.addProductToCart(_data);
       Modular.to.pushNamed("/cart/product");
     } else {
@@ -576,6 +591,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'icon': MaterialCommunityIcons.numeric,
         'controller': _numberController,
         'keyboardType': TextInputType.number,
+        'validator': Helper.cpfValidator
       },
       {
         'labelText': 'Data de Nascimento',
