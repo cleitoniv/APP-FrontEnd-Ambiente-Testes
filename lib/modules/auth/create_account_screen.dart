@@ -273,7 +273,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     _confirmSms = TextEditingController();
 
     _phoneController = MaskedTextController(
-      mask: '00 00000-0000',
+      mask: '00 90000-0000',
     );
     _passwordController = TextEditingController();
     _nicknameController = TextEditingController();
