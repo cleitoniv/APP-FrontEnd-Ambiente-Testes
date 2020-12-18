@@ -50,6 +50,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
 
   _handleConfirmSms() async {
     if (_confirmSms.text.trim().length == 0) {
+      Modular.to.pop();
       _showDialog("Atenção", "Preencha o campo código!");
       return;
     }
@@ -61,8 +62,10 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
         int.parse(_confirmSms.text), int.parse(phonex));
 
     if (codeMatch) {
+      Modular.to.pop();
       Modular.to.pushNamed('/auth/activityPerformed');
     } else {
+      Modular.to.pop();
       _showDialog("Atenção", "Código Inválido ou expirado!");
     }
   }
