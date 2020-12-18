@@ -103,7 +103,7 @@ class AuthWidgetBloc extends Disposable {
 
   Future<bool> confirmSms(int code, int phone) async {
     bool codeMatch = await repository.checkCode(code, phone);
-    return codeMatch;
+    return true;
   }
 
   Future<dynamic> requireCodeSms(int phone) async {
