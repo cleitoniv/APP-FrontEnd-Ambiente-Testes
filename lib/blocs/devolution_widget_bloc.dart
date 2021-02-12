@@ -21,7 +21,7 @@ class DevolutionWidgetBloc extends Disposable {
     }
   }
 
-  void sendEmail(String email) async {
+  Future<void> sendEmail(String email) async {
     repository.sendEmail(email);
   }
 

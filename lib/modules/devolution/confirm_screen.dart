@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
+import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
@@ -93,7 +94,86 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     }
   }
 
+  String toOriginalFormatString(DateTime dateTime) {
+    final y = dateTime.year.toString().padLeft(4, '0');
+    final m = dateTime.month.toString().padLeft(2, '0');
+    final d = dateTime.day.toString().padLeft(2, '0');
+    return "$y$m$d";
+  }
+
+  bool isValidDate(String input) {
+    SnackBar _snackBar;
+    DateTime now = new DateTime.now();
+    var splitDate = input.split("/");
+
+    if (input == '') {
+      return false;
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return true;
+    }
+    if (int.parse(splitDate[2]) > (now.year - 18)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (int.parse(splitDate[2]) <= 1900) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+
+    var splitedDate = "${splitDate[2]}${splitDate[1]}${splitDate[0]}";
+
+    final date = DateTime.parse(splitedDate);
+    final originalFormatString = toOriginalFormatString(date);
+    if (!(splitedDate == originalFormatString)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (_snackBar != null) {
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return true;
+    }
+    return false;
+  }
+
   _onSubmit(String group, serie, nomeProduto) async {
+    if (_numberController.text != "" &&
+        Helper.cpfValidator(_numberController.text) != null) {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "CPF": ["CPF Invalido!"]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
+    if (isValidDate(_birthdayController.text)) {
+      return;
+    }
+
+    var invalidBoxes = SnackBar(
+        content: Text("Quantidade de caixas tem que ser maior que 0."));
+
+    if (_lensController.text == "" || int.parse(_lensController.text) <= 0) {
+      return _scaffoldKey.currentState.showSnackBar(
+        invalidBoxes,
+      );
+    }
+
     int quantidade = int.parse(_lensController.text);
 
     Map<String, dynamic> errors = {};
@@ -196,7 +276,6 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   }
 
   _onShowOptions(Map<dynamic, dynamic> data, {String key, String param}) {
-    print(data);
     Modals.params(
       context,
       items: data,
@@ -210,7 +289,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController();
-    _numberController = TextEditingController();
+    _numberController = MaskedTextController(
+      mask: '000.000.000-00',
+    );
     _olhoController = TextEditingController(text: "D");
     _lensController = TextEditingController(
       text: '1',
@@ -247,16 +328,20 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
         'controller': _nameController,
       },
       {
-        'labelText': 'Número do Cliente',
+        'labelText': 'CPF(opcional)',
         'icon': MaterialCommunityIcons.numeric,
         'controller': _numberController,
+        'keyboardType': TextInputType.number,
+        'validator': Helper.cpfValidator
       },
       {
         'labelText': 'Data de nascimento',
         'icon': MaterialCommunityIcons.cake_layered,
         'controller': _birthdayController,
+        'keyboardType': TextInputType.number,
       },
     ];
+
     _productParams = [
       {
         'labelText': 'Escolha o Grau',
@@ -375,6 +460,8 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           color: Color(0xffA1A1A1),
                         ),
                         controller: _pacientInfo[index]['controller'],
+                        validator: _pacientInfo[index]['validator'],
+                        keyboardType: _pacientInfo[index]['keyboardType'],
                       );
                     },
                   ),

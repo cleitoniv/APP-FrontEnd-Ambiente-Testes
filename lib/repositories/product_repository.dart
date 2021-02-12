@@ -230,7 +230,6 @@ class ProductRepository {
         productList.list.map<Map<String, dynamic>>((e) {
       return e.toJson();
     }).toList();
-    print(products);
     try {
       Response response = await dio.post('/api/cliente/devolution_continue',
           data: jsonEncode({"products": products, "tipo": tipo}),

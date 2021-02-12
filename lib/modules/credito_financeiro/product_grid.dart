@@ -254,11 +254,6 @@ class _CreditProductGridScreenState extends State<CreditProductGridScreen>
     super.initState();
 
     _initState();
-
-    // _homeWidgetBloc.currentTabIndexOut.listen((event) {}).onData((event) {
-    //   print('Etrou Bloc');
-    //   return _tabController.index = event;
-    // });
   }
 
   @override

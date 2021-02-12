@@ -77,7 +77,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   _handleConfirmSms() async {
     if (_confirmSms.text.trim().length == 0) {
-      Modular.to.pop();
       _showDialog("Atenção", "Preencha o campo código!");
       return;
     }
@@ -89,13 +88,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         int.parse(_confirmSms.text), int.parse(phonex));
 
     if (codeMatch) {
-      Modular.to.pop();
-
-      _handleSubmit();
+      await _handleSubmit();
       // Modular.to.pushNamed('/auth/activityPerformed');
     } else {
-      Modular.to.pop();
-
       _showDialog("Atenção", "Código Inválido ou expirado!");
     }
   }
@@ -128,14 +123,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   _confirmSmsDialog() async {
     if (_formKey.currentState.validate()) {
-      _startLoad();
+      //_startLoad();
       String phonex = _phoneController.text.replaceAll('-', '');
       phonex = phonex.replaceAll(' ', '');
       var codeGenerated =
           await _authWidgetBloc.requireCodeSms(int.parse(phonex));
 
       if (!codeGenerated["success"]) {
-        _endLoad();
+        //_endLoad();
         _showDialog("Atenção", codeGenerated["data"]);
         return;
       }
@@ -151,7 +146,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           _requestCodeController = "Cadastrar";
         });
       });
-      _endLoad();
+      //_endLoad();
       await showDialog<String>(
         context: context,
         child: AlertDialog(
@@ -203,7 +198,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         codeAutoRetrievalTimeout: null,
         verificationFailed: null,
         codeSent: (String verficationId, [int resendToken]) {
-          print("entrei aqui");
           setState(() {
             this._currentVerficationId = verficationId;
           });

@@ -27,7 +27,8 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
   TextEditingController _serialController;
 
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-
+  bool _isLoadingButton;
+  bool _lock;
   StreamSubscription errorHandler;
 
   _onChangeDevolutionType(value) {
@@ -66,7 +67,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
       Dialogs.error(
         context,
         title: "Atenção",
-        subtitle: 'Voce precisa digitar uma serie valida.',
+        subtitle: 'Você precisa digitar uma serie válida.',
         buttonText: 'Voltar',
         onTap: () {
           Modular.to.pop();
@@ -76,6 +77,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
     }
     if (_devolutionWidgetBloc.currentProductList.list == null) {
       _devolutionWidgetBloc.addProduct(_serialController.text.trim());
+      _serialController.text = '';
     } else {
       final prod = _devolutionWidgetBloc.currentProductList.list;
 
@@ -94,6 +96,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
             });
           }
         });
+        _serialController.text = '';
       } else {
         _showDialog('Atenção', 'Produto já está na lista.');
       }
@@ -103,8 +106,35 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
   _onSubmit() async {
     String type = _devolutionWidgetBloc.devolutionTypeValue;
 
-    ProductList products = _devolutionWidgetBloc.productsPreDevolucao;
+    // if (_serialController.text.trim() == "") {
+    //   Dialogs.error(
+    //     context,
+    //     title: "Atenção",
+    //     subtitle: 'Você precisa digitar uma serie válida.',
+    //     buttonText: 'Voltar',
+    //     onTap: () {
+    //       Modular.to.pop();
+    //     },
+    //   );
+    //   return;
+    // }
+    final prod = _devolutionWidgetBloc.currentProductList.list;
 
+    if (prod.isEmpty) {
+      Dialogs.error(
+        context,
+        title: "Atenção",
+        subtitle:
+            'Você precisa ter algum item na lista para solicitar o retorno.',
+        buttonText: 'Voltar',
+        onTap: () {
+          Modular.to.pop();
+        },
+      );
+      return;
+    }
+
+    ProductList products = _devolutionWidgetBloc.productsPreDevolucao;
     if (type == 'Crédito') {
       Devolution devol = await _devolutionWidgetBloc.confirmCreditDevolution();
 
@@ -123,7 +153,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           context,
           title: "Atenção",
           subtitle:
-              'Erro ao Processar Devolução! Verifique os produtos selecionados.',
+              'Erro ao processar o Retorno! Verifique os produtos selecionados.',
           buttonText: 'Voltar',
           onTap: () {
             Modular.to.pop();
@@ -166,9 +196,9 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
 
   _removeItem(String numSerie) {
     final prod = _devolutionWidgetBloc.currentProductList.list;
-
     final hasItem =
         prod.firstWhere((e) => e.numSerie == numSerie, orElse: () => null);
+
     if (hasItem?.numSerie != null) {
       _devolutionWidgetBloc.currentProductList.list
           .removeWhere((element) => element.numSerie == numSerie);
@@ -176,6 +206,8 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
     }
   }
 
+// S02906194
+// S03006102
   @override
   void initState() {
     super.initState();
@@ -190,6 +222,8 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
         _devolutionWidgetBloc.productErrorSink.add("clear");
       }
     });
+    _lock = false;
+    _isLoadingButton = false;
     _serialController = TextEditingController();
     _devolutionWidgetBloc.resetPreDevolucao();
   }
@@ -206,14 +240,14 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
     int i = -1;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Devolução'),
+        title: Text('Retorno'),
         centerTitle: false,
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
           Text(
-            'Devolução para Crédito ou Troca',
+            'Retorno para Crédito ou Troca',
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
           ),
@@ -225,7 +259,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 TextSpan(
-                  text: ' Devolução ',
+                  text: ' Retorno ',
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         color: Theme.of(context).accentColor,
                       ),
@@ -260,7 +294,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
             builder: (context, snapshot) {
               return DropdownWidget(
                 items: ['Crédito', 'Troca'],
-                labelText: 'Selecione o tipo de Devolução',
+                labelText: 'Selecione o tipo de Retorno',
                 currentValue: snapshot.data,
                 onChanged: _onChangeDevolutionType,
                 prefixIcon: Padding(
@@ -298,6 +332,43 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
             keyboardType: TextInputType.text,
           ),
           SizedBox(height: 30),
+          RaisedButton.icon(
+            onPressed: !_lock
+                ? () async {
+                    setState(() {
+                      _lock = true;
+                    });
+                    bool blocked = await _authBloc.checkBlockedUser(context);
+                    if (!blocked) {
+                      _onAddProduct();
+                    }
+                    setState(() {
+                      _lock = false;
+                    });
+                  }
+                : null,
+            elevation: 0,
+            disabledColor: Colors.white,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+              side: BorderSide(
+                width: 2,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            icon: Icon(
+              MaterialCommunityIcons.plus,
+              color: Theme.of(context).primaryColor,
+            ),
+            label: Text(
+              'Adicionar Produto a Lista',
+              style: Theme.of(context).textTheme.button.copyWith(
+                    color: Theme.of(context).primaryColor,
+                  ),
+            ),
+          ),
+          SizedBox(height: 20),
           Text(
             'Produtos Adicionados',
             style: Theme.of(context).textTheme.headline5,
@@ -309,7 +380,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
               if (!snapshot.hasData || snapshot.data.isLoading) {
                 return Center(child: CircularProgressIndicator());
               } else if (snapshot.data.isEmpty) {
-                return Center(child: Text("Nao há produtos adicionados."));
+                return Center(child: Text("Não há produtos adicionados."));
               }
               // return Container();
               return Container(
@@ -352,64 +423,30 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                           ],
                         );
                       }).toList()));
-              // print(snapshot.data.list);
-              // return Column(
-              //   children: snapshot.data.list.map<Widget>((e) {
-              //     return ListTileMoreCustomizable(
-              //       contentPadding: const EdgeInsets.all(5),
-              //       leading: CachedNetworkImage(
-              //         imageUrl: e.imageUrl,
-              //         width: 80,
-              //         height: 80,
-              //         fit: BoxFit.cover,
-              //       ),
-              //       title: Text("${e.title}"),
-              //     );
-              //   }).toList(),
-              // );
             },
           ),
           SizedBox(height: 20),
-          RaisedButton.icon(
-            onPressed: () async {
-              bool blocked = await _authBloc.checkBlockedUser(context);
-              if (!blocked) {
-                _onAddProduct();
-              }
-            },
-            elevation: 0,
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                width: 2,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-            icon: Icon(
-              MaterialCommunityIcons.plus,
-              color: Theme.of(context).primaryColor,
-            ),
-            label: Text(
-              'Adicionar Produto a Lista',
-              style: Theme.of(context).textTheme.button.copyWith(
-                    color: Theme.of(context).primaryColor,
-                  ),
-            ),
-          ),
           SizedBox(height: 30),
-          RaisedButton(
-            onPressed: () async {
-              bool blocked = await _authBloc.checkBlockedUser(context);
-              if (!blocked) {
-                _onSubmit();
-              }
-            },
-            child: Text(
-              'Continuar Solicitação',
-              style: Theme.of(context).textTheme.button,
-            ),
-          ),
+          !_isLoadingButton
+              ? RaisedButton(
+                  onPressed: () async {
+                    setState(() {
+                      _isLoadingButton = true;
+                    });
+                    bool blocked = await _authBloc.checkBlockedUser(context);
+                    if (!blocked) {
+                      _onSubmit();
+                    }
+                    setState(() {
+                      _isLoadingButton = false;
+                    });
+                  },
+                  child: Text(
+                    'Continuar Solicitação',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                )
+              : Center(child: CircularProgressIndicator()),
         ],
       ),
     );

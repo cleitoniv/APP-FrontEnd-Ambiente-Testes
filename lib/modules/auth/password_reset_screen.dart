@@ -41,8 +41,6 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   _sendResetEmail() async {
     ResetPassword _reset =
         await _authBloc.checkUserEmail(_emailController.text);
-    print(_reset.canReset);
-    print(_reset.errorData);
     if (_reset.canReset) {
       await _auth.sendPasswordResetEmail(email: _emailController.text);
       Dialogs.success(this.context,

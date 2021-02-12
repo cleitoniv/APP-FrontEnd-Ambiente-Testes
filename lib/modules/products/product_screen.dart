@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
@@ -7,6 +9,7 @@ import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
+import 'package:central_oftalmica_app_cliente/modules/home/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -24,57 +27,112 @@ class _ProductScreenState extends State<ProductScreen> {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-
+  HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
+  CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
   AuthEvent currentUser;
 
   _onShowInfo(bool value) {
     _productWidgetBloc.showInfoIn.add(!value);
   }
 
+  Function(int) onNavigate;
+
+  _showDialogType(String type) {
+    if (type == "T") {
+      Modular.to.pop();
+    } else {
+      Modular.to.pushNamed('/home/1');
+    }
+  }
+
   _onCancelPurchase() {
     Modular.to.pop();
   }
 
-  _showDialog(String title, String content) {
+  _showDialog(String title, String content, String type) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            title,
-            style: Theme.of(context).textTheme.headline5,
-          ),
-          content: Text(content),
-          actions: [
-            RaisedButton(
-                child: Text(
-                  "Ok",
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  Modular.to.pop();
-                })
-          ],
-        );
+            title: Text(
+              title,
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            content: Text(content),
+            actions: [
+              RaisedButton(
+                  child: Text(
+                    "Ok",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Modular.to.pop();
+                  }),
+              SizedBox(width: 80),
+              RaisedButton(
+                  child: Text(
+                    "Compre crédito",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    _showDialogType(type);
+                  })
+            ]);
       },
     );
   }
 
   _onConfirmPurchase(ProductModel product, String type, int value) {
     if (type == 'C') {
-      if (value == 0) {
-        _showDialog(
-            'Atenção', 'Adquira Credito de Produto para comprar esse item!');
+      if (value <= 0 || product.valueProduto == 0) {
+        _showDialog('Atenção',
+            'Adquira Crédito de Produto para comprar esse item!', type);
 
         return;
       }
     } else if (type == 'CF') {
-      if (value == 0) {
-        _showDialog(
-            'Atenção', 'Adquira Credito Financeiro para comprar esse item!');
+      if (value <= 0 || product.valueFinan == 0) {
+        if (value <= 0) {
+          _showDialog('Atenção',
+              'Adquira Crédito Financeiro para comprar esse item!', type);
+
+          return;
+        } else {
+          _showDialog('Atenção',
+              'Aguarde o processamento do saldo deste produto.', type);
+
+          return;
+        }
       }
-      return;
+    } else if (type == 'T') {
+      if (value <= 0) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: Text(
+                  "Atenção",
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+                content:
+                    Text("Adquira saldo de teste para conseguir solicitar."),
+                actions: [
+                  RaisedButton(
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Modular.to.pop();
+                      }),
+                ]);
+          },
+        );
+
+        return;
+      }
     }
     Modular.to.pushNamed(
       '/products/${product.id}/requestDetails',
@@ -499,8 +557,16 @@ class _ProductScreenState extends State<ProductScreen> {
                               'onTap': () => _onConfirmPurchase(
                                   productSnapshot.data.product,
                                   'CF',
-                                  productSnapshot.data.product.valueFinan),
-                            }
+                                  this.currentUser.data.money),
+                            },
+                            {
+                              'title': 'Solicitar Teste',
+                              'color': Color(0xff707070),
+                              'onTap': () => _onConfirmPurchase(
+                                  productSnapshot.data.product,
+                                  'T',
+                                  productSnapshot.data.product.tests),
+                            },
                           ].map(
                             (item) {
                               return Container(

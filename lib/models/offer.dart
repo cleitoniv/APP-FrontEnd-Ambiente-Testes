@@ -1,7 +1,7 @@
 class OfferModel {
   int value;
   int installmentCount;
-  int desconto;
+  int discount;
   int quantity;
   int price;
   int total;
@@ -9,7 +9,7 @@ class OfferModel {
   OfferModel.fromJson(Map<String, dynamic> json) {
     value = json['value'];
     installmentCount = json['installmentCount'];
-    desconto = json['desconto'];
+    discount = json['discount'];
     quantity = json['quantity'];
     price = json['price'];
     total = json['total'];

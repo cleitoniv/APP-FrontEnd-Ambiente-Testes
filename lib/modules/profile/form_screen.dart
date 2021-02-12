@@ -4,6 +4,7 @@ import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -32,6 +33,7 @@ class _FormScreenState extends State<FormScreen> {
   TextEditingController _emailController;
   TextEditingController _officeController;
   MaskedTextController _passwordController;
+  bool accept = false;
 
   _onAddUser() async {
     Map<String, dynamic> params = {
@@ -44,7 +46,6 @@ class _FormScreenState extends State<FormScreen> {
     if (addUser.isValid) {
       Modular.to.pop();
     } else {
-      print(addUser.errorMessage);
       SnackBar _snackBar = SnackBar(
         content: Text(
           addUser.errorMessage,
@@ -53,6 +54,16 @@ class _FormScreenState extends State<FormScreen> {
 
       _scaffoldKey.currentState.showSnackBar(_snackBar);
     }
+  }
+
+  _handleShowTerm() {
+    Modular.to.pushNamed('/auth/terms');
+  }
+
+  _accepTermUser(bool value) {
+    setState(() {
+      accept = value;
+    });
   }
 
   _onSaveInfo() async {
@@ -226,6 +237,34 @@ class _FormScreenState extends State<FormScreen> {
                   ),
             ),
           ),
+          widget.formType == "edit"
+              ? Container()
+              : Row(children: <Widget>[
+                  Checkbox(
+                    value: accept,
+                    onChanged: _accepTermUser,
+                  ),
+                  Text.rich(
+                    TextSpan(
+                      text: 'Aceito os ',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                          ),
+                      children: [
+                        TextSpan(
+                          text: 'Termos de responsabilidade',
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                color: Theme.of(context).accentColor,
+                                decoration: TextDecoration.underline,
+                                fontSize: 14,
+                              ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = _handleShowTerm,
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
           // widget.formType == 'edit'
           //     ? ListTileMoreCustomizable(
           //         dense: true,
@@ -262,10 +301,12 @@ class _FormScreenState extends State<FormScreen> {
           //       ):
           Container(),
           SizedBox(height: 30),
-          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
+          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE' &&
+                  widget.formType == "edit"
               ? RaisedButton(
-                  onPressed:
-                      widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
+                  onPressed: accept
+                      ? null
+                      : widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
                   elevation: 0,
                   child: Text(
                     widget.formType == 'edit'
@@ -274,7 +315,18 @@ class _FormScreenState extends State<FormScreen> {
                     style: Theme.of(context).textTheme.button,
                   ),
                 )
-              : Container(),
+              : RaisedButton(
+                  onPressed: !accept
+                      ? null
+                      : widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
+                  elevation: 0,
+                  child: Text(
+                    widget.formType == 'edit'
+                        ? 'Salvar Alterações de Usuário'
+                        : 'Cadastrar Novo Usuário',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                ),
           SizedBox(height: 30),
           _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
               ? widget.formType == 'edit'
@@ -294,3 +346,5 @@ class _FormScreenState extends State<FormScreen> {
     );
   }
 }
+
+class _handleShowTerm {}

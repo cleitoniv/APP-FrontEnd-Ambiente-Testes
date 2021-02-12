@@ -51,6 +51,11 @@ class _CompleteCreateAccountScreenState
   bool enabled = true;
   bool cnaeCrmEnabled = true;
   bool dataNascimentoEnabled = true;
+  bool numeroEnabled = true;
+  bool complementEnabled = true;
+  bool emailFiscalEnabled = true;
+  String textRegister = 'Continuar Cadastro';
+  // bool enderecoEnabled = false;
 
   String sanitize(String str) {
     return str.replaceAll('.', '').replaceAll('-', '').replaceAll('/', '');
@@ -93,59 +98,9 @@ class _CompleteCreateAccountScreenState
     return false;
   }
 
-  String toOriginalFormatString(DateTime dateTime) {
-    final y = dateTime.year.toString().padLeft(4, '0');
-    final m = dateTime.month.toString().padLeft(2, '0');
-    final d = dateTime.day.toString().padLeft(2, '0');
-    return "$y$m$d";
-  }
-
-  _handleSubmit() async {
-    if (isValidDate(_dataNascimentoController.text)) {
-      return;
-    }
-
-    if (_cnpjController.text.length <= 13 &&
-        !_verifyCpfCnpj(_cpfController.text, "CPF")) {
-      return;
-    } else if (_cnpjController.text.length >= 13 &&
-        !_verifyCpfCnpj(_cnpjController.text, "CNPJ")) {
-      return;
-    }
-    if (_formKey.currentState.validate()) {
-      Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
-      final cnpjCpf = cpfCnpjLabel(currentData["ramo"]);
-
-      Map<String, dynamic> completeFormdata = {
-        'nome': sanitize(_nameController.text),
-        'cep': sanitize(_zipCodeController.text),
-        'estado': sanitize(_ufController.text),
-        'cdmunicipio': _codMunicipioController.text,
-        'endereco': _addressController.text,
-        'bairro': _districtController.text,
-        'municipio': _cityController.text,
-        'numero': _houseNumberController.text,
-        'crm_medico': sanitize(_crmController.text),
-        'cod_cnae': sanitize(_cnaeController.text),
-        'nome_empresarial': sanitize(_nameController.text),
-        'complemento': _adjunctController.text,
-        'data_nascimento': _dataNascimentoController.text,
-        'email_fiscal': _emailFiscalController.text
-      };
-
-      if (cnpjCpf["ramo"] == "CPF") {
-        completeFormdata['cnpj_cpf'] = sanitize(_cpfController.text);
-      } else {
-        completeFormdata['cnpj_cpf'] = sanitize(_cnpjController.text);
-      }
-
-      Map<String, dynamic> preFormData =
-          await _authWidgetBloc.createAccountDataOut.first;
-
-      _authBloc.createAccountIn.add(
-        {...completeFormdata, ...preFormData},
-      );
-
+  void clienteExiste(String cpf_cnpj) async {
+    Cadastro cadastro = await _authBloc.fetchCadastro(sanitize(cpf_cnpj));
+    if (!cadastro.isEmpty) {
       LoginEvent createAccount = await _authBloc.createAccountOut.first;
 
       if (createAccount.isValid) {
@@ -225,6 +180,66 @@ class _CompleteCreateAccountScreenState
           _snackBar,
         );
       }
+    } else {
+      Modular.to.pushNamed('/auth/deliveryAddressRegister');
+    }
+  }
+
+  String toOriginalFormatString(DateTime dateTime) {
+    final y = dateTime.year.toString().padLeft(4, '0');
+    final m = dateTime.month.toString().padLeft(2, '0');
+    final d = dateTime.day.toString().padLeft(2, '0');
+    return "$y$m$d";
+  }
+
+  _handleSubmit() async {
+    if (_dataNascimentoController.text == "") {
+    } else if (isValidDate(_dataNascimentoController.text)) {
+      return;
+    }
+
+    if (_cnpjController.text.length <= 13 &&
+        !_verifyCpfCnpj(_cpfController.text, "CPF")) {
+      return;
+    } else if (_cnpjController.text.length >= 13 &&
+        !_verifyCpfCnpj(_cnpjController.text, "CNPJ")) {
+      return;
+    }
+    if (_formKey.currentState.validate()) {
+      Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
+      final cnpjCpf = cpfCnpjLabel(currentData["ramo"]);
+
+      Map<String, dynamic> completeFormdata = {
+        'nome': sanitize(_nameController.text),
+        'cep': sanitize(_zipCodeController.text),
+        'estado': sanitize(_ufController.text),
+        'cdmunicipio': _codMunicipioController.text,
+        'endereco': _addressController.text,
+        'bairro': _districtController.text,
+        'municipio': _cityController.text,
+        'numero': _houseNumberController.text,
+        'crm_medico': sanitize(_crmController.text),
+        'cod_cnae': sanitize(_cnaeController.text),
+        'nome_empresarial': sanitize(_nameController.text),
+        'complemento': _adjunctController.text,
+        'data_nascimento': _dataNascimentoController.text,
+        'email_fiscal': _emailFiscalController.text
+      };
+
+      if (cnpjCpf["ramo"] == "CPF") {
+        completeFormdata['cnpj_cpf'] = sanitize(_cpfController.text);
+      } else {
+        completeFormdata['cnpj_cpf'] = sanitize(_cnpjController.text);
+      }
+
+      Map<String, dynamic> preFormData =
+          await _authWidgetBloc.createAccountDataOut.first;
+
+      _authBloc.createAccountIn.add(
+        {...completeFormdata, ...preFormData},
+      );
+
+      clienteExiste(_cpfController.text);
     }
   }
 
@@ -268,6 +283,63 @@ class _CompleteCreateAccountScreenState
         );
       },
     );
+  }
+
+  List<Map> registerAddressTerms() {
+    List<Map> _fieldData = [
+      {
+        'labelText': 'CEP',
+        'controller': _zipCodeController,
+        'validator': (String text) => Helper.lengthValidator(
+              text,
+              length: 8,
+              message: 'CEP deve possuir 8 dígitos',
+            ),
+        'keyboardType': TextInputType.number,
+        'enabled': this.enabled,
+        'focus': cepFocus
+      },
+      {
+        'labelText': 'Endereço',
+        'controller': _addressController,
+        'validator': Helper.lengthValidator,
+        'keyboardType': TextInputType.number,
+        'enabled': this.enabled
+      },
+      {
+        'labelText': 'Número',
+        'controller': _houseNumberController,
+        'validator': Helper.lengthValidator,
+        'keyboardType': TextInputType.number,
+        'enabled': this.numeroEnabled
+      },
+      {
+        'labelText': 'Complemento',
+        'controller': _adjunctController,
+        'validator': null,
+        'enabled': this.complementEnabled
+      },
+      {
+        'labelText': 'Estado',
+        'controller': _ufController,
+        'validator': Helper.lengthValidator,
+        'enabled': this.enabled
+      },
+      {
+        'labelText': 'Cidade',
+        'controller': _cityController,
+        'validator': Helper.lengthValidator,
+        'enabled': this.enabled
+      },
+      {
+        'labelText': 'Bairro',
+        'controller': _districtController,
+        'validator': Helper.lengthValidator,
+        'enabled': this.enabled
+      },
+    ];
+
+    return _fieldData;
   }
 
   Map<String, dynamic> cpfCnpjLabel(String ramo) {
@@ -361,7 +433,7 @@ class _CompleteCreateAccountScreenState
         'controller': _emailFiscalController,
         'validator': Helper.emailValidator,
         'keyboardType': TextInputType.emailAddress,
-        'enabled': this.cnaeCrmEnabled
+        'enabled': this.emailFiscalEnabled
       },
       {
         'labelText': "CNAE",
@@ -404,21 +476,34 @@ class _CompleteCreateAccountScreenState
       _dataNascimentoController.text = cadastro.dados.dataNascimento;
       _ufController.text = cadastro.dados.estado;
       _emailFiscalController.text = cadastro.dados.emailFiscal;
-      // setState(() {
-      //   if (cadastro.dados.crmCnae != '000000000') {
-      //     this.cnaeCrmEnabled = false;
-      //   } else if (cadastro.dados.dataNascimento != null) {
-      //     this.dataNascimentoEnabled = false;
-      //   }
-      //   this.enabled = false;
-      // });
+      setState(() {
+        if (cadastro.dados.crmCnae != '000000000') {
+          this.cnaeCrmEnabled = true;
+        }
+        if (cadastro.dados.dataNascimento != null) {
+          this.dataNascimentoEnabled = false;
+        }
+        if (cadastro.dados.emailFiscal != null) {
+          this.emailFiscalEnabled = false;
+        }
+        if (cadastro.dados.emailFiscal != null) {
+          this.emailFiscalEnabled = false;
+        }
+        if (cadastro.dados.numero != null) {
+          this.numeroEnabled = false;
+        }
+        if (cadastro.dados.complemento != null) {
+          this.complementEnabled = false;
+        }
+        this.textRegister = 'Completar Cadastro';
+        this.enabled = false;
+      });
     }
   }
 
   @override
   void initState() {
     super.initState();
-
     _cnpjController = MaskedTextController(mask: '00.000.000/0000-00');
     _cpfController = MaskedTextController(
       mask: '000.000.000-00',
@@ -443,59 +528,6 @@ class _CompleteCreateAccountScreenState
     _ufController = TextEditingController();
     _codMunicipioController = TextEditingController();
     _emailFiscalController = TextEditingController();
-
-    _fieldData = [
-      {
-        'labelText': 'CEP',
-        'controller': _zipCodeController,
-        'validator': (String text) => Helper.lengthValidator(
-              text,
-              length: 8,
-              message: 'CEP deve possuir 8 dígitos',
-            ),
-        'keyboardType': TextInputType.number,
-        'enabled': this.enabled,
-        'focus': cepFocus
-      },
-      {
-        'labelText': 'Endereço',
-        'controller': _addressController,
-        'validator': Helper.lengthValidator,
-        'keyboardType': TextInputType.number,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Número',
-        'controller': _houseNumberController,
-        'validator': Helper.lengthValidator,
-        'keyboardType': TextInputType.number,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Complemento',
-        'controller': _adjunctController,
-        'validator': null,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Estado',
-        'controller': _ufController,
-        'validator': Helper.lengthValidator,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Cidade',
-        'controller': _cityController,
-        'validator': Helper.lengthValidator,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Bairro',
-        'controller': _districtController,
-        'validator': Helper.lengthValidator,
-        'enabled': this.enabled
-      },
-    ];
 
     otherFocus = new FocusNode();
 
@@ -649,12 +681,12 @@ class _CompleteCreateAccountScreenState
                 ),
                 SizedBox(height: 30),
                 Text(
-                  'Endereco',
+                  'Endereço',
                   style: Theme.of(context).textTheme.headline5,
                   textAlign: TextAlign.center,
                 ),
                 Column(
-                  children: _fieldData.map(
+                  children: registerAddressTerms().map(
                     (e) {
                       return Container(
                         margin: const EdgeInsets.only(top: 20),
@@ -667,7 +699,7 @@ class _CompleteCreateAccountScreenState
                           ),
                           controller: e['controller'],
                           validator: e['validator'],
-                          enabled: this.enabled,
+                          enabled: e['enabled'],
                           keyboardType: e['keyboardType'],
                         ),
                       );
@@ -676,9 +708,17 @@ class _CompleteCreateAccountScreenState
                 ),
                 SizedBox(height: 30),
                 RaisedButton(
-                  onPressed: _handleSubmit,
+                  onPressed: () {
+                    if (!_formKey.currentState.validate()) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              "Corrija os erros em vermelho antes de enviar.")));
+                    } else {
+                      _handleSubmit();
+                    }
+                  },
                   child: Text(
-                    'Completar Cadastro',
+                    this.textRegister,
                     style: Theme.of(context).textTheme.button,
                   ),
                 ),

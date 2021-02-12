@@ -21,6 +21,10 @@ class AuthWidgetBloc extends Disposable {
     return _guestToken;
   }
 
+  getCurrentDataForm() {
+    return _createAccountDataController.value;
+  }
+
   BehaviorSubject _createAccountShowPasswordController =
       BehaviorSubject.seeded(true);
   Sink get createAccountShowPasswordIn =>

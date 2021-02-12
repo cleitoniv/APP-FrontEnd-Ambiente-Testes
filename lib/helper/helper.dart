@@ -53,8 +53,6 @@ class Helper {
     String text, {
     String message = 'CPF Inválido!',
   }) {
-    print("cpff---------------------");
-    print(CPF.isValid(text));
     if (!CPF.isValid(text)) {
       return message;
     }
@@ -180,32 +178,59 @@ class Helper {
     }
   }
 
-  static Map<String, dynamic> buyTypeBuild(BuildContext context, String type) {
-    switch (type) {
-      case 'A':
-        return {
-          'title': 'Avulso',
-          'color': Color(0xff707070),
-          'icon': Icon(
-            Icons.attach_money,
-            color: Colors.white,
-            size: 20,
-          )
-        };
-      case 'A':
+  static Map<String, dynamic> buyTypeBuild(
+      BuildContext context, String operation) {
+    switch (operation) {
+      case '13':
         return {
           'title': 'Financeiro',
           'color': Theme.of(context).primaryColor,
+          'background': Colors.green[300],
           'icon': Icon(
             Icons.attach_money,
             color: Colors.white,
             size: 20,
           )
         };
-      case 'C':
+      case '01':
+        return {
+          'title': 'Avulso',
+          'color': Color(0xff707070),
+          'background': Color(0xff707070),
+          'icon': Icon(
+            Icons.attach_money,
+            color: Colors.white,
+            size: 20,
+          )
+        };
+      case '07':
         return {
           'title': 'Produto',
           'color': Theme.of(context).splashColor,
+          'background': Color(0xffEFC75E),
+          'icon': Image.asset(
+            'assets/icons/open_box.png',
+            width: 15,
+            height: 15,
+            color: Colors.white,
+          )
+        };
+      case '00':
+        return {
+          'title': 'Teste',
+          'color': Colors.white,
+          'background': Colors.white,
+          'icon': Icon(
+            Icons.remove_red_eye,
+            color: Colors.black54,
+            size: 23,
+          )
+        };
+      case '06':
+        return {
+          'title': 'Produto',
+          'color': Theme.of(context).splashColor,
+          'background': Color(0xffEFC75E),
           'icon': Image.asset(
             'assets/icons/open_box.png',
             width: 15,

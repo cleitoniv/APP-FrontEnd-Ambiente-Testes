@@ -45,6 +45,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   int _totalPay = 0;
   bool _paymentMethod = true;
   List<String> _installments = [];
+  bool _isButtonDisabled;
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _taxaEntrega = _requestBloc.taxaEntregaValue;
@@ -82,6 +83,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     _ccvController.addListener(() {});
     _calcPaymentInstallment();
     _getPaymentMethod();
+    _isButtonDisabled = false;
   }
 
   @override
@@ -99,6 +101,10 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
+    setState(() {
+      _isButtonDisabled = true;
+    });
+
     final _taxaEntrega = _requestBloc.taxaEntregaValue;
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
@@ -122,7 +128,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     final creditoFinan =
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
-    print(creditoFinan);
+
     bool statusPayment = await _creditoFinanceiroBloc.pagamento(
         creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
 
@@ -240,7 +246,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                           }
 
                           return Text(
-                            'R\$ ${Helper.intToMoney(snapshot.data.valor - snapshot.data.desconto)}',
+                            'R\$ ${Helper.intToMoney(snapshot.data.valor)}',
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
                                       fontSize: 18,
@@ -308,7 +314,6 @@ class _FinishPaymentState extends State<FinishPayment> {
                           },
                           items: _installments
                               .map<DropdownMenuItem<String>>((String value) {
-                            // print(value);
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
@@ -360,7 +365,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                 ],
               ),
               RaisedButton(
-                onPressed: _onSubmit, // _onSubmit,
+                onPressed: _isButtonDisabled ? null : _onSubmit, // _onSubmit,
                 child: Text(
                   'Finalizar Pedido',
                   style: Theme.of(context).textTheme.button,

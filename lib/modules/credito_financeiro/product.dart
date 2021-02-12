@@ -58,7 +58,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _cartWidgetBloc.cartTotalItemsSink.add(_total + 1);
     _requestsBloc.addProductToCart(_data);
     Modular.to.pushNamed("/credito_financeiro/cart");
-    // print(_data);
   }
 
   _onAddLens() {

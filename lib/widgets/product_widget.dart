@@ -104,6 +104,7 @@ class ProductWidget extends StatelessWidget {
             ),
             Text(
               title,
+              maxLines: 1,
               style: Theme.of(context).textTheme.subtitle1.copyWith(
                     fontSize: 14,
                   ),

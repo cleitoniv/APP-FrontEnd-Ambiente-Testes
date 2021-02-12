@@ -32,7 +32,7 @@ class CreditsScreen extends StatefulWidget {
 
 class _CreditsScreenState extends State<CreditsScreen> {
   HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
-
+  bool _isLoadingPackage;
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
@@ -81,7 +81,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
     int _total = _cartWidgetBloc.currentCartTotalItems;
     _cartWidgetBloc.cartTotalItemsSink.add(_total + 1);
     _requestsBloc.addProductToCart(_data);
-    // print(_data);
   }
 
   _addCreditoProduct(OfferModel offer) {
@@ -119,7 +118,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
     _creditoFinanceiroBloc.creditoFinaceiroSink.add(CreditoFinanceiro(
         valor: offer.value,
         installmentCount: offer.installmentCount,
-        desconto: 0));
+        desconto: offer.discount));
     Modular.to.pushNamed('/credito_financeiro/pagamento');
   }
 
@@ -136,6 +135,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
   @override
   void initState() {
     super.initState();
+    _isLoadingPackage = false;
     _currentProduct = {"selected": false};
     _productsBloc.fetchCreditProducts("Todos");
     _currentUser = _authBloc.getAuthCurrentUser;
@@ -460,11 +460,10 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                     offerSnapshot.data.type == "CREDIT") {
                                   return Center(
                                       child: Text(
-                                          "Selecione um produto para ver as ofertas"));
+                                          "Selecione um produto para ver as ofertas."));
                                 }
                                 List<OfferModel> _financialCredits =
                                     offerSnapshot.data.offers;
-
                                 return Column(
                                   children: [
                                     Text(
@@ -473,69 +472,104 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                           Theme.of(context).textTheme.headline5,
                                     ),
                                     Container(
-                                      height: 200,
-                                      child: ListView.separated(
-                                        padding: const EdgeInsets.all(20),
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: _currentType == 'Financeiro'
-                                            ? _financialCredits.length
-                                            : _financialCredits.length,
-                                        separatorBuilder: (context, index) =>
-                                            SizedBox(
-                                          width: 20,
-                                        ),
-                                        itemBuilder: (context, index) {
-                                          return _currentType == 'Financeiro'
-                                              ? InkWell(
-                                                  onTap: () async {
-                                                    bool blocked =
-                                                        await _authBloc
-                                                            .checkBlockedUser(
-                                                                context);
-                                                    if (!blocked) {
-                                                      _addCreditoFinanceiro(
-                                                          _financialCredits[
-                                                              index]);
-                                                    }
-                                                  },
-                                                  child: CardWidget(
-                                                    parcels:
-                                                        _financialCredits[index]
-                                                            .installmentCount,
-                                                    value:
-                                                        _financialCredits[index]
-                                                            .value,
-                                                  ),
-                                                )
-                                              : InkWell(
-                                                  onTap: () async {
-                                                    bool blocked =
-                                                        await _authBloc
-                                                            .checkBlockedUser(
-                                                                context);
-                                                    if (!blocked) {
-                                                      _addCreditoProduct(
-                                                          _financialCredits[
-                                                              index]);
-                                                    }
-                                                  },
-                                                  child:
-                                                      CreditProductCardWidget(
-                                                    precoUnitario:
-                                                        _financialCredits[index]
-                                                            .price,
-                                                    caixas:
-                                                        _financialCredits[index]
-                                                            .quantity,
-                                                    value:
-                                                        _financialCredits[index]
-                                                            .total,
-                                                  ),
-                                                );
-                                        },
-                                      ),
-                                    )
+                                        height: 200,
+                                        child: !_isLoadingPackage
+                                            ? _financialCredits.length > 0
+                                                ? ListView.separated(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    shrinkWrap: true,
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemCount: _currentType ==
+                                                            'Financeiro'
+                                                        ? _financialCredits
+                                                            .length
+                                                        : _financialCredits
+                                                            .length,
+                                                    separatorBuilder:
+                                                        (context, index) =>
+                                                            SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      // print(_currentType);
+                                                      return _currentType ==
+                                                              'Financeiro'
+                                                          ? InkWell(
+                                                              onTap: () async {
+                                                                setState(() {
+                                                                  _isLoadingPackage =
+                                                                      true;
+                                                                });
+                                                                bool blocked =
+                                                                    await _authBloc
+                                                                        .checkBlockedUser(
+                                                                            context);
+                                                                if (!blocked) {
+                                                                  _addCreditoFinanceiro(
+                                                                      _financialCredits[
+                                                                          index]);
+                                                                }
+                                                                setState(() {
+                                                                  _isLoadingPackage =
+                                                                      false;
+                                                                });
+                                                              },
+                                                              child: CardWidget(
+                                                                parcels: _financialCredits[
+                                                                        index]
+                                                                    .installmentCount,
+                                                                value:
+                                                                    _financialCredits[
+                                                                            index]
+                                                                        .value,
+                                                                discount:
+                                                                    _financialCredits[
+                                                                            index]
+                                                                        .discount,
+                                                              ),
+                                                            )
+                                                          : InkWell(
+                                                              onTap: () async {
+                                                                bool blocked =
+                                                                    await _authBloc
+                                                                        .checkBlockedUser(
+                                                                            context);
+                                                                if (!blocked) {
+                                                                  _addCreditoProduct(
+                                                                      _financialCredits[
+                                                                          index]);
+                                                                }
+                                                              },
+                                                              child:
+                                                                  CreditProductCardWidget(
+                                                                precoUnitario:
+                                                                    _financialCredits[
+                                                                            index]
+                                                                        .price,
+                                                                caixas: _financialCredits[
+                                                                        index]
+                                                                    .quantity,
+                                                                value:
+                                                                    _financialCredits[
+                                                                            index]
+                                                                        .total,
+                                                              ),
+                                                            );
+                                                    },
+                                                  )
+                                                : Center(
+                                                    child: Container(
+                                                      child: Text(
+                                                          "Não há pacotes para esse produto."),
+                                                    ),
+                                                  )
+                                            : Center(
+                                                child:
+                                                    CircularProgressIndicator())),
                                   ],
                                 );
                               },

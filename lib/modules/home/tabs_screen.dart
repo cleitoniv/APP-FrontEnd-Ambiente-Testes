@@ -213,10 +213,28 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   Future<bool> _onWillPop() async {
-    if (_tabController.index == 0) {
-      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-    }
-    _homeWidgetBloc.currentTabIndexIn.add(0);
+    showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        content: Text('Você realmente deseja sair?'),
+        actions: [
+          FlatButton(
+              child: Text('Sim',
+                  style: Theme.of(context).textTheme.headline5.copyWith(
+                        fontSize: 14,
+                      )),
+              onPressed: _onExitApp),
+          SizedBox(width: 20),
+          FlatButton(
+            child: Text('Não',
+                style: Theme.of(context).textTheme.headline5.copyWith(
+                      fontSize: 14,
+                    )),
+            onPressed: () => Navigator.pop(c, false),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _renderHeaderFilters(int index) {
@@ -346,7 +364,6 @@ class _TabsScreenState extends State<TabsScreen>
           children: [
             'Pendentes',
             'Entregues',
-            'Reposição',
           ].map(
             (type) {
               return StreamBuilder<String>(
@@ -464,11 +481,6 @@ class _TabsScreenState extends State<TabsScreen>
     });
 
     _initState();
-
-    // _homeWidgetBloc.currentTabIndexOut.listen((event) {}).onData((event) {
-    //   print('Etrou Bloc');
-    //   return _tabController.index = event;
-    // });
   }
 
   @override
@@ -624,6 +636,7 @@ class _TabsScreenState extends State<TabsScreen>
                                               ),
                                             ),
                                             SizedBox(width: 10),
+                                            // aqui money
                                             Text(
                                               Helper.intToMoney(
                                                   authEventSnapshot

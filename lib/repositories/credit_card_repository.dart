@@ -180,7 +180,6 @@ class CreditCardRepository {
 
       return response.data['data'];
     } catch (error) {
-      print(error);
       return null;
     }
   }

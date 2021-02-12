@@ -38,6 +38,10 @@ class AuthBloc extends Disposable {
     return repository.checkUserEmail(email);
   }
 
+  getFormData() {
+    return _createAccountController.value;
+  }
+
   void getEnderecoCep(String cep) async {
     Endereco endereco = await repository.getEnderecoByCep(cep);
     enderecoSink.add(endereco);
@@ -51,26 +55,25 @@ class AuthBloc extends Disposable {
     return acceptTerms;
   }
 
-  Future<bool> checkBlockedUser(BuildContext context) async {
-    bool blocked = await repository.currentUserIsBlocked();
-
-    if (!blocked) {
-      return false;
-    } else {
+  Future<dynamic> checkBlockedUser(BuildContext context) async {
+    ClienteModel cliente = await repository.currentUserIsBlocked();
+    this._currentUser.data = cliente;
+    if (cliente.sitApp == "B" || cliente.status == 0) {
       Dialogs.error(context, onTap: () {
         Modular.to.pop();
       },
           buttonText: "Entendi",
           title: "Bloqueado!",
-          subtitle: "No momento voce nao pode acessar este recurso.");
+          subtitle: "No momento voce não pode acessar este recurso.");
       return true;
+    } else {
+      return false;
     }
   }
 
   void getTermsOfResponsability() async {
     _accetpTerms.add(AcceptTerms(isLoading: true));
     final response = await repository.getTermsOfResponsability();
-    print(response);
     _accetpTerms.add(response);
   }
 
@@ -111,7 +114,6 @@ class AuthBloc extends Disposable {
   BehaviorSubject _createAccountController = BehaviorSubject.seeded(null);
 
   Sink get createAccountIn => _createAccountController.sink;
-
   Stream<LoginEvent> get createAccountOut =>
       _createAccountController.stream.asyncMap(
         (event) => repository.createAccount(

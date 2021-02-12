@@ -19,7 +19,7 @@ class ProductExtractScreen extends StatelessWidget {
             );
           } else if (!snapshot.hasData || snapshot.data.isEmpty) {
             return Center(
-              child: Text("Nao possivel carregar seu extrato no momento."),
+              child: Text("Não foi possivel carregar seu extrato no momento."),
             );
           }
 
@@ -37,142 +37,147 @@ class ProductExtractScreen extends StatelessWidget {
                     child: ListView(
                         padding: const EdgeInsets.all(20),
                         children: snapshot.data.data.map<Widget>((e) {
-                          return Column(
-                            children: [
-                              ListTileMoreCustomizable(
-                                contentPadding: const EdgeInsets.all(0),
-                                horizontalTitleGap: 0,
-                                leading: CircleAvatar(
-                                  backgroundColor: Color(0xffF1F1F1),
-                                  radius: 15,
-                                  child: Image.asset(
-                                    'assets/icons/open_box.png',
-                                    width: 25,
-                                    height: 25,
+                          if (e.saldo != 0) {
+                            return Column(
+                              children: [
+                                ListTileMoreCustomizable(
+                                  contentPadding: const EdgeInsets.all(0),
+                                  horizontalTitleGap: 0,
+                                  leading: CircleAvatar(
+                                    backgroundColor: Color(0xffF1F1F1),
+                                    radius: 15,
+                                    child: Image.asset(
+                                      'assets/icons/open_box.png',
+                                      width: 25,
+                                      height: 25,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    "${e.produto}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
+                                  ),
+                                  trailing: Text(
+                                    'Saldo: ${e.saldo}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
                                   ),
                                 ),
-                                title: Text(
-                                  "${e.produto}",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      .copyWith(
-                                        fontSize: 14,
-                                      ),
+                                Table(
+                                  border: TableBorder.symmetric(
+                                    outside: BorderSide(
+                                      width: 0.2,
+                                    ),
+                                  ),
+                                  children: [
+                                    TableRow(
+                                      children: [
+                                        Text(
+                                          'Data',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1
+                                              .copyWith(
+                                                color: Colors.black45,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          'Pedido',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1
+                                              .copyWith(
+                                                color: Colors.black45,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          'Quantidade',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1
+                                              .copyWith(
+                                                color: Colors.black45,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                trailing: Text(
-                                  'Saldo: ${e.saldo}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      .copyWith(
-                                        fontSize: 14,
-                                      ),
-                                ),
-                              ),
-                              Table(
-                                border: TableBorder.symmetric(
-                                  outside: BorderSide(
+                                Table(
+                                  border: TableBorder.all(
                                     width: 0.2,
                                   ),
-                                ),
-                                children: [
-                                  TableRow(
-                                    children: [
-                                      Text(
-                                        'Data',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
-                                              color: Colors.black45,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      Text(
-                                        'Pedido',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
-                                              color: Colors.black45,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      Text(
-                                        'Quantidade',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
-                                              color: Colors.black45,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Table(
-                                border: TableBorder.all(
-                                  width: 0.2,
-                                ),
-                                children: e.items.map<TableRow>((p) {
-                                  return TableRow(
-                                    children: [
-                                      Text(
-                                        "${p['date']}",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
-                                              color: Colors.black26,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      Text(
-                                        "${p['pedido']}",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
-                                              color: Colors.black26,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      Text(
-                                        (p['quantidade'] as int) <= 0
-                                            ? '${p['quantidade']}'
-                                            : '+ ${p['quantidade']}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5
-                                            .copyWith(
-                                              fontSize: 14,
-                                              color:
-                                                  (p['quantidade'] as int) <= 0
-                                                      ? Colors.black26
-                                                      : Theme.of(context)
-                                                          .primaryColor,
-                                            ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  );
-                                }).toList(),
-                              )
-                            ],
-                          );
+                                  children: e.items.map<TableRow>((p) {
+                                    return TableRow(
+                                      children: [
+                                        Text(
+                                          "${p['date']}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1
+                                              .copyWith(
+                                                color: Colors.black26,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          "${p['pedido']}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1
+                                              .copyWith(
+                                                color: Colors.black26,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          (p['quantidade'] as int) <= 0
+                                              ? '${p['quantidade']}'
+                                              : '+ ${p['quantidade']}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              .copyWith(
+                                                fontSize: 14,
+                                                color:
+                                                    (p['quantidade'] as int) <=
+                                                            0
+                                                        ? Colors.black26
+                                                        : Theme.of(context)
+                                                            .primaryColor,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
+                                )
+                              ],
+                            );
+                          } else {
+                            return Container();
+                          }
                         }).toList()),
                   )
                 ],

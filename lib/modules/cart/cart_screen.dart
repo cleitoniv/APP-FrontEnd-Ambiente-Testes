@@ -64,10 +64,10 @@ class _CartScreenState extends State<CartScreen> {
   _onSubmit() async {
     List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
 
-    print(_data);
-
     int _total = _data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07") {
+      if (element["operation"] == "07" ||
+          element["operation"] == "13" ||
+          element["type"] == "T") {
         return previousValue;
       }
       return previousValue + (element['product'].value * element['quantity']);
@@ -83,7 +83,7 @@ class _CartScreenState extends State<CartScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07") {
+      if (element["operation"] == "07" || element["operation"] == "00") {
         return previousValue;
       }
       return previousValue + (element['product'].value * element['quantity']);
@@ -94,9 +94,17 @@ class _CartScreenState extends State<CartScreen> {
 
   String selectPrice(Map<String, dynamic> item) {
     if (item["operation"] == "07") {
-      return Helper.intToMoney(item['product'].valueProduto);
+      return 'R\$ ${Helper.intToMoney(item['product'].valueProduto)}';
+      // return Helper.intToMoney(item['product'].valueProduto);
+    } else if (item["operation"] == "13") {
+      return 'R\$ ${Helper.intToMoney(item['product'].valueFinan)}';
+      // return Helper.intToMoney(item['product'].valueFinan);
+    } else if (item["operation"] == "01") {
+      return 'R\$ ${Helper.intToMoney(item['product'].value)}';
+    } else if (item["operation"] == "00") {
+      return '';
     }
-    return Helper.intToMoney(item['product'].value);
+    return "";
   }
 
   @override
@@ -129,7 +137,6 @@ class _CartScreenState extends State<CartScreen> {
                 }
 
                 List<Map<String, dynamic>> _data = snapshot.data;
-                print(_data);
                 return ListView.separated(
                   primary: false,
                   addSemanticIndexes: true,
@@ -167,18 +174,18 @@ class _CartScreenState extends State<CartScreen> {
                           CircleAvatar(
                               backgroundColor: Helper.buyTypeBuild(
                                 context,
-                                _data[index]['type'],
+                                _data[index]['operation'],
                               )['color'],
                               radius: 10,
                               child: Helper.buyTypeBuild(
                                 context,
-                                _data[index]['type'],
+                                _data[index]['operation'],
                               )['icon']),
                           SizedBox(width: 5),
                           Text(
                             '${Helper.buyTypeBuild(
                               context,
-                              _data[index]['type'],
+                              _data[index]['operation'],
                             )['title']}',
                             style:
                                 Theme.of(context).textTheme.subtitle1.copyWith(
@@ -191,7 +198,7 @@ class _CartScreenState extends State<CartScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            'R\$ ${selectPrice(_data[index])}',
+                            selectPrice(_data[index]),
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
                                       fontSize: 14,

@@ -78,6 +78,36 @@ class RequestsRepository {
               'prc_unitario': e['product'].value,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': e['tests'],
+              'duracao': e['product'].duracao
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
+      } else if (e["operation"] == "00") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['product'].groupTest,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['product'].value,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
               'tests': e['tests'],
               'duracao': e['product'].duracao
             }
@@ -100,6 +130,7 @@ class RequestsRepository {
               'prc_unitario': e['product'].value,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
               'duracao': e['product'].duracao
             }
           ]

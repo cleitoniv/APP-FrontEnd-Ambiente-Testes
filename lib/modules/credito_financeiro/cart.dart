@@ -115,18 +115,18 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                           CircleAvatar(
                               backgroundColor: Helper.buyTypeBuild(
                                 context,
-                                _data[index]['type'],
+                                _data[index]['operation'],
                               )['color'],
                               radius: 10,
                               child: Helper.buyTypeBuild(
                                 context,
-                                _data[index]['type'],
+                                _data[index]['operation'],
                               )['icon']),
                           SizedBox(width: 5),
                           Text(
                             '${Helper.buyTypeBuild(
                               context,
-                              _data[index]['type'],
+                              _data[index]['operation'],
                             )['title']}',
                             style:
                                 Theme.of(context).textTheme.subtitle1.copyWith(

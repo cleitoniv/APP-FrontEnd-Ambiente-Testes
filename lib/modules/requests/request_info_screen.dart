@@ -227,15 +227,21 @@ class RequestInfoScreen extends StatelessWidget {
                                               height: 80,
                                               fit: BoxFit.cover,
                                             ),
-                                            title: Text(
-                                              "${items[index].items[index2]['produto']}",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle1
-                                                  .copyWith(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                            title: Row(
+                                              children: [
+                                                Text(
+                                                  "${items[index].items[index2]['produto']}",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1
+                                                      .copyWith(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                ),
+                                                SizedBox(width: 20),
+                                              ],
                                             ),
                                             subtitle: Row(
                                               mainAxisSize: MainAxisSize.min,
@@ -254,16 +260,21 @@ class RequestInfoScreen extends StatelessWidget {
                                                 CircleAvatar(
                                                   radius: 10,
                                                   backgroundColor:
-                                                      Color(0xff707070),
-                                                  child: Icon(
-                                                    Icons.attach_money,
-                                                    color: Color(0xffF1F1F1),
-                                                    size: 15,
-                                                  ),
+                                                      Helper.buyTypeBuild(
+                                                              context,
+                                                              items[index].items[
+                                                                      index2][
+                                                                  'operation'])[
+                                                          'background'],
+                                                  child: Helper.buyTypeBuild(
+                                                      context,
+                                                      items[index].items[index2]
+                                                          [
+                                                          'operation'])['icon'],
                                                 ),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                  "${Helper.buyTypeBuild(context, items[index].items[index2]['tipoVenda'])['title']}",
+                                                  "${Helper.buyTypeBuild(context, items[index].items[index2]['operation'])['title']}",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .subtitle1
@@ -285,7 +296,17 @@ class RequestInfoScreen extends StatelessWidget {
                                                     fontSize: 16,
                                                   ),
                                             )),
-                                        SizedBox(height: 10),
+                                        items[index].items[index2]['tests'] ==
+                                                "S"
+                                            ? Row(
+                                                children: [
+                                                  Icon(Icons.remove_red_eye),
+                                                  Text(
+                                                      "\t\tEsse produto contém teste.")
+                                                ],
+                                              )
+                                            : Container(),
+                                        SizedBox(height: 20),
                                         ListTileMoreCustomizable(
                                             dense: true,
                                             contentPadding:

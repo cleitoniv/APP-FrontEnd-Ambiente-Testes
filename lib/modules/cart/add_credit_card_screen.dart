@@ -74,11 +74,8 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {
-        if (widget.screen["screen"] == 'payment') {
-          Modular.to.popAndPushNamed("/cart/payment");
-          return;
-        }
-        Modular.to.popAndPushNamed("/credito_financeiro/pagamento");
+        Modular.to.popAndPushNamed("/cart/payment");
+        return;
       }
     }
   }
@@ -105,7 +102,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         'validator': Helper.lengthValidator,
       },
       {
-        'labelText': 'Número do cartãoo',
+        'labelText': 'Número do cartão',
         'icon': MaterialCommunityIcons.credit_card,
         'controller': _creditCardNumberController,
         'validator': (text) => Helper.lengthValidator(
@@ -116,7 +113,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         'keyboard_type': TextInputType.number
       },
       {
-        'labelText': 'Mes',
+        'labelText': 'Mês',
         'icon': MaterialCommunityIcons.calendar_month,
         'controller': _mesValidadeController,
         'validator': (text) => Helper.lengthValidator(
@@ -133,7 +130,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         'validator': (text) => Helper.lengthValidator(
               text,
               length: 4,
-              message: 'Ano invalido',
+              message: 'Ano inválido',
             ),
         'keyboard_type': TextInputType.number
       }
@@ -212,7 +209,15 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
             ),
             SizedBox(height: 30),
             RaisedButton(
-              onPressed: _onSubmit,
+              onPressed: () {
+                if (!_formKey.currentState.validate()) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          "Corrija os erros em vermelho antes de enviar.")));
+                } else {
+                  _onSubmit();
+                }
+              },
               child: Text(
                 'Adicionar cartão',
                 style: Theme.of(context).textTheme.button,

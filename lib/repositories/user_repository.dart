@@ -87,7 +87,6 @@ class UserRepository {
           }));
       return Periodos(isLoading: false, isValid: true, list: resp.data['data']);
     } catch (error) {
-      print(error);
       final error400 = error as DioError;
       final message = error400.response.data["data"]['errors'];
       return Periodos(isLoading: false, isValid: true, errorData: message);
@@ -159,7 +158,7 @@ class UserRepository {
       }
     } catch (error) {
       final error400 = error as DioError;
-      final message = error400.response.data["data"]['errors'];
+      final message = error400.response.data["data"]["errors"];
       return AddUsuarioCliente(
           isValid: false,
           errorMessage: message["EMAIL"] != null

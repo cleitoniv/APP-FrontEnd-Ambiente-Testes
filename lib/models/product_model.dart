@@ -5,6 +5,7 @@ class ProductModel {
   String produto;
   String title;
   int value;
+  double valueTest;
   bool hasAcessorio;
   int tests;
   int credits;
@@ -30,6 +31,7 @@ class ProductModel {
   String numSerie;
   String esferico;
   String group;
+  String groupTest;
   int quantidade;
   bool hasEsferico;
   bool hasEixo;
@@ -48,6 +50,7 @@ class ProductModel {
       {this.id,
       this.title,
       this.value,
+      this.valueTest,
       this.duracao,
       this.tests,
       this.imageUrl,
@@ -69,6 +72,7 @@ class ProductModel {
       this.valueFinan,
       this.valueProduto,
       this.group,
+      this.groupTest,
       this.quantidade,
       this.hasTest,
       this.hasCilindrico,
@@ -128,6 +132,8 @@ class ProductModel {
     hasAdicao = json['has_adicao'];
     valid = json['success'];
     message = json['mensagem'];
+    groupTest = json["BM_YGRPTES"];
+    valueTest = json["VALORT"];
   }
 
   void setValue(int val) => this.value = val;

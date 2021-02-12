@@ -3,6 +3,7 @@ import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
@@ -33,6 +34,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   ProductBloc _productBloc = Modular.get<ProductBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map> _productParams;
@@ -45,6 +47,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
   Product currentProduct;
+  FocusNode caixasFocus = new FocusNode();
+  FocusNode caixasOlhoEsquerdoFocus = new FocusNode();
+  FocusNode caixasOlhoDireitoFocus = new FocusNode();
+  bool _isLoadingSecondButton;
+  bool _isLoadingPrimaryButton;
 
   int _calculateCreditProduct() {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
@@ -56,24 +63,89 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       }
       return previousValue;
     });
-
     return _total;
+  }
+
+  int _calculateCreditFinancial() {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+    int _total = _cart.fold(0, (previousValue, element) {
+      if (element["operation"] == "13") {
+        return previousValue +
+            (element['quantity'] * element["product"].valueFinan);
+      }
+      return previousValue;
+    });
+    return _total;
+  }
+
+  int _calculateCreditTest() {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+
+    int _total = _cart.fold(0, (previousValue, element) {
+      if (element["operation"] == "00" &&
+          element['product'].group == currentProduct.product.group) {
+        return previousValue + element['quantity'];
+      }
+      return previousValue;
+    });
+    return _total;
+  }
+
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title, style: Theme.of(context).textTheme.headline5),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
   }
 
   _onAddLens() {
     int cartTotal = _calculateCreditProduct();
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
 
     if (widget.type == "C") {
       int olho = int.parse(_lensController.text);
       if (currentProduct.product.boxes > olho + cartTotal) {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
-        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-          "Limite atingido": ["Limite de caixas atingido"]
-        });
-        _scaffoldKey.currentState.showSnackBar(
-          _snack,
-        );
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else if (widget.type == "T") {
+      int olho = int.parse(_lensController.text);
+      if (currentProduct.product.tests > olho + _cartTotalTest) {
+        _lensController.text = '${int.parse(_lensController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else if (widget.type == "CF") {
+      int olho = int.parse(_lensController.text);
+      if (_authBloc.getAuthCurrentUser.data.money >
+          olho * currentProduct.product.valueFinan + _cartTotalFinancial) {
+        _lensController.text = '${int.parse(_lensController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensController.text = "1";
       }
     } else {
       _lensController.text = '${int.parse(_lensController.text) + 1}';
@@ -88,7 +160,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   _onAddLensDireito() {
     int cartTotal = _calculateCreditProduct();
-
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
     if (widget.type == "C") {
       int olhoDireito = int.parse(_lensDireitoController.text);
       int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
@@ -97,12 +170,34 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensDireitoController.text =
             '${int.parse(_lensDireitoController.text) + 1}';
       } else {
-        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-          "Limite atingido": ["Limite de caixas atingido"]
-        });
-        _scaffoldKey.currentState.showSnackBar(
-          _snack,
-        );
+        _showDialog("Limite atingido.",
+            "O limite de caixa estorou. Voce possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+        return _lensDireitoController.text = "1";
+      }
+    } else if (widget.type == "T") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (currentProduct.product.tests >
+          olhoDireito + olhoEsquerdo + _cartTotalTest) {
+        _lensDireitoController.text =
+            '${int.parse(_lensDireitoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "O limite de caixa estorou. Voce possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else if (widget.type == "CF") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (_authBloc.getAuthCurrentUser.data.money >
+          (olhoEsquerdo + olhoDireito) * currentProduct.product.valueFinan +
+              _cartTotalFinancial) {
+        _lensDireitoController.text =
+            '${int.parse(_lensDireitoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensDireitoController.text = "1";
       }
     } else {
       _lensDireitoController.text =
@@ -112,6 +207,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   _onAddLensEsquerdo() {
     int cartTotal = _calculateCreditProduct();
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
 
     if (widget.type == "C") {
       int olhoDireito = int.parse(_lensDireitoController.text);
@@ -121,12 +218,34 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensEsquerdoController.text =
             '${int.parse(_lensEsquerdoController.text) + 1}';
       } else {
-        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-          "Limite atingido": ["Limite de caixas atingido"]
-        });
-        _scaffoldKey.currentState.showSnackBar(
-          _snack,
-        );
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else if (widget.type == "T") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (currentProduct.product.tests >
+          olhoDireito + olhoEsquerdo + _cartTotalTest) {
+        _lensEsquerdoController.text =
+            '${int.parse(_lensEsquerdoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensEsquerdoController.text = "1";
+      }
+    } else if (widget.type == "CF") {
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      if (_authBloc.getAuthCurrentUser.data.money >
+          (olhoDireito + olhoEsquerdo) * currentProduct.product.valueFinan +
+              _cartTotalFinancial) {
+        _lensEsquerdoController.text =
+            '${int.parse(_lensEsquerdoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensEsquerdoController.text = "1";
       }
     } else {
       _lensEsquerdoController.text =
@@ -145,6 +264,30 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     if (int.parse(_lensEsquerdoController.text) > 1) {
       _lensEsquerdoController.text =
           '${int.parse(_lensEsquerdoController.text) - 1}';
+    }
+  }
+
+  _verifyBuy() {
+    if (widget.type == "A") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.value)}';
+    } else if (widget.type == "C") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.valueProduto)}';
+    } else if (widget.type == "CF") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.valueFinan)}';
+    } else if (widget.type == "T") {
+      return '';
+    }
+  }
+
+  _verifyType() {
+    if (widget.type == "A") {
+      return "Avulso";
+    } else if (widget.type == "C") {
+      return "Produto";
+    } else if (widget.type == "CF") {
+      return "Financeiro";
+    } else if (widget.type == "T") {
+      return "Testes";
     }
   }
 
@@ -270,7 +413,38 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return errors;
   }
 
-  _onAddToCart(Map data) async {
+  _onAddToCart(Map data, String typeButton) async {
+    int cartTotal = _calculateCreditProduct();
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
+
+    var invalidBoxes = SnackBar(
+        content: Text("Quantidade de caixas tem que ser maior que 0."));
+
+    Map<dynamic, dynamic> _checkTypeLens =
+        await _productWidgetBloc.pacientInfoOut.first;
+
+    if (_checkTypeLens['current'] == "Graus diferentes em cada olho") {
+      if (_lensDireitoController.text == "" ||
+          int.parse(_lensDireitoController.text) <= 0) {
+        return _scaffoldKey.currentState.showSnackBar(
+          invalidBoxes,
+        );
+      }
+      if (_lensEsquerdoController.text == "" ||
+          int.parse(_lensEsquerdoController.text) <= 0) {
+        return _scaffoldKey.currentState.showSnackBar(
+          invalidBoxes,
+        );
+      }
+    } else {
+      if (_lensController.text == "" || int.parse(_lensController.text) <= 0) {
+        return _scaffoldKey.currentState.showSnackBar(
+          invalidBoxes,
+        );
+      }
+    }
+
     if (_numberController.text != "" &&
         Helper.cpfValidator(_numberController.text) != null) {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
@@ -291,9 +465,121 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         0) {
       return;
     }
+    if (currentProduct.product.boxes <
+            int.parse(_lensController.text) + cartTotal &&
+        widget.type == "C") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (currentProduct.product.tests <
+            int.parse(_lensController.text) + _cartTotalTest &&
+        widget.type == "T") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (_authBloc.getAuthCurrentUser.data.money <
+            (int.parse(_lensController.text) *
+                    currentProduct.product.valueFinan) +
+                _cartTotalFinancial &&
+        widget.type == "CF") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
+    if (currentProduct.product.boxes <
+            int.parse(_lensEsquerdoController.text) +
+                cartTotal +
+                int.parse(_lensDireitoController.text) &&
+        widget.type == "C") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (currentProduct.product.tests <
+            int.parse(_lensEsquerdoController.text) +
+                _cartTotalTest +
+                int.parse(_lensDireitoController.text) &&
+        widget.type == "T") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (_authBloc.getAuthCurrentUser.data.money <
+            ((int.parse(_lensEsquerdoController.text) +
+                        int.parse(_lensDireitoController.text)) *
+                    currentProduct.product.valueFinan) +
+                _cartTotalFinancial &&
+        widget.type == "CF") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
+    if (currentProduct.product.boxes <
+            int.parse(_lensDireitoController.text) +
+                cartTotal +
+                int.parse(_lensEsquerdoController.text) &&
+        widget.type == "C") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (currentProduct.product.tests <
+            int.parse(_lensDireitoController.text) +
+                _cartTotalTest +
+                int.parse(_lensEsquerdoController.text) &&
+        widget.type == "T") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (_authBloc.getAuthCurrentUser.data.money <
+            ((int.parse(_lensEsquerdoController.text) +
+                        int.parse(_lensDireitoController.text)) *
+                    currentProduct.product.valueFinan) +
+                _cartTotalFinancial &&
+        widget.type == "CF") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
 
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
+
     final errors = await _checkParameters(
         new Map<String, dynamic>.from(_first[_first['current']]),
         data['product'],
@@ -324,14 +610,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
+
       int _currentTotal = _cartWidgetBloc.currentCartTotalItems;
       _cartWidgetBloc.cartTotalItemsSink.add(_currentTotal + 1);
       _requestsBloc.addProductToCart(_data);
-      Modular.to.pushNamed("/cart/product");
+      if (typeButton == "onPurchase") {
+        Modular.to.pushNamed(
+            '/products/${currentProduct.product.id}/requestDetails',
+            arguments: widget.type);
+      } else {
+        Modular.to.pushNamed("/cart/product");
+      }
     } else {
-      setState(() {
-        this.isInvalid = true;
-      });
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
       _scaffoldKey.currentState.showSnackBar(
         _snack,
@@ -348,31 +638,21 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
-    await _onAddToCart({'product': currentProduct.product});
-    if (this.isInvalid) {
-      setState(() {
-        this.isInvalid = false;
-      });
-      return;
-    }
-    Modular.to.pushNamed(
-      '/products/${widget.id}/requestDetails',
-      arguments: widget.type,
-    );
+    await _onAddToCart({'product': currentProduct.product}, 'onPurchase');
   }
 
   List<Map> _renderButtonData(ProductModel product) {
     return [
-      {
-        'color': Theme.of(context).accentColor,
-        'textColor': Colors.white,
-        'icon': Icon(
-          MaterialCommunityIcons.plus,
-          color: Colors.white,
-        ),
-        'onTap': _onPurchase,
-        'text': 'Comprar Mesmo Produto',
-      },
+      // {
+      //   'color': Theme.of(context).accentColor,
+      //   'textColor': Colors.white,
+      //   'icon': Icon(
+      //     MaterialCommunityIcons.plus,
+      //     color: Colors.white,
+      //   ),
+      //   'onTap': _onPurchase,
+      //   'text': 'Adicione e Continue Solicitando',
+      // },
       {
         'color': Color(0xffF1F1F1),
         'textColor': Theme.of(context).accentColor,
@@ -383,23 +663,68 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'onTap': _onBackToPurchase,
         'text': 'Continue Comprando',
       },
-      {
-        'color': Theme.of(context).primaryColor,
-        'textColor': Colors.white,
-        'icon': Image.asset(
-          'assets/icons/cart.png',
-          width: 20,
-          height: 20,
-          color: Colors.white,
-        ),
-        'onTap': () {
-          _onAddToCart({
-            'product': product,
-          });
-        },
-        'text': 'Adicionar ao Carrinho',
-      }
+      // {
+      //   'color': Theme.of(context).primaryColor,
+      //   'textColor': Colors.white,
+      //   'icon': Image.asset(
+      //     'assets/icons/cart.png',
+      //     width: 20,
+      //     height: 20,
+      //     color: Colors.white,
+      //   ),
+      //   'onTap': () async {
+      //     setState(() {
+      //       _isLoading = true;
+      //     });
+      //     await _onAddToCart({
+      //       'product': product,
+      //     });
+      //     setState(() {
+      //       _isLoading = false;
+      //     });
+      //   },
+      //   'text': 'Adicionar ao Carrinho',
+      // }
     ];
+  }
+
+  _verifyIcon() {
+    if (widget.type == "A") {
+      return CircleAvatar(
+          backgroundColor: Color(0xfff),
+          child: Image.asset(
+            'assets/icons/credito-financeiro.png',
+            width: 26,
+            height: 26,
+            color: Color(0xff707070),
+          ));
+    } else if (widget.type == "C") {
+      return CircleAvatar(
+          backgroundColor: Color(0xffEFC75E),
+          child: Image.asset(
+            'assets/icons/open_box.png',
+            width: 20,
+            height: 20,
+            color: Colors.white,
+          ));
+    } else if (widget.type == "CF") {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Image.asset(
+            'assets/icons/credito-financeiro.png',
+            width: 28,
+            height: 28,
+            color: Colors.green[300],
+          ));
+    } else if (widget.type == "T") {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Icon(
+            Icons.remove_red_eye,
+            color: Colors.black54,
+            size: 23,
+          ));
+    }
   }
 
   _onAddCurrentParam(Map<dynamic, dynamic> data) async {
@@ -557,6 +882,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return "$y$m$d";
   }
 
+  _validateField(String text) {
+    if (int.parse(text) <= 0) {
+      _lensController.text = '1';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -564,6 +895,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _numberController = MaskedTextController(
       mask: '000.000.000-00',
     );
+
+    _isLoadingSecondButton = false;
+    _isLoadingPrimaryButton = false;
 
     _lensController = TextEditingController(
       text: '1',
@@ -594,7 +928,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'validator': Helper.cpfValidator
       },
       {
-        'labelText': 'Data de Nascimento',
+        'labelText': 'Data de nascimento',
         'icon': MaterialCommunityIcons.cake_layered,
         'controller': _birthdayController,
         'keyboardType': TextInputType.number,
@@ -682,7 +1016,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       fit: BoxFit.contain,
                     ),
                     Text(
-                      'R\$ ${Helper.intToMoney(currentProduct.product.value)}',
+                      _verifyBuy(),
                       style: Theme.of(context).textTheme.headline5.copyWith(
                             fontSize: 14,
                           ),
@@ -713,17 +1047,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        CircleAvatar(
-                          backgroundColor: Color(0xffEFC75E),
-                          child: Image.asset(
-                            'assets/icons/open_box.png',
-                            width: 20,
-                            height: 20,
-                            color: Colors.white,
-                          ),
-                        ),
+                        _verifyIcon(),
                         Text(
-                          'Produto',
+                          _verifyType(),
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
                                 color: Colors.black45,
                                 fontSize: 14,
@@ -856,6 +1182,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           width: 150,
                           controller: _lensController,
                           readOnly: false,
+                          focus: caixasFocus,
                           keyboardType: TextInputType.number,
                           inputFormattersActivated: true,
                           prefixIcon: IconButton(
@@ -944,6 +1271,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               width: 120,
                               controller: _lensDireitoController,
                               readOnly: false,
+                              focus: caixasOlhoDireitoFocus,
                               keyboardType: TextInputType.number,
                               inputFormattersActivated: true,
                               prefixIcon: IconButton(
@@ -1030,6 +1358,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               width: 120,
                               controller: _lensEsquerdoController,
                               readOnly: false,
+                              focus: caixasOlhoEsquerdoFocus,
                               keyboardType: TextInputType.number,
                               inputFormattersActivated: true,
                               prefixIcon: IconButton(
@@ -1102,55 +1431,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           SizedBox(
             height: 20,
           ),
-          // StreamBuilder(
-          //     stream: _productWidgetBloc.pacientInfoOut,
-          //     builder: (context, snapshot) {
-          //       if (!snapshot.hasData) {
-          //         return Container();
-          //       }
-
-          //       if (snapshot.data['current'] !=
-          //           'Graus diferentes em cada olho') {
-          //         return Row(
-          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //           children: <Widget>[
-          //             Text(
-          //               !currentProduct.product.hasAcessorio
-          //                   ? 'Quantidade de caixas'
-          //                   : 'Quantidade',
-          //               style: Theme.of(context).textTheme.subtitle1,
-          //             ),
-          //             TextFieldWidget(
-          //               width: 150,
-          //               controller: _lensController,
-          //               readOnly: false,
-          //               keyboardType: TextInputType.number,
-          //               inputFormattersActivated: true,
-          //               prefixIcon: IconButton(
-          //                 icon: Icon(
-          //                   Icons.remove,
-          //                   color: Colors.black26,
-          //                   size: 30,
-          //                 ),
-          //                 onPressed: _onRemoveLens,
-          //               ),
-          //               suffixIcon: IconButton(
-          //                 icon: Icon(
-          //                   Icons.add,
-          //                   color: Colors.black26,
-          //                   size: 30,
-          //                 ),
-          //                 onPressed: _onAddLens,
-          //               ),
-          //             ),
-          //           ],
-          //         );
-          //       } else {
-          //         return Container();
-          //       }
-          //     }),
           SizedBox(height: 10),
-          currentProduct.product.hasTest && currentProduct.product.tests > 0
+          currentProduct.product.hasTest &&
+                  currentProduct.product.tests > 0 &&
+                  widget.type != "T"
               ? _checkForAcessorio(StreamBuilder<Map>(
                   stream: _productWidgetBloc.pacientInfoOut,
                   builder: (context, snapshot) {
@@ -1235,28 +1519,91 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               ],
             ),
           ),
+          Container(
+            margin: const EdgeInsets.only(
+              top: 20,
+            ),
+            child: !_isLoadingPrimaryButton
+                ? RaisedButton.icon(
+                    icon: Icon(
+                      MaterialCommunityIcons.plus,
+                      color: Colors.white,
+                    ),
+                    color: Theme.of(context).accentColor,
+                    elevation: 0,
+                    onPressed: () async {
+                      setState(() {
+                        _isLoadingPrimaryButton = true;
+                      });
+                      await _onPurchase();
+                      setState(() {
+                        _isLoadingPrimaryButton = false;
+                      });
+                    },
+                    label: Text(
+                      'Adicione e Continue Solicitando',
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  )
+                : Center(child: CircularProgressIndicator()),
+          ),
           Column(
               children: _renderButtonData(currentProduct.product).map(
             (e) {
               return Container(
-                margin: const EdgeInsets.only(
-                  top: 20,
-                ),
-                child: RaisedButton.icon(
-                  icon: e['icon'],
-                  color: e['color'],
-                  elevation: 0,
-                  onPressed: e['onTap'],
-                  label: Text(
-                    e['text'] ?? "-",
-                    style: Theme.of(context).textTheme.button.copyWith(
-                          color: e['textColor'],
-                        ),
+                  margin: const EdgeInsets.only(
+                    top: 20,
                   ),
-                ),
-              );
+                  child: RaisedButton.icon(
+                    icon: e['icon'],
+                    color: e['color'],
+                    elevation: 0,
+                    onPressed: e['onTap'],
+                    label: Text(
+                      e['text'] ?? "-",
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: e['textColor'],
+                          ),
+                    ),
+                  ));
             },
-          ).toList())
+          ).toList()),
+          Container(
+            margin: const EdgeInsets.only(
+              top: 20,
+            ),
+            child: !_isLoadingSecondButton
+                ? RaisedButton.icon(
+                    icon: Image.asset(
+                      'assets/icons/cart.png',
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
+                    color: Theme.of(context).primaryColor,
+                    elevation: 0,
+                    onPressed: () async {
+                      setState(() {
+                        _isLoadingSecondButton = true;
+                      });
+                      await _onAddToCart({
+                        'product': currentProduct.product,
+                      }, 'Normal');
+                      setState(() {
+                        _isLoadingSecondButton = false;
+                      });
+                    },
+                    label: Text(
+                      'Adicionar ao Carrinho',
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  )
+                : Center(child: CircularProgressIndicator()),
+          )
         ],
       ),
     );

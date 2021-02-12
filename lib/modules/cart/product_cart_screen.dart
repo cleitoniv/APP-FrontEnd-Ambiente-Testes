@@ -5,6 +5,7 @@ import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/modules/products/request_details_screen.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +24,16 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
-
+  static Map _product;
   int _taxaEntrega = 0;
 
   _onBackToPurchase() {
     Modular.to.pushNamed("/home/0");
+  }
+
+  _removeItemCard() {
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+    _cartWidgetBloc.cartTotalItemsSink.add(_total - _total);
   }
 
   _onSubmit() {
@@ -36,7 +42,9 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
 
     int _total = _data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07") {
+      if (element["operation"] == "07" ||
+          element["operation"] == "13" ||
+          element["type"] == "T") {
         return previousValue;
       }
       return previousValue + (element['product'].value * element['quantity']);
@@ -71,6 +79,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
         buttonText: 'Ir para Meus Pedidos',
         onTap: _onSubmitDialog,
       );
+      _removeItemCard();
     } else {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, _order.error);
       _scaffoldKey.currentState.showSnackBar(
@@ -80,10 +89,22 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   }
 
   String selectPrice(Map<String, dynamic> item) {
-    if (item["operation"] == "07") {
-      return Helper.intToMoney(item['product'].valueProduto);
+    if (item["type"] == "T") {
+      item.update("operation", (value) => "00");
     }
-    return Helper.intToMoney(item['product'].value);
+
+    if (item["operation"] == "07") {
+      return 'R\$ ${Helper.intToMoney(item['product'].valueProduto)}';
+      // return Helper.intToMoney(item['product'].valueProduto);
+    } else if (item["operation"] == "13") {
+      return 'R\$ ${Helper.intToMoney(item['product'].valueFinan)}';
+      // return Helper.intToMoney(item['product'].valueFinan);
+    } else if (item["operation"] == "01") {
+      return 'R\$ ${Helper.intToMoney(item['product'].value)}';
+    } else if (item["operation"] == "00") {
+      return '';
+    }
+    return "";
   }
 
   _removeItem(Map<String, dynamic> data) {
@@ -94,7 +115,9 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07") {
+      if (element["operation"] == "07" || element["type"] == "T") {
+        return previousValue;
+      } else if (element["operation"] == "13") {
         return previousValue;
       }
       return previousValue + (element['product'].value * element['quantity']);
@@ -103,12 +126,39 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     return Helper.intToMoney(_total + _taxaEntrega);
   }
 
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title, style: Theme.of(context).textTheme.headline5),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Carrinho', style: Theme.of(context).textTheme.headline4),
+          automaticallyImplyLeading: false,
+          centerTitle: true,
         ),
         body: SafeArea(
           child: ListView(
@@ -147,6 +197,9 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                       color: Colors.black12,
                     ),
                     itemBuilder: (context, index) {
+                      if (_data[index]["type"] == "T") {
+                        _data[index].update("operation", (value) => "00");
+                      }
                       return ListTileMoreCustomizable(
                         contentPadding: const EdgeInsets.all(0),
                         horizontalTitleGap: 10,
@@ -175,18 +228,18 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                             CircleAvatar(
                                 backgroundColor: Helper.buyTypeBuild(
                                   context,
-                                  _data[index]['type'],
+                                  _data[index]['operation'],
                                 )['color'],
                                 radius: 10,
                                 child: Helper.buyTypeBuild(
                                   context,
-                                  _data[index]['type'],
+                                  _data[index]['operation'],
                                 )['icon']),
                             SizedBox(width: 5),
                             Text(
                               '${Helper.buyTypeBuild(
                                 context,
-                                _data[index]['type'],
+                                _data[index]['operation'],
                               )['title']}',
                               style: Theme.of(context)
                                   .textTheme
@@ -201,7 +254,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text(
-                              'R\$ ${selectPrice(_data[index])}',
+                              selectPrice(_data[index]),
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5
@@ -231,23 +284,6 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 thickness: 1,
                 color: Colors.black12,
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: <Widget>[
-              //     Text(
-              //       'Taxa de entrega',
-              //       style: Theme.of(context).textTheme.subtitle1.copyWith(
-              //             fontSize: 14,
-              //           ),
-              //     ),
-              //     Text(
-              //       'R\$ ${Helper.intToMoney(_taxaEntrega)}',
-              //       style: Theme.of(context).textTheme.subtitle1.copyWith(
-              //             fontSize: 14,
-              //           ),
-              //     ),
-              //   ],
-              // ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -311,6 +347,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
               ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

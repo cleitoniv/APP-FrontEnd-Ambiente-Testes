@@ -10,6 +10,7 @@ import 'package:central_oftalmica_app_cliente/models/endereco.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -210,7 +211,7 @@ class AuthRepository {
     }
   }
 
-  Future<bool> currentUserIsBlocked() async {
+  Future<dynamic> currentUserIsBlocked() async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
@@ -221,7 +222,7 @@ class AuthRepository {
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
 
-      return cliente.sitApp == "B";
+      return cliente;
     } catch (error) {
       return true;
     }
@@ -237,10 +238,18 @@ class AuthRepository {
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
-
       if (cliente.sitApp == "A" || cliente.sitApp == "E") {
         return AuthEvent(
             isValid: true, data: cliente, loading: false, integrated: false);
+      } else if (cliente.sitApp == "B") {
+        return AuthEvent(
+            isValid: false,
+            data: cliente,
+            loading: false,
+            integrated: false,
+            errorData: {
+              "Bloqueado": ["Você não tem permissão para acessar sua conta!"]
+            });
       } else if (cliente.sitApp == "N" || cliente.sitApp == "I") {
         return AuthEvent(
             isValid: false,
@@ -257,9 +266,10 @@ class AuthRepository {
       }
     } catch (error) {
       final error400 = error as DioError;
-      print(error400.response.data);
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
-        "Cadastro": [error400.response.data['data']]
+        "Login": [
+          "Tivemos problema ao tentar fazer o seu login. Se o erro persistir entre em contato com a Central Oftálmica."
+        ]
       });
     }
   }
@@ -268,11 +278,9 @@ class AuthRepository {
     try {
       Response resp = await dio.post("/api/verify_email",
           data: jsonEncode({"email": email}));
-      print(resp.data);
       return ResetPassword(canReset: resp.data['success'], isLoading: false);
     } catch (error) {
       final error400 = error as DioError;
-      print(error400.response);
       return ResetPassword(
           canReset: false,
           isLoading: true,
@@ -298,7 +306,6 @@ class AuthRepository {
 
       return '';
     } catch (error) {
-      print(error);
       return error.code;
     }
   }
@@ -328,7 +335,6 @@ class AuthRepository {
     } catch (error) {
       final error400 = error as DioError;
       return error400.response.data;
-      // print(error);
       return false;
     }
   }

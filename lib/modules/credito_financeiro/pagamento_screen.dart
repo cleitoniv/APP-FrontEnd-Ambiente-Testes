@@ -128,9 +128,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
     try {
       _creditoFinanceiroBloc.pagamento(
           creditoFinan, _paymentMethod.creditCard.id, billing);
-    } catch (error) {
-      print(error);
-    }
+    } catch (error) {}
 
     Dialogs.success(
       context,
@@ -197,7 +195,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                             );
                           }
                           return Text(
-                            'R\$ ${Helper.intToMoney(snapshot.data.valor - snapshot.data.desconto)}',
+                            'R\$ ${Helper.intToMoney(snapshot.data.valor)}',
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
                                       fontSize: 18,

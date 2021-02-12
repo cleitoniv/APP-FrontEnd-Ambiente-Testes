@@ -26,8 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _passwordController;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool _enabledPassword = true;
-
   bool _remember = false;
+  bool _isLoading;
   String _emailStored = null;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -40,29 +40,40 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _onLogin() async {
     if (_formKey.currentState.validate()) {
+      setState(() {
+        this._isLoading = true;
+      });
       _authBloc.loginIn.add({
         'email': _emailController.text,
         'password': _passwordController.text,
       });
 
       LoginEvent _login = await _authBloc.loginOut.first;
-
       if (!_login.isValid) {
         String _message = Helper.handleFirebaseError(
           _login.message,
         );
-
         SnackBar _snackBar = SnackBar(
           content: Text(_login.message),
         );
+
+        setState(() {
+          this._isLoading = false;
+        });
 
         _scaffoldKey.currentState.showSnackBar(
           _snackBar,
         );
       } else if (_login.result.user.isEmailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
+        setState(() {
+          this._isLoading = false;
+        });
         if (_cliente.isValid) {
           if (!_cliente.data.cadastrado) {
+            setState(() {
+              this._isLoading = false;
+            });
             _authWidgetBloc.createAccountDataIn
                 .add({'email': _cliente.data.email, 'ddd': '27'});
             Modular.to.pushNamed('/auth/activityPerformed');
@@ -93,6 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         try {
           await _login.result.user.sendEmailVerification();
+          setState(() {
+            this._isLoading = false;
+          });
           _showErrors({
             "Verificar email": ["Te enviamos um email de verificaçao"]
           });
@@ -152,6 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _isLoading = false;
     _getEmailStored();
   }
 
@@ -239,13 +254,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               SizedBox(height: 30),
-              RaisedButton(
-                onPressed: _onLogin,
-                child: Text(
-                  'Entrar',
-                  style: Theme.of(context).textTheme.button,
-                ),
-              ),
+              !_isLoading
+                  ? RaisedButton(
+                      onPressed: _onLogin,
+                      child: Text(
+                        'Entrar',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    )
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    ),
               Align(
                 alignment: Alignment.bottomCenter,
                 heightFactor: MediaQuery.of(context).size.height / 145,

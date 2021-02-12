@@ -41,7 +41,6 @@ class PaymentRepository {
             "Content-Type": "application/json"
           }));
       List<PaymentModel> list = response.data["data"].map<PaymentModel>((e) {
-        print(e);
         return PaymentModel.fromJson(e);
       }).toList();
       return PaymentsList(
@@ -114,8 +113,6 @@ class PaymentRepository {
   Future<bool> payment(Map<String, dynamic> data, PaymentMethod paymentMethod,
       bool isBoleto) async {
     Map<String, dynamic> params = generate_params(data, paymentMethod);
-    // print("paraaammms-----------");
-    // print(params);
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
@@ -137,10 +134,7 @@ class PaymentRepository {
           }));
       return true;
     } catch (error) {
-      print('...............................');
       final error400 = error as DioError;
-      print(error400.response.data);
-      print(error);
       return false;
     }
   }

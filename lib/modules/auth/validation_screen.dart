@@ -39,21 +39,26 @@ class _ValidationScreenState extends State<ValidationScreen> {
         children: [
           Center(
             child: Text(
-              "Aguarde...",
+              "Aguarde, estamos validando seu cadastro.",
               style: GoogleFonts.poppins(
                   fontSize: 30,
                   color: Theme.of(context).accentColor,
                   fontWeight:
-                      FontWeight.lerp(FontWeight.w500, FontWeight.w800, 0.3)),
+                      FontWeight.lerp(FontWeight.w400, FontWeight.w800, 0.3)),
+              textAlign: TextAlign.center,
             ),
           ),
           SizedBox(
-            height: 25,
+            height: 70,
           ),
-          Text(
-            "Estamos validando seu cadastro",
-            style: TextStyle(
-              fontSize: 20,
+          Padding(
+            padding: EdgeInsets.all(40),
+            child: Text(
+              "Te enviamos um email para a verificação da sua conta e retornaremos assim que validarmos a sua conta. Para adiantar o seu processo, solicitamos que verifique o seu email.",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
           SizedBox(

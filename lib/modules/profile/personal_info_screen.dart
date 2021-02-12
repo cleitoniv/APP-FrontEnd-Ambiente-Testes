@@ -228,7 +228,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     } else if (snapshot.hasData && !snapshot.data.isValid) {
                       return Center(child: Text("Falha no carregamento."));
                     }
-                    print(snapshot.data);
 
                     return StreamBuilder(
                       stream: _profileWidgetBloc.visitHourOut,

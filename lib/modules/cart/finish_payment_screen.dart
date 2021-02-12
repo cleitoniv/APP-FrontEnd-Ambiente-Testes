@@ -42,7 +42,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07") {
+      if (element["operation"] == "07" || element["type"] == "T") {
         return previousValue;
       }
       return previousValue + element['product'].value * element['quantity'];
@@ -73,6 +73,11 @@ class _FinishPaymentState extends State<FinishPayment> {
     Modular.to.pop();
   }
 
+  _removeItem() {
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+    _cartWidgetBloc.cartTotalItemsSink.add(_total - _total);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -93,8 +98,6 @@ class _FinishPaymentState extends State<FinishPayment> {
   _getPaymentMethod() async {
     final paymentMethod = _cartWidgetBloc.currentPaymentMethod;
     setState(() {
-      print('paymentMethod.isBoleto');
-      print(paymentMethod.isBoleto);
       _paymentMethod = paymentMethod.isBoleto;
     });
   }
@@ -147,6 +150,7 @@ class _FinishPaymentState extends State<FinishPayment> {
         buttonText: 'Ir para Meus Pedidos',
         onTap: _onSubmitDialog,
       );
+      _removeItem();
     } else {
       setState(() {
         _lock = false;
@@ -305,13 +309,9 @@ class _FinishPaymentState extends State<FinishPayment> {
                                   _installments.indexOf(newValue) + 1;
                               dropdownValue = newValue;
                             });
-                            print('_installmentsSelected');
-                            print(_installmentsSelected);
-                            print('_installmentsSelected');
                           },
                           items: _installments
                               .map<DropdownMenuItem<String>>((String value) {
-                            // print(value);
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
