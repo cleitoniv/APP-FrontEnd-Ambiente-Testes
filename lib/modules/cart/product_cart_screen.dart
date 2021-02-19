@@ -108,8 +108,16 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   }
 
   _removeItem(Map<String, dynamic> data) {
-    int _total = _cartWidgetBloc.currentCartTotalItems;
-    _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    if (data['operation'] == "07" && data["tests"] == "Sim" ||
+        data['operation'] == "01" && data["tests"] == "Sim" ||
+        data['operation'] == "13" && data["tests"] == "Sim") {
+      int _total = _cartWidgetBloc.currentCartTotalItems;
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
+    } else {
+      int _total = _cartWidgetBloc.currentCartTotalItems;
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    }
+
     _requestsBloc.removeFromCart(data);
   }
 
@@ -200,80 +208,127 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                       if (_data[index]["type"] == "T") {
                         _data[index].update("operation", (value) => "00");
                       }
-                      return ListTileMoreCustomizable(
-                        contentPadding: const EdgeInsets.all(0),
-                        horizontalTitleGap: 10,
-                        leading: Image.network(
-                          _data[index]['product'].imageUrl,
-                        ),
-                        title: Text(
-                          '${_data[index]['product'].title}',
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 14,
-                              ),
-                        ),
-                        subtitle: Row(
-                          children: <Widget>[
-                            Text(
-                              'Qnt. ${_data[index]['quantity']}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    color: Colors.black38,
-                                    fontSize: 14,
-                                  ),
+                      return Column(
+                        children: [
+                          ListTileMoreCustomizable(
+                            contentPadding: const EdgeInsets.all(0),
+                            horizontalTitleGap: 10,
+                            leading: Image.network(
+                              _data[index]['product'].imageUrl,
                             ),
-                            SizedBox(width: 20),
-                            CircleAvatar(
-                                backgroundColor: Helper.buyTypeBuild(
-                                  context,
-                                  _data[index]['operation'],
-                                )['color'],
-                                radius: 10,
-                                child: Helper.buyTypeBuild(
-                                  context,
-                                  _data[index]['operation'],
-                                )['icon']),
-                            SizedBox(width: 5),
-                            Text(
-                              '${Helper.buyTypeBuild(
-                                context,
-                                _data[index]['operation'],
-                              )['title']}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
+                            title: _data[index]["type"] != "T"
+                                ? Text(
+                                    '${_data[index]['product'].title}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
+                                  )
+                                : _data[index]['product'].produtoTeste != null
+                                    ? Text(
+                                        '${_data[index]['product'].produtoTeste}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            .copyWith(
+                                              fontSize: 14,
+                                            ),
+                                      )
+                                    : Text(
+                                        '${_data[index]['product'].title}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            .copyWith(
+                                              fontSize: 14,
+                                            ),
+                                      ),
+                            subtitle: Row(
+                              children: <Widget>[
+                                Text(
+                                  'Qnt. ${_data[index]['quantity']}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      .copyWith(
+                                        color: Colors.black38,
+                                        fontSize: 14,
+                                      ),
+                                ),
+                                SizedBox(width: 20),
+                                CircleAvatar(
+                                    backgroundColor: Helper.buyTypeBuild(
+                                      context,
+                                      _data[index]['operation'],
+                                    )['color'],
+                                    radius: 10,
+                                    child: Helper.buyTypeBuild(
+                                      context,
+                                      _data[index]['operation'],
+                                    )['icon']),
+                                SizedBox(width: 5),
+                                Text(
+                                  '${Helper.buyTypeBuild(
+                                    context,
+                                    _data[index]['operation'],
+                                  )['title']}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      .copyWith(
+                                        fontSize: 14,
+                                      ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              selectPrice(_data[index]),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(
-                                    fontSize: 14,
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  selectPrice(_data[index]),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(
+                                        fontSize: 14,
+                                      ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                    size: 30,
+                                    color: Colors.red,
                                   ),
+                                  onPressed: () {
+                                    _removeItem(_data[index]);
+                                  },
+                                )
+                              ],
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                size: 30,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                _removeItem(_data[index]);
-                              },
-                            )
-                          ],
-                        ),
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(left: 60),
+                          //   child: Row(
+                          //     children: [
+                          //       _data[index]["operation"] == "01" ||
+                          //               _data[index]["operation"] == "07" &&
+                          //                   _data[index]["tests"] == "Sim"
+                          //           ? Row(
+                          //               children: [
+                          //                 Icon(Icons.remove_red_eye,
+                          //                     color: Colors.black54),
+                          //                 Text(
+                          //                     "\tVocê pediu teste deste produto.",
+                          //                     style: TextStyle(fontSize: 12))
+                          //               ],
+                          //             )
+                          //           : Container(),
+                          //     ],
+                          //   ),
+                          // )
+                        ],
                       );
                     },
                   );

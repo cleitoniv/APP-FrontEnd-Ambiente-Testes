@@ -42,7 +42,9 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07" || element["type"] == "T") {
+      if (element["operation"] == "07" ||
+          element["type"] == "T" ||
+          element["operation"] == "13") {
         return previousValue;
       }
       return previousValue + element['product'].value * element['quantity'];
@@ -53,7 +55,9 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   int _totalToPayNumeric(List<Map<String, dynamic>> data) {
     return data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07") {
+      if (element["operation"] == "07" ||
+          element["operation"] == "00" ||
+          element["operation"] == "13") {
         return previousValue;
       }
       return previousValue + element['product'].value * element['quantity'];
@@ -159,7 +163,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       Dialogs.error(
         context,
         title: "Atenção",
-        subtitle: 'Erro ao Processar Compra! Verifique os dados do cartão!',
+        subtitle: 'Erro ao Processar Compra!',
         buttonText: 'Voltar',
         onTap: _onBack,
       );

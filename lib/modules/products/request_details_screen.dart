@@ -287,7 +287,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     } else if (widget.type == "CF") {
       return "Financeiro";
     } else if (widget.type == "T") {
-      return "Testes";
+      return "Teste";
     }
   }
 
@@ -611,8 +611,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _first['current']: _first[_first['current']],
       };
 
-      int _currentTotal = _cartWidgetBloc.currentCartTotalItems;
-      _cartWidgetBloc.cartTotalItemsSink.add(_currentTotal + 1);
+      if (_data['operation'] == "07" && _data["tests"] == "Sim" ||
+          _data['operation'] == "01" && _data["tests"] == "Sim" ||
+          _data['operation'] == "13" && _data["tests"] == "Sim") {
+        int _currentTotal = _cartWidgetBloc.currentCartTotalItems;
+        _cartWidgetBloc.cartTotalItemsSink.add(_currentTotal + 2);
+      } else {
+        int _currentTotal = _cartWidgetBloc.currentCartTotalItems;
+        _cartWidgetBloc.cartTotalItemsSink.add(_currentTotal + 1);
+      }
+
       _requestsBloc.addProductToCart(_data);
       if (typeButton == "onPurchase") {
         Modular.to.pushNamed(
@@ -1432,9 +1440,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             height: 20,
           ),
           SizedBox(height: 10),
-          currentProduct.product.hasTest &&
-                  currentProduct.product.tests > 0 &&
-                  widget.type != "T"
+          currentProduct.product.hasTest && widget.type != "T"
               ? _checkForAcessorio(StreamBuilder<Map>(
                   stream: _productWidgetBloc.pacientInfoOut,
                   builder: (context, snapshot) {

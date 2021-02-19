@@ -214,6 +214,7 @@ class RequestInfoScreen extends StatelessWidget {
                                   scrollDirection: Axis.vertical,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index2) {
+                                    print(items[index].items[index2]);
                                     return Column(
                                       children: [
                                         ListTileMoreCustomizable(
@@ -229,17 +230,59 @@ class RequestInfoScreen extends StatelessWidget {
                                             ),
                                             title: Row(
                                               children: [
-                                                Text(
-                                                  "${items[index].items[index2]['produto']}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1
-                                                      .copyWith(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                ),
+                                                items[index].items[index2]
+                                                            ['operation'] !=
+                                                        "07"
+                                                    ? Text(
+                                                        "${items[index].items[index2]['produto']}",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .subtitle1
+                                                            .copyWith(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                      )
+                                                    : items[index].items[index2]
+                                                                    [
+                                                                    'produto_teste'] !=
+                                                                null &&
+                                                            items[index].items[
+                                                                        index2]
+                                                                    ['tests'] ==
+                                                                "S" &&
+                                                            items[index].items[
+                                                                        index2][
+                                                                    'produtoComTeste'] ==
+                                                                "N"
+                                                        ? Text(
+                                                            "${items[index].items[index2]['produto_teste']}",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .subtitle1
+                                                                .copyWith(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                          )
+                                                        : Text(
+                                                            "${items[index].items[index2]['produto']}",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .subtitle1
+                                                                .copyWith(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                          ),
                                                 SizedBox(width: 20),
                                               ],
                                             ),
@@ -258,23 +301,29 @@ class RequestInfoScreen extends StatelessWidget {
                                                 ),
                                                 SizedBox(width: 20),
                                                 CircleAvatar(
-                                                  radius: 10,
-                                                  backgroundColor:
-                                                      Helper.buyTypeBuild(
-                                                              context,
-                                                              items[index].items[
-                                                                      index2][
-                                                                  'operation'])[
-                                                          'background'],
-                                                  child: Helper.buyTypeBuild(
-                                                      context,
-                                                      items[index].items[index2]
-                                                          [
-                                                          'operation'])['icon'],
-                                                ),
+                                                    radius: 10,
+                                                    backgroundColor: Helper.buyTypeBuildRequestInfo(
+                                                            context,
+                                                            items[index].items[index2]
+                                                                ['operation'],
+                                                            items[index]
+                                                                    .items[index2]
+                                                                ['tests'],
+                                                            items[index]
+                                                                    .items[index2]
+                                                                ['produtoComTeste'])[
+                                                        'background'],
+                                                    child: Helper.buyTypeBuildRequestInfo(
+                                                        context,
+                                                        items[index].items[index2]
+                                                            ['operation'],
+                                                        items[index].items[index2]
+                                                            ['tests'],
+                                                        items[index].items[index2]
+                                                            ['produtoComTeste'])['icon']),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                  "${Helper.buyTypeBuild(context, items[index].items[index2]['operation'])['title']}",
+                                                  "${Helper.buyTypeBuildRequestInfo(context, items[index].items[index2]['operation'], items[index].items[index2]['tests'], items[index].items[index2]['produtoComTeste'])['title']}",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .subtitle1
@@ -297,12 +346,22 @@ class RequestInfoScreen extends StatelessWidget {
                                                   ),
                                             )),
                                         items[index].items[index2]['tests'] ==
-                                                "S"
+                                                        "S" &&
+                                                    items[index].items[index2]
+                                                            ['operation'] ==
+                                                        "01" ||
+                                                items[index].items[index2][
+                                                            'produtoComTeste'] ==
+                                                        "S" &&
+                                                    items[index].items[index2]
+                                                            ['operation'] ==
+                                                        "07"
                                             ? Row(
                                                 children: [
-                                                  Icon(Icons.remove_red_eye),
+                                                  Icon(Icons.remove_red_eye,
+                                                      color: Colors.black54),
                                                   Text(
-                                                      "\t\tEsse produto contém teste.")
+                                                      "\t\tVocê pediu teste deste produto.")
                                                 ],
                                               )
                                             : Container(),

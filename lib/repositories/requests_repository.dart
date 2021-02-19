@@ -57,9 +57,7 @@ class RequestsRepository {
 
   Map<String, dynamic> generate_params(Map data) {
     List items = data['cart'].map<Map>((e) {
-      if (e["operation"] == "01" ||
-          e["operation"] == "13" ||
-          e["operation"] == "07") {
+      if (e["operation"] == "01" || e["operation"] == "13") {
         return {
           'type': e['type'],
           'operation': e['operation'],
@@ -70,6 +68,8 @@ class RequestsRepository {
           },
           'items': [
             {
+              'grupo_teste': e['product'].groupTest,
+              'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
@@ -88,6 +88,37 @@ class RequestsRepository {
           'olho_esquerdo': e['Olho esquerdo'] ?? null,
           'olho_ambos': e['Mesmo grau em ambos'] ?? null
         };
+      } else if (e["operation"] == "07") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'grupo_teste': e['product'].groupTest,
+              'produto_com_teste': e['tests'] == "S" ? "S" : "N",
+              'produto_teste': e['product'].produtoTeste,
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['product'].group,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['product'].value,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': e['tests']
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
       } else if (e["operation"] == "00") {
         return {
           'type': e['type'],
@@ -99,6 +130,7 @@ class RequestsRepository {
           },
           'items': [
             {
+              'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
@@ -108,8 +140,7 @@ class RequestsRepository {
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
               "valor_test": e['product'].valueTest * 100,
-              'tests': e['tests'],
-              'duracao': e['product'].duracao
+              'tests': 'Sim',
             }
           ],
           'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,

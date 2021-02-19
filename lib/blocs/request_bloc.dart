@@ -96,6 +96,28 @@ class RequestsBloc extends Disposable {
 
   addProductToCart(Map<String, dynamic> data) async {
     List<Map<String, dynamic>> _first = await cartOut.first;
+    Map<String, dynamic> _newData = {...data};
+
+    if (data['operation'] == "07" && data["tests"] == "Sim" ||
+        data['operation'] == "01" && data["tests"] == "Sim" ||
+        data['operation'] == "13" && data["tests"] == "Sim") {
+      _newData['operation'] = '00';
+      _newData['type'] = 'T';
+
+      if (_first.isEmpty) {
+        _first.add(_newData);
+        cartIn.add(_first);
+      } else {
+        if (!_first.contains(data)) {
+          _first.add(_newData);
+          cartIn.add(_first);
+        } else {
+          _first.remove(_newData);
+          cartIn.add(_first);
+        }
+      }
+    }
+
     if (_first.isEmpty) {
       _first.add(data);
       cartIn.add(_first);

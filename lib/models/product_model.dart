@@ -3,6 +3,7 @@ import 'package:central_oftalmica_app_cliente/models/details_model.dart';
 class ProductModel {
   int id;
   String produto;
+  String produtoTeste;
   String title;
   int value;
   double valueTest;
@@ -87,6 +88,7 @@ class ProductModel {
       this.valid,
       this.message,
       this.hasAcessorio,
+      this.produtoTeste,
       this.dkT});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
@@ -114,6 +116,7 @@ class ProductModel {
     hasTest = json['has_teste'] ?? false;
     numSerie = json["num_serie"];
     produto = json['produto'];
+    produtoTeste = json['BM_DESCT'];
     descricao = json['description'];
     valueFinan = json['value_finan'];
     valueProduto = json['value_produto'];
@@ -168,6 +171,7 @@ class ProductModel {
     data['value_produto'] = this.valueProduto;
     data["group"] = this.group;
     data["quantidade"] = this.quantidade;
+    data["BM_DESCT"] = this.produtoTeste;
     return data;
   }
 }

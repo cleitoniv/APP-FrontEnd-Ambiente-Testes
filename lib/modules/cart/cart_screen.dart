@@ -28,8 +28,17 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _removeItem(Map<String, dynamic> data) {
-    int _total = _cartWidgetBloc.currentCartTotalItems;
-    _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    print(data);
+    if (data['operation'] == "07" && data["tests"] == "Sim" ||
+        data['operation'] == "01" && data["tests"] == "Sim" ||
+        data['operation'] == "13" && data["tests"] == "Sim") {
+      int _total = _cartWidgetBloc.currentCartTotalItems;
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
+    } else {
+      int _total = _cartWidgetBloc.currentCartTotalItems;
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    }
+
     _requestsBloc.removeFromCart(data);
   }
 
@@ -228,23 +237,6 @@ class _CartScreenState extends State<CartScreen> {
               thickness: 1,
               color: Colors.black12,
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: <Widget>[
-            //     Text(
-            //       'Taxa de entrega',
-            //       style: Theme.of(context).textTheme.subtitle1.copyWith(
-            //             fontSize: 14,
-            //           ),
-            //     ),
-            //     Text(
-            //       'R\$ ${0}',
-            //       style: Theme.of(context).textTheme.subtitle1.copyWith(
-            //             fontSize: 14,
-            //           ),
-            //     ),
-            //   ],
-            // ),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

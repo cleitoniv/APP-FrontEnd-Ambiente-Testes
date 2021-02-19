@@ -178,6 +178,109 @@ class Helper {
     }
   }
 
+  static Map<String, dynamic> buyTypeBuildRequestInfo(BuildContext context,
+      String operation, String tests, String produtoComTeste) {
+    switch (operation) {
+      case '13':
+        return {
+          'title': 'Financeiro',
+          'color': Theme.of(context).primaryColor,
+          'background': Colors.green[300],
+          'icon': Icon(
+            Icons.attach_money,
+            color: Colors.white,
+            size: 20,
+          )
+        };
+      case '01':
+        switch (tests) {
+          case 'S':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+            break;
+          case 'N':
+            return {
+              'title': 'Avulso',
+              'color': Color(0xff707070),
+              'background': Color(0xff707070),
+              'icon': Icon(
+                Icons.attach_money,
+                color: Colors.white,
+                size: 20,
+              )
+            };
+            break;
+        }
+        break;
+      case '07':
+        switch (tests) {
+          case 'S':
+            switch (produtoComTeste) {
+              case 'S':
+                return {
+                  'title': 'Produto',
+                  'color': Theme.of(context).splashColor,
+                  'background': Color(0xffEFC75E),
+                  'icon': Image.asset(
+                    'assets/icons/open_box.png',
+                    width: 15,
+                    height: 15,
+                    color: Colors.white,
+                  )
+                };
+
+              case 'N':
+                return {
+                  'title': 'Teste',
+                  'color': Colors.white,
+                  'background': Color(0xffF1F1F1),
+                  'icon': Icon(
+                    Icons.remove_red_eye,
+                    color: Colors.black54,
+                    size: 23,
+                  )
+                };
+            }
+
+            break;
+        }
+        break;
+      case '00':
+        return {
+          'title': 'Teste',
+          'color': Colors.white,
+          'background': Colors.white10,
+          'icon': Icon(
+            Icons.remove_red_eye,
+            color: Colors.black54,
+            size: 23,
+          )
+        };
+      case '06':
+        return {
+          'title': 'Produto',
+          'color': Theme.of(context).splashColor,
+          'background': Color(0xffEFC75E),
+          'icon': Image.asset(
+            'assets/icons/open_box.png',
+            width: 15,
+            height: 15,
+            color: Colors.white,
+          )
+        };
+    }
+
+    return {};
+  }
+
   static Map<String, dynamic> buyTypeBuild(
       BuildContext context, String operation) {
     switch (operation) {
@@ -219,7 +322,7 @@ class Helper {
         return {
           'title': 'Teste',
           'color': Colors.white,
-          'background': Colors.white,
+          'background': Color(0xffF1F1F1),
           'icon': Icon(
             Icons.remove_red_eye,
             color: Colors.black54,
