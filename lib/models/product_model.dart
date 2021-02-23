@@ -46,6 +46,7 @@ class ProductModel {
   String enderecoEntrega;
   bool valid;
   String message;
+  String imageUrlTest;
 
   ProductModel(
       {this.id,
@@ -89,6 +90,7 @@ class ProductModel {
       this.message,
       this.hasAcessorio,
       this.produtoTeste,
+      this.imageUrlTest,
       this.dkT});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
@@ -137,6 +139,7 @@ class ProductModel {
     message = json['mensagem'];
     groupTest = json["BM_YGRPTES"];
     valueTest = json["VALORT"];
+    imageUrlTest = json["image_url_test"];
   }
 
   void setValue(int val) => this.value = val;

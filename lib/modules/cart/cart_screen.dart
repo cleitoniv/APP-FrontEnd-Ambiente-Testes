@@ -29,13 +29,11 @@ class _CartScreenState extends State<CartScreen> {
 
   _removeItem(Map<String, dynamic> data) {
     print(data);
-    if (data['operation'] == "07" && data["tests"] == "Sim" ||
-        data['operation'] == "01" && data["tests"] == "Sim" ||
-        data['operation'] == "13" && data["tests"] == "Sim") {
-      int _total = _cartWidgetBloc.currentCartTotalItems;
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+
+    if (data["removeItem"] == "Sim") {
       _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
     } else {
-      int _total = _cartWidgetBloc.currentCartTotalItems;
       _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
     }
 
@@ -160,9 +158,13 @@ class _CartScreenState extends State<CartScreen> {
                     return ListTileMoreCustomizable(
                       contentPadding: const EdgeInsets.all(0),
                       horizontalTitleGap: 10,
-                      leading: Image.network(
-                        _data[index]['product'].imageUrl,
-                      ),
+                      leading: _data[index]["type"] != "T"
+                          ? Image.network(
+                              _data[index]['product'].imageUrl,
+                            )
+                          : Image.network(
+                              _data[index]['product'].imageUrlTest,
+                            ),
                       title: Text(
                         '${_data[index]['product'].title}',
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
@@ -215,16 +217,19 @@ class _CartScreenState extends State<CartScreen> {
                           ),
                           Align(
                               alignment: Alignment.center,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.close,
-                                  size: 30,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  _removeItem(_data[index]);
-                                },
-                              ))
+                              child: _data[index]['removeItem'] == 'Sim' ||
+                                      _data[index]['removeItem'] == null
+                                  ? IconButton(
+                                      icon: Icon(
+                                        Icons.close,
+                                        size: 30,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        _removeItem(_data[index]);
+                                      },
+                                    )
+                                  : Container())
                         ],
                       ),
                     );

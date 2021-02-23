@@ -103,6 +103,9 @@ class RequestsBloc extends Disposable {
         data['operation'] == "13" && data["tests"] == "Sim") {
       _newData['operation'] = '00';
       _newData['type'] = 'T';
+      _newData["removeItem"] = 'Não';
+      data['removeItem'] = 'Sim';
+      data["tests"] = "Não";
 
       if (_first.isEmpty) {
         _first.add(_newData);

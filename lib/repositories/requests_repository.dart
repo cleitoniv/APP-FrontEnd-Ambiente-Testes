@@ -100,7 +100,6 @@ class RequestsRepository {
           'items': [
             {
               'grupo_teste': e['product'].groupTest,
-              'produto_com_teste': e['tests'] == "S" ? "S" : "N",
               'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
               'quantidade': e['quantity'],

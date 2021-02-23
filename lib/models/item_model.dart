@@ -10,7 +10,6 @@ class ItemPedidoModel {
     numPac = json['num_pac'];
     items = json['items']?.map<Map<String, dynamic>>((e) {
       return {
-        "produtoComTeste": e['produto_com_teste'],
         "valor": e['valor'],
         "imageUrl": e['url_image'],
         "produto": e['nome_produto'],

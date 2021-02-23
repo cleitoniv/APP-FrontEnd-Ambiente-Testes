@@ -214,7 +214,6 @@ class RequestInfoScreen extends StatelessWidget {
                                   scrollDirection: Axis.vertical,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index2) {
-                                    print(items[index].items[index2]);
                                     return Column(
                                       children: [
                                         ListTileMoreCustomizable(
@@ -252,11 +251,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             items[index].items[
                                                                         index2]
                                                                     ['tests'] ==
-                                                                "S" &&
-                                                            items[index].items[
-                                                                        index2][
-                                                                    'produtoComTeste'] ==
-                                                                "N"
+                                                                "S"
                                                         ? Text(
                                                             "${items[index].items[index2]['produto_teste']}",
                                                             style: Theme.of(
@@ -302,28 +297,27 @@ class RequestInfoScreen extends StatelessWidget {
                                                 SizedBox(width: 20),
                                                 CircleAvatar(
                                                     radius: 10,
-                                                    backgroundColor: Helper.buyTypeBuildRequestInfo(
-                                                            context,
-                                                            items[index].items[index2]
-                                                                ['operation'],
-                                                            items[index]
-                                                                    .items[index2]
-                                                                ['tests'],
-                                                            items[index]
-                                                                    .items[index2]
-                                                                ['produtoComTeste'])[
-                                                        'background'],
+                                                    backgroundColor:
+                                                        Helper.buyTypeBuildRequestInfo(
+                                                                context,
+                                                                items[index]
+                                                                        .items[index2]
+                                                                    ['operation'],
+                                                                items[index]
+                                                                        .items[index2]
+                                                                    ['tests'])[
+                                                            'background'],
                                                     child: Helper.buyTypeBuildRequestInfo(
                                                         context,
-                                                        items[index].items[index2]
+                                                        items[index]
+                                                                .items[index2]
                                                             ['operation'],
-                                                        items[index].items[index2]
-                                                            ['tests'],
-                                                        items[index].items[index2]
-                                                            ['produtoComTeste'])['icon']),
+                                                        items[index]
+                                                                .items[index2]
+                                                            ['tests'])['icon']),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                  "${Helper.buyTypeBuildRequestInfo(context, items[index].items[index2]['operation'], items[index].items[index2]['tests'], items[index].items[index2]['produtoComTeste'])['title']}",
+                                                  "${Helper.buyTypeBuildRequestInfo(context, items[index].items[index2]['operation'], items[index].items[index2]['tests'])['title']}",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .subtitle1
@@ -345,26 +339,6 @@ class RequestInfoScreen extends StatelessWidget {
                                                     fontSize: 16,
                                                   ),
                                             )),
-                                        items[index].items[index2]['tests'] ==
-                                                        "S" &&
-                                                    items[index].items[index2]
-                                                            ['operation'] ==
-                                                        "01" ||
-                                                items[index].items[index2][
-                                                            'produtoComTeste'] ==
-                                                        "S" &&
-                                                    items[index].items[index2]
-                                                            ['operation'] ==
-                                                        "07"
-                                            ? Row(
-                                                children: [
-                                                  Icon(Icons.remove_red_eye,
-                                                      color: Colors.black54),
-                                                  Text(
-                                                      "\t\tVocê pediu teste deste produto.")
-                                                ],
-                                              )
-                                            : Container(),
                                         SizedBox(height: 20),
                                         ListTileMoreCustomizable(
                                             dense: true,
