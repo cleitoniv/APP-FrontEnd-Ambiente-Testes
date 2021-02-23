@@ -147,6 +147,7 @@ class PaymentRepository {
           'type': e['type'],
           'items': [
             {
+              'percentage_test': e['percentage_test'],
               'produto': e['product'].title,
               'codigo': e['product'].produto,
               'grupo': e['product'].group,

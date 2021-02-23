@@ -125,6 +125,7 @@ class ProductExtractScreen extends StatelessWidget {
                                     width: 0.2,
                                   ),
                                   children: e.items.map<TableRow>((p) {
+                                    print(p['quantidade']);
                                     return TableRow(
                                       children: [
                                         Text(

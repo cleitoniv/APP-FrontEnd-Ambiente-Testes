@@ -68,13 +68,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
     }
   }
 
-  _onAddToCart(ProductModel product, int quantity, int value) async {
+  _onAddToCart(
+      ProductModel product, int quantity, int value, int percentageTest) async {
     product.setValue(value);
 
     Map<String, dynamic> _data = {
       '_cart_item': randomString(15),
       'quantity': quantity,
       'product': product,
+      'percentage_test': percentageTest,
       'type': "C",
       'operation': "06"
     };
@@ -84,7 +86,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
   }
 
   _addCreditoProduct(OfferModel offer) {
-    _onAddToCart(this._currentProduct["product"], offer.quantity, offer.price);
+    _onAddToCart(this._currentProduct["product"], offer.quantity, offer.price,
+        offer.percentageTest);
     _creditsBloc.offersSink
         .add(Offers(isEmpty: true, isLoading: false, type: "CREDIT"));
     setState(() {
@@ -472,7 +475,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                           Theme.of(context).textTheme.headline5,
                                     ),
                                     Container(
-                                        height: 200,
+                                        height: 240,
                                         child: !_isLoadingPackage
                                             ? _financialCredits.length > 0
                                                 ? ListView.separated(
@@ -495,7 +498,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                     ),
                                                     itemBuilder:
                                                         (context, index) {
-                                                      // print(_currentType);
                                                       return _currentType ==
                                                               'Financeiro'
                                                           ? InkWell(
@@ -544,20 +546,21 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                           index]);
                                                                 }
                                                               },
-                                                              child:
-                                                                  CreditProductCardWidget(
-                                                                precoUnitario:
-                                                                    _financialCredits[
-                                                                            index]
-                                                                        .price,
-                                                                caixas: _financialCredits[
-                                                                        index]
-                                                                    .quantity,
-                                                                value:
-                                                                    _financialCredits[
-                                                                            index]
-                                                                        .total,
-                                                              ),
+                                                              child: CreditProductCardWidget(
+                                                                  precoUnitario:
+                                                                      _financialCredits[
+                                                                              index]
+                                                                          .price,
+                                                                  caixas: _financialCredits[
+                                                                          index]
+                                                                      .quantity,
+                                                                  value: _financialCredits[
+                                                                          index]
+                                                                      .total,
+                                                                  percentageTest:
+                                                                      _financialCredits[
+                                                                              index]
+                                                                          .percentageTest),
                                                             );
                                                     },
                                                   )

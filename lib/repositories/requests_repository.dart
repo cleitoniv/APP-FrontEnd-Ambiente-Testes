@@ -79,8 +79,7 @@ class RequestsRepository {
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
               "valor_test": e['product'].valueTest * 100,
-              'tests': e['tests'],
-              'duracao': e['product'].duracao
+              'tests': e['tests']
             }
           ],
           'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,

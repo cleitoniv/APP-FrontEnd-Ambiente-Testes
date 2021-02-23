@@ -86,11 +86,13 @@ class CreditProductCardWidget extends StatelessWidget {
   int parcels;
   int caixas;
   int precoUnitario;
+  int percentageTest;
 
   CreditProductCardWidget(
       {this.precoUnitario = 20000,
       this.value = 20000,
       this.parcels = 1,
+      this.percentageTest,
       this.caixas = 20});
 
   @override
@@ -133,6 +135,14 @@ class CreditProductCardWidget extends StatelessWidget {
                       "R\$ ${Helper.intToMoney(this.precoUnitario)} por Cx.",
                       style: Theme.of(context).textTheme.subtitle1.copyWith(
                             color: Colors.black45,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                    ),
+                    Text(
+                      "${this.percentageTest}% de teste",
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),
