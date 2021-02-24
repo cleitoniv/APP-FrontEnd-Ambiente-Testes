@@ -387,7 +387,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   contentPadding: const EdgeInsets.all(0),
                   horizontalTitleGap: -5,
                   leading: Text(
-                    snapshot.data == 'Financeiro' ? 'R\$' : 'Cx',
+                    snapshot.data == 'Financeiro' ? '' : 'Cx',
                     style: Theme.of(context).textTheme.subtitle2.copyWith(
                           fontSize: 18,
                           color: Colors.white54,
@@ -422,11 +422,11 @@ class _CreditsScreenState extends State<CreditsScreen> {
                             );
                           }
                           return Row(
+                            // aqui
                             children: [
                               Text(
                                 snapshot.data == 'Financeiro'
-                                    ? Helper.intToMoney(
-                                        snapshot3.data.data.money)
+                                    ? ''
                                     : '${snapshot2.data.boxes}',
                                 style: Theme.of(context)
                                     .textTheme
@@ -455,33 +455,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                       );
                     },
                   ),
-                  subtitle: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Colors.white,
-                        child: snapshot.data == 'Financeiro'
-                            ? Icon(
-                                Icons.attach_money,
-                                color: Theme.of(context).primaryColor,
-                                size: 30,
-                              )
-                            : Image.asset(
-                                'assets/icons/open_box.png',
-                                width: 25,
-                                height: 25,
-                              ),
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        snapshot.data == 'Financeiro'
-                            ? 'Saldo atual'
-                            : 'Total de Produtos',
-                        style: Theme.of(context).textTheme.subtitle2,
-                      )
-                    ],
-                  ),
                 );
               },
             ),
@@ -500,7 +473,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   right: 0,
                   bottom: 0,
                   height: MediaQuery.of(context).size.height /
-                      (_headerCurrentType == "Financeiro" ? 1.65 : 3.0),
+                      (_headerCurrentType == "Financeiro" ? 1.66 : 3.0),
                   child: Container(
                     padding: const EdgeInsets.only(top: 30, bottom: 20),
                     alignment: Alignment.center,
