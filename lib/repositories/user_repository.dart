@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:central_oftalmica_app_cliente/models/endereco_entrega.dart';
+import 'package:central_oftalmica_app_cliente/models/ticket_model.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
 import 'package:dio/dio.dart';
@@ -299,6 +300,25 @@ class UserRepository {
       );
 
       return UserModel.fromJson(
+        response.data,
+      );
+    } catch (error) {
+      return null;
+    }
+  }
+
+  Future<TicketModel> openTicket() async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult token = await user.getIdToken();
+    try {
+      Response response = await dio.post("/api/cliente/create_ticket",
+          data: jsonEncode({'message': "Criando um ticket pelo servidor."}),
+          options: Options(headers: {
+            "Authorization": "Bearer ${token.token}",
+            "Content-Type": "application/json"
+          }));
+
+      return TicketModel.fromJson(
         response.data,
       );
     } catch (error) {

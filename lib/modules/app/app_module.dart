@@ -15,12 +15,15 @@ import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/ticket_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/help_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/main_app.dart';
+import 'package:central_oftalmica_app_cliente/modules/app/ticket_module.dart';
+import 'package:central_oftalmica_app_cliente/modules/app/ticket_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/auth_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/credito_financeiro_module.dart';
@@ -171,6 +174,11 @@ class AppModule extends MainModule {
         Bind(
           (i) => ProductWidgetBloc(),
         ),
+        Bind(
+          (i) => TicketBloc(
+            i.get<UserRepository>(),
+          ),
+        ),
       ];
 
   @override
@@ -238,7 +246,11 @@ class AppModule extends MainModule {
         ModularRouter(
           '/credito_financeiro',
           module: CreditoFinanceiroModule(),
-        )
+        ),
+        ModularRouter(
+          '/ticket',
+          module: TicketModule(),
+        ),
       ];
 
   @override
