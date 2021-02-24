@@ -86,7 +86,7 @@ class _TicketScreenState extends State<TicketScreen> {
                           }
                         },
                         child: Text(
-                          'Enviar',
+                          'Enviar icket',
                           style: Theme.of(context).textTheme.button,
                         ),
                       )

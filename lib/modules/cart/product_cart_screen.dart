@@ -248,10 +248,12 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                               fontSize: 14,
                                             ),
                                       ),
-                            subtitle: Row(
-                              children: <Widget>[
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 5),
                                 Text(
-                                  'Qnt. ${_data[index]['quantity']}',
+                                  'Quantidade: ${_data[index]['quantity']}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .subtitle1
@@ -260,29 +262,33 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                         fontSize: 14,
                                       ),
                                 ),
-                                SizedBox(width: 20),
-                                CircleAvatar(
-                                    backgroundColor: Helper.buyTypeBuild(
-                                      context,
-                                      _data[index]['operation'],
-                                    )['color'],
-                                    radius: 10,
-                                    child: Helper.buyTypeBuild(
-                                      context,
-                                      _data[index]['operation'],
-                                    )['icon']),
-                                SizedBox(width: 5),
-                                Text(
-                                  '${Helper.buyTypeBuild(
-                                    context,
-                                    _data[index]['operation'],
-                                  )['title']}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1
-                                      .copyWith(
-                                        fontSize: 14,
-                                      ),
+                                SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                        backgroundColor: Helper.buyTypeBuild(
+                                          context,
+                                          _data[index]['operation'],
+                                        )['color'],
+                                        radius: 10,
+                                        child: Helper.buyTypeBuild(
+                                          context,
+                                          _data[index]['operation'],
+                                        )['icon']),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      '${Helper.buyTypeBuild(
+                                        context,
+                                        _data[index]['operation'],
+                                      )['title']}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          .copyWith(
+                                            fontSize: 14,
+                                          ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

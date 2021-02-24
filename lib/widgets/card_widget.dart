@@ -17,8 +17,8 @@ class CardWidget extends StatelessWidget {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.all(20),
-          width: 170,
-          height: 150,
+          width: 190,
+          height: 170,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: Color(0xffF1F1F1),
@@ -67,13 +67,57 @@ class CardWidget extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
-          top: 100,
-          right: -10,
-          child: Icon(
-            MaterialCommunityIcons.plus_circle,
-            color: Theme.of(context).primaryColor,
-            size: 50,
+        Container(
+          height: 170,
+          width: 180,
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Icon(
+              MaterialCommunityIcons.plus_circle,
+              color: Theme.of(context).primaryColor,
+              size: 50,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class CardWidgetOtherValue extends StatelessWidget {
+  CardWidgetOtherValue();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.loose,
+      overflow: Overflow.visible,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            width: 190,
+            height: 170,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Theme.of(context).accentColor,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.attach_money,
+                  size: 60,
+                  color: Colors.white,
+                ),
+                Text(
+                  "Outro valor",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                )
+              ],
+            ),
           ),
         )
       ],

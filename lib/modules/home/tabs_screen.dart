@@ -88,13 +88,6 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _onChangeCreditType(String type) {
-    if (type == "Produto") {
-      _creditsBloc.offersSink
-          .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
-      _creditsBloc.creditProductSelectedSink.add(false);
-    } else {
-      _creditsBloc.fetchOffers();
-    }
     _homeWidgetBloc.currentCreditTypeIn.add(type);
   }
 

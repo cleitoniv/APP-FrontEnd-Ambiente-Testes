@@ -182,8 +182,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return;
     }
     await showDialog<String>(
-      context: context,
-      child: new AlertDialog(
+      context: context, builder: (context) => new AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
         content: new Row(
           children: <Widget>[

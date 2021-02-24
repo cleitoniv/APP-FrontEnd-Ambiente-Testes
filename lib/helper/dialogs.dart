@@ -9,8 +9,7 @@ class Dialogs {
     String buttonText = 'Confirmar Solicitação',
   }) {
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -60,8 +59,7 @@ class Dialogs {
     String buttonText = 'Entendi',
   }) {
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -112,8 +110,7 @@ class Dialogs {
     String buttonText = 'Confirmar Solicitação',
   }) {
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -183,8 +180,7 @@ class Dialogs {
     }
 
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
@@ -259,8 +255,7 @@ class Dialogs {
     }
 
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
