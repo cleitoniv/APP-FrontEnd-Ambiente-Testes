@@ -148,8 +148,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       });
       //_endLoad();
       await showDialog<String>(
-        context: context,
-        child: AlertDialog(
+        context: context, builder: (context) => AlertDialog(
           contentPadding: const EdgeInsets.all(16.0),
           content: new Row(
             children: <Widget>[
