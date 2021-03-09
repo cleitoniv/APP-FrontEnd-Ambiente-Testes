@@ -93,13 +93,18 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
       item.update("operation", (value) => "00");
     }
 
-    if (item["operation"] == "07") {
+    if (item["operation"] == "07" && item['tests'] == "Não") {
       return 'R\$ ${Helper.intToMoney(item['product'].valueProduto)}';
       // return Helper.intToMoney(item['product'].valueProduto);
+    } else if (item["operation"] == "07" && item['tests'] == "Sim") {
+      return '';
+    } else if (item["operation"] == "13" && item['tests'] == "Sim") {
+      return '';
     } else if (item["operation"] == "13") {
       return 'R\$ ${Helper.intToMoney(item['product'].valueFinan)}';
-      // return Helper.intToMoney(item['product'].valueFinan);
-    } else if (item["operation"] == "01") {
+    } else if (item["operation"] == "01" && item['tests'] == "Sim") {
+      return '';
+    } else if (item["operation"] == "01" && item['tests'] == "Não") {
       return 'R\$ ${Helper.intToMoney(item['product'].value)}';
     } else if (item["operation"] == "00") {
       return '';
@@ -108,7 +113,6 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   }
 
   _removeItem(Map<String, dynamic> data) {
-    print(data);
     int _total = _cartWidgetBloc.currentCartTotalItems;
 
     if (data["removeItem"] == "Sim") {
@@ -122,7 +126,9 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07" || element["type"] == "T") {
+      if (element["operation"] == "07" ||
+          element["type"] == "T" ||
+          element["tests"] == "Sim") {
         return previousValue;
       } else if (element["operation"] == "13") {
         return previousValue;
@@ -212,14 +218,16 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                           ListTileMoreCustomizable(
                             contentPadding: const EdgeInsets.all(0),
                             horizontalTitleGap: 10,
-                            leading: _data[index]["type"] != "T"
+                            leading: _data[index]["tests"] != "Sim" &&
+                                    _data[index]["type"] != "T"
                                 ? Image.network(
                                     _data[index]['product'].imageUrl,
                                   )
                                 : Image.network(
                                     _data[index]['product'].imageUrlTest,
                                   ),
-                            title: _data[index]["type"] != "T"
+                            title: _data[index]["type"] != "T" &&
+                                    _data[index]['tests'] == "Não"
                                 ? Text(
                                     '${_data[index]['product'].title}',
                                     style: Theme.of(context)
@@ -267,20 +275,17 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                   children: [
                                     CircleAvatar(
                                         backgroundColor: Helper.buyTypeBuild(
-                                          context,
-                                          _data[index]['operation'],
-                                        )['color'],
+                                            context,
+                                            _data[index]['operation'],
+                                            _data[index]['tests'])['color'],
                                         radius: 10,
                                         child: Helper.buyTypeBuild(
-                                          context,
-                                          _data[index]['operation'],
-                                        )['icon']),
+                                            context,
+                                            _data[index]['operation'],
+                                            _data[index]['tests'])['icon']),
                                     SizedBox(width: 10),
                                     Text(
-                                      '${Helper.buyTypeBuild(
-                                        context,
-                                        _data[index]['operation'],
-                                      )['title']}',
+                                      '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle1

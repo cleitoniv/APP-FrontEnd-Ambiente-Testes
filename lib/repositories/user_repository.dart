@@ -307,12 +307,12 @@ class UserRepository {
     }
   }
 
-  Future<TicketModel> openTicket() async {
+  Future<TicketModel> openTicket(data) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
     try {
       Response response = await dio.post("/api/cliente/create_ticket",
-          data: jsonEncode({'message': "Criando um ticket pelo servidor."}),
+          data: jsonEncode({'param': data}),
           options: Options(headers: {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": "application/json"

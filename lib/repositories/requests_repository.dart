@@ -73,9 +73,11 @@ class RequestsRepository {
               'produto': e['product'].title,
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
-              'grupo': e['product'].group,
+              'grupo': e['tests'] == "Não"
+                  ? e['product'].group
+                  : e['product'].groupTest,
               'duracao': e['product'].duracao,
-              'prc_unitario': e['product'].value,
+              'prc_unitario': e['tests'] == "Não" ? e['product'].value : 0,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
               "valor_test": e['product'].valueTest * 100,
@@ -103,9 +105,11 @@ class RequestsRepository {
               'produto': e['product'].title,
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
-              'grupo': e['product'].group,
+              'grupo': e['tests'] == "Não"
+                  ? e['product'].group
+                  : e['product'].groupTest,
               'duracao': e['product'].duracao,
-              'prc_unitario': e['product'].value,
+              'prc_unitario': e['tests'] == "Não" ? e['product'].value : 0,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
               "valor_test": e['product'].valueTest * 100,

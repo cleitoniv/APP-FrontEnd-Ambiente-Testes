@@ -28,7 +28,6 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _removeItem(Map<String, dynamic> data) {
-    print(data);
     int _total = _cartWidgetBloc.currentCartTotalItems;
 
     if (data["removeItem"] == "Sim") {
@@ -108,6 +107,8 @@ class _CartScreenState extends State<CartScreen> {
       // return Helper.intToMoney(item['product'].valueFinan);
     } else if (item["operation"] == "01") {
       return 'R\$ ${Helper.intToMoney(item['product'].value)}';
+    } else if (item["operation"] == "01" && item['tests'] == "Sim") {
+      return '';
     } else if (item["operation"] == "00") {
       return '';
     }
@@ -158,7 +159,8 @@ class _CartScreenState extends State<CartScreen> {
                     return ListTileMoreCustomizable(
                       contentPadding: const EdgeInsets.all(0),
                       horizontalTitleGap: 10,
-                      leading: _data[index]["type"] != "T"
+                      leading: _data[index]["tests"] != "Sim" &&
+                              _data[index]["type"] != "T"
                           ? Image.network(
                               _data[index]['product'].imageUrl,
                             )
@@ -184,20 +186,17 @@ class _CartScreenState extends State<CartScreen> {
                           SizedBox(width: 20),
                           CircleAvatar(
                               backgroundColor: Helper.buyTypeBuild(
-                                context,
-                                _data[index]['operation'],
-                              )['color'],
+                                  context,
+                                  _data[index]['operation'],
+                                  _data[index]['tests'])['color'],
                               radius: 10,
                               child: Helper.buyTypeBuild(
-                                context,
-                                _data[index]['operation'],
-                              )['icon']),
+                                  context,
+                                  _data[index]['operation'],
+                                  _data[index]['tests'])['icon']),
                           SizedBox(width: 5),
                           Text(
-                            '${Helper.buyTypeBuild(
-                              context,
-                              _data[index]['operation'],
-                            )['title']}',
+                            '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
                             style:
                                 Theme.of(context).textTheme.subtitle1.copyWith(
                                       fontSize: 14,

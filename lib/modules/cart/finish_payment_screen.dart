@@ -44,6 +44,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     int _total = data.fold(0, (previousValue, element) {
       if (element["operation"] == "07" ||
           element["type"] == "T" ||
+          element["tests"] == "Sim" ||
           element["operation"] == "13") {
         return previousValue;
       }
@@ -57,6 +58,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     return data.fold(0, (previousValue, element) {
       if (element["operation"] == "07" ||
           element["operation"] == "00" ||
+          element["tests"] == "Sim" ||
           element["operation"] == "13") {
         return previousValue;
       }

@@ -1,4 +1,5 @@
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/ticket_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/ticket_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/cart.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/pagamento_screen.dart';
@@ -11,6 +12,9 @@ class TicketModule extends ChildModule {
   @override
   List<Bind> get binds => [
         Bind((i) => i.get<HomeWidgetBloc>()),
+        Bind(
+          (i) => i.get<TicketBloc>(),
+        ),
       ];
 
   @override

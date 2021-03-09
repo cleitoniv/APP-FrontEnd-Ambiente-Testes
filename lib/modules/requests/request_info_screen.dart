@@ -230,8 +230,12 @@ class RequestInfoScreen extends StatelessWidget {
                                             title: Row(
                                               children: [
                                                 items[index].items[index2]
-                                                            ['operation'] !=
-                                                        "07"
+                                                                ['operation'] !=
+                                                            "07" &&
+                                                        items[index].items[
+                                                                    index2]
+                                                                ['tests'] ==
+                                                            "N"
                                                     ? Text(
                                                         "${items[index].items[index2]['produto']}",
                                                         style: Theme.of(context)

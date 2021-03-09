@@ -101,8 +101,6 @@ class RequestsBloc extends Disposable {
     if (data['operation'] == "07" && data["tests"] == "Sim" ||
         data['operation'] == "01" && data["tests"] == "Sim" ||
         data['operation'] == "13" && data["tests"] == "Sim") {
-      _newData['operation'] = '00';
-      _newData['type'] = 'T';
       _newData["removeItem"] = 'Não';
       data['removeItem'] = 'Sim';
       data["tests"] = "Não";

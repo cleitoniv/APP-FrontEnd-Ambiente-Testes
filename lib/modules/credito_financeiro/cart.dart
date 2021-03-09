@@ -114,20 +114,17 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                           SizedBox(width: 20),
                           CircleAvatar(
                               backgroundColor: Helper.buyTypeBuild(
-                                context,
-                                _data[index]['operation'],
-                              )['color'],
+                                  context,
+                                  _data[index]['operation'],
+                                  _data[index]['tests'])['color'],
                               radius: 10,
                               child: Helper.buyTypeBuild(
-                                context,
-                                _data[index]['operation'],
-                              )['icon']),
+                                  context,
+                                  _data[index]['operation'],
+                                  _data[index]['tests'])['icon']),
                           SizedBox(width: 5),
                           Text(
-                            '${Helper.buyTypeBuild(
-                              context,
-                              _data[index]['operation'],
-                            )['title']}',
+                            '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
                             style:
                                 Theme.of(context).textTheme.subtitle1.copyWith(
                                       fontSize: 14,

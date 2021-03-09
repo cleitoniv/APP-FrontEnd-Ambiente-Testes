@@ -1,8 +1,10 @@
 import 'package:central_oftalmica_app_cliente/blocs/ticket_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class TicketScreen extends StatefulWidget {
@@ -12,21 +14,42 @@ class TicketScreen extends StatefulWidget {
 
 class _TicketScreenState extends State<TicketScreen> {
   final _formKey = GlobalKey<FormState>();
-  Stream<Map> _data;
-  TextEditingController _titleController;
-  TextEditingController _messageController;
+  TextEditingController _descricaoController;
+  String _categoria;
   TicketBloc _ticketBloc = Modular.get<TicketBloc>();
   bool _isLoading;
 
-  _openTicket() async {
-    setState(() {
-      _isLoading = true;
-    });
-    await _ticketBloc.ticket();
-    setState(() {
-      _isLoading = false;
-    });
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
 
+  _openTicket() async {
+    _ticketBloc.ticketIn
+        .add({'descricao': _descricaoController.text, 'categoria': _categoria});
+    var _data = _ticketBloc.getTicket;
+    await _ticketBloc.ticket(_data);
     return Dialogs.success(context,
         subtitle: 'Ticket enviado com sucesso!',
         buttonText: 'Ok',
@@ -39,6 +62,8 @@ class _TicketScreenState extends State<TicketScreen> {
   void initState() {
     super.initState();
     _isLoading = false;
+    _descricaoController = TextEditingController(text: '');
+    _categoria = 'Teste 1';
   }
 
   @override
@@ -54,21 +79,27 @@ class _TicketScreenState extends State<TicketScreen> {
             padding: const EdgeInsets.all(20),
             child: ListView(
               children: [
-                TextFieldWidget(
-                  validator: Helper.lengthValidator,
-                  labelText: 'Titulo',
-                  controller: _titleController,
-                  prefixIcon: Icon(
-                    Icons.title,
-                    color: Color(0xffa1a1a1),
-                  ),
-                ),
+                StreamBuilder<Map>(builder: (context, snapshot) {
+                  return DropdownWidget(
+                      prefixIcon: Icon(Icons.info_outline),
+                      items: ['Teste 1', 'Teste2'],
+                      currentValue: _categoria,
+                      labelText: 'Categoria do problema',
+                      onChanged: (value) {
+                        setState(() {
+                          _categoria = value;
+                        });
+                      });
+                }),
                 SizedBox(height: 50),
                 Container(
                   decoration:
                       BoxDecoration(border: Border.all(color: Colors.black26)),
                   child: TextFormField(
-                    validator: Helper.lengthValidator,
+                    inputFormatters: [LengthLimitingTextInputFormatter(120)],
+                    controller: _descricaoController,
+                    validator: (String text) =>
+                        Helper.lengthValidatorHelpDesk(text),
                     decoration: InputDecoration(
                         prefixIcon:
                             Icon(Icons.text_format, color: Color(0xffa1a1a1)),
@@ -79,14 +110,20 @@ class _TicketScreenState extends State<TicketScreen> {
                 SizedBox(height: 50),
                 _isLoading == false
                     ? RaisedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (!_formKey.currentState.validate()) {
                           } else {
-                            _openTicket();
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            await _openTicket();
+                            setState(() {
+                              _isLoading = false;
+                            });
                           }
                         },
                         child: Text(
-                          'Enviar icket',
+                          'Enviar Ticket',
                           style: Theme.of(context).textTheme.button,
                         ),
                       )

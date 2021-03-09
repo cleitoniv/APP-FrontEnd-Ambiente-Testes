@@ -15,6 +15,21 @@ class Helper {
     return null;
   }
 
+  static String lengthValidatorHelpDesk(
+    String text, {
+    int length = 0,
+    int maxLength = 120,
+    String message = 'Campo Obrigatório',
+  }) {
+    if (text.isEmpty || text.length < length) {
+      return message;
+    } else if (text.length > maxLength) {
+      return 'A quantidade de caracteres digitada é maior que a permitida.';
+    }
+
+    return null;
+  }
+
   static String lengthValidatorDdd(
     String text, {
     int length = 0,
@@ -193,16 +208,33 @@ class Helper {
           )
         };
       case '01':
-        return {
-          'title': 'Avulso',
-          'color': Color(0xff707070),
-          'background': Color(0xff707070),
-          'icon': Icon(
-            Icons.attach_money,
-            color: Colors.white,
-            size: 20,
-          )
-        };
+        switch (tests) {
+          case 'S':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+
+          case 'N':
+            return {
+              'title': 'Avulso',
+              'color': Color(0xff707070),
+              'background': Color(0xff707070),
+              'icon': Icon(
+                Icons.attach_money,
+                color: Colors.white,
+                size: 20,
+              )
+            };
+        }
+        break;
+
       case '07':
         switch (tests) {
           case 'S':
@@ -260,7 +292,7 @@ class Helper {
   }
 
   static Map<String, dynamic> buyTypeBuild(
-      BuildContext context, String operation) {
+      BuildContext context, String operation, String tests) {
     switch (operation) {
       case '13':
         return {
@@ -274,28 +306,63 @@ class Helper {
           )
         };
       case '01':
-        return {
-          'title': 'Avulso',
-          'color': Color(0xff707070),
-          'background': Color(0xff707070),
-          'icon': Icon(
-            Icons.attach_money,
-            color: Colors.white,
-            size: 20,
-          )
-        };
+        switch (tests) {
+          case 'Sim':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+            break;
+          case 'Não':
+            return {
+              'title': 'Avulso',
+              'color': Color(0xff707070),
+              'background': Color(0xff707070),
+              'icon': Icon(
+                Icons.attach_money,
+                color: Colors.white,
+                size: 20,
+              )
+            };
+            break;
+        }
+        break;
       case '07':
-        return {
-          'title': 'Produto',
-          'color': Theme.of(context).splashColor,
-          'background': Color(0xffEFC75E),
-          'icon': Image.asset(
-            'assets/icons/open_box.png',
-            width: 15,
-            height: 15,
-            color: Colors.white,
-          )
-        };
+        switch (tests) {
+          case 'Sim':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+            break;
+          case 'Não':
+            return {
+              'title': 'Produto',
+              'color': Theme.of(context).splashColor,
+              'background': Color(0xffEFC75E),
+              'icon': Image.asset(
+                'assets/icons/open_box.png',
+                width: 15,
+                height: 15,
+                color: Colors.white,
+              )
+            };
+            break;
+        }
+        break;
+
       case '00':
         return {
           'title': 'Teste',
