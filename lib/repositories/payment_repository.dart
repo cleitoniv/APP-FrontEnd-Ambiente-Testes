@@ -41,7 +41,6 @@ class PaymentRepository {
             "Content-Type": "application/json"
           }));
       List<PaymentModel> list = response.data["data"].map<PaymentModel>((e) {
-        print(e);
         return PaymentModel.fromJson(e);
       }).toList();
       return PaymentsList(
@@ -53,9 +52,7 @@ class PaymentRepository {
 
   Map<String, dynamic> generate_params(Map data, PaymentMethod paymentMethod) {
     List items = data['cart'].map<Map>((e) {
-      if (e["operation"] == "01" ||
-          e["operation"] == "13" ||
-          e["operation"] == "07") {
+      if (e["operation"] == "01" || e["operation"] == "13") {
         return {
           'type': e['type'],
           'operation': e['operation'],
@@ -66,11 +63,81 @@ class PaymentRepository {
           },
           'items': [
             {
+              'grupo_teste': e['product'].groupTest,
+              'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
               'quantidade': e['quantity'],
-              'grupo': e['product'].group,
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['tests'] == "Não"
+                  ? e['product'].group
+                  : e['product'].groupTest,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              'duracao': e['product'].duracao,
               'prc_unitario': e['product'].value,
+              "valor_test": e['product'].valueTest * 100,
               'tests': e['tests']
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
+      } else if (e["operation"] == "07") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'grupo_teste': e['product'].groupTest,
+              'produto_teste': e['product'].produtoTeste,
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['tests'] == "Não"
+                  ? e['product'].group
+                  : e['product'].groupTest,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['product'].value,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': e['tests']
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
+      } else if (e["operation"] == "00") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'produto_teste': e['product'].produtoTeste,
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['product'].groupTest,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['product'].value,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': 'Sim'
             }
           ],
           'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
@@ -84,35 +151,56 @@ class PaymentRepository {
           'type': e['type'],
           'items': [
             {
+              'percentage_test': e['percentage_test'],
               'produto': e['product'].title,
               'codigo': e['product'].produto,
               'grupo': e['product'].group,
               'quantidade': e['quantity'],
-              'prc_unitario': e['product'].value
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              'prc_unitario': e['product'].value,
+              'duracao': e['product'].duracao
             }
           ]
         };
       }
     }).toList();
-    return {'items': items, 'id_cartao': paymentMethod.creditCard.id};
+    return {
+      'items': items,
+      'id_cartao':
+          paymentMethod.creditCard != null ? paymentMethod.creditCard.id : 0,
+      'ccv': data['ccv'],
+      'installment': data['installment'],
+      'taxa_entrega': data['taxa_entrega']
+    };
   }
 
-  Future<String> payment(
-      Map<String, dynamic> data, PaymentMethod paymentMethod) async {
+  Future<bool> payment(Map<String, dynamic> data, PaymentMethod paymentMethod,
+      bool isBoleto) async {
     Map<String, dynamic> params = generate_params(data, paymentMethod);
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
-      Response response = await dio.post('/api/cliente/pedidos',
+      if (!isBoleto) {
+        Response response = await dio.post('/api/cliente/pedidos',
+            data: jsonEncode(params),
+            options: Options(headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer ${idToken.token}"
+            }));
+
+        return true;
+      }
+      Response response = await dio.post('/api/cliente/pedido_boleto',
           data: jsonEncode(params),
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
           }));
-
-      return response.data['data'];
+      return true;
     } catch (error) {
-      return null;
+      final error400 = error as DioError;
+      return false;
     }
   }
 }

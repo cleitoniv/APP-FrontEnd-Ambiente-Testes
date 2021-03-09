@@ -11,6 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:cpfcnpj/cpfcnpj.dart';
 
 class CompleteCreateAccountScreen extends StatefulWidget {
   @override
@@ -39,6 +40,7 @@ class _CompleteCreateAccountScreenState
   TextEditingController _ufController;
   TextEditingController _codMunicipioController;
   TextEditingController _dataNascimentoController;
+  TextEditingController _emailFiscalController;
 
   StreamSubscription atualizacaoEndereco;
 
@@ -49,46 +51,56 @@ class _CompleteCreateAccountScreenState
   bool enabled = true;
   bool cnaeCrmEnabled = true;
   bool dataNascimentoEnabled = true;
+  bool numeroEnabled = true;
+  bool complementEnabled = true;
+  bool emailFiscalEnabled = true;
+  String textRegister = 'Continuar Cadastro';
+  // bool enderecoEnabled = false;
 
   String sanitize(String str) {
     return str.replaceAll('.', '').replaceAll('-', '').replaceAll('/', '');
   }
 
-  _handleSubmit() async {
-    if (_formKey.currentState.validate()) {
-      Map<String, dynamic> completeFormdata = {
-        'nome': sanitize(_nameController.text),
-        'cep': sanitize(_zipCodeController.text),
-        'estado': sanitize(_ufController.text),
-        'cdmunicipio': _codMunicipioController.text,
-        'endereco': _addressController.text,
-        'bairro': _districtController.text,
-        'municipio': _cityController.text,
-        'numero': _houseNumberController.text,
-        'crm_medico': sanitize(_crmController.text),
-        'cod_cnae': sanitize(_cnaeController.text),
-        'nome_empresarial': sanitize(_nameController.text),
-        'complemento': _adjunctController.text,
-        'data_nascimento': _dataNascimentoController.text
-      };
-
-      Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
-
-      final cnpjCpf = cpfCnpjLabel(currentData["ramo"]);
-
-      if (cnpjCpf["ramo"] == "CPF") {
-        completeFormdata['cnpj_cpf'] = sanitize(_cpfController.text);
-      } else {
-        completeFormdata['cnpj_cpf'] = sanitize(_cnpjController.text);
-      }
-
-      Map<String, dynamic> preFormData =
-          await _authWidgetBloc.createAccountDataOut.first;
-
-      _authBloc.createAccountIn.add(
-        {...completeFormdata, ...preFormData},
+  bool isValidDate(String input) {
+    SnackBar _snackBar;
+    DateTime now = new DateTime.now();
+    var splitDate = input.split("/");
+    if (int.parse(splitDate[2]) > (now.year - 18)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
       );
+    }
+    if (int.parse(splitDate[2]) <= 1900) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
 
+    var splitedDate = "${splitDate[2]}${splitDate[1]}${splitDate[0]}";
+
+    final date = DateTime.parse(splitedDate);
+    final originalFormatString = toOriginalFormatString(date);
+    if (!(splitedDate == originalFormatString)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (_snackBar != null) {
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return true;
+    }
+    return false;
+  }
+
+  void clienteExiste(String cpf_cnpj) async {
+    Cadastro cadastro = await _authBloc.fetchCadastro(sanitize(cpf_cnpj));
+    if (!cadastro.isEmpty) {
       LoginEvent createAccount = await _authBloc.createAccountOut.first;
 
       if (createAccount.isValid) {
@@ -168,7 +180,166 @@ class _CompleteCreateAccountScreenState
           _snackBar,
         );
       }
+    } else {
+      Modular.to.pushNamed('/auth/deliveryAddressRegister');
     }
+  }
+
+  String toOriginalFormatString(DateTime dateTime) {
+    final y = dateTime.year.toString().padLeft(4, '0');
+    final m = dateTime.month.toString().padLeft(2, '0');
+    final d = dateTime.day.toString().padLeft(2, '0');
+    return "$y$m$d";
+  }
+
+  _handleSubmit() async {
+    if (_dataNascimentoController.text == "") {
+    } else if (isValidDate(_dataNascimentoController.text)) {
+      return;
+    }
+
+    if (_cnpjController.text.length <= 13 &&
+        !_verifyCpfCnpj(_cpfController.text, "CPF")) {
+      return;
+    } else if (_cnpjController.text.length >= 13 &&
+        !_verifyCpfCnpj(_cnpjController.text, "CNPJ")) {
+      return;
+    }
+    if (_formKey.currentState.validate()) {
+      Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
+      final cnpjCpf = cpfCnpjLabel(currentData["ramo"]);
+
+      Map<String, dynamic> completeFormdata = {
+        'nome': sanitize(_nameController.text),
+        'cep': sanitize(_zipCodeController.text),
+        'estado': sanitize(_ufController.text),
+        'cdmunicipio': _codMunicipioController.text,
+        'endereco': _addressController.text,
+        'bairro': _districtController.text,
+        'municipio': _cityController.text,
+        'numero': _houseNumberController.text,
+        'crm_medico': sanitize(_crmController.text),
+        'cod_cnae': sanitize(_cnaeController.text),
+        'nome_empresarial': sanitize(_nameController.text),
+        'complemento': _adjunctController.text,
+        'data_nascimento': _dataNascimentoController.text,
+        'email_fiscal': _emailFiscalController.text
+      };
+
+      if (cnpjCpf["ramo"] == "CPF") {
+        completeFormdata['cnpj_cpf'] = sanitize(_cpfController.text);
+      } else {
+        completeFormdata['cnpj_cpf'] = sanitize(_cnpjController.text);
+      }
+
+      Map<String, dynamic> preFormData =
+          await _authWidgetBloc.createAccountDataOut.first;
+
+      _authBloc.createAccountIn.add(
+        {...completeFormdata, ...preFormData},
+      );
+
+      clienteExiste(_cpfController.text);
+    }
+  }
+
+  bool _verifyCpfCnpj(String cpfCnpj, String type) {
+    if (type == "CPF") {
+      if (!CPF.isValid(cpfCnpj)) {
+        _showDialog("Atenção", "${type} inválido ou incompleto.");
+        return false;
+      }
+      return true;
+    } else {
+      if (!CNPJ.isValid(cpfCnpj)) {
+        _showDialog("Atenção", "${type} inválido ou incompleto.");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
+  List<Map> registerAddressTerms() {
+    List<Map> _fieldData = [
+      {
+        'labelText': 'CEP',
+        'controller': _zipCodeController,
+        'validator': (String text) => Helper.lengthValidator(
+              text,
+              length: 8,
+              message: 'CEP deve possuir 8 dígitos',
+            ),
+        'keyboardType': TextInputType.number,
+        'enabled': this.enabled,
+        'focus': cepFocus
+      },
+      {
+        'labelText': 'Endereço',
+        'controller': _addressController,
+        'validator': Helper.lengthValidator,
+        'keyboardType': TextInputType.number,
+        'enabled': this.enabled
+      },
+      {
+        'labelText': 'Número',
+        'controller': _houseNumberController,
+        'validator': Helper.lengthValidator,
+        'keyboardType': TextInputType.number,
+        'enabled': this.numeroEnabled
+      },
+      {
+        'labelText': 'Complemento',
+        'controller': _adjunctController,
+        'validator': null,
+        'enabled': this.complementEnabled
+      },
+      {
+        'labelText': 'Estado',
+        'controller': _ufController,
+        'validator': Helper.lengthValidator,
+        'enabled': this.enabled
+      },
+      {
+        'labelText': 'Cidade',
+        'controller': _cityController,
+        'validator': Helper.lengthValidator,
+        'enabled': this.enabled
+      },
+      {
+        'labelText': 'Bairro',
+        'controller': _districtController,
+        'validator': Helper.lengthValidator,
+        'enabled': this.enabled
+      },
+    ];
+
+    return _fieldData;
   }
 
   Map<String, dynamic> cpfCnpjLabel(String ramo) {
@@ -213,6 +384,7 @@ class _CompleteCreateAccountScreenState
       },
       {
         'labelText': 'Nome completo',
+        'textCapitalization': TextCapitalization.words,
         'prefixIcon': Icon(
           MaterialCommunityIcons.domain,
           color: Color(0xffA1A1A1),
@@ -252,6 +424,18 @@ class _CompleteCreateAccountScreenState
         'enabled': this.dataNascimentoEnabled
       },
       {
+        'labelText': 'Email para info. Fiscais',
+        'prefixIcon': Icon(
+          Icons.email,
+          color: Color(0xffA1A1A1),
+        ),
+        'suffixIcon': null,
+        'controller': _emailFiscalController,
+        'validator': Helper.emailValidator,
+        'keyboardType': TextInputType.emailAddress,
+        'enabled': this.emailFiscalEnabled
+      },
+      {
         'labelText': "CNAE",
         'prefixIcon': Icon(
           Icons.person,
@@ -279,9 +463,7 @@ class _CompleteCreateAccountScreenState
   void completeCadastro(TextEditingController controller) async {
     Cadastro cadastro =
         await _authBloc.fetchCadastro(sanitize(controller.text));
-
     if (!cadastro.isEmpty) {
-      print(cadastro.dados.dataNascimento);
       _cnaeController.text = cadastro.dados.crmCnae;
       _crmController.text = cadastro.dados.crmCnae;
       _nameController.text = cadastro.dados.nome;
@@ -292,12 +474,28 @@ class _CompleteCreateAccountScreenState
       _cityController.text = cadastro.dados.cidade;
       _districtController.text = cadastro.dados.bairro;
       _dataNascimentoController.text = cadastro.dados.dataNascimento;
+      _ufController.text = cadastro.dados.estado;
+      _emailFiscalController.text = cadastro.dados.emailFiscal;
       setState(() {
         if (cadastro.dados.crmCnae != '000000000') {
-          this.cnaeCrmEnabled = false;
-        } else if (cadastro.dados.dataNascimento != null) {
+          this.cnaeCrmEnabled = true;
+        }
+        if (cadastro.dados.dataNascimento != null) {
           this.dataNascimentoEnabled = false;
         }
+        if (cadastro.dados.emailFiscal != null) {
+          this.emailFiscalEnabled = false;
+        }
+        if (cadastro.dados.emailFiscal != null) {
+          this.emailFiscalEnabled = false;
+        }
+        if (cadastro.dados.numero != null) {
+          this.numeroEnabled = false;
+        }
+        if (cadastro.dados.complemento != null) {
+          this.complementEnabled = false;
+        }
+        this.textRegister = 'Completar Cadastro';
         this.enabled = false;
       });
     }
@@ -306,7 +504,6 @@ class _CompleteCreateAccountScreenState
   @override
   void initState() {
     super.initState();
-
     _cnpjController = MaskedTextController(mask: '00.000.000/0000-00');
     _cpfController = MaskedTextController(
       mask: '000.000.000-00',
@@ -330,59 +527,7 @@ class _CompleteCreateAccountScreenState
     _cityController = TextEditingController();
     _ufController = TextEditingController();
     _codMunicipioController = TextEditingController();
-
-    _fieldData = [
-      {
-        'labelText': 'CEP',
-        'controller': _zipCodeController,
-        'validator': (String text) => Helper.lengthValidator(
-              text,
-              length: 8,
-              message: 'CEP deve possuir 8 dígitos',
-            ),
-        'keyboardType': TextInputType.number,
-        'enabled': this.enabled,
-        'focus': cepFocus
-      },
-      {
-        'labelText': 'Endereço',
-        'controller': _addressController,
-        'validator': Helper.lengthValidator,
-        'keyboardType': TextInputType.number,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Número',
-        'controller': _houseNumberController,
-        'validator': Helper.lengthValidator,
-        'keyboardType': TextInputType.number,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Complemento',
-        'controller': _adjunctController,
-        'validator': null,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Estado',
-        'controller': _ufController,
-        'validator': Helper.lengthValidator,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Cidade',
-        'controller': _cityController,
-        'validator': Helper.lengthValidator,
-        'enabled': this.enabled
-      },
-      {
-        'labelText': 'Bairro',
-        'controller': _districtController,
-        'validator': Helper.lengthValidator,
-        'enabled': this.enabled
-      },
-    ];
+    _emailFiscalController = TextEditingController();
 
     otherFocus = new FocusNode();
 
@@ -392,6 +537,8 @@ class _CompleteCreateAccountScreenState
 
     cnpjFocus.addListener(() {
       if (!cnpjFocus.hasFocus) {
+        _verifyCpfCnpj(cnpjCpf['controller'].text, cnpjCpf["ramo"]);
+
         completeCadastro(cnpjCpf['controller']);
       }
     });
@@ -403,7 +550,6 @@ class _CompleteCreateAccountScreenState
     });
 
     atualizacaoEndereco = _authBloc.enderecoStream.listen((event) {
-      print(event);
       if (!event.isEmpty) {
         setState(() {
           _ufController.text = event.endereco.uf;
@@ -427,6 +573,7 @@ class _CompleteCreateAccountScreenState
     _cpfController.dispose();
     _nameController.dispose();
     _crmController.dispose();
+    _emailFiscalController.dispose();
     _zipCodeController.dispose();
     _addressController.dispose();
     _houseNumberController.dispose();
@@ -455,8 +602,6 @@ class _CompleteCreateAccountScreenState
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             }
-            print("aqui");
-            print(snapshot.data);
 
             if (snapshot.data["activity"] == "Usuário de Lente Contato") {
               return Column(
@@ -521,6 +666,7 @@ class _CompleteCreateAccountScreenState
                       return Container(
                         margin: const EdgeInsets.only(top: 20),
                         child: TextFieldWidget(
+                          textCapitalization: e['textCapitalization'],
                           focus: e['focus'],
                           labelText: e['labelText'],
                           prefixIcon: e['prefixIcon'],
@@ -535,12 +681,12 @@ class _CompleteCreateAccountScreenState
                 ),
                 SizedBox(height: 30),
                 Text(
-                  'Endereco',
+                  'Endereço',
                   style: Theme.of(context).textTheme.headline5,
                   textAlign: TextAlign.center,
                 ),
                 Column(
-                  children: _fieldData.map(
+                  children: registerAddressTerms().map(
                     (e) {
                       return Container(
                         margin: const EdgeInsets.only(top: 20),
@@ -553,7 +699,7 @@ class _CompleteCreateAccountScreenState
                           ),
                           controller: e['controller'],
                           validator: e['validator'],
-                          enabled: this.enabled,
+                          enabled: e['enabled'],
                           keyboardType: e['keyboardType'],
                         ),
                       );
@@ -562,9 +708,17 @@ class _CompleteCreateAccountScreenState
                 ),
                 SizedBox(height: 30),
                 RaisedButton(
-                  onPressed: _handleSubmit,
+                  onPressed: () {
+                    if (!_formKey.currentState.validate()) {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              "Corrija os erros em vermelho antes de enviar.")));
+                    } else {
+                      _handleSubmit();
+                    }
+                  },
                   child: Text(
-                    'Completar Cadastro',
+                    this.textRegister,
                     style: Theme.of(context).textTheme.button,
                   ),
                 ),

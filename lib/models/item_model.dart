@@ -23,7 +23,10 @@ class ItemPedidoModel {
         "cilindricoE": e['cilindro_e'] ?? '-',
         "eixoE": e['eixo_e'] ?? '-',
         "duracao": e['duracao'],
-        "tipoVenda": e["type"]
+        "tipoVenda": e["type"],
+        "operation": e["operation"],
+        "tests": e["tests"],
+        "produto_teste": e["produto_teste"]
       };
     })?.toList();
   }

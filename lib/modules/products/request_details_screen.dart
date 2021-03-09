@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
@@ -29,24 +32,262 @@ class RequestDetailsScreen extends StatefulWidget {
 
 class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   ProductBloc _productBloc = Modular.get<ProductBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map> _productParams;
   List<Map> _fieldData;
+  bool isInvalid = false;
   TextEditingController _nameController;
+  TextEditingController _lensDireitoController;
+  TextEditingController _lensEsquerdoController;
   TextEditingController _lensController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
   Product currentProduct;
+  FocusNode caixasFocus = new FocusNode();
+  FocusNode caixasOlhoEsquerdoFocus = new FocusNode();
+  FocusNode caixasOlhoDireitoFocus = new FocusNode();
+  bool _isLoadingSecondButton;
+  bool _isLoadingPrimaryButton;
+
+  int _calculateCreditProduct() {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+
+    int _total = _cart.fold(0, (previousValue, element) {
+      if (element["operation"] == "07" &&
+          element['product'].group == currentProduct.product.group) {
+        return previousValue + element['quantity'];
+      }
+      return previousValue;
+    });
+    return _total;
+  }
+
+  int _calculateCreditFinancial() {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+    int _total = _cart.fold(0, (previousValue, element) {
+      if (element["operation"] == "13") {
+        return previousValue +
+            (element['quantity'] * element["product"].valueFinan);
+      }
+      return previousValue;
+    });
+    return _total;
+  }
+
+  int _calculateCreditTest() {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+
+    int _total = _cart.fold(0, (previousValue, element) {
+      if (element["operation"] == "00" &&
+          element['product'].group == currentProduct.product.group) {
+        return previousValue + element['quantity'];
+      }
+      return previousValue;
+    });
+    return _total;
+  }
+
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title, style: Theme.of(context).textTheme.headline5),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
 
   _onAddLens() {
-    _lensController.text = '${int.parse(_lensController.text) + 1}';
+    int cartTotal = _calculateCreditProduct();
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
+
+    if (widget.type == "C") {
+      int olho = int.parse(_lensController.text);
+      if (currentProduct.product.boxes > olho + cartTotal) {
+        _lensController.text = '${int.parse(_lensController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else if (widget.type == "T") {
+      int olho = int.parse(_lensController.text);
+      if (currentProduct.product.tests > olho + _cartTotalTest) {
+        _lensController.text = '${int.parse(_lensController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else if (widget.type == "CF") {
+      int olho = int.parse(_lensController.text);
+      if (_authBloc.getAuthCurrentUser.data.money >
+          olho * currentProduct.product.valueFinan + _cartTotalFinancial) {
+        _lensController.text = '${int.parse(_lensController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else {
+      _lensController.text = '${int.parse(_lensController.text) + 1}';
+    }
   }
 
   _onRemoveLens() {
     if (int.parse(_lensController.text) > 1) {
       _lensController.text = '${int.parse(_lensController.text) - 1}';
+    }
+  }
+
+  _onAddLensDireito() {
+    int cartTotal = _calculateCreditProduct();
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
+    if (widget.type == "C") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (currentProduct.product.boxes >
+          olhoDireito + olhoEsquerdo + cartTotal) {
+        _lensDireitoController.text =
+            '${int.parse(_lensDireitoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "O limite de caixa estorou. Voce possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+        return _lensDireitoController.text = "1";
+      }
+    } else if (widget.type == "T") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (currentProduct.product.tests >
+          olhoDireito + olhoEsquerdo + _cartTotalTest) {
+        _lensDireitoController.text =
+            '${int.parse(_lensDireitoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "O limite de caixa estorou. Voce possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else if (widget.type == "CF") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (_authBloc.getAuthCurrentUser.data.money >
+          (olhoEsquerdo + olhoDireito) * currentProduct.product.valueFinan +
+              _cartTotalFinancial) {
+        _lensDireitoController.text =
+            '${int.parse(_lensDireitoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensDireitoController.text = "1";
+      }
+    } else {
+      _lensDireitoController.text =
+          '${int.parse(_lensDireitoController.text) + 1}';
+    }
+  }
+
+  _onAddLensEsquerdo() {
+    int cartTotal = _calculateCreditProduct();
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
+
+    if (widget.type == "C") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (currentProduct.product.boxes >
+          olhoDireito + olhoEsquerdo + cartTotal) {
+        _lensEsquerdoController.text =
+            '${int.parse(_lensEsquerdoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensController.text = "1";
+      }
+    } else if (widget.type == "T") {
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      if (currentProduct.product.tests >
+          olhoDireito + olhoEsquerdo + _cartTotalTest) {
+        _lensEsquerdoController.text =
+            '${int.parse(_lensEsquerdoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensEsquerdoController.text = "1";
+      }
+    } else if (widget.type == "CF") {
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+      int olhoDireito = int.parse(_lensDireitoController.text);
+      if (_authBloc.getAuthCurrentUser.data.money >
+          (olhoDireito + olhoEsquerdo) * currentProduct.product.valueFinan +
+              _cartTotalFinancial) {
+        _lensEsquerdoController.text =
+            '${int.parse(_lensEsquerdoController.text) + 1}';
+      } else {
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        return _lensEsquerdoController.text = "1";
+      }
+    } else {
+      _lensEsquerdoController.text =
+          '${int.parse(_lensEsquerdoController.text) + 1}';
+    }
+  }
+
+  _onRemoveLensDireito() {
+    if (int.parse(_lensDireitoController.text) > 1) {
+      _lensDireitoController.text =
+          '${int.parse(_lensDireitoController.text) - 1}';
+    }
+  }
+
+  _onRemoveLensEsquerdo() {
+    if (int.parse(_lensEsquerdoController.text) > 1) {
+      _lensEsquerdoController.text =
+          '${int.parse(_lensEsquerdoController.text) - 1}';
+    }
+  }
+
+  _verifyBuy() {
+    if (widget.type == "A") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.value)}';
+    } else if (widget.type == "C") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.valueProduto)}';
+    } else if (widget.type == "CF") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.valueFinan)}';
+    } else if (widget.type == "T") {
+      return '';
+    }
+  }
+
+  _verifyType() {
+    if (widget.type == "A") {
+      return "Avulso";
+    } else if (widget.type == "C") {
+      return "Produto";
+    } else if (widget.type == "CF") {
+      return "Financeiro";
+    } else if (widget.type == "T") {
+      return "Teste";
     }
   }
 
@@ -68,10 +309,49 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return !currentProduct.product.hasAcessorio ? widget : Container();
   }
 
-  Future<Map<String, dynamic>> _checkParameters(
-      Map data, ProductModel product) async {
-    Map<String, dynamic> params = {};
+  Future<Map<String, dynamic>> _checkParametersGrausDiferentes(
+      Map<String, dynamic> data, Map<String, dynamic> allowedParams) async {
+    Map<String, dynamic> errorParams = {};
 
+    data.keys.forEach((olho) {
+      if (olho != "group") {
+        if (data[olho].keys.any((element) => data[olho][element] == "")) {
+          data[olho].keys.forEach((element) {
+            String key;
+            if (data[olho][element] == "") {
+              if (allowedParams[element] ?? false) {
+                switch (element) {
+                  case "axis":
+                    key = "Eixo ${olho}";
+                    break;
+                  case "cylinder":
+                    key = "Cilindro ${olho}";
+                    break;
+                  case "degree":
+                    key = "Esferico ${olho}";
+                    break;
+                  case "cor":
+                    key = "Cor ${olho}";
+                    break;
+                  case "adicao":
+                    key = "Adicao ${olho}";
+                    break;
+                }
+                errorParams[key] = ["Nao pode estar vazio."];
+              }
+            }
+          });
+        }
+      }
+    });
+    Map<String, dynamic> errors =
+        await _productBloc.checkProductGrausDiferentes(data, allowedParams);
+    return {...errors, ...errorParams};
+  }
+
+  Future<Map<String, dynamic>> _checkParameters(
+      Map data, ProductModel product, Map<String, dynamic> first) async {
+    Map<String, dynamic> params = {};
     Map<String, dynamic> errors = {};
 
     data.remove("lenses");
@@ -84,6 +364,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       "adicao": product.hasAdicao ?? false
     };
 
+    if (first['current'] == "Graus diferentes em cada olho") {
+      data["group"] = product.group;
+      return _checkParametersGrausDiferentes(
+          new Map<String, dynamic>.from(data), allowedParams);
+    }
+
     data.keys.forEach((element) {
       if (allowedParams[element]) {
         params[element] = "${data[element]}";
@@ -91,7 +377,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     });
 
     params["group"] = product.group;
-
     final productAvailable = await _productBloc.checkProduct(params);
 
     if (!productAvailable) {
@@ -128,17 +413,192 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return errors;
   }
 
-  _onAddToCart(Map data) async {
+  _onAddToCart(Map data, String typeButton) async {
+    int cartTotal = _calculateCreditProduct();
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
+
+    var invalidBoxes = SnackBar(
+        content: Text("Quantidade de caixas tem que ser maior que 0."));
+
+    Map<dynamic, dynamic> _checkTypeLens =
+        await _productWidgetBloc.pacientInfoOut.first;
+
+    if (_checkTypeLens['current'] == "Graus diferentes em cada olho") {
+      if (_lensDireitoController.text == "" ||
+          int.parse(_lensDireitoController.text) <= 0) {
+        return _scaffoldKey.currentState.showSnackBar(
+          invalidBoxes,
+        );
+      }
+      if (_lensEsquerdoController.text == "" ||
+          int.parse(_lensEsquerdoController.text) <= 0) {
+        return _scaffoldKey.currentState.showSnackBar(
+          invalidBoxes,
+        );
+      }
+    } else {
+      if (_lensController.text == "" || int.parse(_lensController.text) <= 0) {
+        return _scaffoldKey.currentState.showSnackBar(
+          invalidBoxes,
+        );
+      }
+    }
+
+    if (_numberController.text != "" &&
+        Helper.cpfValidator(_numberController.text) != null) {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "CPF": ["CPF Invalido!"]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
+    if (isValidDate(_birthdayController.text)) {
+      return;
+    }
+    if (int.parse(_lensDireitoController.text) +
+            int.parse(_lensEsquerdoController.text) +
+            int.parse(_lensController.text) ==
+        0) {
+      return;
+    }
+    if (currentProduct.product.boxes <
+            int.parse(_lensController.text) + cartTotal &&
+        widget.type == "C") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (currentProduct.product.tests <
+            int.parse(_lensController.text) + _cartTotalTest &&
+        widget.type == "T") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (_authBloc.getAuthCurrentUser.data.money <
+            (int.parse(_lensController.text) *
+                    currentProduct.product.valueFinan) +
+                _cartTotalFinancial &&
+        widget.type == "CF") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
+    if (currentProduct.product.boxes <
+            int.parse(_lensEsquerdoController.text) +
+                cartTotal +
+                int.parse(_lensDireitoController.text) &&
+        widget.type == "C") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (currentProduct.product.tests <
+            int.parse(_lensEsquerdoController.text) +
+                _cartTotalTest +
+                int.parse(_lensDireitoController.text) &&
+        widget.type == "T") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (_authBloc.getAuthCurrentUser.data.money <
+            ((int.parse(_lensEsquerdoController.text) +
+                        int.parse(_lensDireitoController.text)) *
+                    currentProduct.product.valueFinan) +
+                _cartTotalFinancial &&
+        widget.type == "CF") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
+    if (currentProduct.product.boxes <
+            int.parse(_lensDireitoController.text) +
+                cartTotal +
+                int.parse(_lensEsquerdoController.text) &&
+        widget.type == "C") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (currentProduct.product.tests <
+            int.parse(_lensDireitoController.text) +
+                _cartTotalTest +
+                int.parse(_lensEsquerdoController.text) &&
+        widget.type == "T") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    } else if (_authBloc.getAuthCurrentUser.data.money <
+            ((int.parse(_lensEsquerdoController.text) +
+                        int.parse(_lensDireitoController.text)) *
+                    currentProduct.product.valueFinan) +
+                _cartTotalFinancial &&
+        widget.type == "CF") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
 
     final errors = await _checkParameters(
         new Map<String, dynamic>.from(_first[_first['current']]),
-        data['product']);
+        data['product'],
+        new Map<String, dynamic>.from(_first));
+
     if (errors.keys.length <= 0) {
+      int _quantity = int.parse(_lensDireitoController.text) +
+          int.parse(_lensEsquerdoController.text) +
+          int.parse(_lensController.text);
+
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),
-        'quantity': int.parse(_lensController.text),
+        'quantity': _first['current'] == "Mesmo grau em ambos"
+            ? int.parse(_lensController.text) * 2
+            : _quantity,
+        'quantity_for_eye': {
+          'esquerdo': int.parse(_lensEsquerdoController.text),
+          'direito': int.parse(_lensDireitoController.text)
+        },
         'tests': _first['test'],
         'operation': _parseOperation(widget.type),
         'product': data['product'],
@@ -151,15 +611,30 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _first['current']: _first[_first['current']],
       };
 
+      if (_data['operation'] == "07" && _data["tests"] == "Sim" ||
+          _data['operation'] == "01" && _data["tests"] == "Sim" ||
+          _data['operation'] == "13" && _data["tests"] == "Sim") {
+        int _currentTotal = _cartWidgetBloc.currentCartTotalItems;
+        _cartWidgetBloc.cartTotalItemsSink.add(_currentTotal + 2);
+      } else {
+        int _currentTotal = _cartWidgetBloc.currentCartTotalItems;
+        _cartWidgetBloc.cartTotalItemsSink.add(_currentTotal + 1);
+      }
+
       _requestsBloc.addProductToCart(_data);
-      Modular.to.pushNamed("/cart/product");
+      if (typeButton == "onPurchase") {
+        Modular.to.pushNamed(
+            '/products/${currentProduct.product.id}/requestDetails',
+            arguments: widget.type);
+      } else {
+        Modular.to.pushNamed("/cart/product");
+      }
     } else {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
       _scaffoldKey.currentState.showSnackBar(
         _snack,
       );
     }
-    // print(_data);
   }
 
   _onBackToPurchase() {
@@ -167,25 +642,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onPurchase() async {
-    await _onAddToCart({'product': currentProduct.product});
-    Modular.to.pushNamed(
-      '/products/${widget.id}/requestDetails',
-      arguments: widget.type,
-    );
+    if (isValidDate(_birthdayController.text)) {
+      return;
+    }
+
+    await _onAddToCart({'product': currentProduct.product}, 'onPurchase');
   }
 
   List<Map> _renderButtonData(ProductModel product) {
     return [
-      {
-        'color': Theme.of(context).accentColor,
-        'textColor': Colors.white,
-        'icon': Icon(
-          MaterialCommunityIcons.plus,
-          color: Colors.white,
-        ),
-        'onTap': _onPurchase,
-        'text': 'Comprar Mesmo Produto',
-      },
+      // {
+      //   'color': Theme.of(context).accentColor,
+      //   'textColor': Colors.white,
+      //   'icon': Icon(
+      //     MaterialCommunityIcons.plus,
+      //     color: Colors.white,
+      //   ),
+      //   'onTap': _onPurchase,
+      //   'text': 'Adicione e Continue Solicitando',
+      // },
       {
         'color': Color(0xffF1F1F1),
         'textColor': Theme.of(context).accentColor,
@@ -196,23 +671,105 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'onTap': _onBackToPurchase,
         'text': 'Continue Comprando',
       },
-      {
-        'color': Theme.of(context).primaryColor,
-        'textColor': Colors.white,
-        'icon': Image.asset(
-          'assets/icons/cart.png',
-          width: 20,
-          height: 20,
-          color: Colors.white,
-        ),
-        'onTap': () {
-          _onAddToCart({
-            'product': product,
-          });
-        },
-        'text': 'Adicionar ao Carrinho',
-      }
+      // {
+      //   'color': Theme.of(context).primaryColor,
+      //   'textColor': Colors.white,
+      //   'icon': Image.asset(
+      //     'assets/icons/cart.png',
+      //     width: 20,
+      //     height: 20,
+      //     color: Colors.white,
+      //   ),
+      //   'onTap': () async {
+      //     setState(() {
+      //       _isLoading = true;
+      //     });
+      //     await _onAddToCart({
+      //       'product': product,
+      //     });
+      //     setState(() {
+      //       _isLoading = false;
+      //     });
+      //   },
+      //   'text': 'Adicionar ao Carrinho',
+      // }
     ];
+  }
+
+  _verifyIcon() {
+    if (widget.type == "A") {
+      return CircleAvatar(
+          backgroundColor: Color(0xfff),
+          child: Image.asset(
+            'assets/icons/credito-financeiro.png',
+            width: 26,
+            height: 26,
+            color: Color(0xff707070),
+          ));
+    } else if (widget.type == "C") {
+      return CircleAvatar(
+          backgroundColor: Color(0xffEFC75E),
+          child: Image.asset(
+            'assets/icons/open_box.png',
+            width: 20,
+            height: 20,
+            color: Colors.white,
+          ));
+    } else if (widget.type == "CF") {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Image.asset(
+            'assets/icons/credito-financeiro.png',
+            width: 28,
+            height: 28,
+            color: Colors.green[300],
+          ));
+    } else if (widget.type == "T") {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Icon(
+            Icons.remove_red_eye,
+            color: Colors.black54,
+            size: 23,
+          ));
+    }
+  }
+
+  _onAddCurrentParam(Map<dynamic, dynamic> data) async {
+    if (widget.type == "C") {
+      if (data['current'] == 'Graus diferentes em cada olho' &&
+          currentProduct.product.boxes < 2) {
+        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+          "Credito Insuficiente": [
+            "Voce nao tem credito para comprar nessa modalidade"
+          ]
+        });
+        _scaffoldKey.currentState.showSnackBar(
+          _snack,
+        );
+      } else if (data['current'] == 'Graus diferentes em cada olho') {
+        _lensDireitoController.text = '1';
+        _lensEsquerdoController.text = '1';
+        _lensController.text = '0';
+        _onAddParam(data);
+      } else {
+        _lensDireitoController.text = '0';
+        _lensEsquerdoController.text = '0';
+        _lensController.text = '1';
+        _onAddParam(data);
+      }
+    } else {
+      if (data['current'] == 'Graus diferentes em cada olho') {
+        _lensDireitoController.text = '1';
+        _lensEsquerdoController.text = '1';
+        _lensController.text = '0';
+      } else {
+        _lensDireitoController.text = '0';
+        _lensEsquerdoController.text = '0';
+        _lensController.text = '1';
+      }
+      _onAddParam(data);
+    }
   }
 
   _onAddParam(Map<dynamic, dynamic> data) async {
@@ -272,14 +829,92 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     );
   }
 
+  _pacienteInfo(BuildContext context) {
+    Dialogs.pacienteInfo(context, onTap: () {
+      Modular.to.pop();
+    });
+  }
+
+  bool isValidDate(String input) {
+    SnackBar _snackBar;
+    DateTime now = new DateTime.now();
+    var splitDate = input.split("/");
+
+    if (input == '') {
+      return false;
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return true;
+    }
+    if (int.parse(splitDate[2]) > (now.year - 18)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (int.parse(splitDate[2]) <= 1900) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+
+    var splitedDate = "${splitDate[2]}${splitDate[1]}${splitDate[0]}";
+
+    final date = DateTime.parse(splitedDate);
+    final originalFormatString = toOriginalFormatString(date);
+    if (!(splitedDate == originalFormatString)) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Data de nascimento inválida.',
+        ),
+      );
+    }
+    if (_snackBar != null) {
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return true;
+    }
+    return false;
+  }
+
+  String toOriginalFormatString(DateTime dateTime) {
+    final y = dateTime.year.toString().padLeft(4, '0');
+    final m = dateTime.month.toString().padLeft(2, '0');
+    final d = dateTime.day.toString().padLeft(2, '0');
+    return "$y$m$d";
+  }
+
+  _validateField(String text) {
+    if (int.parse(text) <= 0) {
+      _lensController.text = '1';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
-    _numberController = TextEditingController();
+    _numberController = MaskedTextController(
+      mask: '000.000.000-00',
+    );
+
+    _isLoadingSecondButton = false;
+    _isLoadingPrimaryButton = false;
 
     _lensController = TextEditingController(
       text: '1',
+    );
+    _lensEsquerdoController = TextEditingController(
+      text: '0',
+    );
+    _lensDireitoController = TextEditingController(
+      text: '0',
     );
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
@@ -294,13 +929,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'controller': _nameController,
       },
       {
-        'labelText': 'Número do Cliente',
+        'labelText': 'CPF(opcional)',
         'icon': MaterialCommunityIcons.numeric,
         'controller': _numberController,
         'keyboardType': TextInputType.number,
+        'validator': Helper.cpfValidator
       },
       {
-        'labelText': 'Data de Nascimento',
+        'labelText': 'Data de nascimento',
         'icon': MaterialCommunityIcons.cake_layered,
         'controller': _birthdayController,
         'keyboardType': TextInputType.number,
@@ -359,6 +995,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       appBar: AppBar(
         title: Text('Detalhes do Pedido'),
         centerTitle: false,
+        actions: [
+          Padding(
+              padding: EdgeInsets.only(right: 40, top: 5),
+              child: IconButton(
+                icon: Icon(Icons.shopping_cart,
+                    size: 40, color: Colors.green[300]),
+                onPressed: () {
+                  Modular.to.pushNamed("/cart/product");
+                },
+              ))
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -377,7 +1024,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       fit: BoxFit.contain,
                     ),
                     Text(
-                      'R\$ ${Helper.intToMoney(currentProduct.product.value)}',
+                      _verifyBuy(),
                       style: Theme.of(context).textTheme.headline5.copyWith(
                             fontSize: 14,
                           ),
@@ -408,17 +1055,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        CircleAvatar(
-                          backgroundColor: Color(0xffEFC75E),
-                          child: Image.asset(
-                            'assets/icons/open_box.png',
-                            width: 20,
-                            height: 20,
-                            color: Colors.white,
-                          ),
-                        ),
+                        _verifyIcon(),
                         Text(
-                          'Produto',
+                          _verifyType(),
                           style: Theme.of(context).textTheme.subtitle1.copyWith(
                                 color: Colors.black45,
                                 fontSize: 14,
@@ -437,11 +1076,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             thickness: 0.2,
             color: Color(0xffa1a1a1),
           ),
-          Text(
-            'Informações do Paciente',
-            style: Theme.of(context).textTheme.headline5,
-            textAlign: TextAlign.center,
-          ),
+          Container(
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Informações do Paciente',
+                    style: Theme.of(context).textTheme.headline5,
+                    textAlign: TextAlign.center,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.help_outline,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      _pacienteInfo(context);
+                    },
+                  ),
+                ],
+              )),
           SizedBox(height: 10),
           Text(
             'Categorizando seus pedidos por paciente, enviaremos um alerta com o período para reavaliação. Você também acumulara pontos para compras futuras!',
@@ -497,7 +1152,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   'Mesmo grau em ambos',
                   'Graus diferentes em cada olho',
                 ],
-                onChanged: (value) => _onAddParam({
+                onChanged: (value) => _onAddCurrentParam({
                   'current': value,
                 }),
                 currentValue: snapshot.data['current'],
@@ -521,6 +1176,42 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       style: Theme.of(context).textTheme.headline5,
                       textAlign: TextAlign.center,
                     )),
+                    SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          !currentProduct.product.hasAcessorio
+                              ? 'Quantidade de caixas'
+                              : 'Quantidade',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        TextFieldWidget(
+                          width: 150,
+                          controller: _lensController,
+                          readOnly: false,
+                          focus: caixasFocus,
+                          keyboardType: TextInputType.number,
+                          inputFormattersActivated: true,
+                          prefixIcon: IconButton(
+                            icon: Icon(
+                              Icons.remove,
+                              color: Colors.black26,
+                              size: 30,
+                            ),
+                            onPressed: _onRemoveLens,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.black26,
+                              size: 30,
+                            ),
+                            onPressed: _onAddLens,
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 30),
                     StreamBuilder(
                         stream: _productBloc.parametroListStream,
@@ -575,6 +1266,41 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              !currentProduct.product.hasAcessorio
+                                  ? 'Quantidade de caixas'
+                                  : 'Quantidade',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            TextFieldWidget(
+                              width: 120,
+                              controller: _lensDireitoController,
+                              readOnly: false,
+                              focus: caixasOlhoDireitoFocus,
+                              keyboardType: TextInputType.number,
+                              inputFormattersActivated: true,
+                              prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.remove,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onRemoveLensDireito,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onAddLensDireito,
+                              ),
+                            ),
+                          ],
+                        ),
                         StreamBuilder(
                             stream: _productBloc.parametroListStream,
                             builder: (context, parametroSnapshot) {
@@ -615,9 +1341,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       : Container();
                                 },
                               );
-                            })
+                            }),
                       ],
                     ),
+                    SizedBox(height: 20),
                     Column(
                       children: <Widget>[
                         _checkForAcessorio(Text(
@@ -626,6 +1353,41 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              !currentProduct.product.hasAcessorio
+                                  ? 'Quantidade de caixas'
+                                  : 'Quantidade',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            TextFieldWidget(
+                              width: 120,
+                              controller: _lensEsquerdoController,
+                              readOnly: false,
+                              focus: caixasOlhoEsquerdoFocus,
+                              keyboardType: TextInputType.number,
+                              inputFormattersActivated: true,
+                              prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.remove,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onRemoveLensEsquerdo,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onAddLensEsquerdo,
+                              ),
+                            ),
+                          ],
+                        ),
                         StreamBuilder(
                             stream: _productBloc.parametroListStream,
                             builder: (context, parametroSnapshot) {
@@ -666,7 +1428,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       : Container();
                                 },
                               );
-                            })
+                            }),
                       ],
                     ),
                   ],
@@ -677,49 +1439,20 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           SizedBox(
             height: 20,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                !currentProduct.product.hasAcessorio
-                    ? 'Quantidade de caixas'
-                    : 'Quantidade',
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              TextFieldWidget(
-                width: 120,
-                controller: _lensController,
-                readOnly: true,
-                prefixIcon: IconButton(
-                  icon: Icon(
-                    Icons.remove,
-                    color: Colors.black26,
-                    size: 30,
-                  ),
-                  onPressed: _onRemoveLens,
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    Icons.add,
-                    color: Colors.black26,
-                    size: 30,
-                  ),
-                  onPressed: _onAddLens,
-                ),
-              ),
-            ],
-          ),
           SizedBox(height: 10),
-          _checkForAcessorio(StreamBuilder<Map>(
-            stream: _productWidgetBloc.pacientInfoOut,
-            builder: (context, snapshot) {
-              return DropdownWidget(
-                  items: ['Não', 'Sim'],
-                  currentValue: snapshot.hasData ? snapshot.data['test'] : null,
-                  labelText: 'Teste?',
-                  onChanged: _onChangedTest);
-            },
-          )),
+          currentProduct.product.hasTest && widget.type != "T"
+              ? _checkForAcessorio(StreamBuilder<Map>(
+                  stream: _productWidgetBloc.pacientInfoOut,
+                  builder: (context, snapshot) {
+                    return DropdownWidget(
+                        items: ['Não', 'Sim'],
+                        currentValue:
+                            snapshot.hasData ? snapshot.data['test'] : null,
+                        labelText: 'Teste?',
+                        onChanged: _onChangedTest);
+                  },
+                ))
+              : Container(),
           Container(
             width: MediaQuery.of(context).size.width,
             margin: const EdgeInsets.symmetric(
@@ -792,28 +1525,91 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               ],
             ),
           ),
+          Container(
+            margin: const EdgeInsets.only(
+              top: 20,
+            ),
+            child: !_isLoadingPrimaryButton
+                ? RaisedButton.icon(
+                    icon: Icon(
+                      MaterialCommunityIcons.plus,
+                      color: Colors.white,
+                    ),
+                    color: Theme.of(context).accentColor,
+                    elevation: 0,
+                    onPressed: () async {
+                      setState(() {
+                        _isLoadingPrimaryButton = true;
+                      });
+                      await _onPurchase();
+                      setState(() {
+                        _isLoadingPrimaryButton = false;
+                      });
+                    },
+                    label: Text(
+                      'Adicione e Continue Solicitando',
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  )
+                : Center(child: CircularProgressIndicator()),
+          ),
           Column(
               children: _renderButtonData(currentProduct.product).map(
             (e) {
               return Container(
-                margin: const EdgeInsets.only(
-                  top: 20,
-                ),
-                child: RaisedButton.icon(
-                  icon: e['icon'],
-                  color: e['color'],
-                  elevation: 0,
-                  onPressed: e['onTap'],
-                  label: Text(
-                    e['text'] ?? "-",
-                    style: Theme.of(context).textTheme.button.copyWith(
-                          color: e['textColor'],
-                        ),
+                  margin: const EdgeInsets.only(
+                    top: 20,
                   ),
-                ),
-              );
+                  child: RaisedButton.icon(
+                    icon: e['icon'],
+                    color: e['color'],
+                    elevation: 0,
+                    onPressed: e['onTap'],
+                    label: Text(
+                      e['text'] ?? "-",
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: e['textColor'],
+                          ),
+                    ),
+                  ));
             },
-          ).toList())
+          ).toList()),
+          Container(
+            margin: const EdgeInsets.only(
+              top: 20,
+            ),
+            child: !_isLoadingSecondButton
+                ? RaisedButton.icon(
+                    icon: Image.asset(
+                      'assets/icons/cart.png',
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
+                    color: Theme.of(context).primaryColor,
+                    elevation: 0,
+                    onPressed: () async {
+                      setState(() {
+                        _isLoadingSecondButton = true;
+                      });
+                      await _onAddToCart({
+                        'product': currentProduct.product,
+                      }, 'Normal');
+                      setState(() {
+                        _isLoadingSecondButton = false;
+                      });
+                    },
+                    label: Text(
+                      'Adicionar ao Carrinho',
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  )
+                : Center(child: CircularProgressIndicator()),
+          )
         ],
       ),
     );

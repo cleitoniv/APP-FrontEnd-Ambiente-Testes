@@ -5,6 +5,8 @@ import 'package:central_oftalmica_app_cliente/repositories/credit_card_repositor
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
+import '../repositories/credits_repository.dart';
+
 class CreditCardBloc extends Bloc<CreditCardModel> {
   CreditCardRepository repository;
 
@@ -15,11 +17,27 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   void fetchPaymentMethods() async {
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
-    CreditCardModel currentCard =
-        list.list.firstWhere((element) => element.status == 1);
-    currentPaymentFormIn.add(currentCard);
-    _cartWidgetBloc.setPaymentMethodCartao(currentCard);
-    this.cartaoCreditoSink.add(list);
+    try {
+      CreditCardModel currentCard =
+          list.list.firstWhere((element) => element.status == 1);
+      currentPaymentFormIn.add(currentCard);
+      _cartWidgetBloc.setPaymentMethodCartao(currentCard);
+      this.cartaoCreditoSink.add(list);
+    } catch (e) {
+      if (list.list.length > 0) {
+        currentPaymentFormIn.add(list.list[0]);
+        _cartWidgetBloc.setPaymentMethodCartao(list.list[0]);
+        this.cartaoCreditoSink.add(list);
+      } else {
+        this
+            .cartaoCreditoSink
+            .add(CreditCardList(isEmpty: true, isLoading: false));
+      }
+    }
+  }
+
+  Future<List> fetchInstallments(int valor, bool isBoleto) async {
+    return repository.fetchInstallments(valor, isBoleto);
   }
 
   Future<CreditCard> addCreditCard(CreditCardModel creditCard) {
@@ -41,6 +59,10 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   BehaviorSubject _currentPaymentFormController = BehaviorSubject();
   Sink get currentPaymentFormIn => _currentPaymentFormController.sink;
   Stream get currentPaymentFormOut => _currentPaymentFormController.stream;
+
+  Future<RemoveCard> removeCard(int id) async {
+    return repository.removeCard(id);
+  }
 
   @override
   void dispose() {

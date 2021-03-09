@@ -28,6 +28,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   _onTap(NotificationModel notification) async {
     await _notificationBloc.readNotification(notification.id);
+    _notificationBloc.fetchNotifications();
     if (notification.type == "PEDIDO_CONFIRMADO") {
       Modular.to.pushNamed('/home/3');
     } else if (notification.type == "RESGATE_PONTOS") {

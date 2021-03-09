@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class AppUsersScreen extends StatefulWidget {
 
 class _AppUsersScreenState extends State<AppUsersScreen> {
   UserBloc _userBloc = Modular.get<UserBloc>();
+  AuthBloc _authBlock = Modular.get<AuthBloc>();
 
   _onAddUser() {
     Modular.to.pushNamed(
@@ -46,7 +48,7 @@ class _AppUsersScreenState extends State<AppUsersScreen> {
           ),
           SizedBox(height: 10),
           Text(
-            'Crie e gerencie acessos diretos para seus colaboradores fazerem pedidos através da sua conta:',
+            'Inclua, exclua e gerencie acesso para seus colaboradores fazerem pedidos através da sua conta.',
             style: Theme.of(context).textTheme.subtitle1,
             textAlign: TextAlign.center,
           ),
@@ -132,19 +134,21 @@ class _AppUsersScreenState extends State<AppUsersScreen> {
             },
           ),
           SizedBox(height: 30),
-          RaisedButton.icon(
-            onPressed: _onAddUser,
-            elevation: 0,
-            color: Theme.of(context).primaryColor,
-            icon: Icon(
-              MaterialCommunityIcons.plus,
-              color: Colors.white,
-            ),
-            label: Text(
-              'Adicionar Outro Usuário',
-              style: Theme.of(context).textTheme.button,
-            ),
-          )
+          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
+              ? RaisedButton.icon(
+                  onPressed: _onAddUser,
+                  elevation: 0,
+                  color: Theme.of(context).primaryColor,
+                  icon: Icon(
+                    MaterialCommunityIcons.plus,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    'Adicionar Outro Usuário',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                )
+              : Container()
         ],
       ),
     );

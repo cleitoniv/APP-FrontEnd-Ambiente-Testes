@@ -1,7 +1,13 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/modules/products/request_details_screen.dart';
+import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -15,36 +21,157 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
 
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
+  static Map _product;
+  int _taxaEntrega = 0;
 
   _onBackToPurchase() {
     Modular.to.pushNamed("/home/0");
   }
 
+  _removeItemCard() {
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+    _cartWidgetBloc.cartTotalItemsSink.add(_total - _total);
+  }
+
   _onSubmit() {
+    _requestsBloc.taxaEntregaSink.add(_taxaEntrega);
+
+    List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
+
+    int _total = _data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07" ||
+          element["operation"] == "13" ||
+          element["type"] == "T") {
+        return previousValue;
+      }
+      return previousValue + (element['product'].value * element['quantity']);
+    });
+
+    if (_total == 0) {
+      return _orderFinish(_data);
+    }
+
     Modular.to.pushNamed(
       '/cart/payment',
     );
   }
 
+  _onSubmitDialog() {
+    _requestsBloc.getPedidosList(0);
+    _authBloc.fetchCurrentUser();
+    Modular.to.pushNamedAndRemoveUntil(
+      '/home/3',
+      (route) => route.isFirst,
+    );
+  }
+
+  _orderFinish(List<Map<String, dynamic>> _data) async {
+    OrderPayment _order = await _requestsBloc.orderPayment(_data);
+
+    if (_order.isValid) {
+      _requestsBloc.resetCart();
+      Dialogs.success(
+        context,
+        subtitle: 'Compra efetuada com sucesso!',
+        buttonText: 'Ir para Meus Pedidos',
+        onTap: _onSubmitDialog,
+      );
+      _removeItemCard();
+    } else {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, _order.error);
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+    }
+  }
+
+  String selectPrice(Map<String, dynamic> item) {
+    if (item["type"] == "T") {
+      item.update("operation", (value) => "00");
+    }
+
+    if (item["operation"] == "07" && item['tests'] == "Não") {
+      return 'R\$ ${Helper.intToMoney(item['product'].valueProduto)}';
+      // return Helper.intToMoney(item['product'].valueProduto);
+    } else if (item["operation"] == "07" && item['tests'] == "Sim") {
+      return '';
+    } else if (item["operation"] == "13" && item['tests'] == "Sim") {
+      return '';
+    } else if (item["operation"] == "13") {
+      return 'R\$ ${Helper.intToMoney(item['product'].valueFinan)}';
+    } else if (item["operation"] == "01" && item['tests'] == "Sim") {
+      return '';
+    } else if (item["operation"] == "01" && item['tests'] == "Não") {
+      return 'R\$ ${Helper.intToMoney(item['product'].value)}';
+    } else if (item["operation"] == "00") {
+      return '';
+    }
+    return "";
+  }
+
   _removeItem(Map<String, dynamic> data) {
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+
+    if (data["removeItem"] == "Sim") {
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
+    } else {
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    }
+
     _requestsBloc.removeFromCart(data);
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    int _total = data.fold(
-      0,
-      (previousValue, element) =>
-          previousValue + (element['product'].value * element['quantity']),
-    );
+    int _total = data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07" ||
+          element["type"] == "T" ||
+          element["tests"] == "Sim") {
+        return previousValue;
+      } else if (element["operation"] == "13") {
+        return previousValue;
+      }
+      return previousValue + (element['product'].value * element['quantity']);
+    });
 
-    return Helper.intToMoney(_total);
+    return Helper.intToMoney(_total + _taxaEntrega);
+  }
+
+  _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title, style: Theme.of(context).textTheme.headline5),
+          content: Text(content),
+          actions: [
+            RaisedButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Carrinho', style: Theme.of(context).textTheme.headline4),
+          automaticallyImplyLeading: false,
+          centerTitle: true,
         ),
         body: SafeArea(
           child: ListView(
@@ -83,80 +210,142 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                       color: Colors.black12,
                     ),
                     itemBuilder: (context, index) {
-                      return ListTileMoreCustomizable(
-                        contentPadding: const EdgeInsets.all(0),
-                        horizontalTitleGap: 10,
-                        leading: Image.network(
-                          _data[index]['product'].imageUrl,
-                        ),
-                        title: Text(
-                          '${_data[index]['product'].title}',
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 14,
-                              ),
-                        ),
-                        subtitle: Row(
-                          children: <Widget>[
-                            Text(
-                              'Qnt. ${_data[index]['quantity']}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    color: Colors.black38,
-                                    fontSize: 14,
+                      if (_data[index]["type"] == "T") {
+                        _data[index].update("operation", (value) => "00");
+                      }
+                      return Column(
+                        children: [
+                          ListTileMoreCustomizable(
+                            contentPadding: const EdgeInsets.all(0),
+                            horizontalTitleGap: 10,
+                            leading: _data[index]["tests"] != "Sim" &&
+                                    _data[index]["type"] != "T"
+                                ? Image.network(
+                                    _data[index]['product'].imageUrl,
+                                  )
+                                : Image.network(
+                                    _data[index]['product'].imageUrlTest,
                                   ),
+                            title: _data[index]["type"] != "T" &&
+                                    _data[index]['tests'] == "Não"
+                                ? Text(
+                                    '${_data[index]['product'].title}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
+                                  )
+                                : _data[index]['product'].produtoTeste != null
+                                    ? Text(
+                                        '${_data[index]['product'].produtoTeste}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            .copyWith(
+                                              fontSize: 14,
+                                            ),
+                                      )
+                                    : Text(
+                                        '${_data[index]['product'].title}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            .copyWith(
+                                              fontSize: 14,
+                                            ),
+                                      ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 5),
+                                Text(
+                                  'Quantidade: ${_data[index]['quantity']}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      .copyWith(
+                                        color: Colors.black38,
+                                        fontSize: 14,
+                                      ),
+                                ),
+                                SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                        backgroundColor: Helper.buyTypeBuild(
+                                            context,
+                                            _data[index]['operation'],
+                                            _data[index]['tests'])['color'],
+                                        radius: 10,
+                                        child: Helper.buyTypeBuild(
+                                            context,
+                                            _data[index]['operation'],
+                                            _data[index]['tests'])['icon']),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          .copyWith(
+                                            fontSize: 14,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 20),
-                            CircleAvatar(
-                                backgroundColor: Helper.buyTypeBuild(
-                                  context,
-                                  _data[index]['type'],
-                                )['color'],
-                                radius: 10,
-                                child: Helper.buyTypeBuild(
-                                  context,
-                                  _data[index]['type'],
-                                )['icon']),
-                            SizedBox(width: 5),
-                            Text(
-                              '${Helper.buyTypeBuild(
-                                context,
-                                _data[index]['type'],
-                              )['title']}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  selectPrice(_data[index]),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(
+                                        fontSize: 14,
+                                      ),
+                                ),
+                                _data[index]['removeItem'] == 'Sim' ||
+                                        _data[index]['removeItem'] == null
+                                    ? IconButton(
+                                        icon: Icon(
+                                          Icons.close,
+                                          size: 30,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          _removeItem(_data[index]);
+                                        },
+                                      )
+                                    : Container()
+                              ],
                             ),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              'R\$ ${Helper.intToMoney(_data[index]['product'].value)}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                size: 30,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                _removeItem(_data[index]);
-                              },
-                            )
-                          ],
-                        ),
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(left: 60),
+                          //   child: Row(
+                          //     children: [
+                          //       _data[index]["operation"] == "01" ||
+                          //               _data[index]["operation"] == "07" &&
+                          //                   _data[index]["tests"] == "Sim"
+                          //           ? Row(
+                          //               children: [
+                          //                 Icon(Icons.remove_red_eye,
+                          //                     color: Colors.black54),
+                          //                 Text(
+                          //                     "\tVocê pediu teste deste produto.",
+                          //                     style: TextStyle(fontSize: 12))
+                          //               ],
+                          //             )
+                          //           : Container(),
+                          //     ],
+                          //   ),
+                          // )
+                        ],
                       );
                     },
                   );
@@ -166,23 +355,6 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 height: 25,
                 thickness: 1,
                 color: Colors.black12,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Taxa de entrega',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                  Text(
-                    'R\$ ${Helper.intToMoney(20000)}',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                ],
               ),
               SizedBox(height: 20),
               Row(
@@ -247,6 +419,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
               ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

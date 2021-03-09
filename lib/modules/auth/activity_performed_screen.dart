@@ -16,7 +16,11 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
   List<Map<String, dynamic>> _activities = [
     {'id': "1", 'name': 'Oftalmologista', 'fisica_jurid': 'F'},
     {'id': "2", 'name': 'Ótica', 'fisica_jurid': 'J'},
-    {'id': "3", 'name': 'Clínica, Hospital de Olhos ou Afins', 'fisica_jurid': 'J'},
+    {
+      'id': "3",
+      'name': 'Clínica, Hospital de Olhos ou Afins',
+      'fisica_jurid': 'J'
+    },
     {'id': "4", 'name': 'Usuário de Lente Contato', 'fisica_jurid': 'F'},
   ];
 

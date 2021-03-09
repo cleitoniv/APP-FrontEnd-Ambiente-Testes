@@ -1,8 +1,10 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -21,13 +23,17 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   UserBloc _userBloc = Modular.get<UserBloc>();
+  AuthBloc _authBlock = Modular.get<AuthBloc>();
   List<Map> _data;
   TextEditingController _nameController;
   TextEditingController _emailController;
   TextEditingController _officeController;
   MaskedTextController _passwordController;
+  bool accept = false;
 
   _onAddUser() async {
     Map<String, dynamic> params = {
@@ -36,10 +42,28 @@ class _FormScreenState extends State<FormScreen> {
       "cargo": _officeController.text
     };
     AddUsuarioCliente addUser = await _userBloc.addUsuario(params);
-
+    _userBloc.fetchUsuariosCliente();
     if (addUser.isValid) {
       Modular.to.pop();
+    } else {
+      SnackBar _snackBar = SnackBar(
+        content: Text(
+          addUser.errorMessage,
+        ),
+      );
+
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
     }
+  }
+
+  _handleShowTerm() {
+    Modular.to.pushNamed('/auth/terms');
+  }
+
+  _accepTermUser(bool value) {
+    setState(() {
+      accept = value;
+    });
   }
 
   _onSaveInfo() async {
@@ -52,6 +76,50 @@ class _FormScreenState extends State<FormScreen> {
 
     UpdateUsuarioCliente updateUser =
         await _userBloc.updateUsuario(widget.usuario.id, params);
+    if (updateUser.isValid) {
+      _userBloc.fetchUsuariosCliente();
+      Modular.to.pop();
+    }
+  }
+
+  _showDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Remoção de Usuário",
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text("Essa ação não pode ser desfeita! Continuar?"),
+          actions: [
+            RaisedButton(
+              color: Colors.red,
+              child: Text(
+                "Sim",
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: _onDeleteUser,
+            ),
+            RaisedButton(
+                child: Text(
+                  "Cancelar",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Modular.to.pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
+  _onDeleteUser() async {
+    Modular.to.pop();
+    DeleteUsuarioCliente updateUser =
+        await _userBloc.deleteUsuarioCliente(widget.usuario.id);
     if (updateUser.isValid) {
       _userBloc.fetchUsuariosCliente();
       Modular.to.pop();
@@ -80,7 +148,10 @@ class _FormScreenState extends State<FormScreen> {
 
     _data = [
       {
-        'labelText': 'Nome completo',
+        'labelText': 'Nome',
+        'maxLength': 15,
+        'maxLengthEnforce': true,
+        'capitalization': TextCapitalization.words,
         'controller': _nameController,
         'icon': Icons.person,
         'enabled': true,
@@ -94,7 +165,8 @@ class _FormScreenState extends State<FormScreen> {
       {
         'labelText': 'Cargo (opcional)',
         'controller': _officeController,
-        'icon': MaterialCommunityIcons.cake_layered,
+        'capitalization': TextCapitalization.words,
+        'icon': Icons.assignment,
         'enabled': true,
       }
     ];
@@ -112,6 +184,7 @@ class _FormScreenState extends State<FormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Usuários do Aplicativo'),
         centerTitle: false,
@@ -134,6 +207,9 @@ class _FormScreenState extends State<FormScreen> {
             ),
             itemBuilder: (context, index) {
               return TextFieldWidget(
+                maxLength: _data[index]['maxLength'],
+                maxLengthEnforce: _data[index]['maxLengthEnforce'],
+                textCapitalization: _data[index]['capitalization'],
                 enabled: _data[index]['enabled'],
                 labelText: _data[index]['labelText'],
                 prefixIcon: Icon(
@@ -161,50 +237,114 @@ class _FormScreenState extends State<FormScreen> {
                   ),
             ),
           ),
-          widget.formType == 'edit'
-              ? ListTileMoreCustomizable(
-                  dense: true,
-                  contentPadding: const EdgeInsets.all(0),
-                  horizontalTitleGap: 0,
-                  title: Text(
-                    'Ativar/Desativar Usuário',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
+          widget.formType == "edit"
+              ? Container()
+              : Row(children: <Widget>[
+                  Checkbox(
+                    value: accept,
+                    onChanged: _accepTermUser,
                   ),
-                  trailing: StreamBuilder<bool>(
-                    stream: _profileWidgetBloc.userStatusOut,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Switch(
-                          value: snapshot.data,
-                          activeColor: Theme.of(context).primaryColor,
-                          onChanged: (value) => _onChangeUserStatus(value),
-                        );
-                      } else {
-                        return Switch(
-                          value: false,
-                          activeColor: Theme.of(context).primaryColor,
-                          onChanged: (value) => _onChangeUserStatus(value),
-                        );
-                      }
-                    },
+                  Text.rich(
+                    TextSpan(
+                      text: 'Aceito os ',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                          ),
+                      children: [
+                        TextSpan(
+                          text: 'Termos de responsabilidade',
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                color: Theme.of(context).accentColor,
+                                decoration: TextDecoration.underline,
+                                fontSize: 14,
+                              ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = _handleShowTerm,
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+          // widget.formType == 'edit'
+          //     ? ListTileMoreCustomizable(
+          //         dense: true,
+          //         contentPadding: const EdgeInsets.all(0),
+          //         horizontalTitleGap: 0,
+          //         title: Text(
+          //           'Ativar/Desativar Usuário',
+          //           style: Theme.of(context).textTheme.subtitle1.copyWith(
+          //                 fontSize: 14,
+          //               ),
+          //         ),
+          //         trailing: StreamBuilder<bool>(
+          //           stream: _profileWidgetBloc.userStatusOut,
+          //           builder: (context, snapshot) {
+          //             if (_authBlock.getAuthCurrentUser.data.role ==
+          //                 'CLIENTE') {
+          //               if (snapshot.hasData) {
+          //                 return Switch(
+          //                   value: snapshot.data,
+          //                   activeColor: Theme.of(context).primaryColor,
+          //                   onChanged: (value) => _onChangeUserStatus(value),
+          //                 );
+          //               } else {
+          //                 return Switch(
+          //                   value: false,
+          //                   activeColor: Theme.of(context).primaryColor,
+          //                   onChanged: (value) => _onChangeUserStatus(value),
+          //                 );
+          //               }
+          //             }
+          //             return Container();
+          //           },
+          //         ),
+          //       ):
+          Container(),
+          SizedBox(height: 30),
+          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE' &&
+                  widget.formType == "edit"
+              ? RaisedButton(
+                  onPressed: accept
+                      ? null
+                      : widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
+                  elevation: 0,
+                  child: Text(
+                    widget.formType == 'edit'
+                        ? 'Salvar Alterações de Usuário'
+                        : 'Cadastrar Novo Usuário',
+                    style: Theme.of(context).textTheme.button,
                   ),
                 )
-              : Container(),
+              : RaisedButton(
+                  onPressed: !accept
+                      ? null
+                      : widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
+                  elevation: 0,
+                  child: Text(
+                    widget.formType == 'edit'
+                        ? 'Salvar Alterações de Usuário'
+                        : 'Cadastrar Novo Usuário',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                ),
           SizedBox(height: 30),
-          RaisedButton(
-            onPressed: widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
-            elevation: 0,
-            child: Text(
-              widget.formType == 'edit'
-                  ? 'Salvar Alterações de Usuário'
-                  : 'Cadastrar Novo Usuário',
-              style: Theme.of(context).textTheme.button,
-            ),
-          ),
+          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
+              ? widget.formType == 'edit'
+                  ? RaisedButton(
+                      color: Colors.red,
+                      onPressed: _showDialog,
+                      elevation: 0,
+                      child: Text(
+                        'Excluir Usuário',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    )
+                  : Container()
+              : Container()
         ],
       ),
     );
   }
 }
+
+class _handleShowTerm {}

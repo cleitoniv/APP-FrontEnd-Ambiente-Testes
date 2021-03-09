@@ -10,12 +10,20 @@ import 'package:central_oftalmica_app_cliente/models/endereco.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class Authentication {
   bool isValid;
   bool loading;
+}
+
+class AcceptTerms {
+  List<String> data;
+  bool isEmpty;
+  bool isLoading;
+  AcceptTerms({this.data, this.isEmpty, this.isLoading});
 }
 
 class LoginEvent implements Authentication {
@@ -29,8 +37,15 @@ class LoginEvent implements Authentication {
 
 class AuthEvent implements Authentication {
   ClienteModel data;
+  Map<String, dynamic> errorData;
   bool isValid;
-  AuthEvent({this.data, this.isValid, this.loading});
+  bool integrated;
+  AuthEvent(
+      {this.data,
+      this.integrated = false,
+      this.isValid,
+      this.loading,
+      this.errorData});
   bool loading;
 }
 
@@ -50,11 +65,17 @@ class Endereco {
   Endereco({this.isEmpty, this.isLoading, this.endereco});
 }
 
+class ResetPassword {
+  bool isLoading;
+  bool canReset;
+  Map<String, dynamic> errorData;
+
+  ResetPassword({this.isLoading, this.canReset, this.errorData});
+}
+
 class AuthRepository {
   Dio dio;
   FirebaseAuth _auth = FirebaseAuth.instance;
-
-  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
 
   AuthRepository(this.dio);
 
@@ -99,6 +120,17 @@ class AuthRepository {
     }
   }
 
+  Future<AcceptTerms> getTermsOfResponsability() async {
+    try {
+      final response = await dio.get('/api/termo_responsabilidade');
+      List<String> responseTerm =
+          (response.data["data"] as List).map<String>((e) => e).toList();
+      return AcceptTerms(data: responseTerm, isEmpty: false, isLoading: false);
+    } catch (e) {
+      return AcceptTerms(isLoading: false, isEmpty: true);
+    }
+  }
+
   Future<LoginEvent> login({
     String email,
     String password,
@@ -110,7 +142,7 @@ class AuthRepository {
       );
       return LoginEvent(message: "OK", isValid: true, result: result);
     } catch (error) {
-      return LoginEvent(message: "Ocorreu um problema.", isValid: false);
+      return LoginEvent(message: "Credenciais Inválidas.", isValid: false);
     }
   }
 
@@ -132,11 +164,10 @@ class AuthRepository {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": "application/json"
           }));
-      print(response.data);
+
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
       final error400 = error as DioError;
-      print(error400.response);
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",
           isValid: false,
@@ -147,7 +178,6 @@ class AuthRepository {
   Future<LoginEvent> createAccount(Map<String, dynamic> data) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
-
     try {
       Response response = await dio.post('/api/cliente',
           data: jsonEncode({"param": data}),
@@ -165,6 +195,39 @@ class AuthRepository {
     }
   }
 
+  Future<int> currentUserStatus() async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try {
+      Response resp = await dio.get("/api/cliente/current_user",
+          options: Options(headers: {
+            "Authorization": "Bearer ${idToken.token}",
+            "Content-Type": "application/json"
+          }));
+
+      return resp.data["status"];
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  Future<dynamic> currentUserIsBlocked() async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try {
+      Response resp = await dio.get("/api/cliente/current_user",
+          options: Options(headers: {
+            "Authorization": "Bearer ${idToken.token}",
+            "Content-Type": "application/json"
+          }));
+      ClienteModel cliente = ClienteModel.fromJson(resp.data);
+
+      return cliente;
+    } catch (error) {
+      return true;
+    }
+  }
+
   Future<AuthEvent> currentUser(LoginEvent login) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
@@ -175,13 +238,53 @@ class AuthRepository {
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
-      if (cliente.sitApp == "N" || cliente.sitApp == "E") {
-        return AuthEvent(isValid: false, data: cliente, loading: true);
+      if (cliente.sitApp == "A" || cliente.sitApp == "E") {
+        return AuthEvent(
+            isValid: true, data: cliente, loading: false, integrated: false);
+      } else if (cliente.sitApp == "B") {
+        return AuthEvent(
+            isValid: false,
+            data: cliente,
+            loading: false,
+            integrated: false,
+            errorData: {
+              "Bloqueado": ["Você não tem permissão para acessar sua conta!"]
+            });
+      } else if (cliente.sitApp == "N" || cliente.sitApp == "I") {
+        return AuthEvent(
+            isValid: false,
+            integrated: true,
+            data: cliente,
+            loading: true,
+            errorData: {
+              "Cadastro": [
+                "Erro no seu cadastro. Entre em contato com a Central Oftalmica."
+              ]
+            });
       } else {
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
-      return AuthEvent(isValid: false, data: null, loading: true);
+      final error400 = error as DioError;
+      return AuthEvent(isValid: false, data: null, loading: true, errorData: {
+        "Login": [
+          "Tivemos problema ao tentar fazer o seu login. Se o erro persistir entre em contato com a Central Oftálmica."
+        ]
+      });
+    }
+  }
+
+  Future<ResetPassword> checkUserEmail(String email) async {
+    try {
+      Response resp = await dio.post("/api/verify_email",
+          data: jsonEncode({"email": email}));
+      return ResetPassword(canReset: resp.data['success'], isLoading: false);
+    } catch (error) {
+      final error400 = error as DioError;
+      return ResetPassword(
+          canReset: false,
+          isLoading: true,
+          errorData: error400.response.data['data']['errors']);
     }
   }
 
@@ -204,6 +307,35 @@ class AuthRepository {
       return '';
     } catch (error) {
       return error.code;
+    }
+  }
+
+  Future<bool> checkCode(int code, int phone) async {
+    try {
+      Response response = await dio.get(
+        "/api/confirmation_code?code_sms=${code}&phone_number=55${phone}",
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+      bool matchStatus = response.data["success"];
+      return matchStatus;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  Future<dynamic> requireCode(int phone) async {
+    try {
+      Response response = await dio.get(
+        "/api/send_sms?phone_number=55${phone}",
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+      return response.data;
+      // bool matchStatus = response.data["success"];
+      // return matchStatus;
+    } catch (error) {
+      final error400 = error as DioError;
+      return error400.response.data;
+      return false;
     }
   }
 }

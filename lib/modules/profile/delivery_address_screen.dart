@@ -76,7 +76,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
   void initState() {
     super.initState();
     _zipCodeController = MaskedTextController(
-      mask: '000000-00',
+      mask: '00000-000',
     );
     _addressController = TextEditingController();
     _houseNumberController = TextEditingController();
@@ -119,19 +119,19 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(
-                  text:
-                      'Caso tenha um representante Central Oftálmica informe abaixo o melhor horário para o mesmo visita-lo ',
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-                TextSpan(
-                  text: 'deste link',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Theme.of(context).accentColor,
-                        decoration: TextDecoration.underline,
-                      ),
-                  recognizer: TapGestureRecognizer()..onTap = () {},
-                ),
+                // TextSpan(
+                //   text:
+                //       'Caso tenha um representante Central Oftálmica informe abaixo o melhor horário para o mesmo visita-lo ',
+                //   style: Theme.of(context).textTheme.subtitle1,
+                // ),
+                // TextSpan(
+                //   text: 'deste link',
+                //   style: Theme.of(context).textTheme.subtitle1.copyWith(
+                //         color: Theme.of(context).accentColor,
+                //         decoration: TextDecoration.underline,
+                //       ),
+                //   recognizer: TapGestureRecognizer()..onTap = () {},
+                // ),
               ],
             ),
             textAlign: TextAlign.center,
@@ -145,6 +145,10 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                     heightFactor: 3,
                     child: CircularProgressIndicator(),
                   );
+                } else if (snapshot.hasData && snapshot.data.isEmpty) {
+                  return Center(
+                      child: Text(
+                          "Erro ao carregar endereço, tente novamente mais tarde"));
                 }
                 return ListView.separated(
                   shrinkWrap: true,

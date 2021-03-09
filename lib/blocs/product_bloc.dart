@@ -51,6 +51,11 @@ class ProductBloc {
     return repository.checkProduct(params);
   }
 
+  Future<Map<String, dynamic>> checkProductGrausDiferentes(
+      Map<String, dynamic> data, Map<String, dynamic> allowedParams) async {
+    return repository.checkProductGrausDiferentes(data, allowedParams);
+  }
+
   BehaviorSubject _parametroList = BehaviorSubject();
   Sink get parametroListSink => _parametroList.sink;
   Stream get parametroListStream => _parametroList.stream;

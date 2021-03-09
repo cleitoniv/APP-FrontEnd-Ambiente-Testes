@@ -7,7 +7,12 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
+import '../../repositories/credit_card_repository.dart';
+
 class AddCreditCardScreen extends StatefulWidget {
+  Map<String, dynamic> screen;
+  AddCreditCardScreen({this.screen});
+
   @override
   _AddCreditCardScreenState createState() => _AddCreditCardScreenState();
 }
@@ -27,8 +32,31 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
   }
 
   _onSubmit() async {
+    SnackBar _snackBar;
+
+    DateTime now = new DateTime.now();
+    if (int.parse(_mesValidadeController.text) < 1 ||
+        int.parse(_mesValidadeController.text) > 12) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Mês de vencimento inválido.',
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return;
+    }
+    if (int.parse(_anoValidadeController.text) < now.year ||
+        int.parse(_anoValidadeController.text) > now.year + 10) {
+      _snackBar = SnackBar(
+        content: Text(
+          'Ano de vencimento inválido.',
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return;
+    }
     if (_formKey.currentState.validate()) {
-      _creditCardBloc.storeIn.add(
+      CreditCard _storeResult = await _creditCardBloc.addCreditCard(
         CreditCardModel(
           cartao_number: parseCartaoNumber(_creditCardNumberController.text),
           ano_validade: _anoValidadeController.text,
@@ -37,22 +65,17 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         ),
       );
 
-      String _data = await _creditCardBloc.storeOut.first;
-      print(_data);
-      if (_data != null) {
+      if (_storeResult.errorData != null) {
         SnackBar _snackBar = SnackBar(
           content: Text(
-            'Cartão de crédito adicionado com sucesso',
+            'Falha ao adicionar cartão',
           ),
         );
 
         _scaffoldKey.currentState.showSnackBar(_snackBar);
-
-        await Future.delayed(
-          Duration(seconds: 2),
-        );
-        _creditCardBloc.fetchPaymentMethods();
-        Modular.to.pop();
+      } else {
+        Modular.to.popAndPushNamed("/cart/payment");
+        return;
       }
     }
   }
@@ -73,12 +96,13 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
     _data = [
       {
         'labelText': 'Nome impresso no cartão',
+        'capitalization': TextCapitalization.words,
         'icon': Icons.person,
         'controller': _ownerController,
         'validator': Helper.lengthValidator,
       },
       {
-        'labelText': 'Número do cartãoo',
+        'labelText': 'Número do cartão',
         'icon': MaterialCommunityIcons.credit_card,
         'controller': _creditCardNumberController,
         'validator': (text) => Helper.lengthValidator(
@@ -86,9 +110,10 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
               length: 14,
               message: 'Número de cartão inválido',
             ),
+        'keyboard_type': TextInputType.number
       },
       {
-        'labelText': 'Mes',
+        'labelText': 'Mês',
         'icon': MaterialCommunityIcons.calendar_month,
         'controller': _mesValidadeController,
         'validator': (text) => Helper.lengthValidator(
@@ -96,6 +121,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
               length: 2,
               message: 'Data inválida',
             ),
+        'keyboard_type': TextInputType.number
       },
       {
         'labelText': 'Ano',
@@ -104,8 +130,9 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         'validator': (text) => Helper.lengthValidator(
               text,
               length: 4,
-              message: 'Ano invalido',
+              message: 'Ano inválido',
             ),
+        'keyboard_type': TextInputType.number
       }
     ];
   }
@@ -154,6 +181,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
                   ),
                   validator: _data[index]['validator'],
                   controller: _data[index]['controller'],
+                  keyboardType: _data[index]['keyboard_type'],
                 );
               },
             ),
@@ -174,13 +202,22 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
                       color: Color(0xffA1A1A1),
                     ),
                     controller: e['controller'],
+                    keyboardType: e['keyboard_type'],
                   );
                 },
               ).toList(),
             ),
             SizedBox(height: 30),
             RaisedButton(
-              onPressed: _onSubmit,
+              onPressed: () {
+                if (!_formKey.currentState.validate()) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          "Corrija os erros em vermelho antes de enviar.")));
+                } else {
+                  _onSubmit();
+                }
+              },
               child: Text(
                 'Adicionar cartão',
                 style: Theme.of(context).textTheme.button,

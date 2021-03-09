@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_details_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
@@ -9,9 +10,10 @@ class RequestsBloc extends Disposable {
 
   RequestsBloc(this.repository);
 
-  void getPedido(int id) async {
+  void getPedido(int id, PedidoModel pedidoData, bool reposicao) async {
     pedidoInfoSink.add(Pedido(isLoading: true));
-    Pedido pedido = await repository.getPedido(id);
+    Pedido pedido =
+        await repository.getPedido(id, pedidoData, reposicao: reposicao);
     pedidoInfoSink.add(pedido);
   }
 
@@ -45,6 +47,12 @@ class RequestsBloc extends Disposable {
   Sink get pedidoSink => _pedidoController.sink;
   Stream get pedidoStream => _pedidoController.stream;
 
+  BehaviorSubject _taxaEntregaController = BehaviorSubject();
+  Sink get taxaEntregaSink => _taxaEntregaController.sink;
+  Stream get taxaEntregaStream => _taxaEntregaController.stream;
+
+  get taxaEntregaValue => _taxaEntregaController.value;
+
   BehaviorSubject _indexController = BehaviorSubject.seeded(null);
   Sink get indexIn => _indexController.sink;
   Stream<List<RequestModel>> get indexOut => _indexController.stream.asyncMap(
@@ -75,6 +83,10 @@ class RequestsBloc extends Disposable {
     cartIn.add(<Map<String, dynamic>>[]);
   }
 
+  Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
+    return repository.orderPayment(_data);
+  }
+
   void removeFromCart(data) {
     List<Map<String, dynamic>> itens = _cartController.value;
     List<Map<String, dynamic>> novosItens =
@@ -84,6 +96,29 @@ class RequestsBloc extends Disposable {
 
   addProductToCart(Map<String, dynamic> data) async {
     List<Map<String, dynamic>> _first = await cartOut.first;
+    Map<String, dynamic> _newData = {...data};
+
+    if (data['operation'] == "07" && data["tests"] == "Sim" ||
+        data['operation'] == "01" && data["tests"] == "Sim" ||
+        data['operation'] == "13" && data["tests"] == "Sim") {
+      _newData["removeItem"] = 'Não';
+      data['removeItem'] = 'Sim';
+      data["tests"] = "Não";
+
+      if (_first.isEmpty) {
+        _first.add(_newData);
+        cartIn.add(_first);
+      } else {
+        if (!_first.contains(data)) {
+          _first.add(_newData);
+          cartIn.add(_first);
+        } else {
+          _first.remove(_newData);
+          cartIn.add(_first);
+        }
+      }
+    }
+
     if (_first.isEmpty) {
       _first.add(data);
       cartIn.add(_first);
@@ -120,6 +155,7 @@ class RequestsBloc extends Disposable {
 
   @override
   void dispose() {
+    _creditProductCartController.close();
     _pedidoController.close();
     _cartController.close();
     _showController.close();

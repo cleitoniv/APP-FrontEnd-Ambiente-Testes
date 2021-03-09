@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cpfcnpj/cpfcnpj.dart';
 
 class Helper {
   static String lengthValidator(
@@ -9,6 +10,36 @@ class Helper {
   }) {
     if (text.isEmpty || text.length < length) {
       return message;
+    }
+
+    return null;
+  }
+
+  static String lengthValidatorHelpDesk(
+    String text, {
+    int length = 0,
+    int maxLength = 120,
+    String message = 'Campo Obrigatório',
+  }) {
+    if (text.isEmpty || text.length < length) {
+      return message;
+    } else if (text.length > maxLength) {
+      return 'A quantidade de caracteres digitada é maior que a permitida.';
+    }
+
+    return null;
+  }
+
+  static String lengthValidatorDdd(
+    String text, {
+    int length = 0,
+    String message = 'Campo Obrigatório',
+  }) {
+    if (text.isEmpty || text.length < length) {
+      return message;
+    }
+    if (text[0] == '0') {
+      return 'DDD não pode iniciar com zero';
     }
 
     return null;
@@ -28,6 +59,16 @@ class Helper {
     String message = 'Campos não coincidem',
   }) {
     if (text != value) {
+      return message;
+    }
+    return null;
+  }
+
+  static String cpfValidator(
+    String text, {
+    String message = 'CPF Inválido!',
+  }) {
+    if (!CPF.isValid(text)) {
       return message;
     }
     return null;
@@ -152,32 +193,192 @@ class Helper {
     }
   }
 
-  static Map<String, dynamic> buyTypeBuild(BuildContext context, String type) {
-    switch (type) {
-      case 'A':
-        return {
-          'title': 'Avulso',
-          'color': Color(0xff707070),
-          'icon': Icon(
-            Icons.attach_money,
-            color: Colors.white,
-            size: 20,
-          )
-        };
-      case 'A':
+  static Map<String, dynamic> buyTypeBuildRequestInfo(
+      BuildContext context, String operation, String tests) {
+    switch (operation) {
+      case '13':
         return {
           'title': 'Financeiro',
           'color': Theme.of(context).primaryColor,
+          'background': Colors.green[300],
           'icon': Icon(
             Icons.attach_money,
             color: Colors.white,
             size: 20,
           )
         };
-      case 'C':
+      case '01':
+        switch (tests) {
+          case 'S':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+
+          case 'N':
+            return {
+              'title': 'Avulso',
+              'color': Color(0xff707070),
+              'background': Color(0xff707070),
+              'icon': Icon(
+                Icons.attach_money,
+                color: Colors.white,
+                size: 20,
+              )
+            };
+        }
+        break;
+
+      case '07':
+        switch (tests) {
+          case 'S':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+
+          case 'N':
+            return {
+              'title': 'Produto',
+              'color': Theme.of(context).splashColor,
+              'background': Color(0xffEFC75E),
+              'icon': Image.asset(
+                'assets/icons/open_box.png',
+                width: 15,
+                height: 15,
+                color: Colors.white,
+              )
+            };
+        }
+        break;
+      case '00':
+        return {
+          'title': 'Teste',
+          'color': Colors.white,
+          'background': Colors.white10,
+          'icon': Icon(
+            Icons.remove_red_eye,
+            color: Colors.black54,
+            size: 23,
+          )
+        };
+      case '06':
         return {
           'title': 'Produto',
           'color': Theme.of(context).splashColor,
+          'background': Color(0xffEFC75E),
+          'icon': Image.asset(
+            'assets/icons/open_box.png',
+            width: 15,
+            height: 15,
+            color: Colors.white,
+          )
+        };
+    }
+
+    return {};
+  }
+
+  static Map<String, dynamic> buyTypeBuild(
+      BuildContext context, String operation, String tests) {
+    switch (operation) {
+      case '13':
+        return {
+          'title': 'Financeiro',
+          'color': Theme.of(context).primaryColor,
+          'background': Colors.green[300],
+          'icon': Icon(
+            Icons.attach_money,
+            color: Colors.white,
+            size: 20,
+          )
+        };
+      case '01':
+        switch (tests) {
+          case 'Sim':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+            break;
+          case 'Não':
+            return {
+              'title': 'Avulso',
+              'color': Color(0xff707070),
+              'background': Color(0xff707070),
+              'icon': Icon(
+                Icons.attach_money,
+                color: Colors.white,
+                size: 20,
+              )
+            };
+            break;
+        }
+        break;
+      case '07':
+        switch (tests) {
+          case 'Sim':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+            break;
+          case 'Não':
+            return {
+              'title': 'Produto',
+              'color': Theme.of(context).splashColor,
+              'background': Color(0xffEFC75E),
+              'icon': Image.asset(
+                'assets/icons/open_box.png',
+                width: 15,
+                height: 15,
+                color: Colors.white,
+              )
+            };
+            break;
+        }
+        break;
+
+      case '00':
+        return {
+          'title': 'Teste',
+          'color': Colors.white,
+          'background': Color(0xffF1F1F1),
+          'icon': Icon(
+            Icons.remove_red_eye,
+            color: Colors.black54,
+            size: 23,
+          )
+        };
+      case '06':
+        return {
+          'title': 'Produto',
+          'color': Theme.of(context).splashColor,
+          'background': Color(0xffEFC75E),
           'icon': Image.asset(
             'assets/icons/open_box.png',
             width: 15,

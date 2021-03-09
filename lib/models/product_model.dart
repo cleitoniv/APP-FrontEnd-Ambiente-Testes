@@ -3,16 +3,20 @@ import 'package:central_oftalmica_app_cliente/models/details_model.dart';
 class ProductModel {
   int id;
   String produto;
+  String produtoTeste;
   String title;
   int value;
+  double valueTest;
   bool hasAcessorio;
   int tests;
   int credits;
   String imageUrl;
+  bool hasTest;
   String type;
   int boxes;
   String descricao;
   String material;
+  String duracao;
   int dkT;
   bool visint;
   String espessura;
@@ -28,6 +32,7 @@ class ProductModel {
   String numSerie;
   String esferico;
   String group;
+  String groupTest;
   int quantidade;
   bool hasEsferico;
   bool hasEixo;
@@ -41,11 +46,14 @@ class ProductModel {
   String enderecoEntrega;
   bool valid;
   String message;
+  String imageUrlTest;
 
   ProductModel(
       {this.id,
       this.title,
       this.value,
+      this.valueTest,
+      this.duracao,
       this.tests,
       this.imageUrl,
       this.credits,
@@ -66,7 +74,9 @@ class ProductModel {
       this.valueFinan,
       this.valueProduto,
       this.group,
+      this.groupTest,
       this.quantidade,
+      this.hasTest,
       this.hasCilindrico,
       this.hasEixo,
       this.hasEsferico,
@@ -79,6 +89,8 @@ class ProductModel {
       this.valid,
       this.message,
       this.hasAcessorio,
+      this.produtoTeste,
+      this.imageUrlTest,
       this.dkT});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
@@ -103,13 +115,16 @@ class ProductModel {
     espessura = json['espessura'];
     desenho = json['desenho'];
     dkT = json['dk_t'];
+    hasTest = json['has_teste'] ?? false;
     numSerie = json["num_serie"];
     produto = json['produto'];
+    produtoTeste = json['BM_DESCT'];
     descricao = json['description'];
     valueFinan = json['value_finan'];
     valueProduto = json['value_produto'];
     group = json["group"];
     quantidade = json["quantidade"];
+    duracao = json['duracao'];
     hasEsferico = json["has_esferico"];
     hasEixo = json["has_eixo"];
     hasCilindrico = json["has_cilindrico"];
@@ -122,7 +137,12 @@ class ProductModel {
     hasAdicao = json['has_adicao'];
     valid = json['success'];
     message = json['mensagem'];
+    groupTest = json["BM_YGRPTES"];
+    valueTest = json["VALORT"];
+    imageUrlTest = json["image_url_test"];
   }
+
+  void setValue(int val) => this.value = val;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -142,6 +162,7 @@ class ProductModel {
     data['esferico'] = this.esferico;
     data['diametro'] = this.diametro;
     data['material'] = this.material;
+    data['duracao'] = this.duracao;
     data['visint'] = this.visint;
     data['espessura'] = this.espessura;
     data['desenho'] = this.desenho;
@@ -153,6 +174,7 @@ class ProductModel {
     data['value_produto'] = this.valueProduto;
     data["group"] = this.group;
     data["quantidade"] = this.quantidade;
+    data["BM_DESCT"] = this.produtoTeste;
     return data;
   }
 }

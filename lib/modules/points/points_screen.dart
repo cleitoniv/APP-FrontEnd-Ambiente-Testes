@@ -20,6 +20,13 @@ class _PointsScreenState extends State<PointsScreen> {
   UserBloc _userBloc = Modular.get<UserBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
 
+  _checkBlockedUser(context, ontap) async {
+    bool blocked = await _authBloc.checkBlockedUser(context);
+    if (!blocked) {
+      ontap();
+    }
+  }
+
   List<Map> _renderButtonData(BuildContext context) {
     return [
       {
@@ -218,6 +225,7 @@ class _PointsScreenState extends State<PointsScreen> {
           Column(
             children: _renderButtonData(context).map(
               (item) {
+                var ontap = item['onTap'];
                 return Container(
                   margin: const EdgeInsets.only(top: 20),
                   child: RaisedButton.icon(
@@ -229,7 +237,7 @@ class _PointsScreenState extends State<PointsScreen> {
                         color: item['textColor'],
                       ),
                     ),
-                    onPressed: item['onTap'],
+                    onPressed: () => _checkBlockedUser(context, item["onTap"]),
                     color: item['color'],
                     elevation: 0,
                     label: Text(

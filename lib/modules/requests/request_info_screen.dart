@@ -3,6 +3,7 @@ import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/item_model.dart';
+import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_details_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_model.dart';
@@ -12,13 +13,13 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestInfoScreen extends StatelessWidget {
   int id;
+  PedidoModel pedidoData;
+  bool reposicao;
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   ProductBloc _productBloc = Modular.get<ProductBloc>();
 
-  RequestInfoScreen({
-    this.id,
-  }) {
-    _requestsBloc.getPedido(this.id);
+  RequestInfoScreen({this.id, this.pedidoData, this.reposicao}) {
+    _requestsBloc.getPedido(this.id, this.pedidoData, this.reposicao);
   }
 
   Map<String, String> parseOlho(Map<String, dynamic> item, String olho) {
@@ -226,15 +227,63 @@ class RequestInfoScreen extends StatelessWidget {
                                               height: 80,
                                               fit: BoxFit.cover,
                                             ),
-                                            title: Text(
-                                              "${items[index].items[index2]['produto']}",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle1
-                                                  .copyWith(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                            title: Row(
+                                              children: [
+                                                items[index].items[index2]
+                                                                ['operation'] !=
+                                                            "07" &&
+                                                        items[index].items[
+                                                                    index2]
+                                                                ['tests'] ==
+                                                            "N"
+                                                    ? Text(
+                                                        "${items[index].items[index2]['produto']}",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .subtitle1
+                                                            .copyWith(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                      )
+                                                    : items[index].items[index2]
+                                                                    [
+                                                                    'produto_teste'] !=
+                                                                null &&
+                                                            items[index].items[
+                                                                        index2]
+                                                                    ['tests'] ==
+                                                                "S"
+                                                        ? Text(
+                                                            "${items[index].items[index2]['produto_teste']}",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .subtitle1
+                                                                .copyWith(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                          )
+                                                        : Text(
+                                                            "${items[index].items[index2]['produto']}",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .subtitle1
+                                                                .copyWith(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                          ),
+                                                SizedBox(width: 20),
+                                              ],
                                             ),
                                             subtitle: Row(
                                               mainAxisSize: MainAxisSize.min,
@@ -251,18 +300,28 @@ class RequestInfoScreen extends StatelessWidget {
                                                 ),
                                                 SizedBox(width: 20),
                                                 CircleAvatar(
-                                                  radius: 10,
-                                                  backgroundColor:
-                                                      Color(0xff707070),
-                                                  child: Icon(
-                                                    Icons.attach_money,
-                                                    color: Color(0xffF1F1F1),
-                                                    size: 15,
-                                                  ),
-                                                ),
+                                                    radius: 10,
+                                                    backgroundColor:
+                                                        Helper.buyTypeBuildRequestInfo(
+                                                                context,
+                                                                items[index]
+                                                                        .items[index2]
+                                                                    ['operation'],
+                                                                items[index]
+                                                                        .items[index2]
+                                                                    ['tests'])[
+                                                            'background'],
+                                                    child: Helper.buyTypeBuildRequestInfo(
+                                                        context,
+                                                        items[index]
+                                                                .items[index2]
+                                                            ['operation'],
+                                                        items[index]
+                                                                .items[index2]
+                                                            ['tests'])['icon']),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                  "${Helper.buyTypeBuild(context, items[index].items[index2]['tipoVenda'])['title']}",
+                                                  "${Helper.buyTypeBuildRequestInfo(context, items[index].items[index2]['operation'], items[index].items[index2]['tests'])['title']}",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .subtitle1
@@ -284,7 +343,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                     fontSize: 16,
                                                   ),
                                             )),
-                                        SizedBox(height: 10),
+                                        SizedBox(height: 20),
                                         ListTileMoreCustomizable(
                                             dense: true,
                                             contentPadding:
@@ -480,6 +539,81 @@ class RequestInfoScreen extends StatelessWidget {
                                                                             .normal,
                                                                   ),
                                                             ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                'Adicao',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["adicaoE"] ?? "-"}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text('Cor',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["corE"] ?? "-"}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ))
                                                       ])
                                                 ],
                                               ),
@@ -600,6 +734,81 @@ class RequestInfoScreen extends StatelessWidget {
                                                                             .normal,
                                                                   ),
                                                             ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                'Adicao',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["adicaoD"] ?? "-"}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text('Cor',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["corD"] ?? "-"}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ))
                                                       ])
                                                 ],
                                               ),
@@ -625,60 +834,62 @@ class RequestInfoScreen extends StatelessWidget {
                     thickness: 0.2,
                     color: Colors.black38,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                    child: Table(
-                      children: [
-                        TableRow(
-                          children: [
-                            Text(
-                              'Previsão de Entrega',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
+                  !this.reposicao
+                      ? Padding(
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Table(
+                            children: [
+                              TableRow(
+                                children: [
+                                  Text(
+                                    'Previsão de Entrega',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        ),
                                   ),
-                            ),
-                            Text(
-                              'Total + Frete',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
+                                  Text(
+                                    'Total + Frete',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                  )
+                                ],
+                              ),
+                              TableRow(
+                                children: [
+                                  Text(
+                                    pedidoInfo.data.pedido.previsaoEntrega ??
+                                        "Não informado.",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
                                   ),
-                            )
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Text(
-                              pedidoInfo.data.pedido.previsaoEntrega ??
-                                  "Não informado.",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
-                            ),
-                            Text(
-                              'R\$ ${Helper.intToMoney(pedidoInfo.data.pedido.valorTotal)}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
+                                  Text(
+                                    'R\$ ${Helper.intToMoney(pedidoInfo.data.pedido.valorTotal)}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container()
                 ],
               );
             }

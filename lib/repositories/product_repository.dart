@@ -79,6 +79,26 @@ class ProductRepository {
     }
   }
 
+  Future<Map<String, dynamic>> checkProductGrausDiferentes(
+      Map<String, dynamic> data, Map<String, dynamic> allowedParams) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try {
+      Response response = await dio.post("/api/cliente/verify_graus",
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${idToken.token}"
+          }),
+          data: jsonEncode({
+            "param": {"data": data, "allowed_params": allowedParams}
+          }));
+      return {};
+    } catch (error) {
+      final error400 = error as DioError;
+      return error400.response.data['data']['errors'];
+    }
+  }
+
   Future<Parametros> getParametros(String group) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
@@ -153,7 +173,10 @@ class ProductRepository {
             "Authorization": "Bearer ${idToken.token}"
           }));
       ProductModel product = ProductModel.fromJson(response.data['data']);
-      return Product(isEmpty: false, isLoading: false, product: product);
+      return Product(
+          isEmpty: response.data['data'].length > 0 ? false : true,
+          isLoading: false,
+          product: product);
     } catch (error) {
       return Product(isEmpty: true, isLoading: false, product: null);
     }
@@ -207,7 +230,6 @@ class ProductRepository {
         productList.list.map<Map<String, dynamic>>((e) {
       return e.toJson();
     }).toList();
-
     try {
       Response response = await dio.post('/api/cliente/devolution_continue',
           data: jsonEncode({"products": products, "tipo": tipo}),
@@ -215,11 +237,16 @@ class ProductRepository {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
           }));
-      DevolutionModel devol = DevolutionModel.fromJson(response.data["data"]);
+      DevolutionModel devol = null;
+      if (tipo != "C") {
+        devol = DevolutionModel.fromJson(response.data["data"]);
+        return Devolution(
+            isLoading: false,
+            devolution: devol,
+            status: response.data["success"]);
+      }
       return Devolution(
-          isLoading: false,
-          devolution: devol,
-          status: response.data["success"]);
+          isLoading: false, devolution: null, status: response.data["success"]);
     } catch (error) {
       return Devolution(isLoading: false, status: false);
     }

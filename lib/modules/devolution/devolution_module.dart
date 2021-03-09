@@ -13,9 +13,10 @@ class DevolutionModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router('/', child: (_, args) => DevolutionScreen()),
-        Router('/confirm', child: (_, args) => ConfirmScreen()),
-        Router('/effectuation', child: (_, args) => EffectuationScreen()),
+  List<ModularRouter> get routers => [
+        ModularRouter('/', child: (_, args) => DevolutionScreen()),
+        ModularRouter('/confirm', child: (_, args) => ConfirmScreen()),
+        ModularRouter('/effectuation',
+            child: (_, args) => EffectuationScreen()),
       ];
 }

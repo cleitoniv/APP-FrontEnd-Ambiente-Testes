@@ -14,8 +14,9 @@ class Offers {
   bool isLoading;
   bool isEmpty;
   List<OfferModel> offers;
+  String type;
 
-  Offers({this.isEmpty, this.isLoading, this.offers});
+  Offers({this.isEmpty, this.isLoading, this.offers, this.type});
 }
 
 class ExtratoFinanceiro {
@@ -30,8 +31,9 @@ class ExtratoProduto {
   bool isLoading;
   bool isEmpty;
   List<ExtratoProdutoModel> data;
+  String date;
 
-  ExtratoProduto({this.isLoading, this.isEmpty, this.data});
+  ExtratoProduto({this.date, this.isLoading, this.isEmpty, this.data});
 }
 
 class CreditoPagamento {
@@ -62,7 +64,10 @@ class CreditsRepository {
         return ExtratoProdutoModel.fromJson(e);
       }).toList();
       return ExtratoProduto(
-          data: extrato, isEmpty: extrato.length <= 0, isLoading: false);
+          data: extrato,
+          isEmpty: extrato.length <= 0,
+          isLoading: false,
+          date: response.data['date']);
     } catch (error) {
       return ExtratoProduto(isEmpty: true, isLoading: false);
     }
@@ -113,8 +118,8 @@ class CreditsRepository {
     }
   }
 
-  Future<CreditoPagamento> creditoFinanceiroPagamento(
-      CreditoFinanceiro credito, int cartaoId) async {
+  Future<bool> creditoFinanceiroPagamento(
+      CreditoFinanceiro credito, int cartaoId, bool isBoleto) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
 
@@ -133,9 +138,9 @@ class CreditsRepository {
           }),
           options:
               Options(headers: {"Authorization": "Bearer ${idToken.token}"}));
-      return CreditoPagamento(success: true);
+      return true;
     } catch (error) {
-      return CreditoPagamento(success: false);
+      return false;
     }
   }
 
@@ -152,9 +157,33 @@ class CreditsRepository {
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
       }).toList();
-      return Offers(isLoading: false, isEmpty: false, offers: offers);
+      return Offers(
+          isLoading: false, isEmpty: false, offers: offers, type: "FINAN");
     } catch (error) {
-      return Offers(isLoading: false, isEmpty: true, offers: null);
+      return Offers(
+          isLoading: false, isEmpty: true, offers: null, type: "FINAN");
+    }
+  }
+
+  Future<Offers> getOffersCreditProduct(String group) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+
+    try {
+      Response response = await dio.get('/api/cliente/get_pacote',
+          queryParameters: {"grupo": group},
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${idToken.token}"
+          }));
+      final offers = response.data['data'].map<OfferModel>((e) {
+        return OfferModel.fromJson(e);
+      }).toList();
+      return Offers(
+          isLoading: false, isEmpty: false, offers: offers, type: "CREDIT");
+    } catch (error) {
+      return Offers(
+          isLoading: false, isEmpty: true, offers: null, type: "CREDIT");
     }
   }
 

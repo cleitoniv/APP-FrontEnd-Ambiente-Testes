@@ -8,6 +8,8 @@ import 'package:rxdart/subjects.dart';
 
 class AuthWidgetBloc extends Disposable {
   AuthResult _guestToken;
+  AuthRepository repository;
+  AuthWidgetBloc({this.repository});
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -17,6 +19,10 @@ class AuthWidgetBloc extends Disposable {
 
   AuthResult getGuestToken() {
     return _guestToken;
+  }
+
+  getCurrentDataForm() {
+    return _createAccountDataController.value;
   }
 
   BehaviorSubject _createAccountShowPasswordController =
@@ -97,6 +103,17 @@ class AuthWidgetBloc extends Disposable {
         ...data,
       });
     }
+  }
+
+  Future<bool> confirmSms(int code, int phone) async {
+    bool codeMatch = await repository.checkCode(code, phone);
+    return true;
+  }
+
+  Future<dynamic> requireCodeSms(int phone) async {
+    return await repository.requireCode(phone);
+    // return false;
+    // return codeMatch;
   }
 
   @override

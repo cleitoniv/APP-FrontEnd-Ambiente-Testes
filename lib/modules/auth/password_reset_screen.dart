@@ -1,4 +1,6 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +17,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   TextEditingController _emailController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   @override
   void initState() {
@@ -36,7 +39,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   }
 
   _sendResetEmail() async {
-    try {
+    ResetPassword _reset =
+        await _authBloc.checkUserEmail(_emailController.text);
+    if (_reset.canReset) {
       await _auth.sendPasswordResetEmail(email: _emailController.text);
       Dialogs.success(this.context,
           title: "Email enviado!",
@@ -45,14 +50,8 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
         Modular.to.popUntil((route) => route.isFirst);
         Modular.to.pushReplacementNamed('/auth/login');
       });
-    } catch (e) {
-      final error = e as PlatformException;
-      final errors = {
-        "ERROR_USER_NOT_FOUND": {
-          "Email nao cadastrado": ["Este email nao esta cadastrado."]
-        }
-      };
-      _showErrors(errors[error.code]);
+    } else {
+      _showErrors(_reset.errorData);
     }
   }
 

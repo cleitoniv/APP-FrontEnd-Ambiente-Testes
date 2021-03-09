@@ -4,6 +4,7 @@ class CreditCardModel {
   String cartao_number;
   String mes_validade;
   String ano_validade;
+  String ccv;
   int status;
 
   CreditCardModel({

@@ -6,7 +6,8 @@ class ErrorSnackBar {
     return SnackBar(
       backgroundColor: Colors.white,
       content: Container(
-        constraints: BoxConstraints(maxHeight: 300, maxWidth: 300),
+        constraints: BoxConstraints(
+            maxHeight: (errorData.keys.length * 90).toDouble(), maxWidth: 300),
         child: ListView(
           children: [
             Column(
@@ -29,10 +30,14 @@ class ErrorSnackBar {
                         children: [
                           Expanded(
                               flex: 1,
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.red,
-                                size: 40,
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Colors.red.withOpacity(0.2),
+                                child: Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                  size: 40,
+                                ),
                               )),
                           Expanded(
                               flex: 3,

@@ -57,6 +57,18 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
       appBar: AppBar(
         title: Text('Extratos de Créditos'),
         centerTitle: false,
+        leading: GestureDetector(
+          onTap: () {
+            Modular.to.pushNamedAndRemoveUntil(
+              '/home/0',
+              (route) => route.isFirst,
+            );
+          },
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xffA1A1A1),
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -122,6 +134,7 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
           Container(
             height: MediaQuery.of(context).size.height / 1.5,
             child: PageView(
+              physics: NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: <Widget>[
                 FinancialExtractScreen(),

@@ -1,3 +1,4 @@
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
@@ -14,18 +15,25 @@ class CreditCartScreen extends StatefulWidget {
 
 class _CreditCartScreenState extends State<CreditCartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
-
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
   _onBackToPurchase() {
-    _homeWidgetBloc.currentTabIndexIn.add(0);
-    Modular.to.pushNamed("/credito_financeiro/produto");
+    _homeWidgetBloc.currentTabIndexIn.add(1);
+    _homeWidgetBloc.currentRequestTypeIn.add("Produto");
+    Modular.to.pushNamed("/home/1");
   }
 
   _onSubmit() {
     Modular.to.pushNamed(
       '/cart/payment',
     );
+  }
+
+  _removeItem(Map<String, dynamic> data) {
+    int _total = _cartWidgetBloc.currentCartTotalItems;
+    _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    _requestsBloc.removeFromCart(data);
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
@@ -106,20 +114,17 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                           SizedBox(width: 20),
                           CircleAvatar(
                               backgroundColor: Helper.buyTypeBuild(
-                                context,
-                                _data[index]['type'],
-                              )['color'],
+                                  context,
+                                  _data[index]['operation'],
+                                  _data[index]['tests'])['color'],
                               radius: 10,
                               child: Helper.buyTypeBuild(
-                                context,
-                                _data[index]['type'],
-                              )['icon']),
+                                  context,
+                                  _data[index]['operation'],
+                                  _data[index]['tests'])['icon']),
                           SizedBox(width: 5),
                           Text(
-                            '${Helper.buyTypeBuild(
-                              context,
-                              _data[index]['type'],
-                            )['title']}',
+                            '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
                             style:
                                 Theme.of(context).textTheme.subtitle1.copyWith(
                                       fontSize: 14,
@@ -137,11 +142,18 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                                       fontSize: 14,
                                     ),
                           ),
-                          Icon(
-                            Icons.keyboard_arrow_right,
-                            size: 30,
-                            color: Theme.of(context).accentColor,
-                          )
+                          Align(
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  size: 30,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  _removeItem(_data[index]);
+                                },
+                              ))
                         ],
                       ),
                     );

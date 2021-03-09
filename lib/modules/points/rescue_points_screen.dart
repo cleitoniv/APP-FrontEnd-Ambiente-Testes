@@ -34,8 +34,6 @@ class _RescuePointsScreenState extends State<RescuePointsScreen> {
 
     PointsResult result = await _userBloc.rescuePoints(points, credits);
 
-    print(result);
-
     if (result.isValid) {
       Dialogs.success(
         context,
@@ -162,8 +160,13 @@ class _RescuePointsScreenState extends State<RescuePointsScreen> {
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: RaisedButton(
-                      onPressed: () {
-                        _onSubmit(snapshot.data.points, snapshot.data.credits);
+                      onPressed: () async {
+                        bool blocked =
+                            await _authBloc.checkBlockedUser(context);
+                        if (!blocked) {
+                          _onSubmit(
+                              snapshot.data.points, snapshot.data.credits);
+                        }
                       },
                       child: Text(
                         'Solicitar Pontos',

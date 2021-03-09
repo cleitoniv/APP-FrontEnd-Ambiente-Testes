@@ -1,13 +1,18 @@
 import 'dart:async';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:dio/dio.dart';
 import 'package:rxdart/subjects.dart';
 
 class AuthBloc extends Disposable {
+  Dio dio;
+
   AuthRepository repository;
 
   LoginEvent login;
@@ -20,13 +25,56 @@ class AuthBloc extends Disposable {
 
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
 
+  bool acceptTerms = false;
+  BehaviorSubject _accetpTerms = BehaviorSubject();
+  Sink get acceptTermSink => _accetpTerms.sink;
+  Stream get getTermsOfResponsabilityStream => _accetpTerms.stream;
+
   Future<Cadastro> fetchCadastro(String cnpj) async {
     return repository.getDados(cnpj);
+  }
+
+  Future<ResetPassword> checkUserEmail(String email) async {
+    return repository.checkUserEmail(email);
+  }
+
+  getFormData() {
+    return _createAccountController.value;
   }
 
   void getEnderecoCep(String cep) async {
     Endereco endereco = await repository.getEnderecoByCep(cep);
     enderecoSink.add(endereco);
+  }
+
+  acceptTerm() {
+    this.acceptTerms = !this.acceptTerms;
+  }
+
+  bool acceptTermGetter() {
+    return acceptTerms;
+  }
+
+  Future<dynamic> checkBlockedUser(BuildContext context) async {
+    ClienteModel cliente = await repository.currentUserIsBlocked();
+    this._currentUser.data = cliente;
+    if (cliente.sitApp == "B" || cliente.status == 0) {
+      Dialogs.error(context, onTap: () {
+        Modular.to.pop();
+      },
+          buttonText: "Entendi",
+          title: "Bloqueado!",
+          subtitle: "No momento voce não pode acessar este recurso.");
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void getTermsOfResponsability() async {
+    _accetpTerms.add(AcceptTerms(isLoading: true));
+    final response = await repository.getTermsOfResponsability();
+    _accetpTerms.add(response);
   }
 
   BehaviorSubject _cadastroController = BehaviorSubject();
@@ -41,6 +89,10 @@ class AuthBloc extends Disposable {
 
   Future<AuthEvent> getCurrentUser(LoginEvent login) async {
     return repository.currentUser(login);
+  }
+
+  Future<int> getCurrentStatus() async {
+    return repository.currentUserStatus();
   }
 
   AuthEvent get getAuthCurrentUser => this._currentUser;
@@ -62,7 +114,6 @@ class AuthBloc extends Disposable {
   BehaviorSubject _createAccountController = BehaviorSubject.seeded(null);
 
   Sink get createAccountIn => _createAccountController.sink;
-
   Stream<LoginEvent> get createAccountOut =>
       _createAccountController.stream.asyncMap(
         (event) => repository.createAccount(
@@ -119,5 +170,6 @@ class AuthBloc extends Disposable {
     _passwordResetController.close();
     _updatePasswordController.close();
     _signOutController.close();
+    _accetpTerms.close();
   }
 }

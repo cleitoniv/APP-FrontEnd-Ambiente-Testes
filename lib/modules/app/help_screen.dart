@@ -1,4 +1,7 @@
+import 'package:central_oftalmica_app_cliente/blocs/ticket_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class HelpScreen extends StatefulWidget {
@@ -8,6 +11,13 @@ class HelpScreen extends StatefulWidget {
 
 class _HelpScreenState extends State<HelpScreen> {
   _onShowTerm() {}
+
+  _openTicket() {
+    Modular.to.pushNamed(
+      '/ticket',
+    );
+    // return _ticketBloc.ticket();
+  }
 
   List<Map> _data;
 
@@ -42,7 +52,7 @@ class _HelpScreenState extends State<HelpScreen> {
         padding: const EdgeInsets.all(20),
         children: <Widget>[
           Image.asset(
-            'assets/images/logo.png',
+            'assets/images/logo_alinhada_2.png',
             width: MediaQuery.of(context).size.width / 2,
             height: 50,
           ),
@@ -82,7 +92,15 @@ class _HelpScreenState extends State<HelpScreen> {
                 ),
               );
             },
-          )
+          ),
+          Container(
+              child: RaisedButton(
+            onPressed: () => _openTicket(),
+            child: Text(
+              'Abrir um ticket',
+              style: Theme.of(context).textTheme.button,
+            ),
+          ))
         ],
       ),
     );

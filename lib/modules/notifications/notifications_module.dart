@@ -9,8 +9,8 @@ class NotificationsModule extends ChildModule {
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/',
           child: (_, args) => NotificationsScreen(),
         ),

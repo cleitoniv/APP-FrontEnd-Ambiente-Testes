@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:central_oftalmica_app_cliente/models/endereco_entrega.dart';
+import 'package:central_oftalmica_app_cliente/models/ticket_model.dart';
 import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
 import 'package:dio/dio.dart';
@@ -51,12 +52,47 @@ class UpdateUsuarioCliente {
   UpdateUsuarioCliente({this.isValid, this.data, this.errorMessage});
 }
 
+class DeleteUsuarioCliente {
+  bool isValid;
+  String errorMessage;
+  Map<String, dynamic> data;
+
+  DeleteUsuarioCliente({this.isValid, this.data, this.errorMessage});
+}
+
+class Periodos {
+  bool isLoading;
+  bool isValid;
+  Map<String, dynamic> errorData;
+  List<dynamic> list;
+
+  Periodos({this.isLoading, this.isValid, this.list, this.errorData});
+}
+
 class UserRepository {
   Dio dio;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   UserRepository(this.dio);
+
+  Future<Periodos> periodosAtendimento() async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult token = await user.getIdToken();
+
+    try {
+      Response resp = await dio.get("/api/cliente/period",
+          options: Options(headers: {
+            "Authorization": "Bearer ${token.token}",
+            "Content-Type": "application/json"
+          }));
+      return Periodos(isLoading: false, isValid: true, list: resp.data['data']);
+    } catch (error) {
+      final error400 = error as DioError;
+      final message = error400.response.data["data"]['errors'];
+      return Periodos(isLoading: false, isValid: true, errorData: message);
+    }
+  }
 
   Future<UpdateUsuarioCliente> updateUsuarioCliente(
       int id, Map<String, dynamic> data) async {
@@ -82,10 +118,31 @@ class UserRepository {
     }
   }
 
-  Future<AddUsuarioCliente> addUsuarioCliente(Map<String, dynamic> data) async {
+  Future<DeleteUsuarioCliente> deleteUsuarioCliente(int id) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
 
+    try {
+      Response response = await dio.delete("/api/usuarios_cliente/$id",
+          options: Options(headers: {
+            "Authorization": "Bearer ${token.token}",
+            "Content-Type": "application/json"
+          }));
+      if (response.statusCode == 200) {
+        return DeleteUsuarioCliente(isValid: true);
+      } else {
+        return DeleteUsuarioCliente(
+            isValid: false, errorMessage: "Erro na exclusão do cliente.");
+      }
+    } catch (error) {
+      return DeleteUsuarioCliente(
+          isValid: false, errorMessage: "Erro na exclusão do cliente.");
+    }
+  }
+
+  Future<AddUsuarioCliente> addUsuarioCliente(Map<String, dynamic> data) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult token = await user.getIdToken();
     try {
       Response response = await dio.post("/api/cliente/cliente_user",
           data: jsonEncode({"param": data}),
@@ -101,8 +158,13 @@ class UserRepository {
             errorMessage: "Erro no cadastro. Talvez o email esteja duplicado");
       }
     } catch (error) {
+      final error400 = error as DioError;
+      final message = error400.response.data["data"]["errors"];
       return AddUsuarioCliente(
-          isValid: false, errorMessage: "Erro inesperado no cadastro.");
+          isValid: false,
+          errorMessage: message["EMAIL"] != null
+              ? message["EMAIL"][0]
+              : "Falha ao salvar dados.");
     }
   }
 
@@ -238,6 +300,25 @@ class UserRepository {
       );
 
       return UserModel.fromJson(
+        response.data,
+      );
+    } catch (error) {
+      return null;
+    }
+  }
+
+  Future<TicketModel> openTicket(data) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult token = await user.getIdToken();
+    try {
+      Response response = await dio.post("/api/cliente/create_ticket",
+          data: jsonEncode({'param': data}),
+          options: Options(headers: {
+            "Authorization": "Bearer ${token.token}",
+            "Content-Type": "application/json"
+          }));
+
+      return TicketModel.fromJson(
         response.data,
       );
     } catch (error) {

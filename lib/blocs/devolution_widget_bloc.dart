@@ -11,6 +11,8 @@ class DevolutionWidgetBloc extends Disposable {
 
   String tipoTroca = "C";
 
+  get productsPreDevolucaoList => this.productsPreDevolucao;
+
   void setTipoTroca(String tipo) {
     if (tipo == "Crédito") {
       this.tipoTroca = "C";
@@ -19,7 +21,7 @@ class DevolutionWidgetBloc extends Disposable {
     }
   }
 
-  void sendEmail(String email) async {
+  Future<void> sendEmail(String email) async {
     repository.sendEmail(email);
   }
 
@@ -29,6 +31,10 @@ class DevolutionWidgetBloc extends Disposable {
 
   set updateCurrentproductIndex(int index) => this.currentProductIndex = index;
 
+  void fetchProducts(String filtro) async {
+    productsListSink.add(ProductList(isEmpty: true, isLoading: true));
+  }
+
   void resetPreDevolucao() async {
     this.productsPreDevolucao =
         ProductList(isEmpty: true, list: [], isLoading: false);
@@ -36,13 +42,21 @@ class DevolutionWidgetBloc extends Disposable {
   }
 
   void addProduct(String serie) async {
-    productsListSink.add(ProductList(isLoading: true));
+    productsListSink.add(ProductList(isLoading: true, isEmpty: false));
     Product product = await repository.getProductBySerie(serie: serie);
-    if (product.product != null && product.product.valid) {
+
+    if (product.product != null &&
+        product.product.valid != null &&
+        product.product.valid) {
+      productErrorAddSink.add({"message": null});
       this.productsPreDevolucao.list.add(product.product);
-    } else if (product.product != null && !product.product.valid) {
+      //
+    } else if (product.product != null &&
+        product.product.valid != null &&
+        !product.product.valid) {
       productErrorSink.add({"message": product.product.message});
     }
+
     this.productsPreDevolucao.isEmpty =
         this.productsPreDevolucao.list.length <= 0;
     productsListSink.add(this.productsPreDevolucao);
@@ -57,6 +71,11 @@ class DevolutionWidgetBloc extends Disposable {
     }
   }
 
+  Future<Devolution> confirmCreditDevolution() async {
+    return repository.confirmDevolution(
+        this.productsPreDevolucao, this.tipoTroca);
+  }
+
   Future<Devolution> nextStepDevolution(Map<String, dynamic> params) async {
     currentDevolutionSink.add(Devolution(isLoading: true));
     return repository.nextStepDevolution(params);
@@ -65,6 +84,11 @@ class DevolutionWidgetBloc extends Disposable {
   BehaviorSubject _productError = BehaviorSubject();
   Sink get productErrorSink => _productError.sink;
   Stream get productErrorStream => _productError.stream;
+
+  BehaviorSubject _productErrorAdd = BehaviorSubject();
+  Sink get productErrorAddSink => _productErrorAdd.sink;
+  Stream get productErrorAddStream => _productErrorAdd.stream;
+  get productError => _productErrorAdd.value;
 
   BehaviorSubject _devolutionController = BehaviorSubject();
   Sink get currentDevolutionSink => _devolutionController.sink;
@@ -79,14 +103,18 @@ class DevolutionWidgetBloc extends Disposable {
   Stream<String> get devolutionTypeOut => _devolutionTypeController.stream.map(
         (event) => event,
       );
+  get devolutionTypeValue => _devolutionTypeController.value;
 
-  BehaviorSubject _productParamsController = BehaviorSubject.seeded({
-    'esferico': null,
-    'cilindrico': null,
-    'eixo': null,
-    'color': null,
-    'adicao': null,
-  });
+  BehaviorSubject _parametroList = BehaviorSubject();
+  Sink get parametroListSink => _parametroList.sink;
+  Stream get parametroListStream => _parametroList.stream;
+  void fetchParametros(String group) async {
+    parametroListSink.add(Parametros(isLoading: true));
+    Parametros parametros = await repository.getParametros(group);
+    parametroListSink.add(parametros);
+  }
+
+  BehaviorSubject _productParamsController = BehaviorSubject();
   Sink get productParamsIn => _productParamsController.sink;
   Stream<Map<String, dynamic>> get productParamsOut =>
       _productParamsController.stream.map(
@@ -103,6 +131,8 @@ class DevolutionWidgetBloc extends Disposable {
   BehaviorSubject _productsListController = BehaviorSubject();
   Sink get productsListSink => _productsListController.sink;
   Stream get productsListStream => _productsListController.stream;
+
+  ProductList get currentProductList => _productsListController.value;
 
   @override
   void dispose() {

@@ -20,7 +20,6 @@ class ProductsGridScreen extends StatelessWidget {
       child: StreamBuilder(
         stream: _productBloc.productListStream,
         builder: (context, snapshot) {
-          print(snapshot.data);
           if (!snapshot.hasData || snapshot.data.isEmpty) {
             return Center(
               child: CircularProgressIndicator(),

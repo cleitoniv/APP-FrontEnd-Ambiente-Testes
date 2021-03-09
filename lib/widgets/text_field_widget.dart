@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TextFieldWidget extends StatefulWidget {
   String labelText;
   Widget prefixIcon;
   Widget suffixIcon;
+  TextCapitalization textCapitalization;
   TextEditingController controller;
   Function validator;
   double width;
@@ -13,10 +15,15 @@ class TextFieldWidget extends StatefulWidget {
   bool readOnly;
   Function onTap;
   String initialValue;
+  String hint;
   FocusNode focus;
-
+  TextInputFormatter inputFormatters;
+  int maxLength;
+  bool maxLengthEnforce;
+  bool inputFormattersActivated;
   TextFieldWidget(
-      {this.labelText,
+      {this.textCapitalization,
+      this.labelText,
       this.prefixIcon,
       this.suffixIcon,
       this.controller,
@@ -28,7 +35,12 @@ class TextFieldWidget extends StatefulWidget {
       this.initialValue,
       this.readOnly = false,
       this.onTap,
-      this.focus});
+      this.focus,
+      this.maxLength,
+      this.maxLengthEnforce = false,
+      this.hint = '',
+      this.inputFormatters,
+      this.inputFormattersActivated = false});
 
   @override
   _TextFieldWidgetState createState() => _TextFieldWidgetState();
@@ -57,6 +69,10 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     return Container(
       width: widget.width,
       child: TextFormField(
+        maxLength: widget.maxLength,
+        maxLengthEnforced: widget.maxLengthEnforce ?? false,
+        textCapitalization:
+            widget.textCapitalization ?? TextCapitalization.none,
         initialValue: widget.initialValue,
         enabled: widget.enabled,
         controller: widget.controller,
@@ -66,7 +82,13 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         readOnly: widget.readOnly,
         obscureText: widget.obscureText,
         keyboardType: widget.keyboardType,
+        inputFormatters: [
+          widget.inputFormattersActivated
+              ? FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+              : FilteringTextInputFormatter.allow(RegExp(".*"))
+        ],
         decoration: InputDecoration(
+          hintText: widget.hint,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
               width: 1,

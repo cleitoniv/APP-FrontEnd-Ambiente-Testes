@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
 import 'package:central_oftalmica_app_cliente/models/points_model.dart';
 import 'package:central_oftalmica_app_cliente/models/request_details_model.dart';
@@ -29,12 +31,166 @@ class PointsList {
   PointsList({this.isEmpty, this.isLoading, this.list});
 }
 
+class OrderPayment {
+  bool isLoading;
+  bool isValid;
+  Map<String, dynamic> error;
+
+  OrderPayment({this.isLoading, this.isValid, this.error});
+}
+
 class RequestsRepository {
   Dio dio;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   RequestsRepository(this.dio);
+
+  String parseDtNascimento(String dtNascimento) {
+    try {
+      List dtSplited = dtNascimento.split("/");
+      return "${dtSplited[2]}-${dtSplited[1]}-${dtSplited[0]}";
+    } catch (error) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic> generate_params(Map data) {
+    List items = data['cart'].map<Map>((e) {
+      if (e["operation"] == "01" || e["operation"] == "13") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'grupo_teste': e['product'].groupTest,
+              'produto_teste': e['product'].produtoTeste,
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['tests'] == "Não"
+                  ? e['product'].group
+                  : e['product'].groupTest,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['tests'] == "Não" ? e['product'].value : 0,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': e['tests']
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
+      } else if (e["operation"] == "07") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'grupo_teste': e['product'].groupTest,
+              'produto_teste': e['product'].produtoTeste,
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['tests'] == "Não"
+                  ? e['product'].group
+                  : e['product'].groupTest,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['tests'] == "Não" ? e['product'].value : 0,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': e['tests']
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
+      } else if (e["operation"] == "00") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'produto_teste': e['product'].produtoTeste,
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['product'].groupTest,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['product'].value,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': 'Sim',
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
+      } else {
+        return {
+          'operation': e['operation'],
+          'type': e['type'],
+          'items': [
+            {
+              'produto': e['product'].title,
+              'codigo': e['product'].produto,
+              'grupo': e['product'].group,
+              'quantidade': e['quantity'],
+              'prc_unitario': e['product'].value,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
+              'duracao': e['product'].duracao
+            }
+          ]
+        };
+      }
+    }).toList();
+    return {'items': items, 'valor': 0};
+  }
+
+  Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
+    FirebaseUser user = await _auth.currentUser();
+    IdTokenResult idToken = await user.getIdToken();
+    try {
+      Response response = await dio.post('/api/cliente/pedido_produto',
+          data: jsonEncode(generate_params({'cart': _data})),
+          options: Options(headers: {
+            "Authorization": "Bearer ${idToken.token}",
+            "Content-Type": "application/json"
+          }));
+      return OrderPayment(isValid: response.data["success"], isLoading: false);
+    } catch (e) {
+      final error400 = e as DioError;
+      return OrderPayment(isValid: false, isLoading: false, error: {
+        "Pedido": [error400.response.data["data"]]
+      });
+    }
+  }
 
   Future<PointsList> fetchPoints() async {
     FirebaseUser user = await _auth.currentUser();
@@ -57,12 +213,18 @@ class RequestsRepository {
     }
   }
 
-  Future<Pedido> getPedido(int id) async {
+  Future<Pedido> getPedido(int id, PedidoModel pedidoData,
+      {bool reposicao = false}) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/pedido/${id}',
+          queryParameters: {
+            "data_nascimento": pedidoData.dataNascimento,
+            "nome": pedidoData.paciente,
+            "reposicao": reposicao
+          },
           options: Options(headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
@@ -78,6 +240,7 @@ class RequestsRepository {
   Future<PedidosList> getPedidos(int filtro) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
+
     try {
       Response response = await dio.get(
           '/api/cliente/detail_order?filtro=${filtro}',
@@ -85,15 +248,13 @@ class RequestsRepository {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
           }));
-
       List<PedidoModel> pedidos = response.data['data'].map<PedidoModel>((e) {
         return PedidoModel.fromJson(e);
       }).toList();
-
       return PedidosList(
           isEmpty: pedidos.length <= 0, isLoading: false, list: pedidos);
     } catch (error) {
-      return PedidosList(isEmpty: false, isLoading: true, list: null);
+      return PedidosList(isEmpty: true, isLoading: false, list: null);
     }
   }
 

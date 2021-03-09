@@ -9,8 +9,7 @@ class Dialogs {
     String buttonText = 'Confirmar Solicitação',
   }) {
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -51,6 +50,58 @@ class Dialogs {
     );
   }
 
+  static pacienteInfo(
+    BuildContext context, {
+    String title = 'Controle de paciente',
+    String subtitle =
+        '''Quando voce insere o nome e o CPF(opcional) do seu paciente, nos permite te auxiliar no controle da data de reavaliação!''',
+    Function onTap,
+    String buttonText = 'Entendi',
+  }) {
+    showDialog(
+      context: context, builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CircleAvatar(
+              radius: 45,
+              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+              child: Icon(
+                Icons.assignment,
+                color: Theme.of(context).primaryColor,
+                size: 50,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            SizedBox(height: 10),
+            Text(
+              subtitle,
+              textAlign: TextAlign.justify,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            SizedBox(height: 30),
+            RaisedButton(
+              onPressed: onTap,
+              child: Text(
+                buttonText,
+                style: Theme.of(context).textTheme.button,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   static error(
     BuildContext context, {
     String title = 'Tudo certo!',
@@ -59,8 +110,7 @@ class Dialogs {
     String buttonText = 'Confirmar Solicitação',
   }) {
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -85,6 +135,7 @@ class Dialogs {
             SizedBox(height: 10),
             Text(
               subtitle,
+              textAlign: TextAlign.justify,
               style: Theme.of(context).textTheme.subtitle1,
             ),
             SizedBox(height: 30),
@@ -129,8 +180,7 @@ class Dialogs {
     }
 
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
@@ -205,8 +255,7 @@ class Dialogs {
     }
 
     showDialog(
-      context: context,
-      child: AlertDialog(
+      context: context, builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),

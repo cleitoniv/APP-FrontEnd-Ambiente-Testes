@@ -15,12 +15,15 @@ import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/ticket_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/client_http.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/app_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/help_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/main_app.dart';
+import 'package:central_oftalmica_app_cliente/modules/app/ticket_module.dart';
+import 'package:central_oftalmica_app_cliente/modules/app/ticket_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/auth_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/credito_financeiro_module.dart';
@@ -154,7 +157,7 @@ class AppModule extends MainModule {
           (i) => ProfileWidgetBloc(repository: i.get<UserRepository>()),
         ),
         Bind(
-          (i) => AuthWidgetBloc(),
+          (i) => AuthWidgetBloc(repository: i.get<AuthRepository>()),
         ),
         Bind(
           (i) => DevolutionWidgetBloc(repository: i.get<ProductRepository>()),
@@ -171,74 +174,83 @@ class AppModule extends MainModule {
         Bind(
           (i) => ProductWidgetBloc(),
         ),
+        Bind(
+          (i) => TicketBloc(
+            i.get<UserRepository>(),
+          ),
+        ),
       ];
 
   @override
-  List<Router> get routers => [
-        Router(
+  List<ModularRouter> get routers => [
+        ModularRouter(
           '/',
           child: (_, args) => MainApp(),
         ),
-        Router(
+        ModularRouter(
           '/intro',
           child: (_, args) => IntroScreen(),
         ),
-        Router(
+        ModularRouter(
           '/help',
           child: (_, args) => HelpScreen(),
         ),
-        Router(
+        ModularRouter(
           '/auth',
           module: AuthModule(),
         ),
-        Router(
+        ModularRouter(
           '/home',
           module: HomeModule(),
         ),
-        Router(
+        ModularRouter(
           '/credits',
           module: CreditsModule(),
         ),
-        Router(
+        ModularRouter(
           '/cart',
           module: CartModule(),
         ),
-        Router(
+        ModularRouter(
           '/requests',
           module: RequestsModule(),
         ),
-        Router(
+        ModularRouter(
           '/profile',
           module: ProfileModule(),
         ),
-        Router(
+        ModularRouter(
           '/points',
           module: PointsModule(),
         ),
-        Router(
+        ModularRouter(
           '/extracts',
           module: ExtractsModule(),
         ),
-        Router(
+        ModularRouter(
           '/notifications',
           module: NotificationsModule(),
         ),
-        Router(
+        ModularRouter(
           '/products',
           module: ProductsModule(),
         ),
-        Router(
+        ModularRouter(
           '/devolution',
           module: DevolutionModule(),
         ),
-        Router(
+        ModularRouter(
           '/payments',
           module: PaymentsModule(),
         ),
-        Router(
+        ModularRouter(
           '/credito_financeiro',
           module: CreditoFinanceiroModule(),
-        )
+        ),
+        ModularRouter(
+          '/ticket',
+          module: TicketModule(),
+        ),
       ];
 
   @override
