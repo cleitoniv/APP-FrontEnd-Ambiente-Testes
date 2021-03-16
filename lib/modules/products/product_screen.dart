@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
@@ -9,14 +7,14 @@ import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
-import 'package:central_oftalmica_app_cliente/modules/home/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProductScreen extends StatefulWidget {
-  int id;
-  ProductModel product;
+  final int id;
+  final ProductModel product;
+
   ProductScreen({this.id, this.product});
 
   @override
@@ -27,8 +25,6 @@ class _ProductScreenState extends State<ProductScreen> {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-  HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
-  CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
   AuthEvent currentUser;
 
   _onShowInfo(bool value) {

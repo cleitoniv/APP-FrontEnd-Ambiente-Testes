@@ -2,7 +2,6 @@ import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/tabs_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 
 class MainApp extends StatefulWidget {
   @override

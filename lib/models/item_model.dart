@@ -30,6 +30,4 @@ class ItemPedidoModel {
       };
     })?.toList();
   }
-
-  Map<String, dynamic> toJson() {}
 }

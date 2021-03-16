@@ -55,7 +55,7 @@ class RequestsRepository {
     }
   }
 
-  Map<String, dynamic> generate_params(Map data) {
+  Map<String, dynamic> generateParams(Map data) {
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01" || e["operation"] == "13") {
         return {
@@ -178,7 +178,7 @@ class RequestsRepository {
     IdTokenResult idToken = await user.getIdToken();
     try {
       Response response = await dio.post('/api/cliente/pedido_produto',
-          data: jsonEncode(generate_params({'cart': _data})),
+          data: jsonEncode(generateParams({'cart': _data})),
           options: Options(headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
@@ -219,16 +219,20 @@ class RequestsRepository {
     IdTokenResult idToken = await user.getIdToken();
 
     try {
-      Response response = await dio.get('/api/cliente/pedido/${id}',
-          queryParameters: {
-            "data_nascimento": pedidoData.dataNascimento,
-            "nome": pedidoData.paciente,
-            "reposicao": reposicao
-          },
-          options: Options(headers: {
+      Response response = await dio.get(
+        '/api/cliente/pedido/$id',
+        queryParameters: {
+          "data_nascimento": pedidoData.dataNascimento,
+          "nome": pedidoData.paciente,
+          "reposicao": reposicao
+        },
+        options: Options(
+          headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
-          }));
+          },
+        ),
+      );
 
       PedidoModel pedido = PedidoModel.fromJson(response.data['data']);
       return Pedido(isEmpty: false, isLoading: false, pedido: pedido);
@@ -243,14 +247,19 @@ class RequestsRepository {
 
     try {
       Response response = await dio.get(
-          '/api/cliente/detail_order?filtro=${filtro}',
-          options: Options(headers: {
+        '/api/cliente/detail_order?filtro=$filtro',
+        options: Options(
+          headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
-          }));
+          },
+        ),
+      );
+
       List<PedidoModel> pedidos = response.data['data'].map<PedidoModel>((e) {
         return PedidoModel.fromJson(e);
       }).toList();
+
       return PedidosList(
           isEmpty: pedidos.length <= 0, isLoading: false, list: pedidos);
     } catch (error) {

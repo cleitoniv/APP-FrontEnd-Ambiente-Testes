@@ -102,5 +102,6 @@ class UserBloc extends Disposable {
     _currentUserController.close();
     _updateController.close();
     _pointsController.close();
+    _periodoAtendimentoController.close();
   }
 }

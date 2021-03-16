@@ -23,10 +23,6 @@ class _SecurityScreenState extends State<SecurityScreen> {
   bool _passwordObscure = true;
   bool _passwordConfirmObscure = true;
 
-  _onShowPassword(bool value) {
-    _profileWidgetBloc.securityShowPasswordIn.add(value);
-  }
-
   _onShowPasswordType(String type) {
     if (type == 'senha') {
       setState(() {
@@ -137,6 +133,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
                 itemBuilder: (context, index) {
                   return StreamBuilder<bool>(
                     stream: _profileWidgetBloc.securityShowPasswordOut,
+                    initialData: false,
                     builder: (context, snapshot) {
                       if (_data[index]['type'] == 'senha') {
                         return TextFieldWidget(

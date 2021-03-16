@@ -2,45 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class TextFieldWidget extends StatefulWidget {
-  String labelText;
-  Widget prefixIcon;
-  Widget suffixIcon;
-  TextCapitalization textCapitalization;
-  TextEditingController controller;
-  Function validator;
-  double width;
-  bool obscureText;
-  TextInputType keyboardType;
-  bool enabled;
-  bool readOnly;
-  Function onTap;
-  String initialValue;
-  String hint;
-  FocusNode focus;
-  TextInputFormatter inputFormatters;
-  int maxLength;
-  bool maxLengthEnforce;
-  bool inputFormattersActivated;
-  TextFieldWidget(
-      {this.textCapitalization,
-      this.labelText,
-      this.prefixIcon,
-      this.suffixIcon,
-      this.controller,
-      this.validator,
-      this.width = double.infinity,
-      this.obscureText = false,
-      this.keyboardType,
-      this.enabled = true,
-      this.initialValue,
-      this.readOnly = false,
-      this.onTap,
-      this.focus,
-      this.maxLength,
-      this.maxLengthEnforce = false,
-      this.hint = '',
-      this.inputFormatters,
-      this.inputFormattersActivated = false});
+  final String labelText;
+  final Widget prefixIcon;
+  final Widget suffixIcon;
+  final TextCapitalization textCapitalization;
+  final TextEditingController controller;
+  final Function validator;
+  final double width;
+  final bool obscureText;
+  final TextInputType keyboardType;
+  final bool enabled;
+  final bool readOnly;
+  final Function onTap;
+  final String initialValue;
+  final String hint;
+  final FocusNode focus;
+  final TextInputFormatter inputFormatters;
+  final int maxLength;
+  final bool maxLengthEnforce;
+  final bool inputFormattersActivated;
+
+  TextFieldWidget({
+    this.textCapitalization,
+    this.labelText,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.controller,
+    this.validator,
+    this.width = double.infinity,
+    this.obscureText = false,
+    this.keyboardType,
+    this.enabled = true,
+    this.initialValue,
+    this.readOnly = false,
+    this.onTap,
+    this.focus,
+    this.maxLength,
+    this.maxLengthEnforce = false,
+    this.hint = '',
+    this.inputFormatters,
+    this.inputFormattersActivated = false,
+  });
 
   @override
   _TextFieldWidgetState createState() => _TextFieldWidgetState();

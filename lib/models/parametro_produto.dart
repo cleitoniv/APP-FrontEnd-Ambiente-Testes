@@ -12,6 +12,4 @@ class ParametroProdutoModel {
     grausEsferico = json['graus_esferico'];
     grausCilindrico = json['graus_cilindrico'];
   }
-
-  Map<String, dynamic> toJson() {}
 }

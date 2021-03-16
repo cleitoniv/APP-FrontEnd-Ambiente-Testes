@@ -1,4 +1,3 @@
-import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';

@@ -22,7 +22,6 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   DevolutionWidgetBloc _devolutionWidgetBloc =
       Modular.get<DevolutionWidgetBloc>();
   List<Map> _pacientInfo;
-  List<Map> _productParams;
   TextEditingController _nameController;
   TextEditingController _numberController;
   TextEditingController _olhoController;
@@ -106,16 +105,10 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     DateTime now = new DateTime.now();
     var splitDate = input.split("/");
 
-    if (input == '') {
+    if (input == null || (input != null && input.isEmpty)) {
       return false;
-      _snackBar = SnackBar(
-        content: Text(
-          'Data de nascimento inválida.',
-        ),
-      );
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
-      return true;
     }
+
     if (int.parse(splitDate[2]) > (now.year - 18)) {
       _snackBar = SnackBar(
         content: Text(
@@ -341,39 +334,6 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
         'keyboardType': TextInputType.number,
       },
     ];
-
-    _productParams = [
-      {
-        'labelText': 'Escolha o Grau',
-        'items': [0.5, 1.0, 1.5],
-        'key': 'esferico',
-        'controller': _degreeController,
-      },
-      {
-        'labelText': 'Escolha o Cilíndro',
-        'items': [0.5, 1.0, 1.5],
-        'key': 'cilindrico',
-        'controller': _cylinderController,
-      },
-      {
-        'labelText': 'Escolha o Eixo',
-        'items': [0.9, 0.7],
-        'key': 'eixo',
-        'controller': _axisController
-      },
-      {
-        'labelText': 'Escolha a Cor',
-        'items': ['Preto', 'Vermelho'],
-        'key': 'cor',
-        'controller': _corController
-      },
-      {
-        'labelText': 'Escolha a Adição',
-        'items': [1, 2, 3],
-        'key': 'adicao',
-        'controller': _adicaoController
-      }
-    ];
   }
 
   @override
@@ -559,47 +519,12 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                                       param: _productParamsGenerated[index]
                                           ['key']),
                                 );
-                                // return TextFieldWidget(
-                                //   readOnly: true,
-                                //   suffixIcon: Icon(
-                                //     Icons.keyboard_arrow_down,
-                                //     color: Color(0xffa1a1a1),
-                                //   ),
-                                //   controller: TextEditingController(),
-                                //   labelText: _productParams[index]
-                                //       ['labelText'],
-                                //   onTap: (value) => _onChangeParams({
-                                //     _productParams[index]['key']: value,
-                                //   }),
-                                // );
-
-                                // return DropdownWidget(
-                                //   items: _productParams[index]['items'],
-                                //   labelText: _productParams[index]['labelText'],
-                                //   prefixIcon: SizedBox(),
-                                //   currentValue: snapshot
-                                //       .data[_productParams[index]['key']],
-                                //   onChanged: (value) => _onChangeParams({
-                                //     _productParams[index]['key']: value,
-                                //   }),
-                                //);
                               },
                             ),
                           ],
                         );
                       }),
-
                   SizedBox(height: 30),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: <Widget>[
-                  //     Text(
-                  //       'Quantidade disponivel',
-                  //       style: Theme.of(context).textTheme.subtitle1,
-                  //     ),
-                  //     Text("${snapshot.data.devolution.quantidade}"),
-                  //   ],
-                  // ),
                   SizedBox(height: 20),
                   StreamBuilder<bool>(
                     stream: _devolutionWidgetBloc.buttonCartStatusOut,

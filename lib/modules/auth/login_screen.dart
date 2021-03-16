@@ -4,7 +4,6 @@ import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -24,11 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _emailController;
   TextEditingController _passwordController;
-  FirebaseAuth _auth = FirebaseAuth.instance;
   bool _enabledPassword = true;
   bool _remember = false;
   bool _isLoading;
-  String _emailStored = null;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   _showErrors(Map<String, dynamic> errors) {
@@ -50,9 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       LoginEvent _login = await _authBloc.loginOut.first;
       if (!_login.isValid) {
-        String _message = Helper.handleFirebaseError(
-          _login.message,
-        );
         SnackBar _snackBar = SnackBar(
           content: Text(_login.message),
         );
@@ -149,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return true;
   }
 
-  Future<String> _getEmailStored() async {
+  Future<void> _getEmailStored() async {
     final prefs = await _prefs;
     if (prefs.getString('emailStored') != null) {
       final TextEditingController emailStored =
@@ -195,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         alignment: Alignment.center,
                         heightFactor: 4,
                         child: Image.asset(
-                          'assets/images/logo_alinhada_2.png',
+                          'assets/images/logo_alinhada.png',
                           fit: BoxFit.scaleDown,
                         ),
                       ))),

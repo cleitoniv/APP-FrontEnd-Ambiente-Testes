@@ -50,28 +50,30 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
           width: 30,
           height: 30,
         );
-        break;
       case "BOLETO":
         return Image.asset(
           "assets/icons/barcode.png",
           width: 30,
           height: 30,
         );
-        break;
       case "CREDIT_FINAN":
         return Image.asset(
           "assets/icons/credito-financeiro.png",
           width: 30,
           height: 30,
         );
-        break;
       case "CREDIT_PRODUCT":
         return Image.asset(
           "assets/icons/credito-produto.png",
           width: 30,
           height: 30,
         );
-        break;
+      default:
+        return Image.asset(
+          "assets/icons/credit_card.png",
+          width: 30,
+          height: 30,
+        );
     }
   }
 
@@ -94,18 +96,6 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       );
     } else {
       return Container();
-    }
-  }
-
-  Icon _renderTrailIcon(PaymentModel e) {
-    if (e.method == "BOLETO") {
-      return Icon(
-        Icons.keyboard_arrow_down,
-        size: 25,
-        color: Theme.of(context).accentColor,
-      );
-    } else {
-      Container();
     }
   }
 
@@ -276,7 +266,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   void initState() {
     super.initState();
     int filter = _paymentsWidgetBloc.currentFilter;
-    _paymentsWidgetBloc.fetchPayments("${filter}");
+    _paymentsWidgetBloc.fetchPayments("$filter");
   }
 
   @override

@@ -1,22 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/item_model.dart';
 import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
-import 'package:central_oftalmica_app_cliente/models/product_model.dart';
-import 'package:central_oftalmica_app_cliente/models/request_details_model.dart';
-import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestInfoScreen extends StatelessWidget {
-  int id;
-  PedidoModel pedidoData;
-  bool reposicao;
-  RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
-  ProductBloc _productBloc = Modular.get<ProductBloc>();
+  final int id;
+  final PedidoModel pedidoData;
+  final bool reposicao;
+  final RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
   RequestInfoScreen({this.id, this.pedidoData, this.reposicao}) {
     _requestsBloc.getPedido(this.id, this.pedidoData, this.reposicao);

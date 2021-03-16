@@ -12,6 +12,4 @@ class ExtratoProdutoModel {
     date = json['date'];
     produto = json['produto'];
   }
-
-  Map<String, dynamic> toJson() {}
 }

@@ -10,7 +10,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RescuePointsScreen extends StatefulWidget {
-  int points;
+  final int points;
 
   RescuePointsScreen({this.points});
 
@@ -42,7 +42,6 @@ class _RescuePointsScreenState extends State<RescuePointsScreen> {
         onTap: _onGoToFinancialCredit,
       );
     }
-    ;
   }
 
   _onCancelRescue() {
@@ -55,13 +54,13 @@ class _RescuePointsScreenState extends State<RescuePointsScreen> {
         'title': 'Saldo atual de pontos',
         'color': Theme.of(context).accentColor,
         'icon': MaterialCommunityIcons.star_four_points,
-        'value': points,
+        'value': points ?? 0,
       },
       {
         'title': 'Crédito Financeiro para resgate',
         'color': Theme.of(context).primaryColor,
         'icon': Icons.attach_money,
-        'value': 'R\$ ${Helper.intToMoney(credito)}'
+        'value': 'R\$ ${Helper.intToMoney(credito ?? 0)}'
       }
     ];
   }

@@ -45,18 +45,21 @@ class NotificationsRepository extends Repository<NotificationModel> {
     IdTokenResult idToken = await user.getIdToken();
 
     try {
-      Response response = await dio.put("/api/cliente/read_notification/$id",
-          options: Options(headers: {
+      await dio.put(
+        "/api/cliente/read_notification/$id",
+        options: Options(
+          headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
-          }));
+          },
+        ),
+      );
       return true;
     } catch (error) {
       return false;
     }
   }
 
-  @override
   Future<List<NotificationModel>> index() async {
     try {
       Response response = await dio.get(

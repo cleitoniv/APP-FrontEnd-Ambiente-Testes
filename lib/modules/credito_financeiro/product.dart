@@ -4,7 +4,6 @@ import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
-import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
@@ -15,8 +14,8 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  int id;
-  ProductModel product;
+  final int id;
+  final ProductModel product;
 
   ProductDetailScreen({this.id, this.product});
 
@@ -37,23 +36,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _productWidgetBloc.showInfoIn.add(!value);
   }
 
-  _onCancelPurchase() {
-    Modular.to.pop();
-  }
-
-  _onConfirmPurchase(ProductModel product, String type) {
-    Modular.to.pushNamed("/credito_financeiro/produto");
-  }
-
   _onAddToCart(Map data) async {
-    Map<dynamic, dynamic> _first =
-        await _productWidgetBloc.pacientInfoOut.first;
     Map<String, dynamic> _data = {
       'quantity': int.parse(_lensController.text),
       'product': data['product'],
       'type': "C",
       'operation': "06"
     };
+
     int _total = _cartWidgetBloc.currentCartTotalItems;
     _cartWidgetBloc.cartTotalItemsSink.add(_total + 1);
     _requestsBloc.addProductToCart(_data);
@@ -68,22 +58,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (int.parse(_lensController.text) > 1) {
       _lensController.text = '${int.parse(_lensController.text) - 1}';
     }
-  }
-
-  _handleSingleOrder(ProductModel product) {
-    Dialogs.confirm(
-      context,
-      title: 'Deseja confirmarcompra avulsa?',
-      subtitle:
-          'O valor da compra avulsa é maior do que a de créditos, tem certeza que deseja comprar avulsamente?',
-      confirmText: 'Confirmar Compra',
-      cancelText: 'Cancelar Compra',
-      onCancel: _onCancelPurchase,
-      onConfirm: () {
-        Modular.to.pop();
-        _onConfirmPurchase(product, 'A');
-      },
-    );
   }
 
   @override

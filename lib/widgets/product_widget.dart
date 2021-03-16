@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class ProductWidget extends StatelessWidget {
-  int tests;
-  int credits;
-  String title;
-  int value;
-  String imageUrl;
-  double width;
-  Function onTap;
-  int boxes;
+  final int tests;
+  final int credits;
+  final String title;
+  final int value;
+  final String imageUrl;
+  final double width;
+  final Function onTap;
+  final int boxes;
 
   ProductWidget({
     this.tests = 0,
@@ -22,6 +22,7 @@ class ProductWidget extends StatelessWidget {
         'https://onelens.fbitsstatic.net/img/p/lentes-de-contato-bioview-asferica-80342/353788.jpg?w=530&h=530&v=202004021417',
     this.width = 170,
     this.onTap,
+    this.boxes,
   });
 
   @override

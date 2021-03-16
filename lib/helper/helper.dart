@@ -75,7 +75,7 @@ class Helper {
   }
 
   static intToMoney(int value) {
-    return '${NumberFormat('#,##0.00', 'pt_BR').format(value / 100)}';
+    return '${NumberFormat('#,##0.00', 'pt_BR').format((value ?? 0) / 100)}';
   }
 
   static moneyToInt(double value) {

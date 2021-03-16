@@ -2,18 +2,19 @@ import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
-import 'package:central_oftalmica_app_cliente/models/request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestsScreen extends StatelessWidget {
-  RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
-  HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
+  final RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+  final HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
 
   _onShowRequest(int id, PedidoModel pedidoData, bool reposicao) {
-    Modular.to.pushNamed('/requests/${id}',
-        arguments: {"pedidoData": pedidoData, "reposicao": reposicao});
+    Modular.to.pushNamed('/requests/$id', arguments: {
+      "pedidoData": pedidoData,
+      "reposicao": reposicao,
+    });
   }
 
   Widget _showPedidoReposicao(

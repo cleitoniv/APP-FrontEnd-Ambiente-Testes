@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:basic_utils/basic_utils.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:cpfcnpj/cpfcnpj.dart';
 
 class DeliveryAddressRegisterScreen extends StatefulWidget {
   @override
@@ -21,7 +19,6 @@ class DeliveryAddressRegisterScreen extends StatefulWidget {
 
 class DeliveryAddressRegisterScreenState
     extends State<DeliveryAddressRegisterScreen> {
-  @override
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -44,8 +41,6 @@ class DeliveryAddressRegisterScreenState
 
   _handleSubmit() async {
     if (_formKey.currentState.validate()) {
-      Map<String, dynamic> currentData = _authWidgetBloc.currentAccountData;
-
       Map<String, dynamic> completeFormdata = {
         'cep_entrega': sanitize(_zipCodeDeliveryController.text),
         'estado_entrega': sanitize(_ufDeliveryController.text),
@@ -110,20 +105,23 @@ class DeliveryAddressRegisterScreenState
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("${e}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5
-                                          .copyWith(fontSize: 16)),
+                                  Text(
+                                    "$e",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(fontSize: 16),
+                                  ),
                                   SizedBox(
                                     height: 5,
                                   ),
                                   ...createAccount.errorData[e].map((p) {
-                                    return Text("${p}",
-                                        style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.8),
-                                            fontSize: 15));
+                                    return Text(
+                                      "$p",
+                                      style: TextStyle(
+                                          color: Colors.black.withOpacity(0.8),
+                                          fontSize: 15),
+                                    );
                                   })
                                 ],
                               )
@@ -237,6 +235,7 @@ class DeliveryAddressRegisterScreenState
     _adjunctDeliveryController.dispose();
     _districtDeliveryController.dispose();
     _cityDeliveryController.dispose();
+    atualizacaoEndereco.cancel();
     super.dispose();
   }
 

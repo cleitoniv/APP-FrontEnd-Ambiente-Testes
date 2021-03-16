@@ -35,11 +35,14 @@ class PaymentRepository {
 
     try {
       Response response = await dio.get(
-          "/api/cliente/payments?filtro=${filtro}",
-          options: Options(headers: {
+        "/api/cliente/payments?filtro=$filtro",
+        options: Options(
+          headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
-          }));
+          },
+        ),
+      );
       List<PaymentModel> list = response.data["data"].map<PaymentModel>((e) {
         return PaymentModel.fromJson(e);
       }).toList();
@@ -50,7 +53,7 @@ class PaymentRepository {
     }
   }
 
-  Map<String, dynamic> generate_params(Map data, PaymentMethod paymentMethod) {
+  Map<String, dynamic> generateParams(Map data, PaymentMethod paymentMethod) {
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01" || e["operation"] == "13") {
         return {
@@ -177,12 +180,12 @@ class PaymentRepository {
 
   Future<bool> payment(Map<String, dynamic> data, PaymentMethod paymentMethod,
       bool isBoleto) async {
-    Map<String, dynamic> params = generate_params(data, paymentMethod);
+    Map<String, dynamic> params = generateParams(data, paymentMethod);
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
       if (!isBoleto) {
-        Response response = await dio.post('/api/cliente/pedidos',
+        await dio.post('/api/cliente/pedidos',
             data: jsonEncode(params),
             options: Options(headers: {
               "Content-Type": "application/json",
@@ -191,7 +194,8 @@ class PaymentRepository {
 
         return true;
       }
-      Response response = await dio.post('/api/cliente/pedido_boleto',
+
+      await dio.post('/api/cliente/pedido_boleto',
           data: jsonEncode(params),
           options: Options(headers: {
             "Content-Type": "application/json",
@@ -199,7 +203,6 @@ class PaymentRepository {
           }));
       return true;
     } catch (error) {
-      final error400 = error as DioError;
       return false;
     }
   }

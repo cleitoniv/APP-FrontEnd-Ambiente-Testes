@@ -1,4 +1,3 @@
-import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -11,7 +10,6 @@ class ActivityPerformedScreen extends StatefulWidget {
 
 class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
-  AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   List<Map<String, dynamic>> _activities = [
     {'id': "1", 'name': 'Oftalmologista', 'fisica_jurid': 'F'},

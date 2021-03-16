@@ -1,5 +1,4 @@
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
-import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/modules/extracts/financial_extract_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/extracts/product_extract_screen.dart';
 import 'package:flutter/material.dart';

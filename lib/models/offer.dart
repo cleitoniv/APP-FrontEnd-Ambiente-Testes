@@ -16,6 +16,4 @@ class OfferModel {
     price = json['price'];
     total = json['total'];
   }
-
-  Map<String, dynamic> toJson() {}
 }

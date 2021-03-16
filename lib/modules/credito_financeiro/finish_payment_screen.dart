@@ -1,25 +1,14 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/credit_card_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credito_financeiro.dart';
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
-import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
-import 'package:central_oftalmica_app_cliente/widgets/snackbar_success.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:intl/intl.dart';
-import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
-
-import '../../repositories/credit_card_repository.dart';
-import '../../widgets/snackbar.dart';
 
 class FinishPayment extends StatefulWidget {
   @override
@@ -32,32 +21,15 @@ class _FinishPaymentState extends State<FinishPayment> {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   ExtractWidgetBloc _extract = Modular.get<ExtractWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-  CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
-  PaymentBloc _paymentBloc = Modular.get<PaymentBloc>();
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
   TextEditingController _ccvController;
   MaskedTextController _creditCardNumberController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _lock = false;
   bool _dropdownValueStatus = true;
-  int _installmentsSelected = 1;
   String dropdownValue = '';
-  int _totalPay = 0;
   bool _paymentMethod = true;
   List<String> _installments = [];
   bool _isButtonDisabled;
-
-  String _totalToPay(List<Map<String, dynamic>> data) {
-    int _taxaEntrega = _requestBloc.taxaEntregaValue;
-
-    int _total = data.fold(
-      0,
-      (previousValue, element) =>
-          previousValue + element['product'].value * element['quantity'],
-    );
-
-    return Helper.intToMoney(_total);
-  }
 
   _onSubmitDialog() {
     _requestBloc.getPedidosList(0);
@@ -105,8 +77,8 @@ class _FinishPaymentState extends State<FinishPayment> {
       _isButtonDisabled = true;
     });
 
-    final _taxaEntrega = _requestBloc.taxaEntregaValue;
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
       SnackBar _snackBar = SnackBar(
         content: Text(
@@ -120,11 +92,6 @@ class _FinishPaymentState extends State<FinishPayment> {
     if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       return;
     }
-    final _cart = await _requestBloc.cartOut.first;
-
-    int _value = int.parse(
-      _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
-    );
 
     final creditoFinan =
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
@@ -132,14 +99,6 @@ class _FinishPaymentState extends State<FinishPayment> {
     bool statusPayment = await _creditoFinanceiroBloc.pagamento(
         creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
 
-    // bool statusPayment = await _paymentBloc.payment({
-    //   'payment_data': _paymentMethod,
-    //   'value': _value,
-    //   'cart': _cart,
-    //   'taxa_entrega': _taxaEntrega,
-    //   'ccv': _ccvController.text,
-    //   'installment': _installmentsSelected
-    // }, _paymentMethod.isBoleto);
     _ccvController.text = '';
     if (statusPayment != null && statusPayment == true) {
       _requestBloc.resetCart();
@@ -163,23 +122,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   _calcPaymentInstallment() async {
     final creditoFinan =
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
-    int _taxaEntrega = _requestBloc.taxaEntregaValue;
 
-    final _paymentMethod = await _cartWidgetBloc.currentPaymentMethod;
-
-    // final _cart = await _requestBloc.cartOut.first;
-    // setState(() {
-    //   _totalPay = int.parse(
-    //     _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
-    //   );
-    // });
-    final _installmentsList = [];
-    // if (creditoFinan.installmentCount > 1) {
-    //   for (var i = 0; i < creditoFinan.installmentCount; i++) {
-    //     _installmentsList.add({"parcela": "1x de $_totalPay"});
-    //   }
-    // }
-    // _totalPay = Helper.intToMoney(creditoFinan.valor);
     final totalPay = Helper.intToMoney(creditoFinan.valor);
     setState(() {
       dropdownValue = '1x de $totalPay';
@@ -307,8 +250,6 @@ class _FinishPaymentState extends State<FinishPayment> {
                           onChanged: (String newValue) {
                             setState(() {
                               _dropdownValueStatus = true;
-                              _installmentsSelected =
-                                  _installments.indexOf(newValue) + 1;
                               dropdownValue = newValue;
                             });
                           },

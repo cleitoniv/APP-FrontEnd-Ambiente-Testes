@@ -23,7 +23,6 @@ import 'package:central_oftalmica_app_cliente/modules/app/help_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/intro_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/main_app.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/ticket_module.dart';
-import 'package:central_oftalmica_app_cliente/modules/app/ticket_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/auth_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_module.dart';
 import 'package:central_oftalmica_app_cliente/modules/credito_financeiro/credito_financeiro_module.dart';
@@ -45,7 +44,7 @@ import 'package:central_oftalmica_app_cliente/repositories/payment_repository.da
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AppModule extends MainModule {

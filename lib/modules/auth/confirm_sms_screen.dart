@@ -7,7 +7,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class ConfirmSmsScreen extends StatefulWidget {
-  Map<String, dynamic> phone;
+  final Map<String, dynamic> phone;
 
   ConfirmSmsScreen({this.phone});
   @override
@@ -55,9 +55,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
       return;
     }
     String phonex = widget.phone["phone"].replaceAll('-', '');
-    String ddd = widget.phone["ddd"];
     phonex = phonex.replaceAll(' ', '');
-    // phonex = "${ddd + phonex}";
     bool codeMatch = await _authWidgetBloc.confirmSms(
         int.parse(_confirmSms.text), int.parse(phonex));
 
@@ -72,7 +70,6 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
 
   _requireCodeSms() async {
     String userPhone = widget.phone["phone"].replaceAll('-', '');
-    String ddd = widget.phone["ddd"];
 
     userPhone = userPhone.replaceAll(' ', '');
     bool codeGenerated =

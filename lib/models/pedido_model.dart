@@ -32,6 +32,4 @@ class PedidoModel {
       return ItemPedidoModel.fromJson(e);
     })?.toList();
   }
-
-  Map<String, dynamic> toJson() {}
 }

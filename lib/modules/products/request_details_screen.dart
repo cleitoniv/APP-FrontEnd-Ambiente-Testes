@@ -4,7 +4,6 @@ import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
@@ -21,10 +20,15 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 import 'package:random_string/random_string.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
-  int id;
-  String type;
-  ProductModel product;
-  RequestDetailsScreen({this.id, this.type = 'Avulso', this.product});
+  final int id;
+  final String type;
+  final ProductModel product;
+
+  RequestDetailsScreen({
+    this.id,
+    this.type = 'Avulso',
+    this.product,
+  });
 
   @override
   _RequestDetailsScreenState createState() => _RequestDetailsScreenState();
@@ -37,7 +41,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Map> _productParams;
   List<Map> _fieldData;
   bool isInvalid = false;
   TextEditingController _nameController;
@@ -322,19 +325,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               if (allowedParams[element] ?? false) {
                 switch (element) {
                   case "axis":
-                    key = "Eixo ${olho}";
+                    key = "Eixo $olho";
                     break;
                   case "cylinder":
-                    key = "Cilindro ${olho}";
+                    key = "Cilindro $olho";
                     break;
                   case "degree":
-                    key = "Esferico ${olho}";
+                    key = "Esferico $olho";
                     break;
                   case "cor":
-                    key = "Cor ${olho}";
+                    key = "Cor $olho";
                     break;
                   case "adicao":
-                    key = "Adicao ${olho}";
+                    key = "Adicao $olho";
                     break;
                 }
                 errorParams[key] = ["Nao pode estar vazio."];
@@ -840,16 +843,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     DateTime now = new DateTime.now();
     var splitDate = input.split("/");
 
-    if (input == '') {
+    if (input == null || (input != null && input.isEmpty)) {
       return false;
-      _snackBar = SnackBar(
-        content: Text(
-          'Data de nascimento inválida.',
-        ),
-      );
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
-      return true;
     }
+
     if (int.parse(splitDate[2]) > (now.year - 18)) {
       _snackBar = SnackBar(
         content: Text(
@@ -888,12 +885,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     final m = dateTime.month.toString().padLeft(2, '0');
     final d = dateTime.day.toString().padLeft(2, '0');
     return "$y$m$d";
-  }
-
-  _validateField(String text) {
-    if (int.parse(text) <= 0) {
-      _lensController.text = '1';
-    }
   }
 
   @override

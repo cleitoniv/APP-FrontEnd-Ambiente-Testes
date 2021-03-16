@@ -14,6 +14,4 @@ class UsuarioClienteModel {
     cargo = json['cargo'];
     status = json['status'];
   }
-
-  Map<String, dynamic> toJson() {}
 }

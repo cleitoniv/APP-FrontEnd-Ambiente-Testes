@@ -1,14 +1,9 @@
-import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
-import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
-import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -19,9 +14,6 @@ class RepositionScreen extends StatefulWidget {
 }
 
 class _RepositionScreenState extends State<RepositionScreen> {
-  UserBloc _userBloc = Modular.get<UserBloc>();
-  AuthBloc _authBloc = Modular.get<AuthBloc>();
-  List<Map> _data;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _nameController;
   TextEditingController _serialController;
@@ -30,32 +22,6 @@ class _RepositionScreenState extends State<RepositionScreen> {
 
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
-
-  _onSubmitDialog() {
-    Modular.to.pop();
-    Modular.to.pop();
-  }
-
-  _onSubmit() async {
-    if (_formKey.currentState.validate()) {
-      Map<String, dynamic> params = {
-        'num_serie': _serialController.text,
-        'paciente': _nameController.text,
-        'num_pac': _numberController.text,
-        'dt_nas_pac': _birthdayController.text,
-      };
-
-      PointsResult _result = await _userBloc.addPoints(params);
-      if (_result.isValid) {
-        Dialogs.success(
-          context,
-          subtitle: 'Pontos adicionados com sucesso!',
-          buttonText: 'Ir para os Meus Pontos',
-          onTap: _onSubmitDialog,
-        );
-      }
-    }
-  }
 
   @override
   void initState() {
@@ -68,23 +34,6 @@ class _RepositionScreenState extends State<RepositionScreen> {
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
     );
-    _data = [
-      {
-        'labelText': 'Nome do paciente',
-        'icon': Icons.person,
-        'controller': _nameController,
-      },
-      {
-        'labelText': 'Número de Referência do Paciente',
-        'icon': MaterialCommunityIcons.numeric,
-        'controller': _numberController,
-      },
-      {
-        'labelText': 'Data de nascimento',
-        'icon': MaterialCommunityIcons.cake_layered,
-        'controller': _birthdayController,
-      },
-    ];
   }
 
   _pacienteInfo(BuildContext context) {
@@ -97,8 +46,10 @@ class _RepositionScreenState extends State<RepositionScreen> {
   }
 
   _onShowRequest(int id, PedidoModel pedidoData, bool reposicao) {
-    Modular.to.pushNamed('/requests/${id}',
-        arguments: {"pedidoData": pedidoData, "reposicao": reposicao});
+    Modular.to.pushNamed('/requests/$id', arguments: {
+      "pedidoData": pedidoData,
+      "reposicao": reposicao,
+    });
   }
 
   Widget _showPedido(

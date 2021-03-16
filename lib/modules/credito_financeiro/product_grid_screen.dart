@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class ProductsGridScreen extends StatelessWidget {
-  ProductBloc _productBloc = Modular.get<ProductBloc>();
+  final ProductBloc _productBloc = Modular.get<ProductBloc>();
 
   onChangeProduct(ProductModel product) {
     Modular.to.pushNamed(

@@ -6,7 +6,6 @@ import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -22,7 +21,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   String _requestCodeController;
   TextEditingController _confirmSms;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -35,22 +33,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   TextEditingController _nicknameController;
   bool _passwordObscure = true;
   bool _passwordConfirmObscure = true;
-  String _currentVerficationId;
   bool _isLoading = false;
   List<Map> _fieldData;
   bool _lock = true;
-
-  _startLoad() {
-    setState(() {
-      this._isLoading = true;
-    });
-  }
-
-  _endLoad() {
-    setState(() {
-      this._isLoading = false;
-    });
-  }
 
   _handleObscureText() async {
     setState(() {
@@ -123,14 +108,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   _confirmSmsDialog() async {
     if (_formKey.currentState.validate()) {
-      //_startLoad();
       String phonex = _phoneController.text.replaceAll('-', '');
       phonex = phonex.replaceAll(' ', '');
       var codeGenerated =
           await _authWidgetBloc.requireCodeSms(int.parse(phonex));
 
       if (!codeGenerated["success"]) {
-        //_endLoad();
         _showDialog("Atenção", codeGenerated["data"]);
         return;
       }
@@ -148,7 +131,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       });
       //_endLoad();
       await showDialog<String>(
-        context: context, builder: (context) => AlertDialog(
+        context: context,
+        builder: (context) => AlertDialog(
           contentPadding: const EdgeInsets.all(16.0),
           content: new Row(
             children: <Widget>[
@@ -187,20 +171,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
       );
     }
-  }
-
-  _firebaseHandler() async {
-    await _auth.verifyPhoneNumber(
-        timeout: Duration(seconds: 60),
-        phoneNumber: "+55 27997942858",
-        verificationCompleted: null,
-        codeAutoRetrievalTimeout: null,
-        verificationFailed: null,
-        codeSent: (String verficationId, [int resendToken]) {
-          setState(() {
-            this._currentVerficationId = verficationId;
-          });
-        });
   }
 
   _handleSubmit() async {

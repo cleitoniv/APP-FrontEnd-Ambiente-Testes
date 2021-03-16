@@ -1,4 +1,3 @@
-import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
@@ -143,5 +142,8 @@ class DevolutionWidgetBloc extends Disposable {
     _devolutionTypeController.close();
     _productParamsController.close();
     _buttonCartStatusController.close();
+    _productErrorAdd.close();
+    _currentProductController.close();
+    _parametroList.close();
   }
 }

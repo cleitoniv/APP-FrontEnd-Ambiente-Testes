@@ -1,16 +1,14 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/extrato_finan.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
-import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class FinancialExtractScreen extends StatelessWidget {
-  ExtractWidgetBloc _extractWidgetBloc = Modular.get<ExtractWidgetBloc>();
-  AuthBloc _authBloc = Modular.get<AuthBloc>();
+  final ExtractWidgetBloc _extractWidgetBloc = Modular.get<ExtractWidgetBloc>();
+  final AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   @override
   Widget build(BuildContext context) {

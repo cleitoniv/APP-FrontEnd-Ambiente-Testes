@@ -1,10 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/points_model.dart';
-import 'package:central_oftalmica_app_cliente/models/request_model.dart';
-import 'package:central_oftalmica_app_cliente/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -17,7 +14,6 @@ class PointsScreen extends StatefulWidget {
 
 class _PointsScreenState extends State<PointsScreen> {
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
-  UserBloc _userBloc = Modular.get<UserBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   _checkBlockedUser(context, ontap) async {
@@ -225,7 +221,6 @@ class _PointsScreenState extends State<PointsScreen> {
           Column(
             children: _renderButtonData(context).map(
               (item) {
-                var ontap = item['onTap'];
                 return Container(
                   margin: const EdgeInsets.only(top: 20),
                   child: RaisedButton.icon(

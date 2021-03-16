@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:dio/dio.dart';
@@ -23,8 +21,6 @@ class AuthBloc extends Disposable {
 
   BehaviorSubject _loginController = BehaviorSubject.seeded(null);
 
-  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
-
   bool acceptTerms = false;
   BehaviorSubject _accetpTerms = BehaviorSubject();
   Sink get acceptTermSink => _accetpTerms.sink;
@@ -42,7 +38,7 @@ class AuthBloc extends Disposable {
     return _createAccountController.value;
   }
 
-  void getEnderecoCep(String cep) async {
+  Future<void> getEnderecoCep(String cep) async {
     Endereco endereco = await repository.getEnderecoByCep(cep);
     enderecoSink.add(endereco);
   }
@@ -99,7 +95,7 @@ class AuthBloc extends Disposable {
 
   void setLoginEvent(LoginEvent login) => this.login = login;
 
-  void fetchCurrentUser() async {
+  Future<void> fetchCurrentUser() async {
     this.clienteDataSink.add(AuthEvent(loading: true));
     this._currentUser = await repository.currentUser(this.login);
     this.clienteDataSink.add(this._currentUser);

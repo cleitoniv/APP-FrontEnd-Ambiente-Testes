@@ -44,5 +44,6 @@ class ExtractWidgetBloc extends Disposable {
     _extratoFinanceiroController.close();
     _extratoProdutoController.close();
     _extractTypeController.close();
+    _currentPage.close();
   }
 }

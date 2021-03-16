@@ -8,9 +8,7 @@ import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/offer.dart';
-import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
@@ -19,7 +17,6 @@ import 'package:central_oftalmica_app_cliente/widgets/card_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -53,8 +50,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
   StreamSubscription _productReset;
-
-  StreamSubscription _currentCreditType;
 
   _onAddCredit() async {
     _creditsBloc.storeFinancialIn.add(
@@ -105,10 +100,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
     } else {
       Modular.to.pushNamed('/credito_financeiro/produto');
     }
-  }
-
-  _onTapSelectProduct(ProductModel product) {
-    _creditsBloc.currentProductSink.add(product);
   }
 
   _onTapSelectCreditProduct(ProductModel product) {
@@ -211,8 +202,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
         _currentProduct = {"selected": false};
       }
     });
-    _currentCreditType = _homeBloc.currentCreditTypeOut.listen((event) {
-      print("$event");
+
+    _homeBloc.currentCreditTypeOut.listen((event) {
       if (event == "Produto") {
         _creditsBloc.offersSink
             .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
@@ -222,6 +213,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
         _creditsBloc.fetchOffers();
       }
     });
+
     _onNavigate();
     _creditValueController = MoneyMaskedTextController(
       decimalSeparator: ',',
@@ -498,7 +490,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                 child: CircularProgressIndicator(),
                               );
                             }
-                            ProductList _productCredits = productSnapshot.data;
+
                             return StreamBuilder(
                               stream: _creditsBloc.offerStream,
                               builder: (context, offerSnapshot) {
@@ -603,7 +595,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                   'Financeiro') {
                                                                 index -= 1;
                                                               }
-                                                              // print(_currentType);
+
                                                               return _currentType ==
                                                                       'Financeiro'
                                                                   ? InkWell(
