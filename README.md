@@ -1,18 +1,8 @@
 # central_oftalmica_app_cliente
 
-A new Flutter project.
+Central Oftalmica - Aplicativo do Cliente.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
 For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-postgres://tchfhslopielgqur:b523\*0Hi7o@$lwRV@34.75.189.220:5432/central_oftalmica_devs
+[online documentation](https://flutter.dev/docs).
