@@ -9,6 +9,7 @@
 .history
 .svn/
 ._*
+**/settings_aar.gradle
 
 # IntelliJ related
 *.iml
