@@ -10,6 +10,7 @@
 .svn/
 ._*
 **/settings_aar.gradle
+**/ios/.last_build_id
 
 # IntelliJ related
 *.iml
