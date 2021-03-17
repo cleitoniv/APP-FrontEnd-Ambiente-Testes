@@ -1,4 +1,0 @@
-flutter_native_splash:
-  image: assets/images/logo_alinhada.png
-  color: "#FBFBFB"
-  android_disable_fullscreen: true
