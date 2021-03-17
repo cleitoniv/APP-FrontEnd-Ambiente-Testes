@@ -9,8 +9,8 @@
 .history
 .svn/
 ._*
-**/settings_aar.gradle
-**/ios/.last_build_id
+/android/settings_aar.gradle
+/ios/Flutter/.last_build_id
 
 # IntelliJ related
 *.iml
