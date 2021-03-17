@@ -12,7 +12,6 @@ class _TermsResponsabilityState extends State<TermsResponsability> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _authBloc.getTermsOfResponsability();
   }

@@ -511,14 +511,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                     offerSnapshot.data.offers ?? [];
                                 return Column(
                                   children: [
-                                    // _currentType != 'Financeiro' ? Expanded(
-                                    //   flex: 1,
-                                    //   child: Text(
-                                    //     "Selecione o Pacote",
-                                    //     style:
-                                    //     Theme.of(context).textTheme.headline5,
-                                    //   ),
-                                    // ) : Container(),
                                     _currentType != 'Financeiro'
                                         ? Expanded(
                                             flex: 10,
@@ -777,64 +769,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                         child:
                                                             CircularProgressIndicator())),
                                           ),
-                                    // Expanded(
-                                    //   flex: 1,
-                                    //   child: Container(
-                                    //     padding: EdgeInsets.only(left: 40, right: 40),
-                                    //     child: StreamBuilder<String>(
-                                    //       stream: _homeBloc.currentCreditTypeOut,
-                                    //       builder: (context, snapshot) {
-                                    //         String _currentType = snapshot.data;
-                                    //         return StreamBuilder<bool>(
-                                    //           stream: _homeBloc.valueVisibilityOut,
-                                    //           builder: (context, snapshot2) {
-                                    //             if (snapshot2.hasData && snapshot2.data) {
-                                    //               return Column(
-                                    //                 children: <Widget>[
-                                    //                   TextFieldWidget(
-                                    //                     labelText: 'Digite o valor',
-                                    //                     controller: _creditValueController,
-                                    //                     keyboardType: TextInputType.number,
-                                    //                     prefixIcon: Icon(
-                                    //                       Icons.attach_money,
-                                    //                       color: Color(0xffa1a1a1),
-                                    //                     ),
-                                    //                   ),
-                                    //                   SizedBox(height: 20),
-                                    //                   RaisedButton(
-                                    //                     elevation: 0,
-                                    //                     onPressed: _onAddCredit,
-                                    //                     child: Text(
-                                    //                       'Adicionar Crédito',
-                                    //                       style: Theme.of(context).textTheme.button,
-                                    //                     ),
-                                    //                   ),
-                                    //                 ],
-                                    //               );
-                                    //             } else {
-                                    //               if (_currentType == "Financeiro") {
-                                    //                 return RaisedButton(
-                                    //                   elevation: 0,
-                                    //                   onPressed: () {
-                                    //                     _onTapPersonalizedValue(snapshot.data);
-                                    //                   },
-                                    //                   child: Text(
-                                    //                     snapshot.data == 'Financeiro'
-                                    //                         ? 'Valor Personalizado'
-                                    //                         : 'Comprar Crédito de Produto',
-                                    //                     style: Theme.of(context).textTheme.button,
-                                    //                   ),
-                                    //                 );
-                                    //               } else {
-                                    //                 return Container();
-                                    //               }
-                                    //             }
-                                    //           },
-                                    //         );
-                                    //       },
-                                    //     ),
-                                    //   )
-                                    // )
                                   ],
                                 );
                               },
@@ -846,63 +780,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   ),
                 );
               }),
-          // Positioned(
-          //   left: 20,
-          //   right: 20,
-          //   bottom: 20,
-          //   child: StreamBuilder<String>(
-          //     stream: _homeBloc.currentCreditTypeOut,
-          //     builder: (context, snapshot) {
-          //       String _currentType = snapshot.data;
-          //       return StreamBuilder<bool>(
-          //         stream: _homeBloc.valueVisibilityOut,
-          //         builder: (context, snapshot2) {
-          //           if (snapshot2.hasData && snapshot2.data) {
-          //             return Column(
-          //               children: <Widget>[
-          //                 TextFieldWidget(
-          //                   labelText: 'Digite o valor',
-          //                   controller: _creditValueController,
-          //                   keyboardType: TextInputType.number,
-          //                   prefixIcon: Icon(
-          //                     Icons.attach_money,
-          //                     color: Color(0xffa1a1a1),
-          //                   ),
-          //                 ),
-          //                 SizedBox(height: 20),
-          //                 RaisedButton(
-          //                   elevation: 0,
-          //                   onPressed: _onAddCredit,
-          //                   child: Text(
-          //                     'Adicionar Crédito',
-          //                     style: Theme.of(context).textTheme.button,
-          //                   ),
-          //                 ),
-          //               ],
-          //             );
-          //           } else {
-          //             if (_currentType == "Financeiro") {
-          //               return RaisedButton(
-          //                 elevation: 0,
-          //                 onPressed: () {
-          //                   _onTapPersonalizedValue(snapshot.data);
-          //                 },
-          //                 child: Text(
-          //                   snapshot.data == 'Financeiro'
-          //                       ? 'Valor Personalizado'
-          //                       : 'Comprar Crédito de Produto',
-          //                   style: Theme.of(context).textTheme.button,
-          //                 ),
-          //               );
-          //             } else {
-          //               return Container();
-          //             }
-          //           }
-          //         },
-          //       );
-          //     },
-          //   ),
-          // ),
         ],
       ),
     );
