@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class CardWidget extends StatelessWidget {
-  int value;
-  int parcels;
-  int discount;
+  final int value;
+  final int parcels;
+  final int discount;
 
-  CardWidget({this.value = 20000, this.parcels = 1, this.discount = 5});
+  CardWidget({
+    this.value = 20000,
+    this.parcels = 1,
+    this.discount = 5,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,7 @@ class CardWidget extends StatelessWidget {
               ),
               Spacer(),
               Text(
-                "${discount}% de Desconto",
+                "$discount% de Desconto",
                 style: Theme.of(context).textTheme.subtitle1.copyWith(
                       color: Theme.of(context).accentColor,
                       fontSize: 14,
@@ -126,18 +130,19 @@ class CardWidgetOtherValue extends StatelessWidget {
 }
 
 class CreditProductCardWidget extends StatelessWidget {
-  int value;
-  int parcels;
-  int caixas;
-  int precoUnitario;
-  int percentageTest;
+  final int value;
+  final int parcels;
+  final int caixas;
+  final int precoUnitario;
+  final int percentageTest;
 
-  CreditProductCardWidget(
-      {this.precoUnitario = 20000,
-      this.value = 20000,
-      this.parcels = 1,
-      this.percentageTest,
-      this.caixas = 20});
+  CreditProductCardWidget({
+    this.precoUnitario = 20000,
+    this.value = 20000,
+    this.parcels = 1,
+    this.percentageTest,
+    this.caixas = 20,
+  });
 
   @override
   Widget build(BuildContext context) {

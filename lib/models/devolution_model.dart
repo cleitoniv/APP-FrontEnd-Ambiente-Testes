@@ -10,6 +10,4 @@ class DevolutionModel {
     quantidade = json['quantidade'];
     group = json['group'];
   }
-
-  Map<String, dynamic> toJson() {}
 }

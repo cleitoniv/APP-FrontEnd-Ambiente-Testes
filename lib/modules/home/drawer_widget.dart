@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class DrawerWidget extends StatelessWidget {
-  List<Map> _data = [
+  final List<Map> _data = [
     {
       'title': 'Meu Perfil',
       'image': 'drawer_0.png',
@@ -50,9 +50,9 @@ class DrawerWidget extends StatelessWidget {
     },
   ];
 
-  Function onClose;
-  Function(int) onNavigate;
-  Function onExitApp;
+  final Function onClose;
+  final Function(int) onNavigate;
+  final Function onExitApp;
 
   DrawerWidget({
     this.onClose,
@@ -82,7 +82,7 @@ class DrawerWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Image.asset(
-                  'assets/images/logo_alinhada_2.png',
+                  'assets/images/logo_alinhada.png',
                   height: 40,
                 ),
                 IconButton(

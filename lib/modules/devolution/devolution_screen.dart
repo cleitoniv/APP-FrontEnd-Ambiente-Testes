@@ -134,7 +134,6 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
       return;
     }
 
-    ProductList products = _devolutionWidgetBloc.productsPreDevolucao;
     if (type == 'Crédito') {
       Devolution devol = await _devolutionWidgetBloc.confirmCreditDevolution();
 
@@ -237,7 +236,6 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int i = -1;
     return Scaffold(
       appBar: AppBar(
         title: Text('Retorno'),

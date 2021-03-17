@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -106,14 +104,11 @@ class AuthWidgetBloc extends Disposable {
   }
 
   Future<bool> confirmSms(int code, int phone) async {
-    bool codeMatch = await repository.checkCode(code, phone);
-    return true;
+    return repository.checkCode(code, phone);
   }
 
   Future<dynamic> requireCodeSms(int phone) async {
-    return await repository.requireCode(phone);
-    // return false;
-    // return codeMatch;
+    return repository.requireCode(phone);
   }
 
   @override

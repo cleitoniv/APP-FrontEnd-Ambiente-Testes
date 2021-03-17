@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:basic_utils/basic_utils.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
@@ -25,7 +24,7 @@ class _CompleteCreateAccountScreenState
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Map> _fieldData;
+
   MaskedTextController _cpfController;
   TextEditingController _nameController;
   MaskedTextController _cnaeController;
@@ -98,8 +97,8 @@ class _CompleteCreateAccountScreenState
     return false;
   }
 
-  void clienteExiste(String cpf_cnpj) async {
-    Cadastro cadastro = await _authBloc.fetchCadastro(sanitize(cpf_cnpj));
+  void clienteExiste(String cpfCnpj) async {
+    Cadastro cadastro = await _authBloc.fetchCadastro(sanitize(cpfCnpj));
     if (!cadastro.isEmpty) {
       LoginEvent createAccount = await _authBloc.createAccountOut.first;
 
@@ -149,20 +148,23 @@ class _CompleteCreateAccountScreenState
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("${e}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5
-                                          .copyWith(fontSize: 16)),
+                                  Text(
+                                    "$e",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(fontSize: 16),
+                                  ),
                                   SizedBox(
                                     height: 5,
                                   ),
                                   ...createAccount.errorData[e].map((p) {
-                                    return Text("${p}",
-                                        style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.8),
-                                            fontSize: 15));
+                                    return Text(
+                                      "$p",
+                                      style: TextStyle(
+                                          color: Colors.black.withOpacity(0.8),
+                                          fontSize: 15),
+                                    );
                                   })
                                 ],
                               )
@@ -246,13 +248,13 @@ class _CompleteCreateAccountScreenState
   bool _verifyCpfCnpj(String cpfCnpj, String type) {
     if (type == "CPF") {
       if (!CPF.isValid(cpfCnpj)) {
-        _showDialog("Atenção", "${type} inválido ou incompleto.");
+        _showDialog("Atenção", "$type inválido ou incompleto.");
         return false;
       }
       return true;
     } else {
       if (!CNPJ.isValid(cpfCnpj)) {
-        _showDialog("Atenção", "${type} inválido ou incompleto.");
+        _showDialog("Atenção", "$type inválido ou incompleto.");
         return false;
       }
     }

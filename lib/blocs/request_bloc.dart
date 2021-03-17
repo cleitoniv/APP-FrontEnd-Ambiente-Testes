@@ -160,5 +160,9 @@ class RequestsBloc extends Disposable {
     _cartController.close();
     _showController.close();
     _indexController.close();
+    _pointsController.close();
+    _pedidoInfoController.close();
+    _currentRequestFilter.close();
+    _taxaEntregaController.close();
   }
 }

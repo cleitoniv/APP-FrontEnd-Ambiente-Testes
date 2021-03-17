@@ -22,6 +22,4 @@ class EnderecoEntregaModel {
     bairro = json['bairro'];
     cep = json['cep'];
   }
-
-  Map<String, dynamic> toJson() {}
 }

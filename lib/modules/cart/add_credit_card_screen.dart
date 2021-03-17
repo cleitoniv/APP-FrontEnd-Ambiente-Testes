@@ -10,7 +10,8 @@ import 'package:flutter_modular/flutter_modular.dart';
 import '../../repositories/credit_card_repository.dart';
 
 class AddCreditCardScreen extends StatefulWidget {
-  Map<String, dynamic> screen;
+  final Map<String, dynamic> screen;
+
   AddCreditCardScreen({this.screen});
 
   @override
@@ -58,10 +59,10 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
     if (_formKey.currentState.validate()) {
       CreditCard _storeResult = await _creditCardBloc.addCreditCard(
         CreditCardModel(
-          cartao_number: parseCartaoNumber(_creditCardNumberController.text),
-          ano_validade: _anoValidadeController.text,
-          mes_validade: _mesValidadeController.text,
-          nome_titular: _ownerController.text,
+          cartaoNumber: parseCartaoNumber(_creditCardNumberController.text),
+          anoValidade: _anoValidadeController.text,
+          mesValidade: _mesValidadeController.text,
+          nomeTitular: _ownerController.text,
         ),
       );
 

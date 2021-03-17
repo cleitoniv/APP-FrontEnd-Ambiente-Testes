@@ -44,20 +44,23 @@ class ErrorSnackBar {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("${e}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5
-                                          .copyWith(fontSize: 16)),
+                                  Text(
+                                    "$e",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(fontSize: 16),
+                                  ),
                                   SizedBox(
                                     height: 5,
                                   ),
                                   ...errorData[e].map((p) {
-                                    return Text("${p}",
-                                        style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.8),
-                                            fontSize: 15));
+                                    return Text(
+                                      "$p",
+                                      style: TextStyle(
+                                          color: Colors.black.withOpacity(0.8),
+                                          fontSize: 15),
+                                    );
                                   })
                                 ],
                               ))

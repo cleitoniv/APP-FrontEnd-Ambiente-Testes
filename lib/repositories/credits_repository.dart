@@ -5,7 +5,6 @@ import 'package:central_oftalmica_app_cliente/models/extrato_finan.dart';
 import 'package:central_oftalmica_app_cliente/models/extrato_produto.dart';
 import 'package:central_oftalmica_app_cliente/models/financial_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/offer.dart';
-import 'package:central_oftalmica_app_cliente/models/points_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -124,9 +123,10 @@ class CreditsRepository {
     IdTokenResult idToken = await user.getIdToken();
 
     try {
-      Response response = await dio.post(
-          '/api/cliente/pedido/credito_financeiro',
-          data: jsonEncode({
+      await dio.post(
+        '/api/cliente/pedido/credito_financeiro',
+        data: jsonEncode(
+          {
             "items": [
               {
                 "valor": credito.valor,
@@ -135,9 +135,12 @@ class CreditsRepository {
               }
             ],
             "id_cartao": cartaoId
-          }),
-          options:
-              Options(headers: {"Authorization": "Bearer ${idToken.token}"}));
+          },
+        ),
+        options: Options(
+          headers: {"Authorization": "Bearer ${idToken.token}"},
+        ),
+      );
       return true;
     } catch (error) {
       return false;

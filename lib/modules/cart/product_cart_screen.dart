@@ -1,11 +1,8 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/product_model.dart';
-import 'package:central_oftalmica_app_cliente/modules/products/request_details_screen.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -18,13 +15,10 @@ class ProductCartScreen extends StatefulWidget {
 }
 
 class _ProductCartScreenState extends State<ProductCartScreen> {
-  HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
-
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
-  static Map _product;
   int _taxaEntrega = 0;
 
   _onBackToPurchase() {
@@ -139,29 +133,6 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     return Helper.intToMoney(_total + _taxaEntrega);
   }
 
-  _showDialog(String title, String content) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title, style: Theme.of(context).textTheme.headline5),
-          content: Text(content),
-          actions: [
-            RaisedButton(
-                child: Text(
-                  "Ok",
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  Modular.to.pop();
-                })
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -190,7 +161,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                       heightFactor: 3,
                       child: Text(
                         'Seu carrinho está vazio',
-                        style: Theme.of(context).textTheme.title.copyWith(
+                        style: Theme.of(context).textTheme.headline6.copyWith(
                               color: Color(0xffa1a1a1),
                               fontSize: 14,
                             ),

@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:central_oftalmica_app_cliente/blocs/bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
-import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
-class ProductBloc {
+class ProductBloc extends Disposable {
   ProductRepository repository;
 
   ProductBloc(this.repository);
@@ -73,32 +71,10 @@ class ProductBloc {
   Stream<ProductEvent> get productListStream => _productsList.stream;
 
   @override
-  Sink get destroyIn => throw UnimplementedError();
-
-  @override
-  Stream<String> get destroyOut => throw UnimplementedError();
-
-  BehaviorSubject _showController = BehaviorSubject.seeded(null);
-  @override
-  Sink get showIn => _showController.sink;
-
-  @override
-  Sink get storeIn => throw UnimplementedError();
-
-  @override
-  Stream<String> get storeOut => throw UnimplementedError();
-
-  @override
-  Sink get updateIn => throw UnimplementedError();
-
-  @override
-  Stream<String> get updateOut => throw UnimplementedError();
-
-  @override
   void dispose() {
     _creditProductsList.close();
     _productsList.close();
     _product.close();
-    _showController.close();
+    _parametroList.close();
   }
 }

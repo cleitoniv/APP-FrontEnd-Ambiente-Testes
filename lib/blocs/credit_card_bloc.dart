@@ -5,8 +5,6 @@ import 'package:central_oftalmica_app_cliente/repositories/credit_card_repositor
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
-import '../repositories/credits_repository.dart';
-
 class CreditCardBloc extends Bloc<CreditCardModel> {
   CreditCardRepository repository;
 

@@ -1,18 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'dart:math';
 
-import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/cadastro_model.dart';
 import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/models/endereco.dart';
 import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 
 class Authentication {
   bool isValid;
@@ -85,17 +79,23 @@ class AuthRepository {
 
     try {
       Response response = await dio.get(
-          "/api/cliente/get_endereco_by_cep?cep=${cep}",
-          options: Options(headers: {
+        "/api/cliente/get_endereco_by_cep?cep=$cep",
+        options: Options(
+          headers: {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": "application/json"
-          }));
+          },
+        ),
+      );
+
       if (response.statusCode == 200 && response.data["success"]) {
         EnderecoModel endereco = EnderecoModel.fromJson(response.data["data"]);
         return Endereco(isLoading: false, isEmpty: false, endereco: endereco);
       }
+
+      return Endereco(isLoading: false, isEmpty: true);
     } catch (error) {
-      return Endereco(isLoading: false, isEmpty: false);
+      return Endereco(isLoading: false, isEmpty: true);
     }
   }
 
@@ -104,17 +104,22 @@ class AuthRepository {
     IdTokenResult token = await user.getIdToken();
 
     try {
-      Response response = await dio.get("/api/cliente/protheus/${cnpj}",
-          options: Options(headers: {
+      Response response = await dio.get(
+        "/api/cliente/protheus/$cnpj",
+        options: Options(
+          headers: {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": ""
-          }));
+          },
+        ),
+      );
+
       if (response.data["success"]) {
         CadastroModel cadastro = CadastroModel.fromJson(response.data["data"]);
         return Cadastro(isLoading: false, isEmpty: false, dados: cadastro);
-      } else {
-        return Cadastro(isLoading: false, isEmpty: true);
       }
+
+      return Cadastro(isLoading: false, isEmpty: true);
     } catch (error) {
       return Cadastro(isEmpty: true, isLoading: false);
     }
@@ -158,7 +163,7 @@ class AuthRepository {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
     try {
-      Response response = await dio.post('/api/cliente/first_access',
+      await dio.post('/api/cliente/first_access',
           data: jsonEncode({"param": data}),
           options: Options(headers: {
             "Authorization": "Bearer ${token.token}",
@@ -179,7 +184,7 @@ class AuthRepository {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult token = await user.getIdToken();
     try {
-      Response response = await dio.post('/api/cliente',
+      await dio.post('/api/cliente',
           data: jsonEncode({"param": data}),
           options: Options(headers: {
             "Authorization": "Bearer ${token.token}",
@@ -265,7 +270,6 @@ class AuthRepository {
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
-      final error400 = error as DioError;
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
         "Login": [
           "Tivemos problema ao tentar fazer o seu login. Se o erro persistir entre em contato com a Central Oftálmica."
@@ -313,7 +317,7 @@ class AuthRepository {
   Future<bool> checkCode(int code, int phone) async {
     try {
       Response response = await dio.get(
-        "/api/confirmation_code?code_sms=${code}&phone_number=55${phone}",
+        "/api/confirmation_code?code_sms=$code&phone_number=55$phone",
         options: Options(headers: {"Content-Type": "application/json"}),
       );
       bool matchStatus = response.data["success"];
@@ -326,16 +330,15 @@ class AuthRepository {
   Future<dynamic> requireCode(int phone) async {
     try {
       Response response = await dio.get(
-        "/api/send_sms?phone_number=55${phone}",
-        options: Options(headers: {"Content-Type": "application/json"}),
+        "/api/send_sms?phone_number=55$phone",
+        options: Options(
+          headers: {"Content-Type": "application/json"},
+        ),
       );
       return response.data;
-      // bool matchStatus = response.data["success"];
-      // return matchStatus;
     } catch (error) {
       final error400 = error as DioError;
       return error400.response.data;
-      return false;
     }
   }
 }

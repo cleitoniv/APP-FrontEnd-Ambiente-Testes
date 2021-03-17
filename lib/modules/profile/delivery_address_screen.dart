@@ -1,10 +1,6 @@
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/endereco_entrega.dart';
-import 'package:central_oftalmica_app_cliente/models/user_model.dart';
-import 'package:central_oftalmica_app_cliente/modules/auth/login_screen.dart';
-import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -26,24 +22,25 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
   TextEditingController _cityController;
 
   String getField(EnderecoEntregaModel endereco, String label) {
-    if (label == "CEP") {
-      return endereco.cep;
-    } else if (label == "Endereço") {
-      return endereco.endereco;
-    } else if (label == "Número") {
-      return endereco.numero;
-    } else if (label == "Complemento") {
-      return endereco.complemento;
-    } else if (label == "Bairro") {
-      return endereco.bairro;
-    } else if (label == "Cidade") {
-      return endereco.municipio;
+    switch (label) {
+      case "CEP":
+        return endereco.cep;
+      case "Endereço":
+        return endereco.endereco;
+      case "Número":
+        return endereco.numero;
+      case "Complemento":
+        return endereco.complemento;
+      case "Bairro":
+        return endereco.bairro;
+      case "Cidade":
+        return endereco.municipio;
+      default:
+        return "";
     }
   }
 
   _initData() async {
-    UserModel _user = await _userBloc.currentUserOut.first;
-
     _addressInfo = [
       {
         'labelText': 'CEP',

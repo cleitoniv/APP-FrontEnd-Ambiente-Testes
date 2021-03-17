@@ -216,12 +216,15 @@ class UserRepository {
 
     try {
       Response response = await dio.post(
-          "/api/cliente/rescue_points?points=${points}&credit_finan=${credits}",
-          data: jsonEncode({}),
-          options: Options(headers: {
+        "/api/cliente/rescue_points?points=$points&credit_finan=$credits",
+        data: jsonEncode({}),
+        options: Options(
+          headers: {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": "application/json"
-          }));
+          },
+        ),
+      );
 
       return PointsResult(isValid: response.data["success"]);
     } catch (error) {
@@ -235,11 +238,14 @@ class UserRepository {
 
     try {
       Response response = await dio.get(
-          "/api/cliente/convert_points?points=${points}",
-          options: Options(headers: {
+        "/api/cliente/convert_points?points=$points",
+        options: Options(
+          headers: {
             "Authorization": "Bearer ${token.token}",
             "Content-Type": "application/json"
-          }));
+          },
+        ),
+      );
 
       int credits = response.data["data"]["credit_finan"];
       return PointsResult(

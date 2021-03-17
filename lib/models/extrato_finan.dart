@@ -8,6 +8,4 @@ class ExtratoFinanceiroModel {
     date = json['date'];
     data = json['data'];
   }
-
-  Map<String, dynamic> toJson() {}
 }

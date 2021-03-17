@@ -1,5 +1,3 @@
-import 'package:central_oftalmica_app_cliente/models/details_model.dart';
-
 class ProductModel {
   int id;
   String produto;

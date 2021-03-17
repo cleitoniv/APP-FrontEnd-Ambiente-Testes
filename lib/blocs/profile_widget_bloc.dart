@@ -43,5 +43,6 @@ class ProfileWidgetBloc extends Disposable {
     _visitHourController.close();
     _securityShowPasswordController.close();
     _userStatusController.close();
+    _updateVisitHourController.close();
   }
 }

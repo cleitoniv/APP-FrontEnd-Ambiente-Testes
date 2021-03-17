@@ -1,31 +1,22 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/products/products_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_screen.dart';
-import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
-import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class TabsScreen extends StatefulWidget {
-  int index;
-  AuthEvent auth;
+  final int index;
 
   TabsScreen({this.index = 0});
 
@@ -36,21 +27,12 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen>
     with SingleTickerProviderStateMixin {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
-  NotificationBloc _notificationBloc = Modular.get<NotificationBloc>();
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-  AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   TabController _tabController;
-  CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<String> _sightProblems = [
-    'Todos',
-    'Miopía',
-    'Hipermetropia',
-    'Astigmatismo',
-  ];
 
   List<Widget> _screens = [
     ProductsScreen(),
@@ -89,16 +71,6 @@ class _TabsScreenState extends State<TabsScreen>
 
   _onChangeCreditType(String type) {
     _homeWidgetBloc.currentCreditTypeIn.add(type);
-  }
-
-  int _countNotifications(
-    List<NotificationModel> notifications,
-  ) {
-    return notifications
-        .where(
-          (item) => !item.isRead,
-        )
-        .length;
   }
 
   _onChangeRequestType(String type) async {
@@ -206,23 +178,26 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   Future<bool> _onWillPop() async {
-    showDialog<bool>(
+    return showDialog<bool>(
       context: context,
       builder: (c) => AlertDialog(
         content: Text('Você realmente deseja sair?'),
         actions: [
           FlatButton(
-              child: Text('Sim',
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                        fontSize: 14,
-                      )),
-              onPressed: _onExitApp),
+            child: Text(
+              'Sim',
+              style:
+                  Theme.of(context).textTheme.headline5.copyWith(fontSize: 14),
+            ),
+            onPressed: _onExitApp,
+          ),
           SizedBox(width: 20),
           FlatButton(
-            child: Text('Não',
-                style: Theme.of(context).textTheme.headline5.copyWith(
-                      fontSize: 14,
-                    )),
+            child: Text(
+              'Não',
+              style:
+                  Theme.of(context).textTheme.headline5.copyWith(fontSize: 14),
+            ),
             onPressed: () => Navigator.pop(c, false),
           ),
         ],
@@ -416,6 +391,7 @@ class _TabsScreenState extends State<TabsScreen>
           ).toList(),
         );
       default:
+        return Container();
     }
   }
 
@@ -551,10 +527,10 @@ class _TabsScreenState extends State<TabsScreen>
                                       ),
                                       Text(
                                         authEventSnapshot
-                                                    .data.data.nome_usuario !=
+                                                    .data.data.nomeUsuario !=
                                                 null
                                             ? authEventSnapshot
-                                                .data.data.nome_usuario
+                                                .data.data.nomeUsuario
                                             : authEventSnapshot
                                                 .data.data.apelido,
                                         style: Theme.of(context)
@@ -783,28 +759,31 @@ class _TabsScreenState extends State<TabsScreen>
                                             return Container();
                                           }
                                           return Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: CircleAvatar(
-                                                  radius: 12,
-                                                  backgroundColor: Colors.red,
-                                                  child: Text(
-                                                    "${snapshot.data}",
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  )));
+                                            alignment: Alignment.bottomRight,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors.red,
+                                              child: Text(
+                                                "${snapshot.data}",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          );
                                         },
                                       ),
                                       Center(
-                                          child: Image.asset(
-                                        'assets/icons/${e['iconName']}',
-                                        width: 23,
-                                        height: 23,
-                                        color: e['id'] == snapshot.data
-                                            ? Theme.of(context).accentColor
-                                            : Color(0xffBFBFBF),
-                                      ))
+                                        child: Image.asset(
+                                          'assets/icons/${e['iconName']}',
+                                          width: 23,
+                                          height: 23,
+                                          color: e['id'] == snapshot.data
+                                              ? Theme.of(context).accentColor
+                                              : Color(0xffBFBFBF),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 );

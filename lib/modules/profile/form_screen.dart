@@ -6,15 +6,13 @@ import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart'
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class FormScreen extends StatefulWidget {
-  //add or edit
-  String formType;
-  UsuarioClienteModel usuario;
+  final String formType;
+  final UsuarioClienteModel usuario;
 
   FormScreen({this.formType = 'add', this.usuario});
 
@@ -124,10 +122,6 @@ class _FormScreenState extends State<FormScreen> {
       _userBloc.fetchUsuariosCliente();
       Modular.to.pop();
     }
-  }
-
-  _onChangeUserStatus(bool value) {
-    _profileWidgetBloc.userStatusIn.add(value);
   }
 
   @override
@@ -306,7 +300,9 @@ class _FormScreenState extends State<FormScreen> {
               ? RaisedButton(
                   onPressed: accept
                       ? null
-                      : widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
+                      : widget.formType == 'edit'
+                          ? _onSaveInfo
+                          : _onAddUser,
                   elevation: 0,
                   child: Text(
                     widget.formType == 'edit'
@@ -318,7 +314,9 @@ class _FormScreenState extends State<FormScreen> {
               : RaisedButton(
                   onPressed: !accept
                       ? null
-                      : widget.formType == 'edit' ? _onSaveInfo : _onAddUser,
+                      : widget.formType == 'edit'
+                          ? _onSaveInfo
+                          : _onAddUser,
                   elevation: 0,
                   child: Text(
                     widget.formType == 'edit'
@@ -346,5 +344,3 @@ class _FormScreenState extends State<FormScreen> {
     );
   }
 }
-
-class _handleShowTerm {}

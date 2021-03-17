@@ -1,7 +1,6 @@
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/payments_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';

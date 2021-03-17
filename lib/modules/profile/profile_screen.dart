@@ -3,7 +3,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProfileScreen extends StatelessWidget {
-  List<Map> _data = [
+  final List<Map> _data = [
     {
       'title': 'Informações Pessoais',
       'subtitle': 'Informações básicas',

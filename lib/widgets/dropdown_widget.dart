@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class DropdownWidget extends StatefulWidget {
-  List<dynamic> items;
-  dynamic currentValue;
-  Function onChanged;
-  Widget prefixIcon;
-  Widget suffixIcon;
-  String labelText;
+  final List<dynamic> items;
+  final dynamic currentValue;
+  final Function onChanged;
+  final Widget prefixIcon;
+  final Widget suffixIcon;
+  final String labelText;
 
   DropdownWidget({
     @required this.items,

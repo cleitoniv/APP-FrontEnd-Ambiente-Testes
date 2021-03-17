@@ -1,12 +1,10 @@
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
-import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProductExtractScreen extends StatelessWidget {
-  ExtractWidgetBloc _extractWidgetBloc = Modular.get<ExtractWidgetBloc>();
+  final ExtractWidgetBloc _extractWidgetBloc = Modular.get<ExtractWidgetBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +123,6 @@ class ProductExtractScreen extends StatelessWidget {
                                     width: 0.2,
                                   ),
                                   children: e.items.map<TableRow>((p) {
-                                    print(p['quantidade']);
                                     return TableRow(
                                       children: [
                                         Text(

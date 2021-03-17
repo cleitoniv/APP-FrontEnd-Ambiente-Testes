@@ -2,7 +2,6 @@ import 'package:central_oftalmica_app_cliente/blocs/ticket_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
-import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,32 +17,6 @@ class _TicketScreenState extends State<TicketScreen> {
   String _categoria;
   TicketBloc _ticketBloc = Modular.get<TicketBloc>();
   bool _isLoading;
-
-  _showDialog(String title, String content) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            title,
-            style: Theme.of(context).textTheme.headline5,
-          ),
-          content: Text(content),
-          actions: [
-            RaisedButton(
-                child: Text(
-                  "Ok",
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  Modular.to.pop();
-                })
-          ],
-        );
-      },
-    );
-  }
 
   _openTicket() async {
     _ticketBloc.ticketIn

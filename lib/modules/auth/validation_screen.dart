@@ -5,7 +5,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ValidationScreen extends StatefulWidget {
-  AuthEvent login;
+  final AuthEvent login;
 
   ValidationScreen({this.login});
 

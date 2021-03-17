@@ -7,35 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1069429401976:android:1992f87e24cc4c24b9808d",
-        "android_client_info": {
-          "package_name": "TecNovix.APP0301"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1069429401976-aus3bp6hmh7l7323497j0hr3tascgcs3.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyADayA3jTgwWee7_3C2h4YSTo6nScuAQaI"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1069429401976-aus3bp6hmh7l7323497j0hr3tascgcs3.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:1069429401976:android:bf3c84d65358b650b9808d",
         "android_client_info": {
           "package_name": "br.com.centraloftalmica.cliente"
@@ -58,6 +29,14 @@
             {
               "client_id": "1069429401976-aus3bp6hmh7l7323497j0hr3tascgcs3.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1069429401976-qif2htlrm26dmuqut4qs6f869hsurmta.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.centraloftalmica.cliente",
+                "app_store_id": "1557956762"
+              }
             }
           ]
         }

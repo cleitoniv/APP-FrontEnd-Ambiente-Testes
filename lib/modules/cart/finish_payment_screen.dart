@@ -5,18 +5,10 @@ import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
-import 'package:central_oftalmica_app_cliente/widgets/snackbar_success.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:intl/intl.dart';
-import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
-
-import '../../repositories/credit_card_repository.dart';
-import '../../widgets/snackbar.dart';
 
 class FinishPayment extends StatefulWidget {
   @override
@@ -99,6 +91,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   void dispose() {
     _creditCardNumberController.dispose();
     _ccvController.dispose();
+    super.dispose();
   }
 
   _getPaymentMethod() async {
@@ -173,7 +166,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _calcPaymentInstallment() async {
-    final _paymentMethod = await _cartWidgetBloc.currentPaymentMethod;
+    final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
 
     final _cart = await _requestBloc.cartOut.first;
     setState(() {

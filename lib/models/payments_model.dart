@@ -16,6 +16,4 @@ class PaymentModel {
     method = json["method"];
     status = json["status"];
   }
-
-  Map<String, dynamic> toJson() {}
 }

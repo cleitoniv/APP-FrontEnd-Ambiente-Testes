@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
-import 'package:central_oftalmica_app_cliente/repositories/repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -45,7 +44,7 @@ class CreditCardRepository {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
-      Response response = await dio.delete("/api/cliente/card_delete/${id}",
+      Response response = await dio.delete("/api/cliente/card_delete/$id",
           options: Options(headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
@@ -86,10 +85,10 @@ class CreditCardRepository {
         }),
         data: jsonEncode({
           'param': {
-            "cartao_number": model.cartao_number,
-            "nome_titular": model.nome_titular,
-            "mes_validade": model.mes_validade,
-            "ano_validade": model.ano_validade
+            "cartao_number": model.cartaoNumber,
+            "nome_titular": model.nomeTitular,
+            "mes_validade": model.mesValidade,
+            "ano_validade": model.anoValidade
           }
         }),
       );
@@ -98,7 +97,6 @@ class CreditCardRepository {
 
       return CreditCard(isEmpty: false, isLoading: false, cartao: card);
     } catch (error) {
-      final error400 = error as DioError;
       return CreditCard(isEmpty: true, isLoading: false, errorData: {
         "falha": ["Falha ao criar cartão"]
       });
@@ -128,7 +126,6 @@ class CreditCardRepository {
     }
   }
 
-  @override
   Future<String> store({CreditCardModel model}) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
@@ -141,10 +138,10 @@ class CreditCardRepository {
         }),
         data: jsonEncode({
           'param': {
-            "cartao_number": model.cartao_number,
-            "nome_titular": model.nome_titular,
-            "mes_validade": model.mes_validade,
-            "ano_validade": model.ano_validade
+            "cartao_number": model.cartaoNumber,
+            "nome_titular": model.nomeTitular,
+            "mes_validade": model.mesValidade,
+            "ano_validade": model.anoValidade
           }
         }),
       );

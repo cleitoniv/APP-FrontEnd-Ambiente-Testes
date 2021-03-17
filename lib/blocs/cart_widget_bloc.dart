@@ -51,5 +51,6 @@ class CartWidgetBloc extends Disposable {
   @override
   void dispose() {
     _currentPaymentFormController.close();
+    _cartTotalItems.close();
   }
 }

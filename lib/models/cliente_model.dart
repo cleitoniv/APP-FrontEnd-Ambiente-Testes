@@ -16,17 +16,19 @@ class ClienteModel {
   int status;
   int points;
   String role;
-  String nome_usuario;
+  String nomeUsuario;
   bool cadastrado;
   Map<String, dynamic> notifications;
-  ClienteModel(
-      {this.id,
-      this.codigo,
-      this.loja,
-      this.cnpjCpf,
-      this.role,
-      this.status,
-      this.nome_usuario});
+
+  ClienteModel({
+    this.id,
+    this.codigo,
+    this.loja,
+    this.cnpjCpf,
+    this.role,
+    this.status,
+    this.nomeUsuario,
+  });
 
   ClienteModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -48,7 +50,7 @@ class ClienteModel {
     confirmationSms = json['confirmation_sms'];
     role = json['role'];
     status = json['status'];
-    nome_usuario = json['nome_usuario'];
+    nomeUsuario = json['nome_usuario'];
   }
 
   Map<String, dynamic> toJson() {
@@ -59,7 +61,7 @@ class ClienteModel {
     data['cnpj_cpf'] = this.cnpjCpf;
     data['sit_app'] = this.sitApp;
     data['status'] = this.status;
-    data['nome_usuario'] = this.nome_usuario;
+    data['nome_usuario'] = this.nomeUsuario;
     return data;
   }
 }

@@ -9,7 +9,6 @@ import 'package:central_oftalmica_app_cliente/modules/auth/password_reset_screen
 import 'package:central_oftalmica_app_cliente/modules/auth/terms_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/validation_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/delivery_address_screen.dart';
-import 'package:central_oftalmica_app_cliente/modules/profile/delivery_address_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AuthModule extends ChildModule {

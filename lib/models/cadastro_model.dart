@@ -28,6 +28,4 @@ class CadastroModel {
     complemento = json['A1_COMPLEM'];
     dataNascimento = json['A1_DTNASC'];
   }
-
-  Map<String, dynamic> toJson() {}
 }

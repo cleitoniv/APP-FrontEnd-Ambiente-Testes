@@ -9,13 +9,17 @@
 .history
 .svn/
 ._*
-**/settings_aar.gradle
+/android/settings_aar.gradle
+/ios/Flutter/.last_build_id
 
 # IntelliJ related
 *.iml
 *.ipr
 *.iws
 .idea/
+**/.project
+**/.classpath
+**/.settings/
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line

@@ -1,14 +1,10 @@
 import 'dart:convert';
 
-import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/devolution_model.dart';
 import 'package:central_oftalmica_app_cliente/models/parametro_produto.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
-import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
-import 'package:central_oftalmica_app_cliente/repositories/repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 
 class ProductEvent {
   bool isEmpty;
@@ -55,13 +51,6 @@ class ProductRepository {
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  AuthBloc _authBloc = Modular.get<AuthBloc>();
-
-  @override
-  Future<String> delete({int id}) {
-    throw UnimplementedError();
-  }
-
   Future<bool> checkProduct(Map<String, dynamic> data) async {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
@@ -84,14 +73,23 @@ class ProductRepository {
     FirebaseUser user = await _auth.currentUser();
     IdTokenResult idToken = await user.getIdToken();
     try {
-      Response response = await dio.post("/api/cliente/verify_graus",
-          options: Options(headers: {
+      await dio.post(
+        "/api/cliente/verify_graus",
+        options: Options(
+          headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
-          }),
-          data: jsonEncode({
-            "param": {"data": data, "allowed_params": allowedParams}
-          }));
+          },
+        ),
+        data: jsonEncode(
+          {
+            "param": {
+              "data": data,
+              "allowed_params": allowedParams,
+            }
+          },
+        ),
+      );
       return {};
     } catch (error) {
       final error400 = error as DioError;
@@ -104,11 +102,15 @@ class ProductRepository {
     IdTokenResult idToken = await user.getIdToken();
 
     try {
-      Response response = await dio.get("/api/cliente/get_graus?grupo=${group}",
-          options: Options(headers: {
+      Response response = await dio.get(
+        "/api/cliente/get_graus?grupo=$group",
+        options: Options(
+          headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
-          }));
+          },
+        ),
+      );
       ParametroProdutoModel parametro =
           ParametroProdutoModel.fromJson(response.data['data']);
       return Parametros(isValid: true, parametro: parametro, isLoading: false);
@@ -123,11 +125,14 @@ class ProductRepository {
 
     try {
       Response response = await dio.get(
-          '/api/cliente/produtos?filtro=${filtro}',
-          options: Options(headers: {
+        '/api/cliente/produtos?filtro=$filtro',
+        options: Options(
+          headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
-          }));
+          },
+        ),
+      );
 
       List<ProductModel> products = (response.data['data'] as List)
           .map(
@@ -213,11 +218,15 @@ class ProductRepository {
     IdTokenResult idToken = await user.getIdToken();
 
     try {
-      await dio.get("/api/cliente/send_email_dev?email=${email}",
-          options: Options(headers: {
+      await dio.get(
+        "/api/cliente/send_email_dev?email=$email",
+        options: Options(
+          headers: {
             "Authorization": "Bearer ${idToken.token}",
             "Content-Type": "application/json"
-          }));
+          },
+        ),
+      );
     } catch (error) {}
   }
 
@@ -231,13 +240,19 @@ class ProductRepository {
       return e.toJson();
     }).toList();
     try {
-      Response response = await dio.post('/api/cliente/devolution_continue',
-          data: jsonEncode({"products": products, "tipo": tipo}),
-          options: Options(headers: {
+      Response response = await dio.post(
+        '/api/cliente/devolution_continue',
+        data: jsonEncode({"products": products, "tipo": tipo}),
+        options: Options(
+          headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${idToken.token}"
-          }));
-      DevolutionModel devol = null;
+          },
+        ),
+      );
+
+      DevolutionModel devol;
+
       if (tipo != "C") {
         devol = DevolutionModel.fromJson(response.data["data"]);
         return Devolution(
