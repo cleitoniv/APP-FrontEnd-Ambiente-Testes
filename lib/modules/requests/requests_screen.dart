@@ -140,66 +140,63 @@ class RequestsScreen extends StatelessWidget {
           ),
         ),
       ),
-      subtitle: FittedBox(
-        fit: BoxFit.contain,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                    'Pedido ${_requests[index].numeroPedido}',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black26,
-                          fontSize: 14,
-                        ),
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        'Valor',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontSize: 14,
-                            ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  'Pedido ${_requests[index].numeroPedido}',
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Colors.black26,
+                        fontSize: 14,
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        'R\$ ${Helper.intToMoney(_requests[index].valor)}',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 14,
-                            ),
-                      ),
-                    ),
-                    Icon(
-                      Icons.keyboard_arrow_right,
-                      color: Theme.of(context).accentColor,
-                    )
-                  ],
                 ),
-              ],
-            ),
-            FittedBox(
-              fit: BoxFit.contain,
-              child: Text(
-                'Previsão de entrega: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Colors.black26,
-                      fontSize: 14,
-                    ),
               ),
+              Row(
+                children: <Widget>[
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'Valor',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                          ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'R\$ ${Helper.intToMoney(_requests[index].valor)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                          ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_right,
+                    color: Theme.of(context).accentColor,
+                  )
+                ],
+              ),
+            ],
+          ),
+          FittedBox(
+            fit: BoxFit.contain,
+            child: Text(
+              'Previsão de entrega: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
+              style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    color: Colors.black26,
+                    fontSize: 14,
+                  ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

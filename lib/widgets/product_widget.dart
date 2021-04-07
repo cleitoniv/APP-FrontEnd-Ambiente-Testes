@@ -110,7 +110,7 @@ class ProductWidget extends StatelessWidget {
             ),
             Text(
               title,
-              textScaleFactor: 1.25,
+              textScaleFactor: 1.10,
               style: Theme.of(context).textTheme.subtitle1.copyWith(
                     fontSize: 14,
                   ),

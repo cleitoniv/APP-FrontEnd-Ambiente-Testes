@@ -234,7 +234,7 @@ class CreditProductCardWidget extends StatelessWidget {
               ),
               Positioned(
                 top: 100,
-                right: -10,
+                right: 5,
                 child: Icon(
                   MaterialCommunityIcons.plus_circle,
                   color: Theme.of(context).primaryColor,
