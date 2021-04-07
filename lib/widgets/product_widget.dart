@@ -55,9 +55,12 @@ class ProductWidget extends StatelessWidget {
                               height: 25,
                             ),
                             SizedBox(width: 10),
-                            Text(
-                              '$credits',
-                              style: Theme.of(context).textTheme.subtitle1,
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                '$credits',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
                             )
                           ],
                         ),
@@ -83,9 +86,12 @@ class ProductWidget extends StatelessWidget {
                               color: Colors.black45,
                             ),
                             SizedBox(width: 10),
-                            Text(
-                              '$tests',
-                              style: Theme.of(context).textTheme.subtitle1,
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                '$tests',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
                             )
                           ],
                         ),
@@ -104,7 +110,7 @@ class ProductWidget extends StatelessWidget {
             ),
             Text(
               title,
-              maxLines: 2,
+              textScaleFactor: 1.25,
               style: Theme.of(context).textTheme.subtitle1.copyWith(
                     fontSize: 14,
                   ),

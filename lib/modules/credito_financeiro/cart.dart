@@ -215,11 +215,14 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                 Icons.arrow_back,
                 color: Theme.of(context).accentColor,
               ),
-              label: Text(
-                'Continue Comprando',
-                style: Theme.of(context).textTheme.button.copyWith(
-                      color: Theme.of(context).accentColor,
-                    ),
+              label: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  'Continue Comprando',
+                  style: Theme.of(context).textTheme.button.copyWith(
+                        color: Theme.of(context).accentColor,
+                      ),
+                ),
               ),
               onPressed: _onBackToPurchase,
             ),

@@ -189,26 +189,35 @@ class _ProductScreenState extends State<ProductScreen> {
                 ListTileMoreCustomizable(
                   contentPadding: const EdgeInsets.all(0),
                   horizontalTitleGap: 0,
-                  title: Text(
-                    productSnapshot.data.product.title,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 18,
-                        ),
+                  title: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      productSnapshot.data.product.title,
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 18,
+                          ),
+                    ),
                   ),
                   trailing: Column(
                     children: <Widget>[
-                      Text(
-                        'Valor avulso',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontSize: 14,
-                              color: Colors.black38,
-                            ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'Valor avulso',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                                color: Colors.black38,
+                              ),
+                        ),
                       ),
-                      Text(
-                        'R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 18,
-                            ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 18,
+                              ),
+                        ),
                       ),
                     ],
                   ),
@@ -575,9 +584,12 @@ class _ProductScreenState extends State<ProductScreen> {
                                   onPressed: item['onTap'],
                                   color: item['color'],
                                   elevation: 0,
-                                  child: Text(
-                                    "${item['title']}",
-                                    style: Theme.of(context).textTheme.button,
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(
+                                      "${item['title']}",
+                                      style: Theme.of(context).textTheme.button,
+                                    ),
                                   ),
                                 ),
                               );

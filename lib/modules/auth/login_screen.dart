@@ -238,17 +238,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         value: _remember,
                         onChanged: (bool value) => {_rememberMe()},
                       ),
-                      Text("Lembrar Email")
+                      FittedBox(
+                          fit: BoxFit.contain, child: Text("Lembrar Email"))
                     ],
                   ),
                   GestureDetector(
                     onTap: _onPasswordReset,
-                    child: Text(
-                      'Esqueceu a senha?',
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
-                            color: Theme.of(context).accentColor,
-                            decoration: TextDecoration.underline,
-                          ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Esqueceu a senha?',
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.subtitle2.copyWith(
+                              color: Theme.of(context).accentColor,
+                              decoration: TextDecoration.underline,
+                            ),
+                      ),
                     ),
                   ),
                 ],

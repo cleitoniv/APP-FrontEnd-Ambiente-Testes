@@ -318,12 +318,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                       child: Container(
                                         width: 50,
                                         height: 50,
-                                        child: Text(
-                                          "Voltar",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              .copyWith(fontSize: 16),
+                                        child: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: Text(
+                                            "Voltar",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5
+                                                .copyWith(fontSize: 16),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -340,9 +343,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
                             SizedBox(
                               height: 20,
                             ),
-                            Text(
-                              "Selecione o Produto",
-                              style: Theme.of(context).textTheme.headline5,
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                "Selecione o Produto",
+                                textScaleFactor: 1.25,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
                             ),
                             Container(
                                 width: double.infinity,
@@ -511,8 +520,11 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                   );
                                 } else if (!_currentProduct["selected"]) {
                                   return Center(
-                                      child: Text(
-                                          "Selecione um produto para ver as ofertas."));
+                                      child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(
+                                        "Selecione um produto para ver as ofertas."),
+                                  ));
                                 }
                                 List<OfferModel> _financialCredits =
                                     offerSnapshot.data.offers ?? [];
@@ -587,12 +599,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                       MainAxisAlignment
                                                                           .center,
                                                                   children: [
-                                                                    Text(
-                                                                      "Selecione o Pacote",
-                                                                      style: Theme.of(
-                                                                              context)
-                                                                          .textTheme
-                                                                          .headline5,
+                                                                    FittedBox(
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                      child:
+                                                                          Text(
+                                                                        "Selecione o Pacote",
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .headline5,
+                                                                      ),
                                                                     )
                                                                   ],
                                                                 );
@@ -677,12 +693,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                             0
                                                         ? Column(
                                                             children: [
-                                                              Text(
-                                                                "Selecione o Pacote",
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .headline5,
+                                                              FittedBox(
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                                child: Text(
+                                                                  "Selecione o Pacote",
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .headline5,
+                                                                ),
                                                               ),
                                                               GridView.builder(
                                                                 gridDelegate:

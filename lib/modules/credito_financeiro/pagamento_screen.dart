@@ -289,21 +289,24 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                     leading: Icon(
                                       Icons.credit_card,
                                     ),
-                                    title: Text(
-                                      _obfuscateText(
-                                          _creditCardNumberController.text),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1
-                                          .copyWith(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: _colorizeCredCardList(
-                                                    _currentPaymentForm.id,
-                                                    _creditCards[index].id)
-                                                ? Colors.white
-                                                : null,
-                                          ),
+                                    title: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                        _obfuscateText(
+                                            _creditCardNumberController.text),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            .copyWith(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: _colorizeCredCardList(
+                                                      _currentPaymentForm.id,
+                                                      _creditCards[index].id)
+                                                  ? Colors.white
+                                                  : null,
+                                            ),
+                                      ),
                                     ),
                                     trailing: Container(
                                       height: 50,

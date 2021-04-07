@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:sizer/sizer.dart';
 
 class CardWidget extends StatelessWidget {
   int value;
@@ -27,42 +28,54 @@ class CardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text.rich(
-                TextSpan(
-                  text: 'R\$ ',
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                        fontSize: 14,
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text.rich(
+                  TextSpan(
+                    text: 'R\$ ',
+                    style: Theme.of(context).textTheme.headline5.copyWith(
+                          fontSize: 14,
+                        ),
+                    children: [
+                      TextSpan(
+                        text: Helper.intToMoney(value),
+                        style: Theme.of(context).textTheme.headline5,
                       ),
-                  children: [
-                    TextSpan(
-                      text: Helper.intToMoney(value),
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              Text(
-                'De créditos',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Colors.black45,
-                      fontSize: 14,
-                    ),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  'De créditos',
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Colors.black45,
+                        fontSize: 14,
+                      ),
+                ),
               ),
               Spacer(),
-              Text(
-                "${discount}% de Desconto",
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Theme.of(context).accentColor,
-                      fontSize: 14,
-                    ),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  "${discount}% de Desconto",
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Theme.of(context).accentColor,
+                        fontSize: 14,
+                      ),
+                ),
               ),
               Spacer(),
-              Text(
-                parcels == 1 || parcels == 0 ? 'À vista' : 'Até ${parcels}x',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Theme.of(context).accentColor,
-                      fontSize: 14,
-                    ),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  parcels == 1 || parcels == 0 ? 'À vista' : 'Até ${parcels}x',
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Theme.of(context).accentColor,
+                        fontSize: 14,
+                      ),
+                ),
               ),
             ],
           ),
@@ -112,9 +125,12 @@ class CardWidgetOtherValue extends StatelessWidget {
                   size: 60,
                   color: Colors.white,
                 ),
-                Text(
-                  "Outro valor",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    "Outro valor",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                 )
               ],
             ),
@@ -158,47 +174,60 @@ class CreditProductCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text.rich(
-                      TextSpan(
-                        text: "${this.caixas}",
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 40),
-                        children: [
-                          TextSpan(
-                            text: ' Caixas',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                .copyWith(color: Colors.black45, fontSize: 14),
-                          ),
-                        ],
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text.rich(
+                        TextSpan(
+                          text: "${this.caixas}",
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 40),
+                          children: [
+                            TextSpan(
+                              text: ' Caixas',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                      color: Colors.black45, fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    Text(
-                      "R\$ ${Helper.intToMoney(this.precoUnitario)} por Cx.",
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Colors.black45,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        "R\$ ${Helper.intToMoney(this.precoUnitario)} por Cx.",
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                      ),
                     ),
-                    Text(
-                      "${this.percentageTest}% de teste",
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        "${this.percentageTest}% de teste",
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                      ),
                     ),
                     Spacer(),
-                    Text(
-                      "Por ${Helper.intToMoney(this.value)}",
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Theme.of(context).accentColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        "Por ${Helper.intToMoney(this.value)}",
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Theme.of(context).accentColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                      ),
                     ),
                   ],
                 ),

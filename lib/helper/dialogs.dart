@@ -9,7 +9,8 @@ class Dialogs {
     String buttonText = 'Confirmar Solicitação',
   }) {
     showDialog(
-      context: context, builder: (context) => AlertDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -59,7 +60,8 @@ class Dialogs {
     String buttonText = 'Entendi',
   }) {
     showDialog(
-      context: context, builder: (context) => AlertDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -110,7 +112,8 @@ class Dialogs {
     String buttonText = 'Confirmar Solicitação',
   }) {
     showDialog(
-      context: context, builder: (context) => AlertDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -180,7 +183,8 @@ class Dialogs {
     }
 
     showDialog(
-      context: context, builder: (context) => AlertDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
@@ -212,11 +216,14 @@ class Dialogs {
                   onPressed: e['onTap'],
                   elevation: 0,
                   color: e['color'],
-                  child: Text(
-                    e['title'],
-                    style: Theme.of(context).textTheme.button.copyWith(
-                          color: e['textColor'],
-                        ),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      e['title'],
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: e['textColor'],
+                          ),
+                    ),
                   ),
                 ),
               );
@@ -255,7 +262,8 @@ class Dialogs {
     }
 
     showDialog(
-      context: context, builder: (context) => AlertDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
