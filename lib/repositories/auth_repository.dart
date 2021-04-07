@@ -335,7 +335,6 @@ class AuthRepository {
     } catch (error) {
       final error400 = error as DioError;
       return error400.response.data;
-      return false;
     }
   }
 }
