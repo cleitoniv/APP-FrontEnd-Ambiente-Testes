@@ -231,17 +231,22 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     index2]
                                                                 ['tests'] ==
                                                             "N"
-                                                    ? Text(
-                                                        "${items[index].items[index2]['produto']}",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .subtitle1
-                                                            .copyWith(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
+                                                    ? FittedBox(
+                                                        fit: BoxFit.contain,
+                                                        child: Text(
+                                                          "${items[index].items[index2]['produto']}",
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .subtitle1
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                  ),
+                                                        ),
                                                       )
                                                     : items[index].items[index2]
                                                                     [
@@ -251,31 +256,39 @@ class RequestInfoScreen extends StatelessWidget {
                                                                         index2]
                                                                     ['tests'] ==
                                                                 "S"
-                                                        ? Text(
-                                                            "${items[index].items[index2]['produto_teste']}",
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .subtitle1
-                                                                .copyWith(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                ),
+                                                        ? FittedBox(
+                                                            fit: BoxFit.contain,
+                                                            child: Text(
+                                                              "${items[index].items[index2]['produto_teste']}",
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .subtitle1
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                  ),
+                                                            ),
                                                           )
-                                                        : Text(
-                                                            "${items[index].items[index2]['produto']}",
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .subtitle1
-                                                                .copyWith(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                ),
+                                                        : FittedBox(
+                                                            fit: BoxFit.contain,
+                                                            child: Text(
+                                                              "${items[index].items[index2]['produto']}",
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .subtitle1
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                  ),
+                                                            ),
                                                           ),
                                                 SizedBox(width: 20),
                                               ],
@@ -329,14 +342,17 @@ class RequestInfoScreen extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                            trailing: Text(
-                                              'R\$ ${Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline5
-                                                  .copyWith(
-                                                    fontSize: 16,
-                                                  ),
+                                            trailing: FittedBox(
+                                              fit: BoxFit.contain,
+                                              child: Text(
+                                                'R\$ ${Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5
+                                                    .copyWith(
+                                                      fontSize: 16,
+                                                    ),
+                                              ),
                                             )),
                                         SizedBox(height: 20),
                                         ListTileMoreCustomizable(
@@ -432,6 +448,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                               .centerLeft,
                                                           child: Text(
                                                               'Grau esférico',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -447,6 +465,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                               .centerRight,
                                                           child: Text(
                                                             '${items[index].items[index2]["esfericoE"]}',
+                                                            textScaleFactor:
+                                                                1.25,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -470,6 +490,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerLeft,
                                                             child: Text(
                                                                 'Cilíndro',
+                                                                textScaleFactor:
+                                                                    1.25,
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -485,6 +507,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["cilindricoE"]}',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -507,6 +531,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerLeft,
                                                             child: Text('Eixo',
+                                                                textScaleFactor:
+                                                                    1.25,
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -522,6 +548,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["eixoE"]}',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -545,6 +573,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerLeft,
                                                             child: Text(
                                                                 'Adicao',
+                                                                textScaleFactor:
+                                                                    1.25,
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -560,6 +590,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["adicaoE"] ?? "-"}',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -582,6 +614,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerLeft,
                                                             child: Text('Cor',
+                                                                textScaleFactor:
+                                                                    1.25,
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -597,6 +631,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["corE"] ?? "-"}',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -627,6 +663,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                               .centerLeft,
                                                           child: Text(
                                                               'Grau esférico',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -642,6 +680,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                               .centerRight,
                                                           child: Text(
                                                             '${items[index].items[index2]["esfericoD"]}',
+                                                            textScaleFactor:
+                                                                1.25,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -665,6 +705,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerLeft,
                                                             child: Text(
                                                                 'Cilíndro',
+                                                                textScaleFactor:
+                                                                    1.25,
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -680,6 +722,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["cilindricoD"]}',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -702,6 +746,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerLeft,
                                                             child: Text('Eixo',
+                                                                textScaleFactor:
+                                                                    1.25,
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -717,6 +763,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["eixoD"]}',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -740,6 +788,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerLeft,
                                                             child: Text(
                                                                 'Adicao',
+                                                                textScaleFactor:
+                                                                    1.25,
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -755,6 +805,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["adicaoD"] ?? "-"}',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -777,6 +829,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerLeft,
                                                             child: Text('Cor',
+                                                                textScaleFactor:
+                                                                    1.25,
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -792,6 +846,8 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["corD"] ?? "-"}',
+                                                              textScaleFactor:
+                                                                  1.25,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme

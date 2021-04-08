@@ -13,6 +13,14 @@ class CardWidget extends StatelessWidget {
     this.discount = 5,
   });
 
+  _verifyTextScaleFactor(double size) {
+    if (size < 1.5) {
+      return 170.0;
+    } else {
+      return 200.0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -22,7 +30,8 @@ class CardWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(20),
           width: 190,
-          height: 170,
+          height:
+              _verifyTextScaleFactor(MediaQuery.of(context).textScaleFactor),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: Color(0xffF1F1F1),
@@ -31,42 +40,54 @@ class CardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text.rich(
-                TextSpan(
-                  text: 'R\$ ',
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                        fontSize: 14,
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text.rich(
+                  TextSpan(
+                    text: 'R\$ ',
+                    style: Theme.of(context).textTheme.headline5.copyWith(
+                          fontSize: 14,
+                        ),
+                    children: [
+                      TextSpan(
+                        text: Helper.intToMoney(value),
+                        style: Theme.of(context).textTheme.headline5,
                       ),
-                  children: [
-                    TextSpan(
-                      text: Helper.intToMoney(value),
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              Text(
-                'De créditos',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Colors.black45,
-                      fontSize: 14,
-                    ),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  'De créditos',
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Colors.black45,
+                        fontSize: 14,
+                      ),
+                ),
               ),
               Spacer(),
-              Text(
-                "$discount% de Desconto",
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Theme.of(context).accentColor,
-                      fontSize: 14,
-                    ),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  "${discount}% de Desconto",
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Theme.of(context).accentColor,
+                        fontSize: 14,
+                      ),
+                ),
               ),
               Spacer(),
-              Text(
-                parcels == 1 || parcels == 0 ? 'À vista' : 'Até ${parcels}x',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Theme.of(context).accentColor,
-                      fontSize: 14,
-                    ),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  parcels == 1 || parcels == 0 ? 'À vista' : 'Até ${parcels}x',
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Theme.of(context).accentColor,
+                        fontSize: 14,
+                      ),
+                ),
               ),
             ],
           ),
@@ -91,6 +112,14 @@ class CardWidget extends StatelessWidget {
 class CardWidgetOtherValue extends StatelessWidget {
   CardWidgetOtherValue();
 
+  _verifyTextScaleFactor(double size) {
+    if (size < 1.5) {
+      return 170.0;
+    } else {
+      return 200.0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -102,7 +131,8 @@ class CardWidgetOtherValue extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(20),
             width: 190,
-            height: 170,
+            height:
+                _verifyTextScaleFactor(MediaQuery.of(context).textScaleFactor),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: Theme.of(context).accentColor,
@@ -116,9 +146,12 @@ class CardWidgetOtherValue extends StatelessWidget {
                   size: 60,
                   color: Colors.white,
                 ),
-                Text(
-                  "Outro valor",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    "Outro valor",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                 )
               ],
             ),
@@ -144,6 +177,14 @@ class CreditProductCardWidget extends StatelessWidget {
     this.caixas = 20,
   });
 
+  _verifyTextScaleFactor(double size) {
+    if (size < 1.5) {
+      return 190.0;
+    } else {
+      return 235.0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return precoUnitario != null
@@ -154,7 +195,8 @@ class CreditProductCardWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 width: 180,
-                height: 170,
+                height: _verifyTextScaleFactor(
+                    MediaQuery.of(context).textScaleFactor),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Color(0xffF1F1F1),
@@ -163,54 +205,68 @@ class CreditProductCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text.rich(
-                      TextSpan(
-                        text: "${this.caixas}",
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 40),
-                        children: [
-                          TextSpan(
-                            text: ' Caixas',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                .copyWith(color: Colors.black45, fontSize: 14),
-                          ),
-                        ],
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text.rich(
+                        TextSpan(
+                          text: "${this.caixas}",
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 40),
+                          children: [
+                            TextSpan(
+                              text: ' Caixas',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                      color: Colors.black45, fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    Text(
-                      "R\$ ${Helper.intToMoney(this.precoUnitario)} por Cx.",
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Colors.black45,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        "R\$ ${Helper.intToMoney(this.precoUnitario)} por Cx.",
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                      ),
                     ),
-                    Text(
-                      "${this.percentageTest}% de teste",
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                    SizedBox(height: 10),
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        "${this.percentageTest}% de teste",
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                      ),
                     ),
                     Spacer(),
-                    Text(
-                      "Por ${Helper.intToMoney(this.value)}",
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Theme.of(context).accentColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        "Por ${Helper.intToMoney(this.value)}",
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Theme.of(context).accentColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                      ),
                     ),
                   ],
                 ),
               ),
               Positioned(
                 top: 100,
-                right: -10,
+                right: 5,
                 child: Icon(
                   MaterialCommunityIcons.plus_circle,
                   color: Theme.of(context).primaryColor,

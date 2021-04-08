@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
@@ -261,20 +260,17 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        this._currentProduct["product"].title,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5
-                                            .copyWith(
-                                                color: Colors.black38,
-                                                fontSize: 16),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
+                                      FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Text(
+                                          this._currentProduct["product"].title,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              .copyWith(
+                                                  color: Colors.black38,
+                                                  fontSize: 24),
+                                        ),
                                       ),
                                       ProductWidget(
                                         credits: this
@@ -295,7 +291,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                   width: double.infinity,
                                   padding: EdgeInsets.only(right: 40),
                                   height:
-                                      MediaQuery.of(context).size.height / 4.3,
+                                      MediaQuery.of(context).size.height / 5.2,
                                   child: Align(
                                     child: GestureDetector(
                                       onTap: () {
@@ -311,12 +307,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                       child: Container(
                                         width: 50,
                                         height: 50,
-                                        child: Text(
-                                          "Voltar",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              .copyWith(fontSize: 16),
+                                        child: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: Text(
+                                            "Voltar",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5
+                                                .copyWith(fontSize: 16),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -330,19 +329,20 @@ class _CreditsScreenState extends State<CreditsScreen> {
                         ProductList _productCredits = snapshot.data;
                         return Column(
                           children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Selecione o Produto",
-                              style: Theme.of(context).textTheme.headline5,
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                "Selecione o Produto",
+                                textScaleFactor: 1.25,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
                             ),
                             Container(
                                 width: double.infinity,
                                 height: 300,
                                 child: ListView.separated(
-                                  padding: const EdgeInsets.all(20),
-                                  shrinkWrap: true,
                                   scrollDirection: Axis.horizontal,
                                   itemCount: _productCredits.list.length,
                                   separatorBuilder: (context, index) =>
@@ -504,8 +504,11 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                   );
                                 } else if (!_currentProduct["selected"]) {
                                   return Center(
-                                      child: Text(
-                                          "Selecione um produto para ver as ofertas."));
+                                      child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(
+                                        "Selecione um produto para ver as ofertas."),
+                                  ));
                                 }
                                 List<OfferModel> _financialCredits =
                                     offerSnapshot.data.offers ?? [];
@@ -572,12 +575,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                       MainAxisAlignment
                                                                           .center,
                                                                   children: [
-                                                                    Text(
-                                                                      "Selecione o Pacote",
-                                                                      style: Theme.of(
-                                                                              context)
-                                                                          .textTheme
-                                                                          .headline5,
+                                                                    FittedBox(
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                      child:
+                                                                          Text(
+                                                                        "Selecione o Pacote",
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .headline5,
+                                                                      ),
                                                                     )
                                                                   ],
                                                                 );
@@ -662,12 +669,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                             0
                                                         ? Column(
                                                             children: [
-                                                              Text(
-                                                                "Selecione o Pacote",
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .headline5,
+                                                              FittedBox(
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                                child: Text(
+                                                                  "Selecione o Pacote",
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .headline5,
+                                                                ),
                                                               ),
                                                               GridView.builder(
                                                                 gridDelegate:

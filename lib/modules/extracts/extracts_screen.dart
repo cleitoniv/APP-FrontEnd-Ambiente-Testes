@@ -115,13 +115,17 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
                                 : Radius.circular(0),
                           ),
                         ),
-                        child: Text(
-                          type,
-                          style: Theme.of(context).textTheme.subtitle2.copyWith(
-                                color: type == snapshot.data
-                                    ? Colors.white
-                                    : Color(0xff828282),
-                              ),
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                            type,
+                            style:
+                                Theme.of(context).textTheme.subtitle2.copyWith(
+                                      color: type == snapshot.data
+                                          ? Colors.white
+                                          : Color(0xff828282),
+                                    ),
+                          ),
                         ),
                       ),
                     );

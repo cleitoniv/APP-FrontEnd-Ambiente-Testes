@@ -250,10 +250,14 @@ class _RepositionScreenState extends State<RepositionScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Controle de pacientes',
-                          style: Theme.of(context).textTheme.headline5,
-                          textAlign: TextAlign.center,
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                            'Controle de pacientes',
+                            style: Theme.of(context).textTheme.headline5,
+                            textScaleFactor: 1.25,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         IconButton(
                           icon: Icon(

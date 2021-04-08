@@ -45,7 +45,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
           items: widget.items.map(
             (e) {
               return DropdownMenuItem(
-                child: Text('$e'),
+                child: FittedBox(fit: BoxFit.contain, child: Text('$e')),
                 value: e,
               );
             },
