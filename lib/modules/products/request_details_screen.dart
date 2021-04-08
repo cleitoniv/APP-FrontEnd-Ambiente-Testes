@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 import 'package:random_string/random_string.dart';
+import 'package:sizer/sizer.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   final int id;
@@ -92,6 +94,22 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return previousValue;
     });
     return _total;
+  }
+
+  _verifyFontSize() {
+    if (MediaQuery.of(context).textScaleFactor < 1.5) {
+      return 16.0;
+    } else {
+      return 12.0;
+    }
+  }
+
+  _verifyFontSize2() {
+    if (MediaQuery.of(context).textScaleFactor < 1.5) {
+      return 16.0;
+    } else {
+      return 8.0;
+    }
   }
 
   _showDialog(String title, String content) {
@@ -1014,11 +1032,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       alignment: Alignment.center,
                       fit: BoxFit.contain,
                     ),
-                    Text(
-                      _verifyBuy(),
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 14,
-                          ),
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        _verifyBuy(),
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 14,
+                            ),
+                      ),
                     ),
                   ]),
               SizedBox(width: 20),
@@ -1027,19 +1048,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    'Produto',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black38,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
-                  Text('${currentProduct.product.title}',
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'Produto',
                       style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: Colors.black45,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700)),
+                            color: Colors.black38,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                  ),
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text('${currentProduct.product.title}',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            color: Colors.black45,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700)),
+                  ),
                   SizedBox(height: 40),
                   Container(
                     height: 30,
@@ -1047,13 +1074,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         _verifyIcon(),
-                        Text(
-                          _verifyType(),
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                color: Colors.black45,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                              ),
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                            _verifyType(),
+                            style:
+                                Theme.of(context).textTheme.subtitle1.copyWith(
+                                      color: Colors.black45,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                          ),
                         ),
                       ],
                     ),
@@ -1072,10 +1103,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Informações do Paciente',
-                    style: Theme.of(context).textTheme.headline5,
-                    textAlign: TextAlign.center,
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: AutoSizeText(
+                      'Informações do Paciente',
+                      textScaleFactor: 1.10,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.headline5,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   IconButton(
                     icon: Icon(
@@ -1092,6 +1128,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           Text(
             'Categorizando seus pedidos por paciente, enviaremos um alerta com o período para reavaliação. Você também acumulara pontos para compras futuras!',
             style: Theme.of(context).textTheme.subtitle1,
+            textScaleFactor: 1.25,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
@@ -1135,19 +1172,59 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   child: CircularProgressIndicator(),
                 );
               }
-              return _checkForAcessorio(DropdownWidget(
-                labelText: 'Escolha os olhos',
-                items: [
-                  'Olho direito',
-                  'Olho esquerdo',
-                  'Mesmo grau em ambos',
-                  'Graus diferentes em cada olho',
-                ],
-                onChanged: (value) => _onAddCurrentParam({
-                  'current': value,
-                }),
-                currentValue: snapshot.data['current'],
-              ));
+              return _checkForAcessorio(InputDecorator(
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(0),
+                  labelText: 'Escolha os olhos',
+                  labelStyle: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                  alignLabelWithHint: true,
+                  prefixIcon: Icon(
+                    Icons.remove_red_eye,
+                    color: Color(0xffA1A1A1),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: DropdownButton(
+                      value: snapshot.data['current'],
+                      items: [
+                        'Olho direito',
+                        'Olho esquerdo',
+                        'Mesmo grau em ambos',
+                        'Graus diferentes em cada olho',
+                      ].map(
+                        (e) {
+                          return DropdownMenuItem(
+                            child: FittedBox(
+                                fit: BoxFit.contain, child: Text('$e')),
+                            value: e,
+                          );
+                        },
+                      ).toList(),
+                      onChanged: (value) => _onAddCurrentParam({
+                        'current': value,
+                      }),
+                    ),
+                  ),
+                ),
+              )
+                  //   DropdownWidget(
+                  //   labelText: 'Escolha os olhos',
+                  //   items: [
+                  //     'Olho direito',
+                  //     'Olho esquerdo',
+                  //     'Mesmo grau em ambos',
+                  //     'Graus diferentes em cada olho',
+                  //   ],
+                  //   onChanged: (value) => _onAddCurrentParam({
+                  //     'current': value,
+                  //   }),
+                  //   currentValue: snapshot.data['current'],
+                  // )
+                  );
             },
           )),
           _checkForAcessorio(SizedBox(height: 20)),
@@ -1168,40 +1245,44 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       textAlign: TextAlign.center,
                     )),
                     SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          !currentProduct.product.hasAcessorio
-                              ? 'Quantidade de caixas'
-                              : 'Quantidade',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                        TextFieldWidget(
-                          width: 150,
-                          controller: _lensController,
-                          readOnly: false,
-                          focus: caixasFocus,
-                          keyboardType: TextInputType.number,
-                          inputFormattersActivated: true,
-                          prefixIcon: IconButton(
-                            icon: Icon(
-                              Icons.remove,
-                              color: Colors.black26,
-                              size: 30,
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                                !currentProduct.product.hasAcessorio
+                                    ? 'Quantidade de caixas'
+                                    : 'Quantidade',
+                                style: Theme.of(context).textTheme.subtitle1),
+                            TextFieldWidget(
+                              width: 150,
+                              controller: _lensController,
+                              readOnly: false,
+                              focus: caixasFocus,
+                              keyboardType: TextInputType.number,
+                              inputFormattersActivated: true,
+                              prefixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.remove,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onRemoveLens,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: _onAddLens,
+                              ),
                             ),
-                            onPressed: _onRemoveLens,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              Icons.add,
-                              color: Colors.black26,
-                              size: 30,
-                            ),
-                            onPressed: _onAddLens,
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                     SizedBox(height: 30),
                     StreamBuilder(
@@ -1257,40 +1338,49 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(height: 30),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              !currentProduct.product.hasAcessorio
-                                  ? 'Quantidade de caixas'
-                                  : 'Quantidade',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            TextFieldWidget(
-                              width: 120,
-                              controller: _lensDireitoController,
-                              readOnly: false,
-                              focus: caixasOlhoDireitoFocus,
-                              keyboardType: TextInputType.number,
-                              inputFormattersActivated: true,
-                              prefixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.remove,
-                                  color: Colors.black26,
-                                  size: 30,
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              FittedBox(
+                                fit: BoxFit.contain,
+                                child: Text(
+                                  !currentProduct.product.hasAcessorio
+                                      ? 'Quantidade de caixas'
+                                      : 'Quantidade',
+                                  style: Theme.of(context).textTheme.subtitle1,
                                 ),
-                                onPressed: _onRemoveLensDireito,
                               ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.add,
-                                  color: Colors.black26,
-                                  size: 30,
+                              FittedBox(
+                                fit: BoxFit.contain,
+                                child: TextFieldWidget(
+                                  width: 120,
+                                  controller: _lensDireitoController,
+                                  readOnly: false,
+                                  focus: caixasOlhoDireitoFocus,
+                                  keyboardType: TextInputType.number,
+                                  inputFormattersActivated: true,
+                                  prefixIcon: IconButton(
+                                    icon: Icon(
+                                      Icons.remove,
+                                      color: Colors.black26,
+                                      size: 30,
+                                    ),
+                                    onPressed: _onRemoveLensDireito,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      Icons.add,
+                                      color: Colors.black26,
+                                      size: 30,
+                                    ),
+                                    onPressed: _onAddLensDireito,
+                                  ),
                                 ),
-                                onPressed: _onAddLensDireito,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         StreamBuilder(
                             stream: _productBloc.parametroListStream,
@@ -1504,11 +1594,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         height: 25,
                       ),
                       SizedBox(width: 10),
-                      Text(
-                        'Entrega prevista em ${currentProduct.product.previsaoEntrega} dias',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 16,
-                            ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'Entrega prevista em ${currentProduct.product.previsaoEntrega} dias',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 16,
+                              ),
+                        ),
                       ),
                     ],
                   ),
@@ -1537,11 +1630,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         _isLoadingPrimaryButton = false;
                       });
                     },
-                    label: Text(
-                      'Adicione e Continue Solicitando',
-                      style: Theme.of(context).textTheme.button.copyWith(
-                            color: Colors.white,
-                          ),
+                    label: FittedBox(
+                      fit: BoxFit.contain,
+                      child: AutoSizeText(
+                        'Adicione e Continue Solicitando',
+                        overflow: TextOverflow.fade,
+                        style: Theme.of(context).textTheme.button.copyWith(
+                            color: Colors.white, fontSize: _verifyFontSize2()),
+                      ),
                     ),
                   )
                 : Center(child: CircularProgressIndicator()),
@@ -1558,11 +1654,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     color: e['color'],
                     elevation: 0,
                     onPressed: e['onTap'],
-                    label: Text(
-                      e['text'] ?? "-",
-                      style: Theme.of(context).textTheme.button.copyWith(
-                            color: e['textColor'],
-                          ),
+                    label: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        e['text'] ?? "-",
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.button.copyWith(
+                            color: e['textColor'], fontSize: _verifyFontSize()),
+                      ),
                     ),
                   ));
             },
@@ -1592,11 +1691,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         _isLoadingSecondButton = false;
                       });
                     },
-                    label: Text(
-                      'Adicionar ao Carrinho',
-                      style: Theme.of(context).textTheme.button.copyWith(
-                            color: Colors.white,
-                          ),
+                    label: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        'Adicionar ao Carrinho',
+                        style: Theme.of(context).textTheme.button.copyWith(
+                            color: Colors.white, fontSize: _verifyFontSize()),
+                      ),
                     ),
                   )
                 : Center(child: CircularProgressIndicator()),

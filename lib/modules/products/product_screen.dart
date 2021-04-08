@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
@@ -185,26 +186,34 @@ class _ProductScreenState extends State<ProductScreen> {
                 ListTileMoreCustomizable(
                   contentPadding: const EdgeInsets.all(0),
                   horizontalTitleGap: 0,
-                  title: Text(
+                  title: AutoSizeText(
                     productSnapshot.data.product.title,
+                    maxLines: 2,
                     style: Theme.of(context).textTheme.subtitle1.copyWith(
                           fontSize: 18,
                         ),
                   ),
                   trailing: Column(
                     children: <Widget>[
-                      Text(
-                        'Valor avulso',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontSize: 14,
-                              color: Colors.black38,
-                            ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: AutoSizeText(
+                          'Valor avulso',
+                          maxLines: 2,
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                                color: Colors.black38,
+                              ),
+                        ),
                       ),
-                      Text(
-                        'R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 18,
-                            ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 18,
+                              ),
+                        ),
                       ),
                     ],
                   ),
@@ -256,14 +265,17 @@ class _ProductScreenState extends State<ProductScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50),
                             ),
-                            child: Text(
-                              '+INFO',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                '+INFO',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    .copyWith(
+                                      fontSize: 14,
+                                    ),
+                              ),
                             ),
                           );
                         },
@@ -314,7 +326,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         },
                         {
                           'title': 'Testes',
-                          'subtitle': "${productSnapshot.data.product.tests}",
+                          'subtitle':
+                              "${productSnapshot.data.product.tests} testes",
                           'color': Colors.black12,
                           'widget': Icon(
                             Icons.remove_red_eye,
@@ -571,9 +584,12 @@ class _ProductScreenState extends State<ProductScreen> {
                                   onPressed: item['onTap'],
                                   color: item['color'],
                                   elevation: 0,
-                                  child: Text(
-                                    "${item['title']}",
-                                    style: Theme.of(context).textTheme.button,
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(
+                                      "${item['title']}",
+                                      style: Theme.of(context).textTheme.button,
+                                    ),
                                   ),
                                 ),
                               );

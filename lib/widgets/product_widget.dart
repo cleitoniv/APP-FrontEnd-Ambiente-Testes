@@ -56,9 +56,12 @@ class ProductWidget extends StatelessWidget {
                               height: 25,
                             ),
                             SizedBox(width: 10),
-                            Text(
-                              '$credits',
-                              style: Theme.of(context).textTheme.subtitle1,
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                '$credits',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
                             )
                           ],
                         ),
@@ -84,9 +87,12 @@ class ProductWidget extends StatelessWidget {
                               color: Colors.black45,
                             ),
                             SizedBox(width: 10),
-                            Text(
-                              '$tests',
-                              style: Theme.of(context).textTheme.subtitle1,
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                '$tests',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
                             )
                           ],
                         ),
@@ -105,24 +111,28 @@ class ProductWidget extends StatelessWidget {
             ),
             Text(
               title,
+              textScaleFactor: 1.10,
               maxLines: 1,
               style: Theme.of(context).textTheme.subtitle1.copyWith(
                     fontSize: 14,
                   ),
             ),
             value != 0
-                ? Text.rich(
-                    TextSpan(
-                      text: 'R\$ ',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 14,
+                ? FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'R\$ ',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 14,
+                            ),
+                        children: [
+                          TextSpan(
+                            text: Helper.intToMoney(value),
+                            style: Theme.of(context).textTheme.headline5,
                           ),
-                      children: [
-                        TextSpan(
-                          text: Helper.intToMoney(value),
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   )
                 : Container(),

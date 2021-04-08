@@ -361,6 +361,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
             ),
             label: Text(
               'Adicionar Produto a Lista',
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.button.copyWith(
                     color: Theme.of(context).primaryColor,
                   ),

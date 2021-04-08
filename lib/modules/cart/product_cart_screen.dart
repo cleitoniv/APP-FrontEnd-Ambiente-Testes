@@ -352,18 +352,17 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 ],
               ),
               SizedBox(height: 30),
-              RaisedButton.icon(
+              RaisedButton(
                 color: Color(0xffF1F1F1),
                 elevation: 0,
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Theme.of(context).accentColor,
-                ),
-                label: Text(
-                  'Continue Comprando',
-                  style: Theme.of(context).textTheme.button.copyWith(
-                        color: Theme.of(context).accentColor,
-                      ),
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    'Continue Comprando',
+                    style: Theme.of(context).textTheme.button.copyWith(
+                          color: Theme.of(context).accentColor,
+                        ),
+                  ),
                 ),
                 onPressed: _onBackToPurchase,
               ),

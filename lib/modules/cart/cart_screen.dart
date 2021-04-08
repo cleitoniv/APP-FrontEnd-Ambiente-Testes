@@ -194,12 +194,17 @@ class _CartScreenState extends State<CartScreen> {
                                   _data[index]['operation'],
                                   _data[index]['tests'])['icon']),
                           SizedBox(width: 5),
-                          Text(
-                            '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
-                            style:
-                                Theme.of(context).textTheme.subtitle1.copyWith(
-                                      fontSize: 14,
-                                    ),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontSize: 14,
+                                  ),
+                            ),
                           ),
                         ],
                       ),
@@ -265,18 +270,17 @@ class _CartScreenState extends State<CartScreen> {
               ],
             ),
             SizedBox(height: 30),
-            RaisedButton.icon(
+            RaisedButton(
               color: Color(0xffF1F1F1),
               elevation: 0,
-              icon: Icon(
-                Icons.arrow_back,
-                color: Theme.of(context).accentColor,
-              ),
-              label: Text(
-                'Continue Comprando',
-                style: Theme.of(context).textTheme.button.copyWith(
-                      color: Theme.of(context).accentColor,
-                    ),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  'Continue Comprando',
+                  style: Theme.of(context).textTheme.button.copyWith(
+                        color: Theme.of(context).accentColor,
+                      ),
+                ),
               ),
               onPressed: _onBackToPurchase,
             ),
@@ -291,9 +295,12 @@ class _CartScreenState extends State<CartScreen> {
                   opacity: snapshot.data.isEmpty ? 0.5 : 1,
                   child: RaisedButton(
                     elevation: 0,
-                    child: Text(
-                      'Finalizar Pedido',
-                      style: Theme.of(context).textTheme.button,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        'Finalizar Pedido',
+                        style: Theme.of(context).textTheme.button,
+                      ),
                     ),
                     disabledColor: Theme.of(context).accentColor,
                     onPressed: snapshot.data.isEmpty

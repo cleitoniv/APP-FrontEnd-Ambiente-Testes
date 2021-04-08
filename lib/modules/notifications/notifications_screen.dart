@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/notifications_bloc.dart';
@@ -134,27 +135,38 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     width: 25,
                     height: 25,
                   ),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        _notifications[index].title,
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 16,
-                            ),
-                      ),
-                      Text(
-                        Helper.dateToMonth(
-                          _notifications[index].date,
-                        ).replaceAll('de', '').replaceAll('\n', ''),
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              fontSize: 14,
-                              color: Colors.black38,
-                            ),
-                      ),
-                    ],
+                  title: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: AutoSizeText(
+                            _notifications[index].title,
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 16,
+                                    ),
+                          ),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: AutoSizeText(
+                            Helper.dateToMonth(
+                              _notifications[index].date,
+                            ).replaceAll('de', '').replaceAll('\n', ''),
+                            style:
+                                Theme.of(context).textTheme.subtitle1.copyWith(
+                                      fontSize: 14,
+                                      color: Colors.black38,
+                                    ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  subtitle: Text(
+                  subtitle: AutoSizeText(
                     _notifications[index].subtitle,
                     style: Theme.of(context).textTheme.subtitle1.copyWith(
                           fontSize: 14,

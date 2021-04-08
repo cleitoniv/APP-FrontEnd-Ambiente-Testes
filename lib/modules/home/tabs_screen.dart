@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
@@ -94,6 +93,22 @@ class _TabsScreenState extends State<TabsScreen>
       }
       _requestsBloc.currentRequestFilterSink.add(_status);
       _requestsBloc.getPedidosList(_status);
+    }
+  }
+
+  _verifyTextScaleFactor(double size) {
+    if (size < 1.5) {
+      return 200.0;
+    } else {
+      return 240.0;
+    }
+  }
+
+  _verifyTextScaleFactorMoney(double size) {
+    if (size < 1.5) {
+      return 119.0;
+    } else {
+      return 143.0;
     }
   }
 
@@ -251,14 +266,20 @@ class _TabsScreenState extends State<TabsScreen>
                               : Color(0xffF1F1F1),
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        child: Text(
-                          productSnapshot.data.filters[index],
-                          style: Theme.of(context).textTheme.subtitle2.copyWith(
-                                color: productSnapshot.data.filters[index] ==
-                                        snapshot.data
-                                    ? Color(0xffF1F1F1)
-                                    : Theme.of(context).accentColor,
-                              ),
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                            productSnapshot.data.filters[index],
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2
+                                .copyWith(
+                                  color: productSnapshot.data.filters[index] ==
+                                          snapshot.data
+                                      ? Color(0xffF1F1F1)
+                                      : Theme.of(context).accentColor,
+                                ),
+                          ),
                         ),
                       ),
                     );
@@ -311,13 +332,16 @@ class _TabsScreenState extends State<TabsScreen>
                               : Radius.circular(0),
                         ),
                       ),
-                      child: Text(
-                        type,
-                        style: Theme.of(context).textTheme.subtitle2.copyWith(
-                              color: type == snapshot.data
-                                  ? Color(0xffF1F1F1)
-                                  : Theme.of(context).accentColor,
-                            ),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          type,
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                color: type == snapshot.data
+                                    ? Color(0xffF1F1F1)
+                                    : Theme.of(context).accentColor,
+                              ),
+                        ),
                       ),
                     ),
                   );
@@ -375,13 +399,16 @@ class _TabsScreenState extends State<TabsScreen>
                               : Radius.circular(0),
                         ),
                       ),
-                      child: Text(
-                        type,
-                        style: Theme.of(context).textTheme.subtitle2.copyWith(
-                              color: type == snapshot.data
-                                  ? Color(0xffF1F1F1)
-                                  : Color(0xff828282),
-                            ),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          type,
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                color: type == snapshot.data
+                                    ? Color(0xffF1F1F1)
+                                    : Color(0xff828282),
+                              ),
+                        ),
                       ),
                     ),
                   );
@@ -480,7 +507,8 @@ class _TabsScreenState extends State<TabsScreen>
                   onExitApp: _onExitApp,
                 ),
                 appBar: PreferredSize(
-                  preferredSize: Size.fromHeight(200),
+                  preferredSize: Size.fromHeight(_verifyTextScaleFactor(
+                      MediaQuery.of(context).textScaleFactor)),
                   child: Container(
                       decoration: BoxDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
@@ -525,17 +553,20 @@ class _TabsScreenState extends State<TabsScreen>
                                           height: 30,
                                         ),
                                       ),
-                                      Text(
-                                        authEventSnapshot
-                                                    .data.data.nomeUsuario !=
-                                                null
-                                            ? authEventSnapshot
-                                                .data.data.nomeUsuario
-                                            : authEventSnapshot
-                                                .data.data.apelido,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4,
+                                      FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Text(
+                                          authEventSnapshot
+                                                      .data.data.nomeUsuario !=
+                                                  null
+                                              ? authEventSnapshot
+                                                  .data.data.nomeUsuario
+                                              : authEventSnapshot
+                                                  .data.data.apelido,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4,
+                                        ),
                                       ),
                                       GestureDetector(
                                         onTap: _handleNotifications,
@@ -579,7 +610,9 @@ class _TabsScreenState extends State<TabsScreen>
                                     GestureDetector(
                                       onTap: _handleMyCredits,
                                       child: Container(
-                                        width: 119,
+                                        width: _verifyTextScaleFactorMoney(
+                                            MediaQuery.of(context)
+                                                .textScaleFactor),
                                         height: 36,
                                         decoration: BoxDecoration(
                                           color: Theme.of(context)
@@ -606,17 +639,22 @@ class _TabsScreenState extends State<TabsScreen>
                                             ),
                                             SizedBox(width: 10),
                                             // aqui money
-                                            Text(
-                                              Helper.intToMoney(
-                                                  authEventSnapshot
-                                                      .data.data.money),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle2
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                  ),
+                                            FittedBox(
+                                              fit: BoxFit.contain,
+                                              child: Text(
+                                                Helper.intToMoney(
+                                                    authEventSnapshot
+                                                        .data.data.money),
+                                                overflow: TextOverflow.fade,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2
+                                                    .copyWith(
+                                                      fontSize: 14.0,
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                    ),
+                                              ),
                                             )
                                           ],
                                         ),
@@ -656,15 +694,18 @@ class _TabsScreenState extends State<TabsScreen>
                                               ),
                                             ),
                                             SizedBox(width: 10),
-                                            Text(
-                                              "${authEventSnapshot.data.data.points}",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle2
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .accentColor,
-                                                  ),
+                                            FittedBox(
+                                              fit: BoxFit.contain,
+                                              child: Text(
+                                                "${authEventSnapshot.data.data.points}",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2
+                                                    .copyWith(
+                                                      color: Theme.of(context)
+                                                          .accentColor,
+                                                    ),
+                                              ),
                                             )
                                           ],
                                         ),
@@ -713,17 +754,20 @@ class _TabsScreenState extends State<TabsScreen>
                             builder: (context, snapshot) {
                               if (e['id'] != 2) {
                                 return Tab(
-                                  child: Text(
-                                    e['title'],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .copyWith(
-                                          color: e['id'] == snapshot.data
-                                              ? Theme.of(context).accentColor
-                                              : Color(0xffBFBFBF),
-                                          fontSize: 12,
-                                        ),
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(
+                                      e['title'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          .copyWith(
+                                            color: e['id'] == snapshot.data
+                                                ? Theme.of(context).accentColor
+                                                : Color(0xffBFBFBF),
+                                            fontSize: 12,
+                                          ),
+                                    ),
                                   ),
                                   icon: Image.asset(
                                     'assets/icons/${e['iconName']}',
@@ -736,17 +780,20 @@ class _TabsScreenState extends State<TabsScreen>
                                 );
                               } else {
                                 return Tab(
-                                  child: Text(
-                                    e['title'],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .copyWith(
-                                          color: e['id'] == snapshot.data
-                                              ? Theme.of(context).accentColor
-                                              : Color(0xffBFBFBF),
-                                          fontSize: 12,
-                                        ),
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(
+                                      e['title'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          .copyWith(
+                                            color: e['id'] == snapshot.data
+                                                ? Theme.of(context).accentColor
+                                                : Color(0xffBFBFBF),
+                                            fontSize: 12,
+                                          ),
+                                    ),
                                   ),
                                   icon: Stack(
                                     children: [

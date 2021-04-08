@@ -128,14 +128,17 @@ class RequestsScreen extends StatelessWidget {
           color: Color(0xffECECEC),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Text(
-          Helper.dateToMonth(
-            _requests[index].dataInclusao,
-          ).substring(0, 8),
-          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                fontSize: 14,
-              ),
-          textAlign: TextAlign.center,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Text(
+            Helper.dateToMonth(
+              _requests[index].dataInclusao,
+            ).substring(0, 8),
+            style: Theme.of(context).textTheme.subtitle1.copyWith(
+                  fontSize: 14,
+                ),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
       subtitle: Column(
@@ -145,27 +148,36 @@ class RequestsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                'Pedido ${_requests[index].numeroPedido}',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Colors.black26,
-                      fontSize: 14,
-                    ),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  'Pedido ${_requests[index].numeroPedido}',
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        color: Colors.black26,
+                        fontSize: 14,
+                      ),
+                ),
               ),
               Row(
                 children: <Widget>[
-                  Text(
-                    'Valor',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'Valor',
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                          ),
+                    ),
                   ),
                   SizedBox(width: 10),
-                  Text(
-                    'R\$ ${Helper.intToMoney(_requests[index].valor)}',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 14,
-                        ),
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'R\$ ${Helper.intToMoney(_requests[index].valor)}',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 14,
+                          ),
+                    ),
                   ),
                   Icon(
                     Icons.keyboard_arrow_right,
@@ -175,12 +187,15 @@ class RequestsScreen extends StatelessWidget {
               ),
             ],
           ),
-          Text(
-            'Previsão de entrega: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
-            style: Theme.of(context).textTheme.subtitle1.copyWith(
-                  color: Colors.black26,
-                  fontSize: 14,
-                ),
+          FittedBox(
+            fit: BoxFit.contain,
+            child: Text(
+              'Previsão de entrega: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
+              style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    color: Colors.black26,
+                    fontSize: 14,
+                  ),
+            ),
           ),
         ],
       ),

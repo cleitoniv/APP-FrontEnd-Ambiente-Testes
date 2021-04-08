@@ -330,13 +330,19 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                                 : Radius.circular(0),
                           ),
                         ),
-                        child: Text(
-                          type,
-                          style: Theme.of(context).textTheme.subtitle2.copyWith(
-                              color: type == snapshot.data
-                                  ? Color(0xffF1F1F1)
-                                  : Color(0xff828282),
-                              fontSize: 13),
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                            type,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2
+                                .copyWith(
+                                    color: type == snapshot.data
+                                        ? Color(0xffF1F1F1)
+                                        : Color(0xff828282),
+                                    fontSize: 13),
+                          ),
                         ),
                       ),
                     );
