@@ -71,7 +71,7 @@ class CardWidget extends StatelessWidget {
               FittedBox(
                 fit: BoxFit.contain,
                 child: Text(
-                  "${discount}% de Desconto",
+                  "$discount% de Desconto",
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         color: Theme.of(context).accentColor,
                         fontSize: 14,
