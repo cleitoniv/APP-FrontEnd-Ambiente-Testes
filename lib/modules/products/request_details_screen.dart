@@ -19,7 +19,6 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 import 'package:random_string/random_string.dart';
-import 'package:sizer/sizer.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
   final int id;
