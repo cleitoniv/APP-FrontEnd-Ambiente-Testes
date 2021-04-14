@@ -269,7 +269,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                               .headline5
                                               .copyWith(
                                                   color: Colors.black38,
-                                                  fontSize: 24),
+                                                  fontSize: 18),
                                         ),
                                       ),
                                       ProductWidget(
@@ -451,6 +451,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
               },
             ),
           ),
+          // mover
           StreamBuilder(
               stream: _homeBloc.currentCreditTypeOut,
               builder: (context, headerSnapshot) {
@@ -465,7 +466,11 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   right: 0,
                   bottom: 0,
                   height: MediaQuery.of(context).size.height /
-                      (_headerCurrentType == "Financeiro" ? 1.66 : 3.0),
+                      (_headerCurrentType == "Financeiro"
+                          ? 1.66
+                          : _currentProduct["selected"] == true
+                              ? 3.3
+                              : 4.0),
                   child: Container(
                     padding: const EdgeInsets.only(top: 30, bottom: 20),
                     alignment: Alignment.center,

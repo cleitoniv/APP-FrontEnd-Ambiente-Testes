@@ -1126,7 +1126,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               )),
           SizedBox(height: 10),
           Text(
-            'Categorizando seus pedidos por paciente, enviaremos um alerta com o período para reavaliação. Você também acumulara pontos para compras futuras!',
+            'Gestão do Paciente & Pontos Controle o período para reavaliação do seu paciente preenchendo o nome e a data de nascimento, opcionalmente completando com o CPF dele, voce acumula pontos para compras futuras.',
             style: Theme.of(context).textTheme.subtitle1,
             textScaleFactor: 1.25,
             textAlign: TextAlign.center,
