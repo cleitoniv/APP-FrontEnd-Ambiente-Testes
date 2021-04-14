@@ -259,6 +259,7 @@ class _FinishPaymentState extends State<FinishPayment> {
           ),
         ),
         body: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
