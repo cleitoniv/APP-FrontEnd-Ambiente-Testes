@@ -97,7 +97,7 @@ class _ProductScreenState extends State<ProductScreen> {
           return;
         } else {
           _showDialog('Atenção',
-              'Aguarde o processamento do saldo deste produto.', type);
+              'Aguarde o processamento do valor deste produto.', type);
 
           return;
         }
@@ -531,7 +531,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     return Column(
                       children: <Widget>[
                         Text(
-                          'Como deseja comprar?',
+                          'O que deseja solicitar?',
                           style: Theme.of(context).textTheme.headline5.copyWith(
                                 fontSize: 18,
                               ),

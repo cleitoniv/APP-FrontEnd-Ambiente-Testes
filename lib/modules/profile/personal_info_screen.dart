@@ -41,9 +41,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
     if (result.isValid) {
       Dialogs.success(context,
-          title: "Horario de visita",
+          title: "Período para Atendimento",
           buttonText: "Voltar",
-          subtitle: "Seu horario de visita foi alterado!", onTap: () {
+          subtitle: "Seu periodo de atendimento foi alterado!", onTap: () {
         Modular.to.pop();
       });
     } else {
@@ -236,6 +236,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                         }
                         return DropdownWidget(
                           items: snapshot.data.list,
+                          hint: Text('Manha-Tarde'),
                           currentValue:
                               snapshot.hasData && snapshot.data.isValid
                                   ? visitSnapshot.data

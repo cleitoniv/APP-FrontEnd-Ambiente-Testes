@@ -7,15 +7,16 @@ class DropdownWidget extends StatefulWidget {
   final Widget prefixIcon;
   final Widget suffixIcon;
   final String labelText;
+  final Widget hint;
 
-  DropdownWidget({
-    @required this.items,
-    @required this.currentValue,
-    @required this.onChanged,
-    this.labelText = 'Horário de Visita',
-    this.prefixIcon,
-    this.suffixIcon,
-  });
+  DropdownWidget(
+      {@required this.items,
+      @required this.currentValue,
+      @required this.onChanged,
+      this.labelText = 'Período para Atendimento',
+      this.prefixIcon,
+      this.suffixIcon,
+      this.hint});
 
   @override
   _DropdownWidgetState createState() => _DropdownWidgetState();
@@ -42,6 +43,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton(
           value: widget.currentValue,
+          hint: widget.hint,
           items: widget.items.map(
             (e) {
               return DropdownMenuItem(

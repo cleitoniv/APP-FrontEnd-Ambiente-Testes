@@ -181,7 +181,7 @@ class CreditProductCardWidget extends StatelessWidget {
     if (size < 1.5) {
       return 190.0;
     } else {
-      return 235.0;
+      return 220.0;
     }
   }
 
@@ -192,87 +192,105 @@ class CreditProductCardWidget extends StatelessWidget {
             fit: StackFit.loose,
             overflow: Overflow.visible,
             children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(20),
-                width: 180,
-                height: _verifyTextScaleFactor(
-                    MediaQuery.of(context).textScaleFactor),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Color(0xffF1F1F1),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text.rich(
-                        TextSpan(
-                          text: "${this.caixas}",
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 40),
-                          children: [
-                            TextSpan(
-                              text: ' Caixas',
+              Stack(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.only(right: 20, left: 20, bottom: 10),
+                    width: 180,
+                    height: _verifyTextScaleFactor(
+                        MediaQuery.of(context).textScaleFactor),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Color(0xffF1F1F1),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text.rich(
+                              TextSpan(
+                                text: "${this.caixas}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 40),
+                                children: [
+                                  TextSpan(
+                                    text: ' Caixas',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(
+                                            color: Colors.black45,
+                                            fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              "R\$ ${Helper.intToMoney(this.precoUnitario)} por caixa.",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5
+                                  .subtitle1
                                   .copyWith(
-                                      color: Colors.black45, fontSize: 14),
+                                    color: Colors.black45,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
                             ),
-                          ],
-                        ),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              "Até ${this.percentageTest}% de teste",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                            ),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              "Por ${Helper.intToMoney(this.value)}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    color: Theme.of(context).accentColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        "R\$ ${Helper.intToMoney(this.precoUnitario)} por Cx.",
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              color: Colors.black45,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                      ),
+                  ),
+                  Positioned(
+                    top: 1,
+                    right: 1,
+                    child: Icon(
+                      MaterialCommunityIcons.plus_circle,
+                      color: Theme.of(context).primaryColor,
+                      size: 42,
                     ),
-                    SizedBox(height: 10),
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        "${this.percentageTest}% de teste",
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                      ),
-                    ),
-                    Spacer(),
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        "Por ${Helper.intToMoney(this.value)}",
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              color: Theme.of(context).accentColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
+                  )
+                ],
               ),
-              Positioned(
-                top: 100,
-                right: 5,
-                child: Icon(
-                  MaterialCommunityIcons.plus_circle,
-                  color: Theme.of(context).primaryColor,
-                  size: 50,
-                ),
-              )
             ],
           )
         : Container();

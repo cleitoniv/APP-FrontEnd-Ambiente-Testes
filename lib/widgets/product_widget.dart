@@ -32,7 +32,6 @@ class ProductWidget extends StatelessWidget {
       child: Container(
         width: width,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,41 +96,44 @@ class ProductWidget extends StatelessWidget {
                           ],
                         ),
                       )
-                    : SizedBox(
-                        width: 64,
-                        height: 36,
-                      ),
+                    : Container()
               ],
             ),
             CachedNetworkImage(
               imageUrl: imageUrl,
-              width: 140,
-              height: 120,
-              fit: BoxFit.contain,
+              width: 120,
+              height: 100,
+              fit: BoxFit.fill,
             ),
-            Text(
-              title,
-              textScaleFactor: 1.10,
-              maxLines: 1,
-              style: Theme.of(context).textTheme.subtitle1.copyWith(
-                    fontSize: 14,
-                  ),
+            Positioned(
+              top: 87,
+              child: Text(
+                title,
+                textScaleFactor: 1.08,
+                maxLines: 1,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      fontSize: 14,
+                    ),
+              ),
             ),
             value != 0
-                ? FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text.rich(
-                      TextSpan(
-                        text: 'R\$ ',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 14,
+                ? Positioned(
+                    top: 105,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text.rich(
+                        TextSpan(
+                          text: 'R\$ ',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 14,
+                              ),
+                          children: [
+                            TextSpan(
+                              text: Helper.intToMoney(value),
+                              style: Theme.of(context).textTheme.headline5,
                             ),
-                        children: [
-                          TextSpan(
-                            text: Helper.intToMoney(value),
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   )
