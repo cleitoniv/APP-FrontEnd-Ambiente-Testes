@@ -204,115 +204,120 @@ class _FinishPaymentState extends State<FinishPayment> {
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Parcelamento",
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 18,
-                        ),
-                  ),
-                  Container(
-                    height: 20,
-                  ),
-                  Container(
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            width: 1.0,
-                            style: BorderStyle.solid,
-                            color: Theme.of(context).primaryColor),
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                    ),
-                    width: double.infinity,
-                    child: DropdownButtonHideUnderline(
-                      child: ButtonTheme(
-                        alignedDropdown: true,
-                        child: DropdownButton<String>(
-                          value: _dropdownValueStatus
-                              ? dropdownValue
-                              : _installments[0],
-                          icon: Icon(Icons.arrow_downward),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.deepPurple),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.deepPurpleAccent,
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Parcelamento",
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 18,
                           ),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              _dropdownValueStatus = true;
-                              dropdownValue = newValue;
-                            });
-                          },
-                          items: _installments
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
+                    ),
+                    Container(
+                      height: 20,
+                    ),
+                    Container(
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              width: 1.0,
+                              style: BorderStyle.solid,
+                              color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                      ),
+                      width: double.infinity,
+                      child: DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                          alignedDropdown: true,
+                          child: DropdownButton<String>(
+                            value: _dropdownValueStatus
+                                ? dropdownValue
+                                : _installments[0],
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.deepPurple),
+                            underline: Container(
+                              height: 2,
+                              color: Colors.deepPurpleAccent,
+                            ),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                _dropdownValueStatus = true;
+                                dropdownValue = newValue;
+                              });
+                            },
+                            items: _installments
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    height: 10,
-                  ),
-                  !_paymentMethod
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Código CCV do Cartão",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(fontSize: 18),
-                            ),
-                            Container(height: 20),
-                            Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Theme.of(context).primaryColor),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
+                    Container(
+                      height: 10,
+                    ),
+                    !_paymentMethod
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Código CCV do Cartão",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .copyWith(fontSize: 18),
                               ),
-                              child: TextFieldWidget(
-                                controller: _ccvController,
-                                prefixIcon: Icon(
-                                  Icons.lock,
-                                  color: Color(0xffA1A1A1),
+                              Container(height: 20),
+                              Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        width: 1.0,
+                                        style: BorderStyle.solid,
+                                        color: Theme.of(context).primaryColor),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
                                 ),
-                                width: 120,
-                                keyboardType: TextInputType.number,
-                              ),
-                            )
-                          ],
-                        )
-                      : Container(height: 20),
-                ],
-              ),
-              RaisedButton(
-                onPressed: _isButtonDisabled ? null : _onSubmit, // _onSubmit,
-                child: Text(
-                  'Finalizar Pedido',
-                  style: Theme.of(context).textTheme.button,
+                                child: TextFieldWidget(
+                                  controller: _ccvController,
+                                  prefixIcon: Icon(
+                                    Icons.lock,
+                                    color: Color(0xffA1A1A1),
+                                  ),
+                                  width: 120,
+                                  keyboardType: TextInputType.number,
+                                ),
+                              )
+                            ],
+                          )
+                        : Container(height: 20),
+                  ],
                 ),
-              ),
-            ],
+                RaisedButton(
+                  onPressed: _isButtonDisabled ? null : _onSubmit, // _onSubmit,
+                  child: Text(
+                    'Finalizar Pedido',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                ),
+              ],
+            ),
           ),
         ));
   }
