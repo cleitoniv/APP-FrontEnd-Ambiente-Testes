@@ -105,35 +105,29 @@ class ProductWidget extends StatelessWidget {
               height: 100,
               fit: BoxFit.fill,
             ),
-            Positioned(
-              top: 87,
-              child: Text(
-                title,
-                textScaleFactor: 1.08,
-                maxLines: 1,
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      fontSize: 14,
-                    ),
-              ),
+            Text(
+              title,
+              textScaleFactor: 1.08,
+              maxLines: 1,
+              style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    fontSize: 14,
+                  ),
             ),
             value != 0
-                ? Positioned(
-                    top: 105,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text.rich(
-                        TextSpan(
-                          text: 'R\$ ',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                                fontSize: 14,
-                              ),
-                          children: [
-                            TextSpan(
-                              text: Helper.intToMoney(value),
-                              style: Theme.of(context).textTheme.headline5,
+                ? FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'R\$ ',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 14,
                             ),
-                          ],
-                        ),
+                        children: [
+                          TextSpan(
+                            text: Helper.intToMoney(value),
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
+                        ],
                       ),
                     ),
                   )
