@@ -235,7 +235,7 @@ class _RepositionScreenState extends State<RepositionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Adicionar Pontos'),
+        title: Text('Adicionar Paciente'),
         centerTitle: false,
       ),
       body: Form(
@@ -270,11 +270,22 @@ class _RepositionScreenState extends State<RepositionScreen> {
                         ),
                       ],
                     )),
-                SizedBox(height: 10),
-                Text(
-                  'Digite o número de série do produto, nome, número de referência (opcional) e data de nascimento do paciente que receberá e acumule pontos!',
-                  style: Theme.of(context).textTheme.subtitle1,
+                SizedBox(height: 20),
+                RichText(
                   textAlign: TextAlign.center,
+                  text: TextSpan(
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          .copyWith(fontWeight: FontWeight.bold),
+                      text: 'Como adicionar pontos\n',
+                      children: [
+                        TextSpan(
+                          style: Theme.of(context).textTheme.subtitle1,
+                          text:
+                              '\nDigite ou leia o número de série que consta na embalagem das lentes a ser entregues ao seu paciente, controle a data para reavaliação preenchendo nome, data de nascimento e opcionalmente inserindo o CPF dele você acumula pontos para compras futuras',
+                        ),
+                      ]),
                 ),
                 SizedBox(height: 30),
                 Container(

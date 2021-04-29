@@ -125,7 +125,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
         context,
         title: "Atenção",
         subtitle:
-            'Você precisa ter algum item na lista para solicitar o retorno.',
+            'Você precisa ter algum item na lista para solicitar o Devolução.',
         buttonText: 'Voltar',
         onTap: () {
           Modular.to.pop();
@@ -152,7 +152,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           context,
           title: "Atenção",
           subtitle:
-              'Erro ao processar o Retorno! Verifique os produtos selecionados.',
+              'Erro ao processar o Devolução! Verifique os produtos selecionados.',
           buttonText: 'Voltar',
           onTap: () {
             Modular.to.pop();
@@ -238,14 +238,14 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Retorno'),
+        title: Text('Devolução'),
         centerTitle: false,
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: <Widget>[
           Text(
-            'Retorno para Crédito ou Troca',
+            'Devolução para Crédito ou Troca',
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
           ),
@@ -257,7 +257,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 TextSpan(
-                  text: ' Retorno ',
+                  text: ' Devolução ',
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         color: Theme.of(context).accentColor,
                       ),
@@ -292,7 +292,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
             builder: (context, snapshot) {
               return DropdownWidget(
                 items: ['Crédito', 'Troca'],
-                labelText: 'Selecione o tipo de Retorno',
+                labelText: 'Selecione o tipo de Devolução',
                 currentValue: snapshot.data,
                 onChanged: _onChangeDevolutionType,
                 prefixIcon: Padding(
