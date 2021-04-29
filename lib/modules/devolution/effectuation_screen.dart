@@ -47,7 +47,7 @@ class _EffectuationScreenState extends State<EffectuationScreen> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Retorno'),
+          title: Text('Devolução'),
           automaticallyImplyLeading: false,
           centerTitle: true,
         ),
@@ -55,13 +55,13 @@ class _EffectuationScreenState extends State<EffectuationScreen> {
           padding: const EdgeInsets.all(20),
           children: <Widget>[
             Text(
-              'Efetivação de Retorno',
+              'Efetivação de Devolução',
               style: Theme.of(context).textTheme.headline5,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 30),
             Text(
-              'Você receberá uma cópia desta solicitação de retorno no e-mail cadastrado em nossa central.\n\nCaso deseje, adicione abaixo outro e-mail para receber além do seu.',
+              'Você receberá uma cópia desta solicitação de Devolução no e-mail cadastrado em nossa central.\n\nCaso deseje, adicione abaixo outro e-mail para receber além do seu.',
               style: Theme.of(context).textTheme.subtitle1,
             ),
             SizedBox(height: 20),

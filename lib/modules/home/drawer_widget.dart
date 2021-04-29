@@ -19,7 +19,7 @@ class DrawerWidget extends StatelessWidget {
       'image': 'drawer_3.png',
     },
     {
-      'title': 'Retorno para Crédito/Troca',
+      'title': 'Devolução para Crédito/Troca',
       'image': 'drawer_4.png',
     },
     {
