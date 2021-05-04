@@ -68,14 +68,14 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
         'controller': _nameController,
       },
       {
-        'labelText': 'Número de Referência do Paciente',
-        'icon': MaterialCommunityIcons.numeric,
-        'controller': _numberController,
-      },
-      {
         'labelText': 'Data de nascimento',
         'icon': MaterialCommunityIcons.cake_layered,
         'controller': _birthdayController,
+      },
+      {
+        'labelText': 'CPF do paciente (opcional)',
+        'icon': MaterialCommunityIcons.numeric,
+        'controller': _numberController,
       },
     ];
   }
@@ -140,7 +140,21 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
             SizedBox(height: 30),
             TextFieldWidget(
               controller: _serialController,
-              labelText: 'Número de série',
+              labelText: 'Olho Direito - Número de série',
+              validator: Helper.lengthValidator,
+              prefixIcon: Padding(
+                padding: const EdgeInsets.all(13),
+                child: Image.asset(
+                  'assets/icons/open_eye.png',
+                  width: 5,
+                  height: 0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            TextFieldWidget(
+              //   controller: _serialController,
+              labelText: 'Olho Esquerdo - Número de série',
               validator: Helper.lengthValidator,
               prefixIcon: Padding(
                 padding: const EdgeInsets.all(13),

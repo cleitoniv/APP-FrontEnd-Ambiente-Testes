@@ -100,6 +100,27 @@ class RequestInfoScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20),
+                  Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          'Previsão de Entrega',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                              ),
+                        ),
+                        Text(
+                          pedidoInfo.data.pedido.previsaoEntrega ??
+                              "Não informado.",
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
                   Text(
                     'Produtos Comprados',
                     style: Theme.of(context).textTheme.headline5.copyWith(
@@ -199,7 +220,7 @@ class RequestInfoScreen extends StatelessWidget {
                                           textAlign: TextAlign.center,
                                         )
                                       ],
-                                    )
+                                    ),
                                   ],
                                 ),
                                 SizedBox(height: 20),
@@ -211,6 +232,43 @@ class RequestInfoScreen extends StatelessWidget {
                                   itemBuilder: (context, index2) {
                                     return Column(
                                       children: [
+                                        ListTileMoreCustomizable(
+                                            dense: true,
+                                            contentPadding:
+                                                const EdgeInsets.all(0),
+                                            horizontalTitleGap: 0,
+                                            leading: Image.asset(
+                                              'assets/icons/info.png',
+                                              width: 25,
+                                              height: 25,
+                                            ),
+                                            title: Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text:
+                                                        'Quantidade selecionada tem duração recomendada de ',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle1
+                                                        .copyWith(
+                                                          fontSize: 14,
+                                                        ),
+                                                  ),
+                                                  TextSpan(
+                                                    text:
+                                                        '${items[index].items[index2]['duracao']}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline5
+                                                        .copyWith(
+                                                          fontSize: 14,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                        SizedBox(height: 10),
                                         ListTileMoreCustomizable(
                                             contentPadding:
                                                 const EdgeInsets.all(0),
@@ -355,43 +413,43 @@ class RequestInfoScreen extends StatelessWidget {
                                               ),
                                             )),
                                         SizedBox(height: 20),
-                                        ListTileMoreCustomizable(
-                                            dense: true,
-                                            contentPadding:
-                                                const EdgeInsets.all(0),
-                                            horizontalTitleGap: 0,
-                                            leading: Image.asset(
-                                              'assets/icons/info.png',
-                                              width: 25,
-                                              height: 25,
-                                            ),
-                                            title: Text.rich(
-                                              TextSpan(
-                                                children: [
-                                                  TextSpan(
-                                                    text:
-                                                        'Quantidade selecionada tem duração recomendada de ',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .subtitle1
-                                                        .copyWith(
-                                                          fontSize: 14,
-                                                        ),
-                                                  ),
-                                                  TextSpan(
-                                                    text:
-                                                        '${items[index].items[index2]['duracao']}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline5
-                                                        .copyWith(
-                                                          fontSize: 14,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )),
-                                        SizedBox(height: 50),
+                                        // ListTileMoreCustomizable(
+                                        //     dense: true,
+                                        //     contentPadding:
+                                        //         const EdgeInsets.all(0),
+                                        //     horizontalTitleGap: 0,
+                                        //     leading: Image.asset(
+                                        //       'assets/icons/info.png',
+                                        //       width: 25,
+                                        //       height: 25,
+                                        //     ),
+                                        //     title: Text.rich(
+                                        //       TextSpan(
+                                        //         children: [
+                                        //           TextSpan(
+                                        //             text:
+                                        //                 'Quantidade selecionada tem duração recomendada de ',
+                                        //             style: Theme.of(context)
+                                        //                 .textTheme
+                                        //                 .subtitle1
+                                        //                 .copyWith(
+                                        //                   fontSize: 14,
+                                        //                 ),
+                                        //           ),
+                                        //           TextSpan(
+                                        //             text:
+                                        //                 '${items[index].items[index2]['duracao']}',
+                                        //             style: Theme.of(context)
+                                        //                 .textTheme
+                                        //                 .headline5
+                                        //                 .copyWith(
+                                        //                   fontSize: 14,
+                                        //                 ),
+                                        //           ),
+                                        //         ],
+                                        //       ),
+                                        //     )),
+                                        // SizedBox(height: 50),
                                         Text(
                                           'Parâmetros',
                                           style: Theme.of(context)
@@ -886,58 +944,60 @@ class RequestInfoScreen extends StatelessWidget {
                     color: Colors.black38,
                   ),
                   !this.reposicao
-                      ? Padding(
-                          padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                          child: Table(
-                            children: [
-                              TableRow(
-                                children: [
-                                  Text(
-                                    'Previsão de Entrega',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5
-                                        .copyWith(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                  ),
-                                  Text(
-                                    'Total + Frete',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5
-                                        .copyWith(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                  )
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  Text(
-                                    pedidoInfo.data.pedido.previsaoEntrega ??
-                                        "Não informado.",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .copyWith(
-                                          fontSize: 14,
-                                        ),
-                                  ),
-                                  Text(
-                                    'R\$ ${Helper.intToMoney(pedidoInfo.data.pedido.valorTotal)}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .copyWith(
-                                          fontSize: 14,
-                                        ),
-                                  )
-                                ],
-                              ),
-                            ],
+                      ? Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                            child: Column(
+                              children: [
+                                // TableRow(
+                                //   children: [
+                                // Text(
+                                //   'Previsão de Entrega',
+                                //   style: Theme.of(context)
+                                //       .textTheme
+                                //       .headline5
+                                //       .copyWith(
+                                //         fontSize: 14,
+                                //         fontWeight: FontWeight.normal,
+                                //       ),
+                                // ),
+                                Text(
+                                  'Total + Frete',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                  //   )
+                                  // ],
+                                ),
+                                // TableRow(
+                                //   children: [
+                                // Text(
+                                //   pedidoInfo.data.pedido.previsaoEntrega ??
+                                //       "Não informado.",
+                                //   style: Theme.of(context)
+                                //       .textTheme
+                                //       .subtitle1
+                                //       .copyWith(
+                                //         fontSize: 14,
+                                //       ),
+                                // ),
+                                Text(
+                                  'R\$ ${Helper.intToMoney(pedidoInfo.data.pedido.valorTotal)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      .copyWith(
+                                        fontSize: 14,
+                                      ),
+                                )
+                                //   ],
+                                // ),
+                              ],
+                            ),
                           ),
                         )
                       : Container()

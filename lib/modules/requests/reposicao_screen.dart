@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
@@ -19,13 +21,16 @@ class _RepositionScreenState extends State<RepositionScreen> {
   TextEditingController _serialController;
   TextEditingController _numberController;
   MaskedTextController _birthdayController;
-
+  Timer _timer;
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
+  bool loading = true;
+  int _start = 5;
 
   @override
   void initState() {
     super.initState();
+    startTimer();
     _homeWidgetBloc.currentRequestTypeIn.add("Reposição");
     _requestsBloc.getPedidosList(2);
     _nameController = TextEditingController();
@@ -222,8 +227,25 @@ class _RepositionScreenState extends State<RepositionScreen> {
     );
   }
 
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = Timer.periodic(
+        oneSec,
+        (Timer timer) => setState(() {
+              if (_start <= 1) {
+                setState(() {
+                  loading = false;
+                });
+                timer.cancel();
+              } else {
+                _start = _start - 1;
+              }
+            }));
+  }
+
   @override
   void dispose() {
+    _timer.cancel();
     _nameController.dispose();
     _numberController.dispose();
     _birthdayController.dispose();
@@ -293,7 +315,7 @@ class _RepositionScreenState extends State<RepositionScreen> {
                     child: StreamBuilder(
                       stream: _requestsBloc.pedidoStream,
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData || snapshot.data.isLoading) {
+                        if (!snapshot.hasData) {
                           return Center(
                             child: CircularProgressIndicator(),
                           );
