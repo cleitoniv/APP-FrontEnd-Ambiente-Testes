@@ -12,12 +12,11 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<FirebaseApp>(
         future: Firebase.initializeApp(),
         builder: (context, snapshot) {
           return StreamBuilder<User>(
             stream: FirebaseAuth.instance.authStateChanges(),
-            // stream: FirebaseAuth.instance.onAuthStateChanged,
             builder: (context, snapshot) {
               // if (snapshot.hasData && (!snapshot.data.isAnonymous)) {
               //   return TabsScreen(

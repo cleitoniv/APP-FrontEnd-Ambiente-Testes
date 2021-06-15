@@ -132,6 +132,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     int _value = int.parse(
       _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
     );
+
     bool statusPayment = await _paymentBloc.payment({
       'payment_data': _paymentMethod,
       'value': _value,

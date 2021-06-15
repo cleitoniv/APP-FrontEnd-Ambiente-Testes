@@ -207,6 +207,21 @@ class Helper {
             size: 20,
           )
         };
+      case '04':
+        switch (tests) {
+          case 'S':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+        }
+        break;
       case '01':
         switch (tests) {
           case 'S':
@@ -319,6 +334,7 @@ class Helper {
               )
             };
             break;
+
           case 'Não':
             return {
               'title': 'Avulso',
@@ -328,6 +344,22 @@ class Helper {
                 Icons.attach_money,
                 color: Colors.white,
                 size: 20,
+              )
+            };
+            break;
+        }
+        break;
+      case '04':
+        switch (tests) {
+          case 'Sim':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
               )
             };
             break;
