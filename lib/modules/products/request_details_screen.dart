@@ -476,6 +476,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
+    print(widget.type);
+    print(currentProduct.product.tests);
+
     if (isValidDate(_birthdayController.text)) {
       return;
     }
@@ -630,6 +633,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
+
+      print(int.parse(_lensDireitoController.text));
+      print(int.parse(_lensEsquerdoController.text));
+      print(currentProduct.product.tests);
+      if (_data["tests"] == "Sim" && currentProduct.product.tests <= 0 ||
+          currentProduct.product.tests <
+              int.parse(_lensDireitoController.text) +
+                  _cartTotalTest +
+                  int.parse(_lensEsquerdoController.text) ||
+          currentProduct.product.tests <
+              int.parse(_lensController.text) + _cartTotalTest) {
+        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+          "Limite Atingido": ["Você não possui caixas de teste suficiente"]
+        });
+        _scaffoldKey.currentState.showSnackBar(
+          _snack,
+        );
+        return;
+      }
 
       if (_data['operation'] == "07" && _data["tests"] == "Sim" ||
           _data['operation'] == "01" && _data["tests"] == "Sim" ||

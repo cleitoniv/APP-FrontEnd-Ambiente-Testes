@@ -15,6 +15,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+  int _taxaEntrega = 0;
 
   _onBackToPurchase() {
     _homeWidgetBloc.currentTabIndexIn.add(1);
@@ -23,6 +24,8 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   }
 
   _onSubmit() {
+    _requestsBloc.taxaEntregaSink.add(_taxaEntrega);
+
     Modular.to.pushNamed(
       '/cart/payment',
     );

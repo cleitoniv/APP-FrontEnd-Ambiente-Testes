@@ -29,6 +29,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _taxaEntrega = _requestBloc.taxaEntregaValue;
+    print(_taxaEntrega);
     int _total = data.fold(0, (previousValue, element) {
       if (element["operation"] == "07" ||
           element["operation"] == "00" ||
@@ -121,6 +122,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _finishPayment() {
+    print("aqui");
     Modular.to.pushNamed("/cart/finishPayment");
   }
 
@@ -172,6 +174,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             child: CircularProgressIndicator(),
                           );
                         }
+
                         return Text(
                           'R\$ ${_totalToPay(snapshot.data)}',
                           style: Theme.of(context).textTheme.headline5.copyWith(
@@ -212,6 +215,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ),
                         );
                       }
+                      print("aqui");
                       final _creditCards = snapshot.data.list;
 
                       return ListView.separated(

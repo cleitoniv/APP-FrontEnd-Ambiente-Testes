@@ -66,7 +66,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   onPressed: () {
                     Modular.to.pop();
                   }),
-              SizedBox(width: 80),
+              SizedBox(height: 10),
               RaisedButton(
                   child: Text(
                     "Compre crédito",
