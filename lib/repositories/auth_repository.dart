@@ -240,7 +240,7 @@ class AuthRepository {
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
-      if (cliente.sitApp == "A" || cliente.sitApp == "E") {
+      if (cliente.sitApp == "A") {
         return AuthEvent(
             isValid: true, data: cliente, loading: false, integrated: false);
       } else if (cliente.sitApp == "B") {
@@ -261,6 +261,17 @@ class AuthRepository {
             errorData: {
               "Cadastro": [
                 "Erro no seu cadastro. Entre em contato com a Central Oftalmica."
+              ]
+            });
+      } else if (cliente.sitApp == "E") {
+        return AuthEvent(
+            isValid: false,
+            integrated: true,
+            data: cliente,
+            loading: true,
+            errorData: {
+              "Login": [
+                "Não foi possivel fazer o Login, aguarde seu cadastro ser aprovado."
               ]
             });
       } else {

@@ -107,6 +107,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   _confirmSmsDialog() async {
+    setState(() {
+      _lock = false;
+      _requestCodeController = "Aguarde 30 seg...";
+      _confirmSms.text = '';
+    });
+
     if (_formKey.currentState.validate()) {
       String phonex = _phoneController.text.replaceAll('-', '');
       phonex = phonex.replaceAll(' ', '');
@@ -118,14 +124,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         return;
       }
 
-      setState(() {
-        _lock = true;
-        _requestCodeController = "Aguarde 30 seg...";
-        _confirmSms.text = '';
-      });
       Timer(Duration(seconds: 10), () {
         setState(() {
-          _lock = false;
+          _lock = true;
           _requestCodeController = "Cadastrar";
         });
       });
@@ -184,6 +185,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         'password': _passwordController.text,
       };
       final String authResult = await _authWidgetBloc.registerGuestToken(data);
+      print(authResult);
       if (authResult == "ok") {
         LoginEvent firstAccess =
             await _authBloc.firstAccess({'nome': data['name'], ...data});
@@ -201,11 +203,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           });
         }
       } else {
+        print("aqui");
         final errors = {
-          "ERROR_WEAK_PASSWORD": {
+          "WEAK-PASSWORD": {
             "Senha": ["Senha deve conter no minimo 6 caracteres."]
           },
-          "ERROR_EMAIL_ALREADY_IN_USE": {
+          "EMAIL-ALREADY-IN-USE": {
             "Email": [
               "Email ja cadastrado. Faça o login e atualize os seus dados."
             ]
@@ -213,6 +216,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         };
 
         _showErrors(errors[authResult]);
+        Modular.to.pop();
       }
     }
   }

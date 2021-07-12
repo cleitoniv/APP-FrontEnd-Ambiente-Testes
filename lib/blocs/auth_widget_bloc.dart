@@ -85,6 +85,10 @@ class AuthWidgetBloc extends Disposable {
         return "ok";
       }
     } catch (e) {
+      if (e is FirebaseAuthException) {
+        print(e.code);
+        return e.code.toUpperCase();
+      }
       final error = e as PlatformException;
       return error.code;
     }
