@@ -98,6 +98,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     bool statusPayment = await _creditoFinanceiroBloc.pagamento(
         creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
+    print(statusPayment);
 
     _ccvController.text = '';
     if (statusPayment != null && statusPayment == true) {
@@ -117,6 +118,10 @@ class _FinishPaymentState extends State<FinishPayment> {
         onTap: _onBack,
       );
     }
+
+    setState(() {
+      _isButtonDisabled = false;
+    });
   }
 
   _calcPaymentInstallment() async {

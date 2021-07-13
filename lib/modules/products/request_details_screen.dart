@@ -637,13 +637,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       print(int.parse(_lensDireitoController.text));
       print(int.parse(_lensEsquerdoController.text));
       print(currentProduct.product.tests);
-      if (_data["tests"] == "Sim" && currentProduct.product.tests <= 0 ||
-          currentProduct.product.tests <
-              int.parse(_lensDireitoController.text) +
-                  _cartTotalTest +
-                  int.parse(_lensEsquerdoController.text) ||
-          currentProduct.product.tests <
-              int.parse(_lensController.text) + _cartTotalTest) {
+      if (widget.type != "A" &&
+              _data["tests"] == "Sim" &&
+              currentProduct.product.tests <= 0 ||
+          widget.type != "A" &&
+              _data["tests"] == "Sim" &&
+              currentProduct.product.tests <
+                  int.parse(_lensDireitoController.text) +
+                      _cartTotalTest +
+                      int.parse(_lensEsquerdoController.text) ||
+          _data["tests"] == "Sim" &&
+              currentProduct.product.tests <
+                  int.parse(_lensController.text) + _cartTotalTest) {
         SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
           "Limite Atingido": ["Você não possui caixas de teste suficiente"]
         });

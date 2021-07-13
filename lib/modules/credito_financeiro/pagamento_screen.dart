@@ -152,6 +152,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                             child: CircularProgressIndicator(),
                           );
                         }
+                        print(snapshot.data.valor);
                         return Text(
                           'R\$ ${Helper.intToMoney(snapshot.data.valor)}',
                           style: Theme.of(context).textTheme.headline5.copyWith(

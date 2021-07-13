@@ -39,6 +39,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return previousValue + element['product'].value * element['quantity'];
     });
     if (_taxaEntrega != null) return Helper.intToMoney(_total + _taxaEntrega);
+
     return Helper.intToMoney(_total);
   }
 
@@ -169,6 +170,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     StreamBuilder<List<Map<String, dynamic>>>(
                       stream: _requestBloc.cartOut,
                       builder: (context, snapshot) {
+                        print(snapshot.data);
                         if (!snapshot.hasData) {
                           return Center(
                             child: CircularProgressIndicator(),
