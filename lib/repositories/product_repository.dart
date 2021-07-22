@@ -52,14 +52,14 @@ class ProductRepository {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<bool> checkProduct(Map<String, dynamic> data) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get("/api/cliente/verify_graus",
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }),
           queryParameters: data);
       return response.data["success"];
@@ -70,15 +70,15 @@ class ProductRepository {
 
   Future<Map<String, dynamic>> checkProductGrausDiferentes(
       Map<String, dynamic> data, Map<String, dynamic> allowedParams) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       await dio.post(
         "/api/cliente/verify_graus",
         options: Options(
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           },
         ),
         data: jsonEncode(
@@ -98,8 +98,8 @@ class ProductRepository {
   }
 
   Future<Parametros> getParametros(String group) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get(
@@ -107,7 +107,7 @@ class ProductRepository {
         options: Options(
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           },
         ),
       );
@@ -120,8 +120,8 @@ class ProductRepository {
   }
 
   Future<ProductEvent> productList(String filtro) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = await _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get(
@@ -129,7 +129,7 @@ class ProductRepository {
         options: Options(
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           },
         ),
       );
@@ -153,13 +153,13 @@ class ProductRepository {
   }
 
   Future<Product> show({int id}) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = await _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response response = await dio.get('/api/cliente/product/$id',
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       ProductModel product = ProductModel.fromJson(response.data['data']);
       return Product(isEmpty: false, isLoading: false, product: product);
@@ -169,13 +169,13 @@ class ProductRepository {
   }
 
   Future<Product> getProductBySerie({String serie}) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response response = await dio.get('/api/cliente/product_serie/$serie',
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       ProductModel product = ProductModel.fromJson(response.data['data']);
       return Product(
@@ -188,15 +188,15 @@ class ProductRepository {
   }
 
   Future<Devolution> nextStepDevolution(Map<String, dynamic> params) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.post("/api/cliente/next_step",
           data: jsonEncode(params),
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       DevolutionModel devol = DevolutionModel.fromJson(response.data["data"]);
 
@@ -214,15 +214,15 @@ class ProductRepository {
   }
 
   void sendEmail(String email) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       await dio.get(
         "/api/cliente/send_email_dev?email=$email",
         options: Options(
           headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           },
         ),
@@ -232,8 +232,8 @@ class ProductRepository {
 
   Future<Devolution> confirmDevolution(
       ProductList productList, String tipo) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     List<Map<String, dynamic>> products =
         productList.list.map<Map<String, dynamic>>((e) {
@@ -246,7 +246,7 @@ class ProductRepository {
         options: Options(
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           },
         ),
       );

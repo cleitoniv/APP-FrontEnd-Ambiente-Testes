@@ -162,9 +162,15 @@ class _CartScreenState extends State<CartScreen> {
                               _data[index]["type"] != "T"
                           ? Image.network(
                               _data[index]['product'].imageUrl,
+                              errorBuilder: (context, url, error) =>
+                                  Image.asset(
+                                      'assets/images/no_image_product.jpeg'),
                             )
                           : Image.network(
                               _data[index]['product'].imageUrlTest,
+                              errorBuilder: (context, url, error) =>
+                                  Image.asset(
+                                      'assets/images/no_image_product.jpeg'),
                             ),
                       title: Text(
                         '${_data[index]['product'].title}',

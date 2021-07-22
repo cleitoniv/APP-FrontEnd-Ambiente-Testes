@@ -19,13 +19,13 @@ class NotificationsRepository extends Repository<NotificationModel> {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<NotificationsList> fetchNotifications() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get("/api/cliente/notifications",
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
       List<NotificationModel> list =
@@ -41,15 +41,15 @@ class NotificationsRepository extends Repository<NotificationModel> {
   }
 
   Future<bool> readNotification(int id) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       await dio.put(
         "/api/cliente/read_notification/$id",
         options: Options(
           headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           },
         ),

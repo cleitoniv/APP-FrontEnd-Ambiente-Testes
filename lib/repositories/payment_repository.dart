@@ -30,15 +30,15 @@ class PaymentRepository {
   }
 
   Future<PaymentsList> fetchPayments(String filtro) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get(
         "/api/cliente/payments?filtro=$filtro",
         options: Options(
           headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           },
         ),
@@ -181,15 +181,15 @@ class PaymentRepository {
   Future<bool> payment(Map<String, dynamic> data, PaymentMethod paymentMethod,
       bool isBoleto) async {
     Map<String, dynamic> params = generateParams(data, paymentMethod);
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       if (!isBoleto) {
         await dio.post('/api/cliente/pedidos',
             data: jsonEncode(params),
             options: Options(headers: {
               "Content-Type": "application/json",
-              "Authorization": "Bearer ${idToken.token}"
+              "Authorization": "Bearer $idToken"
             }));
 
         return true;
@@ -199,7 +199,7 @@ class PaymentRepository {
           data: jsonEncode(params),
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       return true;
     } catch (error) {

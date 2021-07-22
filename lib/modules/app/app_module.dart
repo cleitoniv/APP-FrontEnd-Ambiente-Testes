@@ -47,210 +47,209 @@ import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class AppModule extends MainModule {
+class AppModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind(
-          (i) => ClientHttp(),
-          singleton: true,
-        ),
-        Bind(
-          (i) => ProductRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => ProductBloc(
-            i.get<ProductRepository>(),
-          ),
-        ),
-        Bind(
-          (i) => RequestsRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => RequestsBloc(
-            i.get<RequestsRepository>(),
-          ),
-        ),
-        Bind(
-          (i) => CreditCardRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => CreditCardBloc(
-            i.get<CreditCardRepository>(),
-          ),
-        ),
-        Bind(
-          (i) => PaymentRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => PaymentBloc(
-            i.get<PaymentRepository>(),
-          ),
-        ),
-        Bind(
-          (i) => NotificationsRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => NotificationBloc(
-            i.get<NotificationsRepository>(),
-          ),
-        ),
-        Bind(
-          (i) => CreditsRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => CreditsBloc(
-            i.get<CreditsRepository>(),
-          ),
-        ),
-        Bind(
-          (i) => RequestsRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => RequestsBloc(
-            i.get<RequestsRepository>(),
-          ),
-        ),
-        Bind(
-          (i) => UserRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => UserBloc(
-            i.get<UserRepository>(),
-          ),
-        ),
-        Bind(
-          (i) => AuthRepository(
-            i.get<ClientHttp>().getClient(),
-          ),
-        ),
-        Bind(
-          (i) => AuthBloc(
-            i.get<AuthRepository>(),
-          ),
-        ),
-        Bind((i) =>
-            CreditoFinanceiroBloc(repository: i.get<CreditsRepository>())),
-        Bind(
-          (i) => IntroWidgetBloc(),
-        ),
-        Bind(
-          (i) => HomeWidgetBloc(),
-        ),
-        Bind(
-          (i) => ProfileWidgetBloc(repository: i.get<UserRepository>()),
-        ),
-        Bind(
-          (i) => AuthWidgetBloc(repository: i.get<AuthRepository>()),
-        ),
-        Bind(
-          (i) => DevolutionWidgetBloc(repository: i.get<ProductRepository>()),
-        ),
-        Bind(
-          (i) => PaymentsWidgetBloc(repository: i.get<PaymentRepository>()),
-        ),
-        Bind(
-          (i) => ExtractWidgetBloc(repository: i.get<CreditsRepository>()),
-        ),
-        Bind(
-          (i) => CartWidgetBloc(repository: i.get<CreditCardRepository>()),
-        ),
-        Bind(
-          (i) => ProductWidgetBloc(),
-        ),
-        Bind(
-          (i) => TicketBloc(
-            i.get<UserRepository>(),
-          ),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind(
+      (i) => ClientHttp(),
+      isSingleton: true,
+    ),
+    Bind(
+      (i) => ProductRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => ProductBloc(
+        i.get<ProductRepository>(),
+      ),
+    ),
+    Bind(
+      (i) => RequestsRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => RequestsBloc(
+        i.get<RequestsRepository>(),
+      ),
+    ),
+    Bind(
+      (i) => CreditCardRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => CreditCardBloc(
+        i.get<CreditCardRepository>(),
+      ),
+    ),
+    Bind(
+      (i) => PaymentRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => PaymentBloc(
+        i.get<PaymentRepository>(),
+      ),
+    ),
+    Bind(
+      (i) => NotificationsRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => NotificationBloc(
+        i.get<NotificationsRepository>(),
+      ),
+    ),
+    Bind(
+      (i) => CreditsRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => CreditsBloc(
+        i.get<CreditsRepository>(),
+      ),
+    ),
+    Bind(
+      (i) => RequestsRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => RequestsBloc(
+        i.get<RequestsRepository>(),
+      ),
+    ),
+    Bind(
+      (i) => UserRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => UserBloc(
+        i.get<UserRepository>(),
+      ),
+    ),
+    Bind(
+      (i) => AuthRepository(
+        i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => AuthBloc(
+        i.get<AuthRepository>(),
+      ),
+    ),
+    Bind((i) => CreditoFinanceiroBloc(repository: i.get<CreditsRepository>())),
+    Bind(
+      (i) => IntroWidgetBloc(),
+    ),
+    Bind(
+      (i) => HomeWidgetBloc(),
+    ),
+    Bind(
+      (i) => ProfileWidgetBloc(repository: i.get<UserRepository>()),
+    ),
+    Bind(
+      (i) => AuthWidgetBloc(repository: i.get<AuthRepository>()),
+    ),
+    Bind(
+      (i) => DevolutionWidgetBloc(repository: i.get<ProductRepository>()),
+    ),
+    Bind(
+      (i) => PaymentsWidgetBloc(repository: i.get<PaymentRepository>()),
+    ),
+    Bind(
+      (i) => ExtractWidgetBloc(repository: i.get<CreditsRepository>()),
+    ),
+    Bind(
+      (i) => CartWidgetBloc(repository: i.get<CreditCardRepository>()),
+    ),
+    Bind(
+      (i) => ProductWidgetBloc(),
+    ),
+    Bind(
+      (i) => TicketBloc(
+        i.get<UserRepository>(),
+      ),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
-          '/',
-          child: (_, args) => MainApp(),
-        ),
-        ModularRouter(
-          '/intro',
-          child: (_, args) => IntroScreen(),
-        ),
-        ModularRouter(
-          '/help',
-          child: (_, args) => HelpScreen(),
-        ),
-        ModularRouter(
-          '/auth',
-          module: AuthModule(),
-        ),
-        ModularRouter(
-          '/home',
-          module: HomeModule(),
-        ),
-        ModularRouter(
-          '/credits',
-          module: CreditsModule(),
-        ),
-        ModularRouter(
-          '/cart',
-          module: CartModule(),
-        ),
-        ModularRouter(
-          '/requests',
-          module: RequestsModule(),
-        ),
-        ModularRouter(
-          '/profile',
-          module: ProfileModule(),
-        ),
-        ModularRouter(
-          '/points',
-          module: PointsModule(),
-        ),
-        ModularRouter(
-          '/extracts',
-          module: ExtractsModule(),
-        ),
-        ModularRouter(
-          '/notifications',
-          module: NotificationsModule(),
-        ),
-        ModularRouter(
-          '/products',
-          module: ProductsModule(),
-        ),
-        ModularRouter(
-          '/devolution',
-          module: DevolutionModule(),
-        ),
-        ModularRouter(
-          '/payments',
-          module: PaymentsModule(),
-        ),
-        ModularRouter(
-          '/credito_financeiro',
-          module: CreditoFinanceiroModule(),
-        ),
-        ModularRouter(
-          '/ticket',
-          module: TicketModule(),
-        ),
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute(
+      '/',
+      child: (_, args) => MainApp(),
+    ),
+    ChildRoute(
+      '/intro',
+      child: (_, args) => IntroScreen(),
+    ),
+    ChildRoute(
+      '/help',
+      child: (_, args) => HelpScreen(),
+    ),
+    ModuleRoute(
+      '/auth',
+      module: AuthModule(),
+    ),
+    ModuleRoute(
+      '/home',
+      module: HomeModule(),
+    ),
+    ModuleRoute(
+      '/credits',
+      module: CreditsModule(),
+    ),
+    ModuleRoute(
+      '/cart',
+      module: CartModule(),
+    ),
+    ModuleRoute(
+      '/requests',
+      module: RequestsModule(),
+    ),
+    ModuleRoute(
+      '/profile',
+      module: ProfileModule(),
+    ),
+    ModuleRoute(
+      '/points',
+      module: PointsModule(),
+    ),
+    ModuleRoute(
+      '/extracts',
+      module: ExtractsModule(),
+    ),
+    ModuleRoute(
+      '/notifications',
+      module: NotificationsModule(),
+    ),
+    ModuleRoute(
+      '/products',
+      module: ProductsModule(),
+    ),
+    ModuleRoute(
+      '/devolution',
+      module: DevolutionModule(),
+    ),
+    ModuleRoute(
+      '/payments',
+      module: PaymentsModule(),
+    ),
+    ModuleRoute(
+      '/credito_financeiro',
+      module: CreditoFinanceiroModule(),
+    ),
+    ModuleRoute(
+      '/ticket',
+      module: TicketModule(),
+    ),
+  ];
 
   @override
   Widget get bootstrap => AppWidget();

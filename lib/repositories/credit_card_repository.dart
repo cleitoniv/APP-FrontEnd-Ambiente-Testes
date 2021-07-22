@@ -41,12 +41,12 @@ class CreditCardRepository {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<RemoveCard> removeCard(int id) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response response = await dio.delete("/api/cliente/card_delete/$id",
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
       return RemoveCard(
@@ -58,14 +58,14 @@ class CreditCardRepository {
   }
 
   Future<bool> selectCreditCard(int id) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.put('/api/cliente/select_card/$id',
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       return response.data["success"];
     } catch (error) {
@@ -74,14 +74,14 @@ class CreditCardRepository {
   }
 
   Future<CreditCard> addCreditCard(CreditCardModel model) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response response = await dio.post(
         "/api/cliente/card",
         options: Options(headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer ${idToken.token}"
+          "Authorization": "Bearer $idToken"
         }),
         data: jsonEncode({
           'param': {
@@ -104,14 +104,14 @@ class CreditCardRepository {
   }
 
   Future<CreditCardList> index() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/cards',
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       List<CreditCardModel> cards = (response.data as List)
           .map(
@@ -127,14 +127,14 @@ class CreditCardRepository {
   }
 
   Future<String> store({CreditCardModel model}) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response response = await dio.post(
         "/api/cliente/card",
         options: Options(headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer ${idToken.token}"
+          "Authorization": "Bearer $idToken"
         }),
         data: jsonEncode({
           'param': {
@@ -153,15 +153,15 @@ class CreditCardRepository {
   }
 
   Future<List> fetchInstallments(int valor, bool isBoleto) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       if (isBoleto) {
         Response response = await dio.get(
           "/api/cliente/generate_boleto?valor=$valor",
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }),
         );
 
@@ -171,7 +171,7 @@ class CreditCardRepository {
         "/api/cliente/taxa?valor=$valor",
         options: Options(headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer ${idToken.token}"
+          "Authorization": "Bearer $idToken"
         }),
       );
 

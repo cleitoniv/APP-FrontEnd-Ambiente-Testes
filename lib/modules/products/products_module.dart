@@ -5,32 +5,32 @@ import 'package:central_oftalmica_app_cliente/modules/products/product_screen.da
 import 'package:central_oftalmica_app_cliente/modules/products/request_details_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class ProductsModule extends ChildModule {
+class ProductsModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind(
-          (i) => i.get<ProductBloc>(),
-        ),
-        Bind(
-          (i) => i.get<ProductWidgetBloc>(),
-        ),
-        Bind(
-          (i) => i.get<RequestsBloc>(),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind(
+      (i) => i.get<ProductBloc>(),
+    ),
+    Bind(
+      (i) => i.get<ProductWidgetBloc>(),
+    ),
+    Bind(
+      (i) => i.get<RequestsBloc>(),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
-          '/:id',
-          child: (_, args) => ProductScreen(id: 0, product: args.data),
-        ),
-        ModularRouter(
-          '/:id/requestDetails',
-          child: (_, args) => RequestDetailsScreen(
-            id: 0,
-            type: args.data,
-          ),
-        ),
-      ];
+  List<ModularRoute> routes = [
+    ChildRoute(
+      '/:id',
+      child: (_, args) => ProductScreen(id: 0, product: args.data),
+    ),
+    ChildRoute(
+      '/:id/requestDetails',
+      child: (_, args) => RequestDetailsScreen(
+        id: 0,
+        type: args.data,
+      ),
+    ),
+  ];
 }

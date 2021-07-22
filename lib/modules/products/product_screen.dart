@@ -239,6 +239,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                       ),
                       child: CachedNetworkImage(
+                        errorWidget: (context, url, error) =>
+                            Image.asset('assets/images/no_image_product.jpeg'),
                         imageUrl: productSnapshot.data.product.imageUrl,
                       ),
                     ),

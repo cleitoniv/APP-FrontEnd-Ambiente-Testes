@@ -7,8 +7,8 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/',
-      navigatorKey: Modular.navigatorKey,
-      onGenerateRoute: Modular.generateRoute,
+      // navigatorKey: Modular.navigatorKey,
+      // onGenerateRoute: Modular.generateRoute,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Color(0xff56B952),
@@ -75,6 +75,6 @@ class AppWidget extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ).modular();
   }
 }

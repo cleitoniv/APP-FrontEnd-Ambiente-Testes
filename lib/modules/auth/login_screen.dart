@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _scaffoldKey.currentState.showSnackBar(
           _snackBar,
         );
-      } else if (_login.result.user.isEmailVerified) {
+      } else if (_login.result.user.emailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
         setState(() {
           this._isLoading = false;

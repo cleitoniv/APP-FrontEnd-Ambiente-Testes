@@ -1025,6 +1025,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     CachedNetworkImage(
+                      errorWidget: (context, url, error) =>
+                          Image.asset('assets/images/no_image_product.jpeg'),
                       imageUrl: currentProduct.product.imageUrl,
                       width: 120,
                       height: 100,

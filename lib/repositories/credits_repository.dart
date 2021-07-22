@@ -49,13 +49,13 @@ class CreditsRepository {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<ExtratoProduto> fetchExtratoProduto() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get("/api/cliente/extrato_prod",
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
       List<ExtratoProdutoModel> extrato =
@@ -73,13 +73,13 @@ class CreditsRepository {
   }
 
   Future<ExtratoFinanceiro> fetchExtrato() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get("/api/cliente/extrato_finan",
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
       ExtratoFinanceiroModel extrato =
@@ -119,8 +119,8 @@ class CreditsRepository {
 
   Future<bool> creditoFinanceiroPagamento(
       CreditoFinanceiro credito, int cartaoId, bool isBoleto) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       await dio.post(
@@ -138,7 +138,7 @@ class CreditsRepository {
           },
         ),
         options: Options(
-          headers: {"Authorization": "Bearer ${idToken.token}"},
+          headers: {"Authorization": "Bearer $idToken"},
         ),
       );
       return true;
@@ -148,14 +148,14 @@ class CreditsRepository {
   }
 
   Future<Offers> getOffers() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/offers',
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
@@ -169,15 +169,15 @@ class CreditsRepository {
   }
 
   Future<Offers> getOffersCreditProduct(String group) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/get_pacote',
           queryParameters: {"grupo": group},
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);

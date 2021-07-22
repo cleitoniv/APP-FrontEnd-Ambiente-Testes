@@ -38,6 +38,7 @@ class _IntroScreenState extends State<IntroScreen> {
   _handleContinue() {
     Modular.to.popUntil((route) => route.isFirst);
     Modular.to.pushReplacementNamed('/auth/login');
+    // Modular.to.navigate("/auth/login");
   }
 
   @override
@@ -104,6 +105,7 @@ class _IntroScreenState extends State<IntroScreen> {
           StreamBuilder<int>(
               stream: _introBloc.currentSlideOut,
               builder: (context, snapshot) {
+                print(snapshot.data);
                 return Positioned(
                   bottom: 25,
                   right: 20,

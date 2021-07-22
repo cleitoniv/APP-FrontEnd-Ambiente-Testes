@@ -367,6 +367,8 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                     child: ListTileMoreCustomizable(
                         contentPadding: const EdgeInsets.all(5),
                         leading: CachedNetworkImage(
+                          errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/no_image_product.jpeg'),
                           imageUrl: productSnapshot
                               .data.devolution.product["imageUrl"],
                           width: 80,

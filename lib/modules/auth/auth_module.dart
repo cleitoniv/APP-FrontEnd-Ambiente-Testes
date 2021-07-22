@@ -11,47 +11,47 @@ import 'package:central_oftalmica_app_cliente/modules/auth/validation_screen.dar
 import 'package:central_oftalmica_app_cliente/modules/auth/delivery_address_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class AuthModule extends ChildModule {
+class AuthModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind((i) => i.get<AuthWidgetBloc>()),
-        Bind((i) => i.get<AuthBloc>()),
-      ];
+  final List<Bind> binds = [
+    Bind((i) => i.get<AuthWidgetBloc>()),
+    Bind((i) => i.get<AuthBloc>()),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter('/validate', child: (_, args) => ValidationScreen()),
-        ModularRouter(
-          '/login',
-          child: (_, args) => LoginScreen(),
-        ),
-        ModularRouter(
-          '/createAccount',
-          child: (_, args) => CreateAccountScreen(),
-        ),
-        ModularRouter(
-          '/activityPerformed',
-          child: (_, args) => ActivityPerformedScreen(),
-        ),
-        ModularRouter(
-          '/completeCreateAccount',
-          child: (_, args) => CompleteCreateAccountScreen(),
-        ),
-        ModularRouter(
-          '/deliveryAddressRegister',
-          child: (_, args) => DeliveryAddressRegisterScreen(),
-        ),
-        ModularRouter(
-          '/passwordReset',
-          child: (_, args) => PasswordResetScreen(),
-        ),
-        ModularRouter(
-          '/confirmSms',
-          child: (_, args) => ConfirmSmsScreen(phone: args.data),
-        ),
-        ModularRouter(
-          '/terms',
-          child: (_, args) => TermsResponsability(),
-        ),
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute('/validate', child: (_, args) => ValidationScreen()),
+    ChildRoute(
+      '/login',
+      child: (_, args) => LoginScreen(),
+    ),
+    ChildRoute(
+      '/createAccount',
+      child: (_, args) => CreateAccountScreen(),
+    ),
+    ChildRoute(
+      '/activityPerformed',
+      child: (_, args) => ActivityPerformedScreen(),
+    ),
+    ChildRoute(
+      '/completeCreateAccount',
+      child: (_, args) => CompleteCreateAccountScreen(),
+    ),
+    ChildRoute(
+      '/deliveryAddressRegister',
+      child: (_, args) => DeliveryAddressRegisterScreen(),
+    ),
+    ChildRoute(
+      '/passwordReset',
+      child: (_, args) => PasswordResetScreen(),
+    ),
+    ChildRoute(
+      '/confirmSms',
+      child: (_, args) => ConfirmSmsScreen(phone: args.data),
+    ),
+    ChildRoute(
+      '/terms',
+      child: (_, args) => TermsResponsability(),
+    ),
+  ];
 }

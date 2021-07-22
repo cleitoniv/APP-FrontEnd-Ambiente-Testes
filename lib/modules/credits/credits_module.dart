@@ -3,18 +3,18 @@ import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class CreditsModule extends ChildModule {
+class CreditsModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind((i) => i.get<HomeWidgetBloc>()),
-        Bind((i) => i.get<CreditsBloc>()),
-      ];
+  final List<Bind> binds = [
+    Bind((i) => i.get<HomeWidgetBloc>()),
+    Bind((i) => i.get<CreditsBloc>()),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
-          '/',
-          child: (_, args) => CreditsScreen(),
-        ),
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute(
+      '/',
+      child: (_, args) => CreditsScreen(),
+    ),
+  ];
 }

@@ -3,20 +3,20 @@ import 'package:central_oftalmica_app_cliente/blocs/ticket_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/app/ticket_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class TicketModule extends ChildModule {
+class TicketModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind((i) => i.get<HomeWidgetBloc>()),
-        Bind(
-          (i) => i.get<TicketBloc>(),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind((i) => i.get<HomeWidgetBloc>()),
+    Bind(
+      (i) => i.get<TicketBloc>(),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
-          '/',
-          child: (_, args) => TicketScreen(),
-        ),
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute(
+      '/',
+      child: (_, args) => TicketScreen(),
+    ),
+  ];
 }

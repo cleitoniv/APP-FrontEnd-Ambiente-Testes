@@ -174,13 +174,13 @@ class RequestsRepository {
   }
 
   Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response response = await dio.post('/api/cliente/pedido_produto',
           data: jsonEncode(generateParams({'cart': _data})),
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
       return OrderPayment(isValid: response.data["success"], isLoading: false);
@@ -193,13 +193,13 @@ class RequestsRepository {
   }
 
   Future<PointsList> fetchPoints() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/points',
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
       List<PointsModel> list =
@@ -215,8 +215,8 @@ class RequestsRepository {
 
   Future<Pedido> getPedido(int id, PedidoModel pedidoData,
       {bool reposicao = false}) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get(
@@ -228,7 +228,7 @@ class RequestsRepository {
         },
         options: Options(
           headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           },
         ),
@@ -242,8 +242,8 @@ class RequestsRepository {
   }
 
   Future<PedidosList> getPedidos(int filtro) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get(
@@ -251,7 +251,7 @@ class RequestsRepository {
         options: Options(
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           },
         ),
       );

@@ -274,6 +274,10 @@ class RequestInfoScreen extends StatelessWidget {
                                                 const EdgeInsets.all(0),
                                             horizontalTitleGap: 10,
                                             leading: CachedNetworkImage(
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  Image.asset(
+                                                      'assets/images/no_image_product.jpeg'),
                                               imageUrl: items[index]
                                                   .items[index2]['imageUrl'],
                                               width: 80,

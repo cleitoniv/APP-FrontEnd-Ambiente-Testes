@@ -397,6 +397,9 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                                 contentPadding: const EdgeInsets.all(5),
                                 leading: CachedNetworkImage(
                                   imageUrl: "${e.imageUrl}",
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                          'assets/images/no_image_product.jpeg'),
                                   width: 80,
                                   height: 80,
                                   fit: BoxFit.cover,
