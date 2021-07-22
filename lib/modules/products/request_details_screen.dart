@@ -145,7 +145,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "T") {
@@ -154,7 +154,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "CF") {
@@ -164,7 +164,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else {
@@ -191,7 +191,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             '${int.parse(_lensDireitoController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "O limite de caixa estorou. Voce possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
         return _lensDireitoController.text = "1";
       }
     } else if (widget.type == "T") {
@@ -203,7 +203,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             '${int.parse(_lensDireitoController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "O limite de caixa estorou. Voce possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "CF") {
