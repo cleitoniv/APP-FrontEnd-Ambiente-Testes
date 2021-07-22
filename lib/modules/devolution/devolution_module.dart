@@ -4,19 +4,18 @@ import 'package:central_oftalmica_app_cliente/modules/devolution/devolution_scre
 import 'package:central_oftalmica_app_cliente/modules/devolution/effectuation_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class DevolutionModule extends ChildModule {
+class DevolutionModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind(
-          (i) => i.get<DevolutionWidgetBloc>(),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind(
+      (i) => i.get<DevolutionWidgetBloc>(),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter('/', child: (_, args) => DevolutionScreen()),
-        ModularRouter('/confirm', child: (_, args) => ConfirmScreen()),
-        ModularRouter('/effectuation',
-            child: (_, args) => EffectuationScreen()),
-      ];
+  List<ModularRoute> routes = [
+    ChildRoute('/', child: (_, args) => DevolutionScreen()),
+    ChildRoute('/confirm', child: (_, args) => ConfirmScreen()),
+    ChildRoute('/effectuation', child: (_, args) => EffectuationScreen()),
+  ];
 }

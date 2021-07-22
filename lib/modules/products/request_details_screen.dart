@@ -145,7 +145,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "T") {
@@ -154,7 +154,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "CF") {
@@ -164,7 +164,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else {
@@ -191,7 +191,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             '${int.parse(_lensDireitoController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "O limite de caixa estorou. Voce possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
         return _lensDireitoController.text = "1";
       }
     } else if (widget.type == "T") {
@@ -203,7 +203,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             '${int.parse(_lensDireitoController.text) + 1}';
       } else {
         _showDialog("Limite atingido.",
-            "O limite de caixa estorou. Voce possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "CF") {
@@ -476,6 +476,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
+    print(widget.type);
+    print(currentProduct.product.tests);
+
     if (isValidDate(_birthdayController.text)) {
       return;
     }
@@ -630,6 +633,30 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
+
+      print(int.parse(_lensDireitoController.text));
+      print(int.parse(_lensEsquerdoController.text));
+      print(currentProduct.product.tests);
+      if (widget.type != "A" &&
+              _data["tests"] == "Sim" &&
+              currentProduct.product.tests <= 0 ||
+          widget.type != "A" &&
+              _data["tests"] == "Sim" &&
+              currentProduct.product.tests <
+                  int.parse(_lensDireitoController.text) +
+                      _cartTotalTest +
+                      int.parse(_lensEsquerdoController.text) ||
+          _data["tests"] == "Sim" &&
+              currentProduct.product.tests <
+                  int.parse(_lensController.text) + _cartTotalTest) {
+        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+          "Limite Atingido": ["Você não possui caixas de teste suficiente"]
+        });
+        _scaffoldKey.currentState.showSnackBar(
+          _snack,
+        );
+        return;
+      }
 
       if (_data['operation'] == "07" && _data["tests"] == "Sim" ||
           _data['operation'] == "01" && _data["tests"] == "Sim" ||
@@ -1025,6 +1052,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     CachedNetworkImage(
+                      errorWidget: (context, url, error) =>
+                          Image.asset('assets/images/no_image_product.jpeg'),
                       imageUrl: currentProduct.product.imageUrl,
                       width: 120,
                       height: 100,

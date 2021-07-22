@@ -2,16 +2,16 @@ import 'package:central_oftalmica_app_cliente/blocs/payments_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/payments/payments_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class PaymentsModule extends ChildModule {
+class PaymentsModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind(
-          (i) => i.get<PaymentsWidgetBloc>(),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind(
+      (i) => i.get<PaymentsWidgetBloc>(),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter('/', child: (_, args) => PaymentsScreen()),
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute('/', child: (_, args) => PaymentsScreen()),
+  ];
 }

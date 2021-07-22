@@ -2,19 +2,19 @@ import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/extracts/extracts_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class ExtractsModule extends ChildModule {
+class ExtractsModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind(
-          (i) => i.get<ExtractWidgetBloc>(),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind(
+      (i) => i.get<ExtractWidgetBloc>(),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
-          '/',
-          child: (_, args) => ExtractsScreen(),
-        )
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute(
+      '/',
+      child: (_, args) => ExtractsScreen(),
+    )
+  ];
 }

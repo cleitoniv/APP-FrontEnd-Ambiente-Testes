@@ -5,21 +5,21 @@ import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/tabs_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class HomeModule extends ChildModule {
+class HomeModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind((i) => i.get<HomeWidgetBloc>()),
-        Bind((i) => i.get<RequestsBloc>()),
-        Bind((i) => i.get<AuthBloc>()),
-        Bind((i) => i.get<NotificationBloc>()),
-      ];
+  final List<Bind> binds = [
+    Bind((i) => i.get<HomeWidgetBloc>()),
+    Bind((i) => i.get<RequestsBloc>()),
+    Bind((i) => i.get<AuthBloc>()),
+    Bind((i) => i.get<NotificationBloc>()),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter('/:index', child: (_, args) {
-          return TabsScreen(
-            index: int.parse(args.params['index']),
-          );
-        }),
-      ];
+  List<ModularRoute> routes = [
+    ChildRoute('/:index', child: (_, args) {
+      return TabsScreen(
+        index: int.parse(args.params['index']),
+      );
+    }),
+  ];
 }

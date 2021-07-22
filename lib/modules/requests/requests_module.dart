@@ -6,37 +6,37 @@ import 'package:central_oftalmica_app_cliente/modules/requests/request_info_scre
 import 'package:central_oftalmica_app_cliente/modules/requests/requests_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class RequestsModule extends ChildModule {
+class RequestsModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind(
-          (i) => i.get<HomeWidgetBloc>(),
-        ),
-        Bind(
-          (i) => i.get<RequestsBloc>(),
-        ),
-        Bind(
-          (i) => i.get<ProductBloc>(),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind(
+      (i) => i.get<HomeWidgetBloc>(),
+    ),
+    Bind(
+      (i) => i.get<RequestsBloc>(),
+    ),
+    Bind(
+      (i) => i.get<ProductBloc>(),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
-          '/',
-          child: (_, args) => RequestsScreen(),
-        ),
-        ModularRouter(
-          '/reposition',
-          child: (_, args) => RepositionScreen(),
-        ),
-        ModularRouter(
-          '/:id',
-          child: (_, args) => RequestInfoScreen(
-            id: int.parse(args.params['id']),
-            pedidoData: args.data["pedidoData"],
-            reposicao: args.data["reposicao"],
-          ),
-        )
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute(
+      '/',
+      child: (_, args) => RequestsScreen(),
+    ),
+    ChildRoute(
+      '/reposition',
+      child: (_, args) => RepositionScreen(),
+    ),
+    ChildRoute(
+      '/:id',
+      child: (_, args) => RequestInfoScreen(
+        id: int.parse(args.params['id']),
+        pedidoData: args.data["pedidoData"],
+        reposicao: args.data["reposicao"],
+      ),
+    )
+  ];
 }

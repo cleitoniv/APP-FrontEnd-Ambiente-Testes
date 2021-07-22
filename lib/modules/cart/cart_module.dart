@@ -10,44 +10,44 @@ import 'package:central_oftalmica_app_cliente/modules/cart/finish_payment_screen
 import 'package:central_oftalmica_app_cliente/modules/cart/product_cart_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class CartModule extends ChildModule {
+class CartModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind(
-          (i) => i.get<CartWidgetBloc>(),
-        ),
-        Bind(
-          (i) => i.get<RequestsBloc>(),
-        ),
-        Bind(
-          (i) => i.get<HomeWidgetBloc>(),
-        ),
-        Bind(
-          (i) => i.get<PaymentBloc>(),
-        ),
-        Bind(
-          (i) => i.get<CreditCardBloc>(),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind(
+      (i) => i.get<CartWidgetBloc>(),
+    ),
+    Bind(
+      (i) => i.get<RequestsBloc>(),
+    ),
+    Bind(
+      (i) => i.get<HomeWidgetBloc>(),
+    ),
+    Bind(
+      (i) => i.get<PaymentBloc>(),
+    ),
+    Bind(
+      (i) => i.get<CreditCardBloc>(),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
-          '/',
-          child: (_, args) => CartScreen(),
-        ),
-        ModularRouter('/product', child: (_, args) => ProductCartScreen()),
-        ModularRouter(
-          '/payment',
-          child: (_, args) => PaymentScreen(),
-        ),
-        ModularRouter(
-          '/addCreditCard',
-          child: (_, args) => AddCreditCardScreen(screen: args.data),
-        ),
-        ModularRouter(
-          '/finishPayment',
-          child: (_, args) => FinishPayment(),
-        )
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute(
+      '/',
+      child: (_, args) => CartScreen(),
+    ),
+    ChildRoute('/product', child: (_, args) => ProductCartScreen()),
+    ChildRoute(
+      '/payment',
+      child: (_, args) => PaymentScreen(),
+    ),
+    ChildRoute(
+      '/addCreditCard',
+      child: (_, args) => AddCreditCardScreen(screen: args.data),
+    ),
+    ChildRoute(
+      '/finishPayment',
+      child: (_, args) => FinishPayment(),
+    )
+  ];
 }

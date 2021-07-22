@@ -66,7 +66,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   onPressed: () {
                     Modular.to.pop();
                   }),
-              SizedBox(width: 80),
+              SizedBox(height: 10),
               RaisedButton(
                   child: Text(
                     "Compre crédito",
@@ -239,6 +239,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                       ),
                       child: CachedNetworkImage(
+                        errorWidget: (context, url, error) =>
+                            Image.asset('assets/images/no_image_product.jpeg'),
                         imageUrl: productSnapshot.data.product.imageUrl,
                       ),
                     ),

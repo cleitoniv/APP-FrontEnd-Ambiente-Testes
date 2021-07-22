@@ -5,17 +5,17 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
 class AuthWidgetBloc extends Disposable {
-  AuthResult _guestToken;
+  UserCredential _guestToken;
   AuthRepository repository;
   AuthWidgetBloc({this.repository});
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void setAuthResult(AuthResult auth) {
+  void setAuthResult(UserCredential auth) {
     this._guestToken = auth;
   }
 
-  AuthResult getGuestToken() {
+  UserCredential getGuestToken() {
     return _guestToken;
   }
 
@@ -85,6 +85,10 @@ class AuthWidgetBloc extends Disposable {
         return "ok";
       }
     } catch (e) {
+      if (e is FirebaseAuthException) {
+        print(e.code);
+        return e.code.toUpperCase();
+      }
       final error = e as PlatformException;
       return error.code;
     }

@@ -77,13 +77,13 @@ class UserRepository {
   UserRepository(this.dio);
 
   Future<Periodos> periodosAtendimento() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response resp = await dio.get("/api/cliente/period",
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
       return Periodos(isLoading: false, isValid: true, list: resp.data['data']);
@@ -96,14 +96,14 @@ class UserRepository {
 
   Future<UpdateUsuarioCliente> updateUsuarioCliente(
       int id, Map<String, dynamic> data) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.put("/api/usuarios_cliente/$id",
           data: jsonEncode({"param": data}),
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
       if (response.statusCode == 200) {
@@ -119,13 +119,13 @@ class UserRepository {
   }
 
   Future<DeleteUsuarioCliente> deleteUsuarioCliente(int id) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.delete("/api/usuarios_cliente/$id",
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
       if (response.statusCode == 200) {
@@ -141,13 +141,13 @@ class UserRepository {
   }
 
   Future<AddUsuarioCliente> addUsuarioCliente(Map<String, dynamic> data) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
     try {
       Response response = await dio.post("/api/cliente/cliente_user",
           data: jsonEncode({"param": data}),
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
       if (response.statusCode == 201) {
@@ -169,14 +169,14 @@ class UserRepository {
   }
 
   Future<UsuarioClienteList> getUsuarios() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.get(
           "/api/usuarios_cliente?page=1&page_size=1000",
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
 
@@ -192,13 +192,13 @@ class UserRepository {
   }
 
   Future<Endereco> enderecoEntrega() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.get("/api/cliente/endereco_entrega",
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
 
@@ -211,8 +211,8 @@ class UserRepository {
   }
 
   Future<PointsResult> rescuePoints(int points, credits) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.post(
@@ -220,7 +220,7 @@ class UserRepository {
         data: jsonEncode({}),
         options: Options(
           headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           },
         ),
@@ -233,15 +233,15 @@ class UserRepository {
   }
 
   Future<PointsResult> convertPoints(int points) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.get(
         "/api/cliente/convert_points?points=$points",
         options: Options(
           headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           },
         ),
@@ -256,14 +256,14 @@ class UserRepository {
   }
 
   Future<PointsResult> addPoints(Map<String, dynamic> data) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.post('/api/cliente/add_points',
           data: jsonEncode({'param': data}),
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
 
@@ -278,14 +278,14 @@ class UserRepository {
   }
 
   Future<AtendPref> updateAtendPref(String hour) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.post("/api/cliente/atend_pref",
           data: jsonEncode({"horario": hour}),
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
 
@@ -314,13 +314,13 @@ class UserRepository {
   }
 
   Future<TicketModel> openTicket(data) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
     try {
       Response response = await dio.post("/api/cliente/create_ticket",
           data: jsonEncode({'param': data}),
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
 

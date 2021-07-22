@@ -105,6 +105,10 @@ class RequestsBloc extends Disposable {
       data['removeItem'] = 'Sim';
       data["tests"] = "Não";
 
+      if (_newData['operation'] == "01" && _newData["tests"] == "Sim") {
+        _newData["operation"] = "04";
+      }
+
       if (_first.isEmpty) {
         _first.add(_newData);
         cartIn.add(_first);

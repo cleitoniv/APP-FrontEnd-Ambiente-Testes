@@ -133,7 +133,7 @@ class RequestsScreen extends StatelessWidget {
           child: Text(
             Helper.dateToMonth(
               _requests[index].dataInclusao,
-            ).substring(0, 8),
+            ).substring(0, 9),
             style: Theme.of(context).textTheme.subtitle1.copyWith(
                   fontSize: 14,
                 ),

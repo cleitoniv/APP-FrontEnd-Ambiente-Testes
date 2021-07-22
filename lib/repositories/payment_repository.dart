@@ -30,15 +30,15 @@ class PaymentRepository {
   }
 
   Future<PaymentsList> fetchPayments(String filtro) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get(
         "/api/cliente/payments?filtro=$filtro",
         options: Options(
           headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           },
         ),
@@ -119,7 +119,7 @@ class PaymentRepository {
           'olho_esquerdo': e['Olho esquerdo'] ?? null,
           'olho_ambos': e['Mesmo grau em ambos'] ?? null
         };
-      } else if (e["operation"] == "00") {
+      } else if (e["operation"] == "04") {
         return {
           'type': e['type'],
           'operation': e['operation'],
@@ -130,17 +130,20 @@ class PaymentRepository {
           },
           'items': [
             {
+              'grupo_teste': e['product'].groupTest,
               'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
-              'grupo': e['product'].groupTest,
+              'grupo': e['tests'] == "Não"
+                  ? e['product'].group
+                  : e['product'].groupTest,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
               'duracao': e['product'].duracao,
               'prc_unitario': e['product'].value,
               "valor_test": e['product'].valueTest * 100,
-              'tests': 'Sim'
+              'tests': e['tests']
             }
           ],
           'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
@@ -181,15 +184,15 @@ class PaymentRepository {
   Future<bool> payment(Map<String, dynamic> data, PaymentMethod paymentMethod,
       bool isBoleto) async {
     Map<String, dynamic> params = generateParams(data, paymentMethod);
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       if (!isBoleto) {
         await dio.post('/api/cliente/pedidos',
             data: jsonEncode(params),
             options: Options(headers: {
               "Content-Type": "application/json",
-              "Authorization": "Bearer ${idToken.token}"
+              "Authorization": "Bearer $idToken"
             }));
 
         return true;
@@ -199,7 +202,7 @@ class PaymentRepository {
           data: jsonEncode(params),
           options: Options(headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${idToken.token}"
+            "Authorization": "Bearer $idToken"
           }));
       return true;
     } catch (error) {

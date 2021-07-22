@@ -24,7 +24,7 @@ class LoginEvent implements Authentication {
   String message;
   bool isValid;
   bool loading;
-  AuthResult result;
+  UserCredential result;
   Map<String, dynamic> errorData;
   LoginEvent({this.message, this.isValid, this.errorData, this.result});
 }
@@ -74,15 +74,15 @@ class AuthRepository {
   AuthRepository(this.dio);
 
   Future<Endereco> getEnderecoByCep(String cep) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.get(
         "/api/cliente/get_endereco_by_cep?cep=$cep",
         options: Options(
           headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           },
         ),
@@ -100,17 +100,14 @@ class AuthRepository {
   }
 
   Future<Cadastro> getDados(String cnpj) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
 
     try {
       Response response = await dio.get(
         "/api/cliente/protheus/$cnpj",
         options: Options(
-          headers: {
-            "Authorization": "Bearer ${token.token}",
-            "Content-Type": ""
-          },
+          headers: {"Authorization": "Bearer $token", "Content-Type": ""},
         ),
       );
 
@@ -141,7 +138,7 @@ class AuthRepository {
     String password,
   }) async {
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(
+      UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -160,13 +157,13 @@ class AuthRepository {
   }
 
   Future<LoginEvent> firstAccess(Map<String, dynamic> data) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = await _auth.currentUser;
+    String token = await user.getIdToken();
     try {
       await dio.post('/api/cliente/first_access',
           data: jsonEncode({"param": data}),
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
 
@@ -181,13 +178,13 @@ class AuthRepository {
   }
 
   Future<LoginEvent> createAccount(Map<String, dynamic> data) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult token = await user.getIdToken();
+    User user = _auth.currentUser;
+    String token = await user.getIdToken();
     try {
       await dio.post('/api/cliente',
           data: jsonEncode({"param": data}),
           options: Options(headers: {
-            "Authorization": "Bearer ${token.token}",
+            "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
       return LoginEvent(message: "OK", isValid: true);
@@ -201,12 +198,12 @@ class AuthRepository {
   }
 
   Future<int> currentUserStatus() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response resp = await dio.get("/api/cliente/current_user",
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
 
@@ -217,12 +214,12 @@ class AuthRepository {
   }
 
   Future<dynamic> currentUserIsBlocked() async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response resp = await dio.get("/api/cliente/current_user",
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
@@ -234,16 +231,16 @@ class AuthRepository {
   }
 
   Future<AuthEvent> currentUser(LoginEvent login) async {
-    FirebaseUser user = await _auth.currentUser();
-    IdTokenResult idToken = await user.getIdToken();
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
       Response resp = await dio.get("/api/cliente/current_user",
           options: Options(headers: {
-            "Authorization": "Bearer ${idToken.token}",
+            "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
-      if (cliente.sitApp == "A" || cliente.sitApp == "E") {
+      if (cliente.sitApp == "A") {
         return AuthEvent(
             isValid: true, data: cliente, loading: false, integrated: false);
       } else if (cliente.sitApp == "B") {
@@ -264,6 +261,17 @@ class AuthRepository {
             errorData: {
               "Cadastro": [
                 "Erro no seu cadastro. Entre em contato com a Central Oftalmica."
+              ]
+            });
+      } else if (cliente.sitApp == "E") {
+        return AuthEvent(
+            isValid: false,
+            integrated: true,
+            data: cliente,
+            loading: true,
+            errorData: {
+              "Login": [
+                "Não foi possivel fazer o Login, aguarde seu cadastro ser aprovado."
               ]
             });
       } else {
@@ -304,7 +312,7 @@ class AuthRepository {
 
   Future<String> updatePassword({String password}) async {
     try {
-      FirebaseUser _user = await _auth.currentUser();
+      User _user = _auth.currentUser;
 
       await _user.updatePassword(password);
 

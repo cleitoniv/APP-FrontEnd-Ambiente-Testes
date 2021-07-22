@@ -100,6 +100,8 @@ class ProductWidget extends StatelessWidget {
               ],
             ),
             CachedNetworkImage(
+              errorWidget: (context, url, error) =>
+                  Image.asset('assets/images/no_image_product.jpeg'),
               imageUrl: imageUrl,
               width: 120,
               height: 100,

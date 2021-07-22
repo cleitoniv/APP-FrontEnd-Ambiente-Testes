@@ -8,45 +8,45 @@ import 'package:central_oftalmica_app_cliente/modules/profile/profile_screen.dar
 import 'package:central_oftalmica_app_cliente/modules/profile/security_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class ProfileModule extends ChildModule {
+class ProfileModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind(
-          (i) => i.get<ProfileWidgetBloc>(),
-        ),
-        Bind(
-          (i) => i.get<UserBloc>(),
-        ),
-      ];
+  final List<Bind> binds = [
+    Bind(
+      (i) => i.get<ProfileWidgetBloc>(),
+    ),
+    Bind(
+      (i) => i.get<UserBloc>(),
+    ),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
-          '/',
-          child: (_, args) => ProfileScreen(),
-        ),
-        ModularRouter(
-          '/personalInfo',
-          child: (_, args) => PersonalInfoScreen(),
-        ),
-        ModularRouter(
-          '/deliveryAddress',
-          child: (_, args) => DeliveryAddressScreen(),
-        ),
-        ModularRouter(
-          '/security',
-          child: (_, args) => SecurityScreen(),
-        ),
-        ModularRouter(
-          '/appUsers',
-          child: (_, args) => AppUsersScreen(),
-        ),
-        ModularRouter(
-          '/appUsers/:type',
-          child: (_, args) => FormScreen(
-            formType: args.params['type'],
-            usuario: args.data,
-          ),
-        ),
-      ];
+  final List<ModularRoute> routes = [
+    ChildRoute(
+      '/',
+      child: (_, args) => ProfileScreen(),
+    ),
+    ChildRoute(
+      '/personalInfo',
+      child: (_, args) => PersonalInfoScreen(),
+    ),
+    ChildRoute(
+      '/deliveryAddress',
+      child: (_, args) => DeliveryAddressScreen(),
+    ),
+    ChildRoute(
+      '/security',
+      child: (_, args) => SecurityScreen(),
+    ),
+    ChildRoute(
+      '/appUsers',
+      child: (_, args) => AppUsersScreen(),
+    ),
+    ChildRoute(
+      '/appUsers/:type',
+      child: (_, args) => FormScreen(
+        formType: args.params['type'],
+        usuario: args.data,
+      ),
+    ),
+  ];
 }
