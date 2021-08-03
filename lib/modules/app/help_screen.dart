@@ -34,23 +34,18 @@ class _HelpScreenState extends State<HelpScreen> {
         'onTap': () => _launchURL('https://www.centraloftalmica.com.br'),
       },
       {
-        'title': 'contato@centraloftalmica.com.br',
+        'title': 'contato@centraloftalmica.com',
         'icon': 'email.png',
         'onTap': () async {
           final Uri params = Uri(
             scheme: 'mailto',
-            path: 'contato@centraloftalmica.com.br',
+            path: 'contato@centraloftalmica.com',
           );
 
           await _launchURL(params.toString());
         },
       },
-      {
-        'title': 'Termos de Uso',
-        'icon': 'security.png',
-        'onTap': () =>
-            _launchURL('https://centraloftalmica.com.br/quem-somos/'),
-      }
+      {'title': 'Termos de Uso', 'icon': 'security.png', 'onTap': () => false}
     ];
     super.initState();
   }

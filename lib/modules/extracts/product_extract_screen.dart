@@ -17,7 +17,7 @@ class ProductExtractScreen extends StatelessWidget {
             );
           } else if (!snapshot.hasData || snapshot.data.isEmpty) {
             return Center(
-              child: Text("Não foi possivel carregar seu extrato no momento."),
+              child: Text("Não foi possível carregar seu extrato no momento."),
             );
           }
 

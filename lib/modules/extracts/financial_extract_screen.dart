@@ -19,7 +19,7 @@ class FinancialExtractScreen extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           } else if (!snapshot.hasData || snapshot.data.isEmpty) {
             return Center(
-                child: Text("Nao foi possivel carregar seu extrato."));
+                child: Text("Não foi possível carregar seu extrato."));
           }
 
           AuthEvent _authEvent = _authBloc.getAuthCurrentUser;

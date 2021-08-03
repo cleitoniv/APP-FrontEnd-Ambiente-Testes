@@ -125,7 +125,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
         context,
         title: "Atenção",
         subtitle:
-            'Você precisa ter algum item na lista para solicitar o Devolução.',
+            'Você precisa ter algum item na lista para solicitar a devolução.',
         buttonText: 'Voltar',
         onTap: () {
           Modular.to.pop();
@@ -267,17 +267,17 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 TextSpan(
-                  text: ' Número de Série ',
+                  text: ' número de série ',
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         color: Theme.of(context).accentColor,
                       ),
                 ),
                 TextSpan(
-                  text: 'dos Produtos e',
+                  text: 'dos produtos e',
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 TextSpan(
-                  text: ' Adicione-os a Lista.',
+                  text: ' adicione-os a lista.',
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         color: Theme.of(context).accentColor,
                       ),
@@ -360,7 +360,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
               color: Theme.of(context).primaryColor,
             ),
             label: Text(
-              'Adicionar Produto a Lista',
+              'Adicionar Produto à Lista',
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.button.copyWith(
                     color: Theme.of(context).primaryColor,

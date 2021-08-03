@@ -21,7 +21,7 @@ class ProfileScreen extends StatelessWidget {
     },
     {
       'title': 'Usuários do Aplicativo',
-      'subtitle': 'Crie e gerencie usuários a sua conta',
+      'subtitle': 'Crie e gerencie usuários da sua conta',
       'route': '/profile/appUsers',
     },
   ];
