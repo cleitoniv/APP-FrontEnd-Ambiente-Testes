@@ -214,6 +214,12 @@ class RequestsScreen extends StatelessWidget {
             );
           }
           List<PedidoModel> _requests = snapshot.data.list ?? [];
+
+          if (_requests.isEmpty) {
+            return Center(
+              child: Text('Não há pedidos a serem visualizados'),
+            );
+          }
           return ListView.separated(
             padding: const EdgeInsets.all(20),
             itemCount: _requests.length,

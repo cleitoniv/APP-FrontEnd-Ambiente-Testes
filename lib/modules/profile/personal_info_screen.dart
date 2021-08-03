@@ -234,9 +234,11 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                         if (!snapshot.hasData) {
                           return Container();
                         }
+                        print(snapshot.data.list);
+                        print(visitSnapshot.data);
                         return DropdownWidget(
                           items: snapshot.data.list,
-                          hint: Text('Manha-Tarde'),
+                          hint: Text('Manhã e Tarde'),
                           currentValue:
                               snapshot.hasData && snapshot.data.isValid
                                   ? visitSnapshot.data

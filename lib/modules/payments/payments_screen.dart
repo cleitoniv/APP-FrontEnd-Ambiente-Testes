@@ -365,7 +365,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       } else if (!snapshot.hasData || snapshot.data.isEmpty) {
                         return Center(
                           child: Text(
-                              "Nao há pagamentos a serem visualizados no momento."),
+                              "Não há pagamentos a serem visualizados no momento."),
                         );
                       }
 

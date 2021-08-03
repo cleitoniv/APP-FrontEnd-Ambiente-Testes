@@ -272,12 +272,11 @@ class _RepositionScreenState extends State<RepositionScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FittedBox(
-                          fit: BoxFit.contain,
+                        Expanded(
                           child: Text(
                             'Controle de pacientes',
                             style: Theme.of(context).textTheme.headline5,
-                            textScaleFactor: 1.25,
+                            // textScaleFactor: 1.25,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -300,12 +299,13 @@ class _RepositionScreenState extends State<RepositionScreen> {
                           .textTheme
                           .subtitle1
                           .copyWith(fontWeight: FontWeight.bold),
-                      text: 'Como adicionar pontos\n',
+                      text:
+                          'Ao identificar seus pacientes nos pedidos, você acumula pontos.\n',
                       children: [
                         TextSpan(
                           style: Theme.of(context).textTheme.subtitle1,
                           text:
-                              '\nDigite ou leia o número de série que consta na embalagem das lentes a ser entregues ao seu paciente, controle a data para reavaliação preenchendo nome, data de nascimento e opcionalmente inserindo o CPF dele você acumula pontos para compras futuras',
+                              '\nInforme o número de série que consta na embalagem das lentes a serem entregues ao seu paciente; controle o dia da reavaliação preenchendo: nome, data de nascimento e, se quiser acumular pontos para compras futuras, o CPF.',
                         ),
                       ]),
                 ),
@@ -321,6 +321,13 @@ class _RepositionScreenState extends State<RepositionScreen> {
                           );
                         }
                         List<PedidoModel> _requests = snapshot.data.list ?? [];
+
+                        if (_requests.isEmpty) {
+                          return Center(
+                            child:
+                                Text('Não há pacientes a serem visualizados'),
+                          );
+                        }
                         return ListView.separated(
                           padding: const EdgeInsets.all(20),
                           itemCount: _requests.length,

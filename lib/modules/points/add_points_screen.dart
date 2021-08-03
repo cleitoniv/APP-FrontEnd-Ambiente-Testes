@@ -86,7 +86,7 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
     },
         title: "Pontuação",
         subtitle:
-            '''Inserindo os dados do seu paciente referente ao produto, voce recebe pontos que podem ser convertidos em créditos para compras futuras!''');
+            '''Inserindo os dados do seu paciente no produto, você recebe pontos que podem ser convertidos em créditos para compras futuras!''');
   }
 
   @override
@@ -133,7 +133,7 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
                 )),
             SizedBox(height: 10),
             Text(
-              'Digite ou leia o número de série que consta na embalagem das lentes a ser entregues ao seu paciente, controle a data para reavaliação preenchendo nome, data de nascimento e opcionalmente inserindo o CPF dele você acumula pontos para compras futuras',
+              'Informe o número de série que consta na embalagem das lentes a serem entregues ao seu paciente; controle o dia da reavaliação preenchendo: nome, data de nascimento e, se quiser acumular pontos para compras futuras, o CPF.',
               style: Theme.of(context).textTheme.subtitle1,
               textAlign: TextAlign.center,
             ),

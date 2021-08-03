@@ -36,7 +36,7 @@ class _TicketScreenState extends State<TicketScreen> {
     super.initState();
     _isLoading = false;
     _descricaoController = TextEditingController(text: '');
-    _categoria = 'Teste 1';
+    _categoria = 'Atendimento';
   }
 
   @override
@@ -55,7 +55,7 @@ class _TicketScreenState extends State<TicketScreen> {
                 StreamBuilder<Map>(builder: (context, snapshot) {
                   return DropdownWidget(
                       prefixIcon: Icon(Icons.info_outline),
-                      items: ['Teste 1', 'Teste2'],
+                      items: ['Atendimento', 'Financeiro', 'Suporte'],
                       currentValue: _categoria,
                       labelText: 'Categoria do problema',
                       onChanged: (value) {
@@ -76,7 +76,7 @@ class _TicketScreenState extends State<TicketScreen> {
                     decoration: InputDecoration(
                         prefixIcon:
                             Icon(Icons.text_format, color: Color(0xffa1a1a1)),
-                        labelText: 'Conte-nos o que aconteceu'),
+                        labelText: 'Conte-nos o que aconteceu.'),
                     maxLines: 4,
                   ),
                 ),
