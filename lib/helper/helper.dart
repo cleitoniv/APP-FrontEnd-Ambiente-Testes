@@ -15,6 +15,20 @@ class Helper {
     return null;
   }
 
+  static String passwordValidator(String text, {int length = 0}) {
+    String message =
+        "Sua senha deve ser composta por no mínimo $length dígitos, incluindo letras e números";
+
+    RegExp regExpNumber = RegExp(r'[0-9]');
+    RegExp regExpString = RegExp(r'[a-zA-Z]');
+
+    if (text.length < length ||
+        regExpNumber.hasMatch(text) == false ||
+        regExpString.hasMatch(text) == false) {
+      return message;
+    }
+  }
+
   static String lengthValidatorHelpDesk(
     String text, {
     int length = 0,

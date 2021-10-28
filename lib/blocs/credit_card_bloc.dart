@@ -19,7 +19,7 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
       CreditCardModel currentCard =
           list.list.firstWhere((element) => element.status == 1);
       currentPaymentFormIn.add(currentCard);
-      _cartWidgetBloc.setPaymentMethodCartao(currentCard);
+      // _cartWidgetBloc.setPaymentMethodCartao("13", currentCard);
       this.cartaoCreditoSink.add(list);
     } catch (e) {
       if (list.list.length > 0) {
@@ -35,6 +35,7 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   }
 
   Future<List> fetchInstallments(int valor, bool isBoleto) async {
+    print("OLAAA");
     return repository.fetchInstallments(valor, isBoleto);
   }
 

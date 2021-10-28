@@ -55,12 +55,13 @@ class AuthBloc extends Disposable {
     ClienteModel cliente = await repository.currentUserIsBlocked();
     this._currentUser.data = cliente;
     if (cliente.sitApp == "B" || cliente.status == 0) {
-      Dialogs.error(context, onTap: () {
-        Modular.to.pop();
+      Dialogs.errorWithWillPopScope(context, onTap: () {
+        Modular.to.navigate("/auth/login");
       },
           buttonText: "Entendi",
           title: "Bloqueado!",
           subtitle: "No momento voce não pode acessar este recurso.");
+
       return true;
     } else {
       return false;

@@ -729,7 +729,15 @@ class _TabsScreenState extends State<TabsScreen>
                 body: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   controller: _tabController,
-                  children: _screens,
+                  // children: _screens,
+                  children: _screens.map((e) {
+                    if (e.toString() == "ProductsScreen") {
+                      return ProductsScreen(
+                        context: context,
+                      );
+                    }
+                    return e;
+                  }).toList(),
                 ),
                 bottomNavigationBar: Container(
                   decoration: BoxDecoration(

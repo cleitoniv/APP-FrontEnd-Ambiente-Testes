@@ -69,7 +69,7 @@ class DeliveryAddressRegisterScreenState
             arguments: _cliente,
           );
         } else {
-          Modular.to.pushNamed('/auth/validate');
+          Modular.to.navigate('/auth/validate');
         }
       } else {
         SnackBar _snackBar = SnackBar(

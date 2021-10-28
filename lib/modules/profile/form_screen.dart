@@ -39,8 +39,11 @@ class _FormScreenState extends State<FormScreen> {
       "email": _emailController.text,
       "cargo": _officeController.text
     };
+
     AddUsuarioCliente addUser = await _userBloc.addUsuario(params);
+
     _userBloc.fetchUsuariosCliente();
+
     if (addUser.isValid) {
       Modular.to.pop();
     } else {
@@ -100,6 +103,7 @@ class _FormScreenState extends State<FormScreen> {
               ),
               onPressed: _onDeleteUser,
             ),
+            SizedBox(height: 10),
             RaisedButton(
                 child: Text(
                   "Cancelar",

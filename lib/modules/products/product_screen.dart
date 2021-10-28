@@ -156,7 +156,6 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   void initState() {
     this.currentUser = _authBloc.getAuthCurrentUser;
-    // _productBloc.fetchProduct(widget.id);
     final product =
         Product(product: widget.product, isLoading: false, isEmpty: false);
     _productBloc.productSink.add(product);

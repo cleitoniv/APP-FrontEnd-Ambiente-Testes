@@ -150,6 +150,8 @@ class UserRepository {
             "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
+
+      print(response);
       if (response.statusCode == 201) {
         return AddUsuarioCliente(isValid: true, data: response.data["data"]);
       } else {
@@ -159,12 +161,14 @@ class UserRepository {
       }
     } catch (error) {
       final error400 = error as DioError;
-      final message = error400.response.data["data"]["errors"];
+
+      // final message = error400.response.data["data"]["errors"];
+
       return AddUsuarioCliente(
-          isValid: false,
-          errorMessage: message["EMAIL"] != null
-              ? message["EMAIL"][0]
-              : "Falha ao salvar dados.");
+          isValid: false, errorMessage: error400.response.data["data"]);
+      // errorMessage: message["EMAIL"] != null
+      //     ? message["EMAIL"][0]
+      //     : "Falha ao salvar dados.");
     }
   }
 

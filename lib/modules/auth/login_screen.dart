@@ -1,9 +1,11 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -25,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _passwordController;
   bool _enabledPassword = true;
   bool _remember = false;
+  FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -35,17 +38,59 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  AuthEvent _checkSitapp(ClienteModel cliente) {
+    if (cliente.sitApp == "A") {
+      return AuthEvent(
+          isValid: true, data: cliente, loading: false, integrated: false);
+    } else if (cliente.sitApp == "B") {
+      return AuthEvent(
+          isValid: false,
+          data: cliente,
+          loading: false,
+          integrated: false,
+          errorData: {
+            "Bloqueado": ["Você não tem permissão para acessar sua conta!"]
+          });
+    } else if (cliente.sitApp == "N" || cliente.sitApp == "I") {
+      return AuthEvent(
+          isValid: false,
+          integrated: true,
+          data: cliente,
+          loading: true,
+          errorData: {
+            "Cadastro": [
+              "Erro no seu cadastro. Entre em contato com a Central Oftalmica."
+            ]
+          });
+    } else if (cliente.sitApp == "E") {
+      return AuthEvent(
+          isValid: false,
+          integrated: true,
+          data: cliente,
+          loading: true,
+          errorData: {
+            "Login": [
+              "Não foi possivel fazer o Login, aguarde seu cadastro ser aprovado."
+            ]
+          });
+    } else {
+      return AuthEvent(isValid: true, data: cliente, loading: false);
+    }
+  }
+
   _onLogin() async {
     if (_formKey.currentState.validate()) {
       setState(() {
         this._isLoading = true;
       });
+
       _authBloc.loginIn.add({
         'email': _emailController.text,
         'password': _passwordController.text,
       });
 
       LoginEvent _login = await _authBloc.loginOut.first;
+
       if (!_login.isValid) {
         SnackBar _snackBar = SnackBar(
           content: Text(_login.message),
@@ -60,10 +105,12 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else if (_login.result.user.emailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
+
+        print(_checkSitapp(_cliente.data).isValid);
         setState(() {
           this._isLoading = false;
         });
-        if (_cliente.isValid) {
+        if (_cliente.isValid && _checkSitapp(_cliente.data).isValid) {
           if (!_cliente.data.cadastrado) {
             setState(() {
               this._isLoading = false;
@@ -94,17 +141,31 @@ class _LoginScreenState extends State<LoginScreen> {
             Modular.to.pushNamed('/auth/validate');
           }
           _showErrors(_cliente.errorData);
+
+          _auth.signOut();
         }
       } else {
         try {
           await _login.result.user.sendEmailVerification();
+
           setState(() {
             this._isLoading = false;
           });
           _showErrors({
             "Verificar email": ["Te enviamos um email de verificaçao"]
           });
-        } catch (e) {}
+        } catch (e) {
+          print("VERIFICAR EMAIL");
+          setState(() {
+            this._isLoading = false;
+          });
+
+          _showErrors({
+            "Verificar email": ["Te enviamos um email de verificaçao"]
+          });
+        }
+
+        _auth.signOut();
       }
     }
   }
@@ -127,14 +188,16 @@ class _LoginScreenState extends State<LoginScreen> {
     final prefs = await _prefs;
     final int rememberStatus = prefs.getInt('rememberStatus');
 
-    if (rememberStatus == null) {
+    if (rememberStatus == null || rememberStatus == 0) {
       setState(() {
         _remember = true;
       });
       prefs.setInt('rememberStatus', 1);
       return true;
     }
-    prefs.setInt('rememberStatus', null).then((bool success) {
+
+    print("OLA");
+    prefs.setInt('rememberStatus', 0).then((bool success) {
       setState(() {
         _remember = false;
       });
@@ -145,7 +208,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _getEmailStored() async {
     final prefs = await _prefs;
-    if (prefs.getString('emailStored') != null) {
+    if (prefs.getInt('rememberStatus') == 1 &&
+        prefs.getString('emailStored') != null) {
       final TextEditingController emailStored =
           TextEditingController(text: prefs.getString('emailStored'));
       setState(() {
@@ -230,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Checkbox(
                         value: _remember,
-                        onChanged: (bool value) => {_rememberMe()},
+                        onChanged: (bool value) => _rememberMe(),
                       ),
                       FittedBox(
                           fit: BoxFit.contain, child: Text("Lembrar Email"))
