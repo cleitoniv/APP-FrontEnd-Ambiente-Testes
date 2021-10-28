@@ -102,6 +102,12 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
+    bool blocked = await _authBloc.checkBlockedUser(context);
+
+    if (blocked) {
+      return;
+    }
+
     setState(() {
       _lock = true;
     });
@@ -144,8 +150,9 @@ class _FinishPaymentState extends State<FinishPayment> {
     _ccvController.text = '';
     if (statusPayment != null && statusPayment == true) {
       _requestBloc.resetCart();
-      Dialogs.success(
+      Dialogs.successWithWillPopScope(
         context,
+        barrierDismissible: false,
         subtitle: 'Compra efetuada com sucesso!',
         buttonText: 'Ir para Meus Pedidos',
         onTap: _onSubmitDialog,
@@ -195,6 +202,8 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   @override
   Widget build(BuildContext context) {
+    print("PAYMENT METHOD");
+    print(_paymentMethod);
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
@@ -317,6 +326,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                             },
                             items: _installments
                                 .map<DropdownMenuItem<String>>((String value) {
+                              print(value);
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),

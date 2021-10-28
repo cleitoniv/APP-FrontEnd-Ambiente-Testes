@@ -14,6 +14,7 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
   PageController _pageController;
 
   _onChangeExtractType(String type) {
+    print(type);
     if (type == "Financeiro") {
       _extractWidgetBloc.fetchExtratoFinanceiro();
     } else {
@@ -48,6 +49,8 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
     _pageController = PageController(
       initialPage: currentPage['page'],
     );
+
+    _extractWidgetBloc.extractTypeIn.add("Financeiro");
   }
 
   @override

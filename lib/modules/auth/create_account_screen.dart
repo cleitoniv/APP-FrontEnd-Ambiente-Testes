@@ -272,7 +272,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         'validator': Helper.lengthValidator,
       },
       {
-        'labelText': 'Email de Acesso',
+        'labelText': 'Email de acesso',
         'prefixIcon': Icon(
           Icons.email,
           color: Color(0xffA1A1A1),
@@ -327,8 +327,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           onPressed: _handleObscureText,
         ),
         'controller': _passwordController,
-        'validator': (String text) => Helper.lengthValidator(text,
-            length: 6, message: "Senha deve ter no minimo 6 caracteres"),
+        'validator': (String text) => Helper.passwordValidator(text, length: 6)
+        // 'validator': (String text) => Helper.lengthValidator(text,
+        //     length: 6, message: "Senha deve ter no minimo 6 caracteres"),
       },
       {
         'labelText': 'Confirme a senha',

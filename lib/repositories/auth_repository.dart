@@ -278,6 +278,8 @@ class AuthRepository {
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
+      _auth.signOut();
+
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
         "Login": [
           "Tivemos problema ao tentar fazer o seu login. Se o erro persistir entre em contato com a Central Oftálmica."

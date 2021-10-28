@@ -29,7 +29,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _taxaEntrega = _requestBloc.taxaEntregaValue;
-    print(_taxaEntrega);
+
     int _total = data.fold(0, (previousValue, element) {
       if (element["operation"] == "07" ||
           element["operation"] == "00" ||
@@ -74,7 +74,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
     });
     bool selectedCard =
         await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
-    _cartWidgetBloc.setPaymentMethodBoleto(billing);
+    print("BILLING");
+    print(billing);
+    // _cartWidgetBloc.setPaymentMethodBoleto(billing);
     if (selectedCard) {
       _creditCardBloc.fetchPaymentMethods();
     }
@@ -123,7 +125,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _finishPayment() {
-    print("aqui");
     Modular.to.pushNamed("/cart/finishPayment");
   }
 
@@ -170,7 +171,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     StreamBuilder<List<Map<String, dynamic>>>(
                       stream: _requestBloc.cartOut,
                       builder: (context, snapshot) {
-                        print(snapshot.data);
                         if (!snapshot.hasData) {
                           return Center(
                             child: CircularProgressIndicator(),
@@ -217,7 +217,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ),
                         );
                       }
-                      print("aqui");
                       final _creditCards = snapshot.data.list;
 
                       return ListView.separated(
@@ -257,9 +256,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 child: ListTileMoreCustomizable(
-                                  onTap: (value) => _onChangePaymentForm(
-                                    _creditCards[index],
-                                  ),
+                                  onTap: (value) {
+                                    print("1");
+                                    _onChangePaymentForm(
+                                      _creditCards[index],
+                                    );
+
+                                    return;
+                                  },
                                   contentPadding: const EdgeInsets.all(0),
                                   horizontalTitleGap: 10,
                                   // leading: Image.asset(

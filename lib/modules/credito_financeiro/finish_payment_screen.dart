@@ -73,6 +73,12 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
+    bool blocked = await _authBloc.checkBlockedUser(context);
+
+    if (blocked) {
+      return;
+    }
+
     setState(() {
       _isButtonDisabled = true;
     });
@@ -103,10 +109,11 @@ class _FinishPaymentState extends State<FinishPayment> {
     _ccvController.text = '';
     if (statusPayment != null && statusPayment == true) {
       _requestBloc.resetCart();
-      Dialogs.success(
+      Dialogs.successWithWillPopScope(
         context,
         subtitle: 'Compra efetuada com sucesso!',
         buttonText: 'Ir para Meus Pedidos',
+        barrierDismissible: false,
         onTap: _onSubmitDialog,
       );
     } else {

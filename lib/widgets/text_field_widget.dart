@@ -90,6 +90,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               : FilteringTextInputFormatter.allow(RegExp(".*"))
         ],
         decoration: InputDecoration(
+          errorMaxLines: 4,
           hintText: widget.hint,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(

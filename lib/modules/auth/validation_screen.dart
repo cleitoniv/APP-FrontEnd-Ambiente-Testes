@@ -86,16 +86,20 @@ class _ValidationScreenState extends State<ValidationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          'Validação de cadastro',
-          textAlign: TextAlign.left,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text(
+            'Validação de cadastro',
+            textAlign: TextAlign.left,
+          ),
+          leading: Container(),
+          centerTitle: false,
         ),
-        centerTitle: false,
+        body: waitingScreen(),
       ),
-      body: waitingScreen(),
     );
   }
 }

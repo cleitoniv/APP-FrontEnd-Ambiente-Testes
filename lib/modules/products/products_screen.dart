@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class ProductsScreen extends StatefulWidget {
+  final BuildContext context;
+
+  const ProductsScreen({Key key, this.context}) : super(key: key);
   @override
   _ProductsScreenState createState() => _ProductsScreenState();
 }
@@ -29,6 +32,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print(context);
+    // print("OLAs");
     return SafeArea(
       child: StreamBuilder(
         stream: _productBloc.productListStream,
@@ -61,11 +66,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         setState(() {
                           _isLoadingProduct = true;
                         });
+
                         bool blocked =
-                            await _authBloc.checkBlockedUser(context);
+                            await _authBloc.checkBlockedUser(widget.context);
+
                         if (!blocked) {
                           onChangeProduct(_products[index], context);
                         }
+
                         setState(() {
                           _isLoadingProduct = false;
                         });
