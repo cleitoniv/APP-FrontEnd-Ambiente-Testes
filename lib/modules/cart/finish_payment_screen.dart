@@ -102,30 +102,35 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
-    bool blocked = await _authBloc.checkBlockedUser(context);
-
-    if (blocked) {
-      return;
-    }
-
     setState(() {
       _lock = true;
     });
-    final _taxaEntrega = 0; //_requestBloc.taxaEntregaValue;
-    final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
-    if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
-      SnackBar _snackBar = SnackBar(
-        content: Text(
-          'Preencha o Código de Segurança do Cartão',
-        ),
-      );
+    bool blocked = await _authBloc.checkBlockedUser(context);
 
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
+    if (blocked) {
       setState(() {
         _lock = false;
       });
       return;
     }
+
+    final _taxaEntrega = 0; //_requestBloc.taxaEntregaValue;
+    final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
+      setState(() {
+        _lock = false;
+      });
+      SnackBar _snackBar = SnackBar(
+        content: Text(
+          'Preencha o Código de Segurança do Cartão',
+        ),
+      );
+      _scaffoldKey.currentState.hideCurrentSnackBar();
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+
+      return;
+    }
+    print("5");
 
     if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       setState(() {
@@ -202,8 +207,6 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   @override
   Widget build(BuildContext context) {
-    print("PAYMENT METHOD");
-    print(_paymentMethod);
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
@@ -326,7 +329,6 @@ class _FinishPaymentState extends State<FinishPayment> {
                             },
                             items: _installments
                                 .map<DropdownMenuItem<String>>((String value) {
-                              print(value);
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
@@ -378,7 +380,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                   ],
                 ),
                 RaisedButton(
-                  onPressed: !_lock ? _onSubmit : null, // _onSubmit,
+                  onPressed: _lock ? null : _onSubmit, // _onSubmit,
                   child: Text(
                     'Finalizar Pedido',
                     style: Theme.of(context).textTheme.button,

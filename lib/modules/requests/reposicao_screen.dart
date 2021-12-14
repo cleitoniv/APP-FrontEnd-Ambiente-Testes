@@ -31,7 +31,7 @@ class _RepositionScreenState extends State<RepositionScreen> {
   void initState() {
     super.initState();
     startTimer();
-    _homeWidgetBloc.currentRequestTypeIn.add("Reposição");
+    // _homeWidgetBloc.currentRequestTypeIn.add("Reposição");
     _requestsBloc.getPedidosList(2);
     _nameController = TextEditingController();
     _numberController = TextEditingController();
@@ -335,13 +335,13 @@ class _RepositionScreenState extends State<RepositionScreen> {
                             height: 20,
                           ),
                           itemBuilder: (context, index) {
-                            String currentType =
-                                _homeWidgetBloc.currentRequestType;
-                            if (currentType == "Reposição") {
-                              return _showPedidoReposicao(
-                                  context, _requests, index);
-                            }
-                            return _showPedido(context, _requests, index);
+                            // String currentType =
+                            //     _homeWidgetBloc.currentRequestType;
+                            // if (currentType == "Reposição") {
+                            return _showPedidoReposicao(
+                                context, _requests, index);
+                            // }
+                            // return _showPedido(context, _requests, index);
                           },
                         );
                       },

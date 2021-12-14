@@ -27,18 +27,24 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   MaskedTextController _phoneController;
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   List<Map> _personalInfo = [];
+  bool _lock = false;
 
   _onChangeVisitHour(value) {
     _profileWidgetBloc.visitHourIn.add(value);
   }
 
   _onSaveNewSchedule(BuildContext context) async {
+    setState(() {
+      _lock = true;
+    });
     String _hour = _profileWidgetBloc.currentVisitHour;
 
     _hour = _hour.replaceAll("ã", 'a').toLowerCase();
 
     AtendPref result = await _profileWidgetBloc.updateVisitHour(_hour);
-
+    setState(() {
+      _lock = false;
+    });
     if (result.isValid) {
       Dialogs.success(context,
           title: "Período para Atendimento",
@@ -252,9 +258,11 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 SizedBox(height: 30),
                 RaisedButton(
                   elevation: 0,
-                  onPressed: () {
-                    _onSaveNewSchedule(context);
-                  },
+                  onPressed: _lock
+                      ? null
+                      : () {
+                          _onSaveNewSchedule(context);
+                        },
                   child: Text(
                     'Salvar Novo Período',
                     style: Theme.of(context).textTheme.button,

@@ -12,7 +12,7 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
 
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
-  void fetchPaymentMethods() async {
+  Future<void> fetchPaymentMethods() async {
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
     try {

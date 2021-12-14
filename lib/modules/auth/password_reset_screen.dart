@@ -17,6 +17,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   TextEditingController _emailController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -38,10 +39,17 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   }
 
   _sendResetEmail() async {
+    setState(() {
+      isLoading = true;
+    });
     ResetPassword _reset =
         await _authBloc.checkUserEmail(_emailController.text);
     if (_reset.canReset) {
       await _auth.sendPasswordResetEmail(email: _emailController.text);
+
+      setState(() {
+        isLoading = false;
+      });
       Dialogs.success(this.context,
           title: "Email enviado!",
           buttonText: "Voltar",
@@ -50,6 +58,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
         Modular.to.pushReplacementNamed('/auth/login');
       });
     } else {
+      setState(() {
+        isLoading = false;
+      });
       _showErrors(_reset.errorData);
     }
   }
@@ -88,16 +99,18 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                       prefixIcon: Icon(Icons.email, color: Color(0xffA1A1A1)),
                       labelText: "Email",
                     )),
-                Container(
-                  width: 150,
-                  child: RaisedButton(
-                    onPressed: _sendResetEmail,
-                    child: Text(
-                      'Enviar',
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                  ),
-                )
+                isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : Container(
+                        width: 150,
+                        child: RaisedButton(
+                          onPressed: _sendResetEmail,
+                          child: Text(
+                            'Enviar',
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                        ),
+                      )
               ],
             ))
           ],

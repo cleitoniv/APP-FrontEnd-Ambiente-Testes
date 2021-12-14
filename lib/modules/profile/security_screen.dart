@@ -22,6 +22,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
   List<Map> _data;
   bool _passwordObscure = true;
   bool _passwordConfirmObscure = true;
+  bool _lock = false;
 
   _onShowPasswordType(String type) {
     if (type == 'senha') {
@@ -36,6 +37,9 @@ class _SecurityScreenState extends State<SecurityScreen> {
   }
 
   _onSubmit() async {
+    setState(() {
+      _lock = true;
+    });
     if (_formKey.currentState.validate()) {
       _authBloc.updatePasswordIn.add(
         _passwordController.text,
@@ -43,6 +47,10 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
       String _data = await _authBloc.updatePasswordOut.first;
       String _message = '';
+
+      setState(() {
+        _lock = false;
+      });
 
       if (_data.contains('ERROR')) {
         _message = Helper.handleFirebaseError(
@@ -63,6 +71,10 @@ class _SecurityScreenState extends State<SecurityScreen> {
         _snackBar,
       );
     }
+
+    setState(() {
+      _lock = false;
+    });
   }
 
   @override
@@ -74,10 +86,9 @@ class _SecurityScreenState extends State<SecurityScreen> {
         'labelText': 'Digite uma senha',
         'type': 'senha',
         'controller': _passwordController,
-        'validator': (String text) => Helper.lengthValidator(
+        'validator': (String text) => Helper.passwordValidator(
               text,
               length: 6,
-              message: 'Mínimo de 6 dígitos',
             )
       },
       {
@@ -184,7 +195,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
           ),
           SizedBox(height: 30),
           RaisedButton(
-            onPressed: _onSubmit,
+            onPressed: _lock ? null : () => _onSubmit(),
             child: Text(
               'Alterar Senha',
               style: Theme.of(context).textTheme.button,

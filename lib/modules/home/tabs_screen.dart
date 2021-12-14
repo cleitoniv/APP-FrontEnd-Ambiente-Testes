@@ -87,9 +87,9 @@ class _TabsScreenState extends State<TabsScreen>
         case 'Entregues':
           _status = 1;
           break;
-        case 'Reposição':
-          _status = 2;
-          break;
+        // case 'Reposição':
+        //   _status = 2;
+        //   break;
       }
       _requestsBloc.currentRequestFilterSink.add(_status);
       _requestsBloc.getPedidosList(_status);
@@ -455,6 +455,8 @@ class _TabsScreenState extends State<TabsScreen>
   @override
   void initState() {
     super.initState();
+    print("5");
+
     _homeWidgetBloc.currentTabIndexIn.add(
       widget.index,
     );
@@ -534,7 +536,7 @@ class _TabsScreenState extends State<TabsScreen>
                               child: CircularProgressIndicator(),
                             );
                           } else {
-                            _getCurrentStatus();
+                            // _getCurrentStatus();
                             return SafeArea(
                                 child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

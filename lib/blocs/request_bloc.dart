@@ -52,7 +52,7 @@ class RequestsBloc extends Disposable {
   Stream get taxaEntregaStream => _taxaEntregaController.stream;
 
   get taxaEntregaValue => _taxaEntregaController.value;
-
+  get taxaEntregaHasValue => _taxaEntregaController.hasValue;
   BehaviorSubject _indexController = BehaviorSubject.seeded(null);
   Sink get indexIn => _indexController.sink;
   Stream<List<RequestModel>> get indexOut => _indexController.stream.asyncMap(

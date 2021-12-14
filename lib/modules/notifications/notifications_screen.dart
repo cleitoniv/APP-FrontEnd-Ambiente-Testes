@@ -50,11 +50,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     } else if (notification.type == "FINANCEIRO_ADQUIRIDO") {
       _extractWidgetBloc.extractTypeIn.add("Financeiro");
       _extractWidgetBloc.currentPageSink.add({'type': "Financeiro", 'page': 0});
-      Modular.to.pushNamed("/extracts");
+      Modular.to.pushNamed("/extracts", arguments: "NOTIFICATION");
     } else if (notification.type == "PRODUTO_ADQUIRIDO") {
       _extractWidgetBloc.extractTypeIn.add("Produto");
       _extractWidgetBloc.currentPageSink.add({'type': "Produto", 'page': 1});
-      Modular.to.pushNamed("/extracts");
+      Modular.to.pushNamed("/extracts", arguments: "NOTIFICATION");
     }
   }
 
