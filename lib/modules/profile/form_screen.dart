@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/usuario_cliente.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
@@ -22,7 +23,7 @@ class FormScreen extends StatefulWidget {
 
 class _FormScreenState extends State<FormScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   UserBloc _userBloc = Modular.get<UserBloc>();
   AuthBloc _authBlock = Modular.get<AuthBloc>();
@@ -32,8 +33,16 @@ class _FormScreenState extends State<FormScreen> {
   TextEditingController _officeController;
   MaskedTextController _passwordController;
   bool accept = false;
+  bool isLoading = false;
 
   _onAddUser() async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
+
     Map<String, dynamic> params = {
       "nome": _nameController.text,
       "email": _emailController.text,
@@ -42,6 +51,9 @@ class _FormScreenState extends State<FormScreen> {
 
     AddUsuarioCliente addUser = await _userBloc.addUsuario(params);
 
+    setState(() {
+      isLoading = false;
+    });
     _userBloc.fetchUsuariosCliente();
 
     if (addUser.isValid) {
@@ -68,6 +80,12 @@ class _FormScreenState extends State<FormScreen> {
   }
 
   _onSaveInfo() async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
     Map<String, dynamic> params = {
       "nome": _nameController.text,
       "email": _emailController.text,
@@ -77,6 +95,10 @@ class _FormScreenState extends State<FormScreen> {
 
     UpdateUsuarioCliente updateUser =
         await _userBloc.updateUsuario(widget.usuario.id, params);
+
+    setState(() {
+      isLoading = false;
+    });
     if (updateUser.isValid) {
       _userBloc.fetchUsuariosCliente();
       Modular.to.pop();
@@ -153,12 +175,14 @@ class _FormScreenState extends State<FormScreen> {
         'controller': _nameController,
         'icon': Icons.person,
         'enabled': true,
+        'validator': (String text) => Helper.lengthValidator(text)
       },
       {
         'labelText': 'Email',
         'controller': _emailController,
         'icon': Icons.email,
         'enabled': widget.formType == "edit" ? false : true,
+        'validator': (String text) => Helper.emailValidator(text)
       },
       {
         'labelText': 'Cargo (opcional)',
@@ -166,6 +190,7 @@ class _FormScreenState extends State<FormScreen> {
         'capitalization': TextCapitalization.words,
         'icon': Icons.assignment,
         'enabled': true,
+        'validator': null
       }
     ];
   }
@@ -196,28 +221,32 @@ class _FormScreenState extends State<FormScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
-          ListView.separated(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: _data.length,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 10,
+          Form(
+            key: _formKey,
+            child: ListView.separated(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: _data.length,
+              separatorBuilder: (context, index) => SizedBox(
+                height: 10,
+              ),
+              itemBuilder: (context, index) {
+                return TextFieldWidget(
+                  maxLength: _data[index]['maxLength'],
+                  maxLengthEnforce: _data[index]['maxLengthEnforce'],
+                  textCapitalization: _data[index]['capitalization'],
+                  enabled: _data[index]['enabled'],
+                  validator: _data[index]["validator"],
+                  labelText: _data[index]['labelText'],
+                  prefixIcon: Icon(
+                    _data[index]['icon'],
+                    color: Color(0xffA1A1A1),
+                  ),
+                  controller: _data[index]['controller']
+                    ..text = _data[index]['value'],
+                );
+              },
             ),
-            itemBuilder: (context, index) {
-              return TextFieldWidget(
-                maxLength: _data[index]['maxLength'],
-                maxLengthEnforce: _data[index]['maxLengthEnforce'],
-                textCapitalization: _data[index]['capitalization'],
-                enabled: _data[index]['enabled'],
-                labelText: _data[index]['labelText'],
-                prefixIcon: Icon(
-                  _data[index]['icon'],
-                  color: Color(0xffA1A1A1),
-                ),
-                controller: _data[index]['controller']
-                  ..text = _data[index]['value'],
-              );
-            },
           ),
           ListTileMoreCustomizable(
             dense: true,
@@ -301,34 +330,38 @@ class _FormScreenState extends State<FormScreen> {
           SizedBox(height: 30),
           _authBlock.getAuthCurrentUser.data.role == 'CLIENTE' &&
                   widget.formType == "edit"
-              ? RaisedButton(
-                  onPressed: accept
-                      ? null
-                      : widget.formType == 'edit'
-                          ? _onSaveInfo
-                          : _onAddUser,
-                  elevation: 0,
-                  child: Text(
-                    widget.formType == 'edit'
-                        ? 'Salvar Alterações de Usuário'
-                        : 'Cadastrar Novo Usuário',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                )
-              : RaisedButton(
-                  onPressed: !accept
-                      ? null
-                      : widget.formType == 'edit'
-                          ? _onSaveInfo
-                          : _onAddUser,
-                  elevation: 0,
-                  child: Text(
-                    widget.formType == 'edit'
-                        ? 'Salvar Alterações de Usuário'
-                        : 'Cadastrar Novo Usuário',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
+              ? isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : RaisedButton(
+                      onPressed: accept
+                          ? null
+                          : widget.formType == 'edit'
+                              ? _onSaveInfo
+                              : _onAddUser,
+                      elevation: 0,
+                      child: Text(
+                        widget.formType == 'edit'
+                            ? 'Salvar Alterações de Usuário'
+                            : 'Cadastrar Novo Usuário',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    )
+              : isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : RaisedButton(
+                      onPressed: !accept
+                          ? null
+                          : widget.formType == 'edit'
+                              ? _onSaveInfo
+                              : _onAddUser,
+                      elevation: 0,
+                      child: Text(
+                        widget.formType == 'edit'
+                            ? 'Salvar Alterações de Usuário'
+                            : 'Cadastrar Novo Usuário',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    ),
           SizedBox(height: 30),
           _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
               ? widget.formType == 'edit'

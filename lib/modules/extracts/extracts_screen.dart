@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class ExtractsScreen extends StatefulWidget {
+  final String prevPage;
+
+  const ExtractsScreen({Key key, this.prevPage}) : super(key: key);
   @override
   _ExtractsScreenState createState() => _ExtractsScreenState();
 }
@@ -41,16 +44,26 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
   void initState() {
     super.initState();
     Map<String, dynamic> currentPage = _extractWidgetBloc.currentPageValue;
-    if (currentPage['type'] == "Financeiro") {
+    print(currentPage);
+    if (widget.prevPage == "NOTIFICATION" &&
+        currentPage['type'] == "Financeiro") {
       _extractWidgetBloc.fetchExtratoFinanceiro();
-    } else {
-      _extractWidgetBloc.fetchExtratoProduto();
-    }
-    _pageController = PageController(
-      initialPage: currentPage['page'],
-    );
 
-    _extractWidgetBloc.extractTypeIn.add("Financeiro");
+      _pageController = PageController(
+        initialPage: currentPage['page'],
+      );
+    } else if (widget.prevPage == "NOTIFICATION" &&
+        currentPage['type'] == "Produto") {
+      _extractWidgetBloc.fetchExtratoProduto();
+
+      _pageController = PageController(
+        initialPage: currentPage['page'],
+      );
+    }
+
+    if (widget.prevPage != "NOTIFICATION") {
+      _extractWidgetBloc.extractTypeIn.add("Financeiro");
+    }
   }
 
   @override
@@ -61,10 +74,11 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
         centerTitle: false,
         leading: GestureDetector(
           onTap: () {
-            Modular.to.pushNamedAndRemoveUntil(
-              '/home/0',
-              (route) => route.isFirst,
-            );
+            Modular.to.pop();
+            // Modular.to.pushNamedAndRemoveUntil(
+            //   '/home/0',
+            //   (route) => route.isFirst,
+            // );
           },
           child: Icon(
             Icons.arrow_back_ios,

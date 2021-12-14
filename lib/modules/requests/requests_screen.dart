@@ -22,11 +22,11 @@ class RequestsScreen extends StatelessWidget {
     return ListTileMoreCustomizable(
       contentPadding: const EdgeInsets.all(0),
       onTap: (value) {
-        String currentType = _homeWidgetBloc.currentRequestType;
-        bool reposicao = false;
-        if (currentType == "Reposição") {
-          reposicao = true;
-        }
+        // String currentType = _homeWidgetBloc.currentRequestType;
+        bool reposicao = true;
+        // if (currentType == "Reposição") {
+        //   reposicao = true;
+        // }
         _onShowRequest(
             _requests[index].numeroPedido, _requests[index], reposicao);
       },
@@ -204,6 +204,7 @@ class RequestsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("OLA PEDIDO");
     return SafeArea(
       child: StreamBuilder(
         stream: _requestsBloc.pedidoStream,
@@ -227,10 +228,11 @@ class RequestsScreen extends StatelessWidget {
               height: 20,
             ),
             itemBuilder: (context, index) {
-              String currentType = _homeWidgetBloc.currentRequestType;
-              if (currentType == "Reposição") {
-                return _showPedidoReposicao(context, _requests, index);
-              }
+              // String currentType = _homeWidgetBloc.currentRequestType;
+              // print(currentType);
+              // if (currentType == "Reposição") {
+              //   return _showPedidoReposicao(context, _requests, index);
+              // }
               return _showPedido(context, _requests, index);
             },
           );

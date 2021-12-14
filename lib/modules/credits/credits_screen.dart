@@ -49,6 +49,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
 
   StreamSubscription _productReset;
+  bool _lock = false;
 
   _onAddCredit() async {
     _creditsBloc.storeFinancialIn.add(
@@ -82,6 +83,11 @@ class _CreditsScreenState extends State<CreditsScreen> {
   }
 
   _addCreditoProduct(OfferModel offer) {
+    setState(() {
+      _lock = true;
+    });
+    print("SDASDADSADASDSAD");
+
     _onAddToCart(this._currentProduct["product"], offer.quantity, offer.price,
         offer.percentageTest);
     _creditsBloc.offersSink
@@ -89,7 +95,14 @@ class _CreditsScreenState extends State<CreditsScreen> {
     setState(() {
       this._currentProduct["selected"] = false;
     });
+
     Modular.to.pushNamed("/credito_financeiro/cart");
+
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _lock = false;
+      });
+    });
   }
 
   _onTapPersonalizedValue(String type) {
@@ -639,7 +652,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                         bool
                                                                             blocked =
                                                                             await _authBloc.checkBlockedUser(context);
-                                                                        if (!blocked) {
+                                                                        if (!blocked &&
+                                                                            !_lock) {
                                                                           _addCreditoProduct(
                                                                               _financialCredits[index]);
                                                                         }
@@ -754,6 +768,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                       : InkWell(
                                                                           onTap:
                                                                               () async {
+                                                                            print("OLA");
                                                                             bool
                                                                                 blocked =
                                                                                 await _authBloc.checkBlockedUser(context);

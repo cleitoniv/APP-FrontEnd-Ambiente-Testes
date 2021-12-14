@@ -73,19 +73,26 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
-    bool blocked = await _authBloc.checkBlockedUser(context);
-
-    if (blocked) {
-      return;
-    }
-
     setState(() {
       _isButtonDisabled = true;
     });
+    bool blocked = await _authBloc.checkBlockedUser(context);
+
+    if (blocked) {
+      setState(() {
+        _isButtonDisabled = false;
+      });
+      return;
+    }
 
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
 
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
+      setState(() {
+        _isButtonDisabled = false;
+      });
+      _scaffoldKey.currentState.hideCurrentSnackBar();
+
       SnackBar _snackBar = SnackBar(
         content: Text(
           'Preencha o Código de Segurança do Cartão',

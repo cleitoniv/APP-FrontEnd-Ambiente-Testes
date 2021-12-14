@@ -74,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ]
           });
     } else {
+      print("AQUI");
       return AuthEvent(isValid: true, data: cliente, loading: false);
     }
   }
@@ -105,12 +106,30 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else if (_login.result.user.emailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
+        print(_cliente.data);
+        if (_cliente.data != null && _cliente.data.status == 0) {
+          print("1");
+          await _auth.signOut();
 
-        print(_checkSitapp(_cliente.data).isValid);
+          setState(() {
+            this._isLoading = false;
+          });
+
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text('Usuário cliente não existe'),
+            ),
+          );
+          return;
+        }
+
+        print("PASSOU");
         setState(() {
           this._isLoading = false;
         });
         if (_cliente.isValid && _checkSitapp(_cliente.data).isValid) {
+          print("2");
+
           if (!_cliente.data.cadastrado) {
             setState(() {
               this._isLoading = false;
@@ -128,6 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
             } else {
               prefs.setString('emailStored', null);
             }
+            print("41312");
 
             Modular.to.pushNamedAndRemoveUntil(
               '/home/0',
@@ -145,6 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
           _auth.signOut();
         }
       } else {
+        print("3");
+
         try {
           await _login.result.user.sendEmailVerification();
 
@@ -319,7 +341,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 30),
               !_isLoading
                   ? RaisedButton(
-                      onPressed: _onLogin,
+                      onPressed: () => _onLogin(),
                       child: Text(
                         'Entrar',
                         style: Theme.of(context).textTheme.button,

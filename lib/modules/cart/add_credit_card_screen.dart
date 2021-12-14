@@ -27,6 +27,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
   MaskedTextController _mesValidadeController;
   MaskedTextController _anoValidadeController;
   List<Map> _data;
+  bool isLoading = false;
 
   String parseCartaoNumber(String number) {
     return number.replaceAll(" ", "");
@@ -57,6 +58,9 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
       return;
     }
     if (_formKey.currentState.validate()) {
+      setState(() {
+        isLoading = true;
+      });
       CreditCard _storeResult = await _creditCardBloc.addCreditCard(
         CreditCardModel(
           cartaoNumber: parseCartaoNumber(_creditCardNumberController.text),
@@ -65,7 +69,9 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
           nomeTitular: _ownerController.text,
         ),
       );
-
+      setState(() {
+        isLoading = false;
+      });
       if (_storeResult.errorData != null) {
         SnackBar _snackBar = SnackBar(
           content: Text(
@@ -75,7 +81,8 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {
-        Modular.to.pushReplacementNamed("/cart/payment");
+        // Modular.to.pushReplacementNamed("/cart/payment");
+        Modular.to.pop();
         return;
       }
     }
@@ -209,21 +216,23 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
               ).toList(),
             ),
             SizedBox(height: 30),
-            RaisedButton(
-              onPressed: () {
-                if (!_formKey.currentState.validate()) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                          "Corrija os erros em vermelho antes de enviar.")));
-                } else {
-                  _onSubmit();
-                }
-              },
-              child: Text(
-                'Adicionar cartão',
-                style: Theme.of(context).textTheme.button,
-              ),
-            )
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : RaisedButton(
+                    onPressed: () {
+                      if (!_formKey.currentState.validate()) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                "Corrija os erros em vermelho antes de enviar.")));
+                      } else {
+                        _onSubmit();
+                      }
+                    },
+                    child: Text(
+                      'Adicionar cartão',
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                  )
           ],
         ),
       ),

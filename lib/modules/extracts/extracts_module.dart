@@ -14,7 +14,9 @@ class ExtractsModule extends Module {
   final List<ModularRoute> routes = [
     ChildRoute(
       '/',
-      child: (_, args) => ExtractsScreen(),
+      child: (_, args) => ExtractsScreen(
+        prevPage: args.data,
+      ),
     )
   ];
 }

@@ -239,6 +239,7 @@ class AuthRepository {
             "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
+
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
       if (cliente.sitApp == "A") {
         return AuthEvent(
@@ -275,10 +276,12 @@ class AuthRepository {
               ]
             });
       } else {
+        print("1");
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
       _auth.signOut();
+      print("2222");
 
       return AuthEvent(isValid: false, data: null, loading: true, errorData: {
         "Login": [
