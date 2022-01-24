@@ -285,13 +285,18 @@ class _ProductScreenState extends State<ProductScreen> {
                     Positioned(
                       bottom: -30,
                       right: 20,
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xffFD6565),
-                        child: Image.asset(
-                          'assets/icons/heart_outline.png',
-                          width: 30,
-                          height: 30,
+                      child: InkWell(
+                        onTap: () {
+                          print("ok");
+                        },
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Color(0xffFD6565),
+                          child: Image.asset(
+                            'assets/icons/heart_outline.png',
+                            width: 30,
+                            height: 30,
+                          ),
                         ),
                       ),
                     ),

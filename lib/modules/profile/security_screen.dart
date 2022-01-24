@@ -5,6 +5,7 @@ import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -148,6 +149,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
                     builder: (context, snapshot) {
                       if (_data[index]['type'] == 'senha') {
                         return TextFieldWidget(
+                          keyboardType: TextInputType.visiblePassword,
                           obscureText: _passwordObscure,
                           labelText: _data[index]['labelText'],
                           suffixIcon: IconButton(
@@ -169,10 +171,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
                         );
                       } else {
                         return TextFieldWidget(
-                          obscureText: _passwordConfirmObscure,
-                          labelText: _data[index]['labelText'],
-                          suffixIcon: IconButton(
-                            onPressed: () =>
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: _passwordConfirmObscure,
+                            labelText: _data[index]['labelText'],
+                            suffixIcon: IconButton(
+                              onPressed: () =>
                                 _onShowPasswordType(_data[index]['type']),
                             icon: Icon(
                               snapshot.data

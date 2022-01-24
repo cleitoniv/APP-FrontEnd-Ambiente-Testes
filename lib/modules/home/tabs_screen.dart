@@ -423,15 +423,23 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _initState() async {
+
     await _authBloc.fetchCurrentUser();
-    _productBloc.fetchProducts("Todos");
+    String _currentProdFilter = _homeWidgetBloc.currentSightProblem;
+    if(_currentProdFilter != null) {
+      _productBloc.fetchProducts(_currentProdFilter);
+    } else {
+      _productBloc.fetchProducts("Todos");
+    }
     _tabController.addListener(() {
       _homeWidgetBloc.currentTabIndexIn.add(
         _tabController.index,
       );
     });
 
+
     int filter = _requestsBloc.currentFilter;
+
     _requestsBloc.getPedidosList(filter);
     _homeWidgetBloc.currentTabIndexOut.listen((int event) {
       if (event != null && event != _tabController.index) {

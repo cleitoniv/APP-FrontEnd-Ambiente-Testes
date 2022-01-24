@@ -161,7 +161,8 @@ class UserRepository {
       }
     } catch (error) {
       final error400 = error as DioError;
-
+      print("error--------");
+      print(error400.response);
       // final message = error400.response.data["data"]["errors"];
 
       return AddUsuarioCliente(
@@ -178,11 +179,12 @@ class UserRepository {
 
     try {
       Response response = await dio.get(
-          "/api/usuarios_cliente?page=1&page_size=1000",
+          "/api/usuarios_cliente?page=1&page_size=1000&status=1",
           options: Options(headers: {
             "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
+
 
       List<UsuarioClienteModel> usuarios =
           response.data["data"].map<UsuarioClienteModel>((e) {

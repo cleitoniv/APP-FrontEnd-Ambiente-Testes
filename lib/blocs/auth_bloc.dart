@@ -56,7 +56,10 @@ class AuthBloc extends Disposable {
     this._currentUser.data = cliente;
     if (cliente.sitApp == "B" || cliente.status == 0) {
       Dialogs.errorWithWillPopScope(context, onTap: () {
-        Modular.to.navigate("/auth/login");
+        Modular.to.pushNamedAndRemoveUntil(
+          '/home/0',
+              (route) => route.isFirst, //(Route<dynamic> route) => false
+        );
       },
           buttonText: "Entendi",
           title: "Bloqueado!",

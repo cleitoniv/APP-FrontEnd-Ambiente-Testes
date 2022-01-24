@@ -6,7 +6,7 @@ class Dialogs {
       String subtitle = 'Devolução solicitada com sucesso!',
       Function onTap,
       String buttonText = 'Confirmar Solicitação',
-      bool barrierDismissible = true}) {
+      bool barrierDismissible = false}) {
     showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
@@ -56,7 +56,7 @@ class Dialogs {
       String subtitle = 'Devolução solicitada com sucesso!',
       Function onTap,
       String buttonText = 'Confirmar Solicitação',
-      bool barrierDismissible = true}) {
+      bool barrierDismissible = false}) {
     showDialog(
       context: context,
       barrierDismissible: barrierDismissible,

@@ -1096,26 +1096,36 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             fontWeight: FontWeight.w700)),
                   ),
                   SizedBox(height: 40),
-                  Container(
-                    height: 30,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        _verifyIcon(),
-                        FittedBox(
-                          fit: BoxFit.contain,
-                          child: Text(
-                            _verifyType(),
-                            style:
+                  Column(
+                    children: [
+                      Container(
+                        height: 30,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            _verifyIcon(),
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                _verifyType(),
+                                style:
                                 Theme.of(context).textTheme.subtitle1.copyWith(
-                                      color: Colors.black45,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                          ),
+                                  color: Colors.black45,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      Column(
+                        children: [
+                          Text("Credito de Produto disponivel"),
+                          Text("${currentProduct.product.}")
+                        ],
+                      )
+                    ]
                   )
                 ],
               )),

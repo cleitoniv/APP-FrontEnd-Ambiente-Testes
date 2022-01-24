@@ -33,13 +33,15 @@ class AuthEvent implements Authentication {
   ClienteModel data;
   Map<String, dynamic> errorData;
   bool isValid;
+  bool isBlocked = false;
   bool integrated;
   AuthEvent(
       {this.data,
       this.integrated = false,
       this.isValid,
       this.loading,
-      this.errorData});
+      this.errorData,
+      this.isBlocked});
   bool loading;
 }
 
@@ -246,7 +248,8 @@ class AuthRepository {
             isValid: true, data: cliente, loading: false, integrated: false);
       } else if (cliente.sitApp == "B") {
         return AuthEvent(
-            isValid: false,
+            isBlocked: true,
+            isValid: true,
             data: cliente,
             loading: false,
             integrated: false,

@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (cliente.sitApp == "A") {
       return AuthEvent(
           isValid: true, data: cliente, loading: false, integrated: false);
-    } else if (cliente.sitApp == "B") {
+    } else if (cliente.sitApp == "D") {
       return AuthEvent(
           isValid: false,
           data: cliente,
@@ -74,7 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ]
           });
     } else {
-      print("AQUI");
       return AuthEvent(isValid: true, data: cliente, loading: false);
     }
   }
@@ -123,10 +122,13 @@ class _LoginScreenState extends State<LoginScreen> {
           return;
         }
 
-        print("PASSOU");
         setState(() {
           this._isLoading = false;
         });
+
+        print("checking app sit");
+        print(_checkSitapp(_cliente.data));
+        print(_cliente.isValid);
         if (_cliente.isValid && _checkSitapp(_cliente.data).isValid) {
           print("2");
 
@@ -142,12 +144,12 @@ class _LoginScreenState extends State<LoginScreen> {
             final prefs = await _prefs;
             final int rememberStatus = prefs.getInt('rememberStatus');
 
+
             if (rememberStatus != null) {
               prefs.setString('emailStored', _emailController.text);
             } else {
-              prefs.setString('emailStored', null);
+              prefs.setString('emailStored', '');
             }
-            print("41312");
 
             Modular.to.pushNamedAndRemoveUntil(
               '/home/0',
@@ -218,7 +220,6 @@ class _LoginScreenState extends State<LoginScreen> {
       return true;
     }
 
-    print("OLA");
     prefs.setInt('rememberStatus', 0).then((bool success) {
       setState(() {
         _remember = false;
