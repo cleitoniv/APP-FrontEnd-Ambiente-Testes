@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/devolution_model.dart';
 import 'package:central_oftalmica_app_cliente/models/parametro_produto.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class ProductEvent {
   bool isEmpty;
@@ -49,6 +52,8 @@ class ProductRepository {
 
   ProductRepository(this.dio);
 
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
+
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<bool> checkProduct(Map<String, dynamic> data) async {
@@ -63,6 +68,54 @@ class ProductRepository {
           }),
           queryParameters: data);
       return response.data["success"];
+    } catch (error) {
+      return false;
+    }
+  }
+
+  Future<List> favorites(AuthEvent currentUser) async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
+    print("currentUser");
+    print(currentUser);
+    try {
+      Response response = await dio.get('/api/cliente/favorite?user_id=${currentUser.data.id}&page=1&page_size=1000',
+          options: Options(
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $idToken"
+            },
+          ));
+      return response.data["data"];
+    } catch(error){
+      return [];
+    }
+  }
+
+  Future<bool> favorite(String group) async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
+    var currentUser = _authBloc.getAuthCurrentUser;
+
+    try {
+      await dio.post(
+        "/api/cliente/favorite",
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $idToken"
+          },
+        ),
+        data: jsonEncode(
+          {
+            "param": {
+              "group": group,
+              "user_id": currentUser.data.id
+            }
+          },
+        ),
+      );
+      return true;
     } catch (error) {
       return false;
     }

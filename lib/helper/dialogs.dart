@@ -275,7 +275,8 @@ class Dialogs {
     String title = 'Deseja confirmarresgate de pontos?',
     String subtitle =
         'Ao confirmar iremos converter seus Pontos em Crédito Financeiro, tem certeza que deseja resgatar?',
-  }) {
+        bool barrierDismissible = false,
+      }) {
     List<Map> _renderButtonData(BuildContext context) {
       return [
         {
@@ -294,6 +295,7 @@ class Dialogs {
     }
 
     showDialog(
+      barrierDismissible: barrierDismissible,
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,

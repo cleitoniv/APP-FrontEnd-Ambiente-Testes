@@ -11,6 +11,7 @@ import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
+import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -299,6 +300,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
   }
 
+  _getBuyValue(String type) {
+    if (type == "A") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.value)}';
+    } else if (type == "C") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.valueProduto)}';
+    } else if (type == "CF") {
+      return 'R\$ ${Helper.intToMoney(currentProduct.product.valueFinan)}';
+    } else if (type == "T") {
+      return '';
+    }
+  }
+
   _verifyType() {
     if (widget.type == "A") {
       return "Avulso";
@@ -307,6 +320,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     } else if (widget.type == "CF") {
       return "Financeiro";
     } else if (widget.type == "T") {
+      return "Teste";
+    }
+  }
+
+  _getType(String type) {
+    if (type == "A") {
+      return "Avulso";
+    } else if (type == "C") {
+      return "Produto";
+    } else if (type == "CF") {
+      return "Financeiro";
+    } else if (type == "T") {
       return "Teste";
     }
   }
@@ -782,6 +807,45 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
   }
 
+  _getIcon(String type) {
+    if (type == "A") {
+      return CircleAvatar(
+          backgroundColor: Color(0xfff),
+          child: Image.asset(
+            'assets/icons/credito-financeiro.png',
+            width: 26,
+            height: 26,
+            color: Color(0xff707070),
+          ));
+    } else if (type == "C") {
+      return CircleAvatar(
+          backgroundColor: Color(0xffEFC75E),
+          child: Image.asset(
+            'assets/icons/open_box.png',
+            width: 20,
+            height: 20,
+            color: Colors.white,
+          ));
+    } else if (type == "CF") {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Image.asset(
+            'assets/icons/credito-financeiro.png',
+            width: 28,
+            height: 28,
+            color: Colors.green[300],
+          ));
+    } else if (type == "T") {
+      return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Icon(
+            Icons.remove_red_eye,
+            color: Colors.black54,
+            size: 23,
+          ));
+    }
+  }
+
   _onAddCurrentParam(Map<dynamic, dynamic> data) async {
     if (widget.type == "C") {
       if (data['current'] == 'Graus diferentes em cada olho' &&
@@ -1023,6 +1087,113 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     ];
   }
 
+  Widget _getValueLabel(String type) {
+    return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 8),
+            height: 30,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                _getIcon(type),
+                FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    _getType(type),
+                    style:
+                    Theme.of(context).textTheme.subtitle1.copyWith(
+                      color: Colors.black45,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        ]
+    );
+  }
+
+  Widget _priceTable(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 10),
+//            decoration: BoxDecoration(
+//              border: Border.all(color: Theme.of(context).accentColor.withOpacity(0.3)),
+//              borderRadius: BorderRadius.all(Radius.circular(5))
+//            ),
+      width: 30,
+      child: Column(
+        children: [
+          Text("Tabela de Preços", style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 20),),
+          SizedBox(height: 10,),
+          Table(
+            children: [
+              TableRow(
+                children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(child: Text("${_getBuyValue("A")}", style: TextStyle(
+                        color: Color(0xff707070),
+                        fontWeight: FontWeight.w700
+                    ),),),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(4),
+                    child: _getValueLabel("A"),
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(child: Text("${_getBuyValue("C")}", style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                        fontWeight: FontWeight.w700
+                    )),),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(4),
+                    child: _getValueLabel("C"),
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(child: Text("${_getBuyValue("CF")}", style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w700
+                    )),),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(4),
+                    child: _getValueLabel("CF"),
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.middle,
+                    child: Center(child: Text("---"),),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(4),
+                    child: _getValueLabel("T"),
+                  ),
+                ],
+              )
+            ],
+          )],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1051,24 +1222,26 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    CachedNetworkImage(
-                      errorWidget: (context, url, error) =>
-                          Image.asset('assets/images/no_image_product.jpeg'),
+                    ProductProfileWidget(
+                      value: currentProduct.product.value,
+                      title: currentProduct.product.title,
+                      tests: currentProduct.product.tests,
                       imageUrl: currentProduct.product.imageUrl,
-                      width: 120,
-                      height: 100,
-                      alignment: Alignment.center,
-                      fit: BoxFit.contain,
+                      credits: currentProduct.product.boxes,
+                      onTap: () async {
+                      },
                     ),
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        _verifyBuy(),
-                        style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontSize: 14,
-                            ),
-                      ),
-                    ),
+//                    CachedNetworkImage(
+//                      errorWidget: (context, url, error) =>
+//                          Image.asset('assets/images/no_image_product.jpeg'),
+//                      imageUrl: currentProduct.product.imageUrl,
+//                      width: 120,
+//                      height: 100,
+//                      alignment: Alignment.center,
+//                      fit: BoxFit.contain,
+//                    ),
+
+                 //   Text("${_getBuyValue(widget.type)}", style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 17),)
                   ]),
               SizedBox(width: 20),
               Expanded(
@@ -1098,39 +1271,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   SizedBox(height: 40),
                   Column(
                     children: [
-                      Container(
-                        height: 30,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            _verifyIcon(),
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                _verifyType(),
-                                style:
-                                Theme.of(context).textTheme.subtitle1.copyWith(
-                                  color: Colors.black45,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Text("Credito de Produto disponivel"),
-                          Text("${currentProduct.product.}")
-                        ],
-                      )
-                    ]
+                      Text("Modo de compra", style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).primaryColor
+                      ),),
+                      _getValueLabel(widget.type)
+                    ],
                   )
                 ],
               )),
             ],
           ),
+          SizedBox(height: 15,),
           Divider(
             height: 50,
             thickness: 0.2,
@@ -1145,7 +1297,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     fit: BoxFit.contain,
                     child: AutoSizeText(
                       'Informações do Paciente',
-                      textScaleFactor: 1.10,
+                     // textScaleFactor: 1.10,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.headline5,
                       textAlign: TextAlign.center,
@@ -1166,7 +1318,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           Text(
             'Gestão do Paciente & Pontos Controle o período para reavaliação do seu paciente preenchendo o nome e a data de nascimento, opcionalmente completando com o CPF dele, voce acumula pontos para compras futuras.',
             style: Theme.of(context).textTheme.subtitle1,
-            textScaleFactor: 1.25,
+           // textScaleFactor: 1.25,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),

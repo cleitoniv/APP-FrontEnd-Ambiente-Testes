@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
@@ -18,6 +19,14 @@ class ProductBloc extends Disposable {
 
   void setCurrentProduct(Product product) {
     this._currentProduct = product;
+  }
+
+  Future<List> favorites(AuthEvent event) async {
+    return this.repository.favorites(event);
+  }
+
+  Future<bool> favorite(String group) async {
+    this.repository.favorite(group);
   }
 
   void fetchProducts(String filtro) async {

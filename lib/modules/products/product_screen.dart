@@ -137,6 +137,10 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
 
+  _favoriteProduct() {
+    _productBloc.favorite(widget.product.group);
+  }
+
   _handleSingleOrder(ProductModel product) {
     Dialogs.confirm(
       context,
@@ -287,7 +291,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       right: 20,
                       child: InkWell(
                         onTap: () {
-                          print("ok");
+                          _favoriteProduct();
                         },
                         child: CircleAvatar(
                           radius: 30,
