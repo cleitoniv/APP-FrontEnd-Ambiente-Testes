@@ -30,13 +30,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   _getFavorites() async {
-    _currentUserSS = _authBloc.clienteDataStream.listen((event) {
-      if(event != null && event.data != null) {
-        print("auth event");
-        print(event.data);
-        _productBloc.favorites(event);
-      }
-    });
+    if(_authBloc.getAuthCurrentUser != null) {
+      await _productBloc.favorites(_authBloc.getAuthCurrentUser);
+    } else {
+      _currentUserSS = _authBloc.clienteDataStream.listen((event) {
+        if(event != null && event.data != null) {
+          print("auth event");
+          print(event.data);
+          _productBloc.favorites(event);
+        }
+      });
+    }
   }
 
   @override
@@ -44,47 +48,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     _isLoadingProduct = false;
     super.initState();
     _getFavorites();
-  }
-  
-  Widget favoritesView(List productsList, List favorites) {
-    List products = productsList.where((product) => favorites.any((fav) => product.group == fav.group));
-    return !_isLoadingProduct
-        ? GridView.builder(
-      itemCount: products.length,
-      padding: const EdgeInsets.all(10),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 5,
-        crossAxisSpacing: 20,
-        childAspectRatio: 0.7,
-      ),
-      itemBuilder: (context, index) {
-        return ProductWidget(
-          value: products[index].value,
-          title: products[index].title,
-          tests: products[index].tests,
-          imageUrl: products[index].imageUrl,
-          credits: products[index].boxes,
-          onTap: () async {
-            setState(() {
-              _isLoadingProduct = true;
-            });
-
-            bool blocked =
-            await _authBloc.checkBlockedUser(widget.context);
-
-            if (!blocked) {
-              onChangeProduct(products[index], context);
-            }
-
-            setState(() {
-              _isLoadingProduct = false;
-            });
-          },
-        );
-      },
-    )
-        : Center(child: CircularProgressIndicator());
   }
 
   @override
@@ -100,52 +63,71 @@ class _ProductsScreenState extends State<ProductsScreen> {
     // print("OLAs");
     return SafeArea(
       child: StreamBuilder(
-        stream: _productBloc.productListStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.data.isEmpty) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+        stream: _productBloc.favoriteProductListStream,
+        builder: (context, favoriteSnapshot) {
+          print("favorites");
+          print(favoriteSnapshot.data);
+          return StreamBuilder(
+            stream: _productBloc.productListStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data.isEmpty) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-          List<ProductModel> _products = snapshot.data.list;
-          return !_isLoadingProduct
-              ? GridView.builder(
-                  itemCount: _products.length,
-                  padding: const EdgeInsets.all(10),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 5,
-                    crossAxisSpacing: 20,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemBuilder: (context, index) {
-                    return ProductWidget(
-                      value: _products[index].value,
-                      title: _products[index].title,
-                      tests: _products[index].tests,
-                      imageUrl: _products[index].imageUrl,
-                      credits: _products[index].boxes,
-                      onTap: () async {
-                        setState(() {
-                          _isLoadingProduct = true;
-                        });
+              List<ProductModel> _products = snapshot.data.list;
 
-                        bool blocked =
-                            await _authBloc.checkBlockedUser(widget.context);
+              _products = _products.map((e) {
+                if(favoriteSnapshot.data.any((e1) => e1['group'] == e.group)) {
+                  e.factor = 100;
+                }
 
-                        if (!blocked) {
-                          onChangeProduct(_products[index], context);
-                        }
+                return e;
+              }).toList();
 
-                        setState(() {
-                          _isLoadingProduct = false;
-                        });
-                      },
-                    );
-                  },
-                )
-              : Center(child: CircularProgressIndicator());
+              _products.sort((a, b) => a.factor.compareTo(b.factor));
+              _products = _products.reversed.toList();
+
+              return !_isLoadingProduct
+                  ? GridView.builder(
+                itemCount: _products.length,
+                padding: const EdgeInsets.all(10),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 20,
+                  childAspectRatio: 0.7,
+                ),
+                itemBuilder: (context, index) {
+                  return ProductWidget(
+                    value: _products[index].value,
+                    title: _products[index].title,
+                    tests: _products[index].tests,
+                    imageUrl: _products[index].imageUrl,
+                    credits: _products[index].boxes,
+                    onTap: () async {
+                      setState(() {
+                        _isLoadingProduct = true;
+                      });
+
+                      bool blocked =
+                      await _authBloc.checkBlockedUser(widget.context);
+
+                      if (!blocked) {
+                        onChangeProduct(_products[index], context);
+                      }
+
+                      setState(() {
+                        _isLoadingProduct = false;
+                      });
+                    },
+                  );
+                },
+              )
+                  : Center(child: CircularProgressIndicator());
+            },
+          );
         },
       ),
     );

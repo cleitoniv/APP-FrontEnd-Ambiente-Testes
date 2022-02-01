@@ -45,6 +45,7 @@ class ProductModel {
   bool valid;
   String message;
   String imageUrlTest;
+  int factor = 0;
 
   ProductModel(
       {this.id,

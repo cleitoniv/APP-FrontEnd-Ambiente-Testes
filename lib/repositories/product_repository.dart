@@ -86,6 +86,8 @@ class ProductRepository {
               "Authorization": "Bearer $idToken"
             },
           ));
+      print("response");
+      print(response.data["data"]);
       return response.data["data"];
     } catch(error){
       return [];

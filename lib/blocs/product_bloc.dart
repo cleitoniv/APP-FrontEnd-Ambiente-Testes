@@ -21,8 +21,9 @@ class ProductBloc extends Disposable {
     this._currentProduct = product;
   }
 
-  Future<List> favorites(AuthEvent event) async {
-    return this.repository.favorites(event);
+  Future<void> favorites(AuthEvent event) async {
+    List favorites = await this.repository.favorites(event);
+    favoriteProductListSink.add(favorites);
   }
 
   Future<bool> favorite(String group) async {
@@ -70,6 +71,10 @@ class ProductBloc extends Disposable {
   BehaviorSubject _creditProductsList = BehaviorSubject();
   Sink get creditProductListSink => _creditProductsList.sink;
   Stream get creditProductListStream => _creditProductsList.stream;
+
+  BehaviorSubject _favoriteProductsList = BehaviorSubject();
+  Sink get favoriteProductListSink => _favoriteProductsList.sink;
+  Stream get favoriteProductListStream => _favoriteProductsList.stream;
 
   StreamController<ProductEvent> _product = BehaviorSubject();
   Sink get productSink => _product.sink;
