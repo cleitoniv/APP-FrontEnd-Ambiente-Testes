@@ -15,13 +15,17 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   Future<void> fetchPaymentMethods() async {
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
+    print("fetching cards");
     try {
       CreditCardModel currentCard =
           list.list.firstWhere((element) => element.status == 1);
       currentPaymentFormIn.add(currentCard);
+      _cartWidgetBloc.setPaymentMethodCartao(currentCard);
       // _cartWidgetBloc.setPaymentMethodCartao("13", currentCard);
       this.cartaoCreditoSink.add(list);
     } catch (e) {
+      print("error");
+      print(e);
       if (list.list.length > 0) {
         currentPaymentFormIn.add(list.list[0]);
         _cartWidgetBloc.setPaymentMethodCartao(list.list[0]);

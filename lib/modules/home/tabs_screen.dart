@@ -5,6 +5,7 @@ import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
@@ -16,8 +17,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 class TabsScreen extends StatefulWidget {
   final int index;
+  final ProductModel product;
 
-  TabsScreen({this.index = 0});
+  TabsScreen({this.index = 0, this.product});
 
   @override
   _TabsScreenState createState() => _TabsScreenState();
@@ -33,12 +35,7 @@ class _TabsScreenState extends State<TabsScreen>
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<Widget> _screens = [
-    ProductsScreen(),
-    CreditsScreen(),
-    CartScreen(),
-    RequestsScreen(),
-  ];
+  List<Widget> _screens;
 
   List<Map> _tabs = [
     {
@@ -423,29 +420,39 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _initState() async {
-
+    print("1");
     await _authBloc.fetchCurrentUser();
     String _currentProdFilter = _homeWidgetBloc.currentSightProblem;
+    print("2");
     if(_currentProdFilter != null) {
+      print("3");
       _productBloc.fetchProducts(_currentProdFilter);
     } else {
+      print("4");
       _productBloc.fetchProducts("Todos");
     }
+    print("5");
+
     _tabController.addListener(() {
       _homeWidgetBloc.currentTabIndexIn.add(
         _tabController.index,
       );
     });
 
+    print("6");
 
     int filter = _requestsBloc.currentFilter;
 
     _requestsBloc.getPedidosList(filter);
+
+    print("7");
     _homeWidgetBloc.currentTabIndexOut.listen((int event) {
       if (event != null && event != _tabController.index) {
         _tabController.index = event;
       }
     });
+
+    print("8");
   }
 
   _getCurrentStatus() async {
@@ -464,6 +471,13 @@ class _TabsScreenState extends State<TabsScreen>
   void initState() {
     super.initState();
     print("5");
+
+    this._screens = [
+      ProductsScreen(),
+      CreditsScreen(product: widget.product,),
+      CartScreen(),
+      RequestsScreen(),
+    ];
 
     _homeWidgetBloc.currentTabIndexIn.add(
       widget.index,

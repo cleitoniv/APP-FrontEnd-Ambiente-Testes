@@ -35,8 +35,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     } else {
       _currentUserSS = _authBloc.clienteDataStream.listen((event) {
         if(event != null && event.data != null) {
-          print("auth event");
-          print(event.data);
           _productBloc.favorites(event);
         }
       });
@@ -54,7 +52,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _currentUserSS.cancel();
+    if(_currentUserSS != null) {
+      _currentUserSS.cancel();
+    }
   }
 
   @override
@@ -65,8 +65,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
       child: StreamBuilder(
         stream: _productBloc.favoriteProductListStream,
         builder: (context, favoriteSnapshot) {
-          print("favorites");
-          print(favoriteSnapshot.data);
           return StreamBuilder(
             stream: _productBloc.productListStream,
             builder: (context, snapshot) {

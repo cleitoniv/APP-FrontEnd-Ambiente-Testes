@@ -34,6 +34,16 @@ class CreditsBloc extends Disposable {
     offersSink.add(offers);
   }
 
+  Future<Offers> fetchOffersSync() async {
+    // offersSink.add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
+    return this.repository.getOffers();
+    // offersSink.add(offers);
+  }
+
+  Future<Offers> fetchCreditOfferSync(String group) {
+    return repository.getOffersCreditProduct(group);
+  }
+
   void fetchCreditOffers(String group) async {
     offersSink.add(Offers(isLoading: true, isEmpty: true, type: "CREDIT"));
     Offers offers = await repository.getOffersCreditProduct(group);

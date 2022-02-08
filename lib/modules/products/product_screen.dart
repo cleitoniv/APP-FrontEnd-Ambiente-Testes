@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
@@ -27,6 +30,7 @@ class _ProductScreenState extends State<ProductScreen> {
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   AuthEvent currentUser;
+  HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
 
   _onShowInfo(bool value) {
     _productWidgetBloc.showInfoIn.add(!value);
@@ -38,6 +42,9 @@ class _ProductScreenState extends State<ProductScreen> {
     if (type == "T") {
       Modular.to.pop();
     } else {
+      _homeBloc.currentCreditTypeIn.add('Produto');
+      _productBloc.productRedirectedSink.add(widget.product);
+      _productBloc.setOffers(widget.product);
       Modular.to.pushNamed('/home/1');
     }
   }
@@ -131,14 +138,19 @@ class _ProductScreenState extends State<ProductScreen> {
         return;
       }
     }
+
     Modular.to.pushNamed(
       '/products/${product.id}/requestDetails',
       arguments: type,
     );
   }
 
-  _favoriteProduct() {
-    _productBloc.favorite(widget.product.group);
+  _favoriteProduct() async {
+    bool success = await _productBloc.favorite(widget.product.group);
+    print(success);
+    if(success) {
+      await Modular.to.pushReplacementNamed('/products/${widget.product.id}', arguments: widget.product);
+    }
   }
 
   _handleSingleOrder(ProductModel product) {
@@ -157,6 +169,41 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
 
+  _getFavorites() async {
+    await _productBloc.favorites(_authBloc.getAuthCurrentUser);
+  }
+
+  _likeButton() {
+    return StreamBuilder(
+        stream: _productBloc.favoriteProductListStream,
+        builder: (context, snapshot) {
+          if(!snapshot.hasData) {
+            return Container();
+          }
+
+          if(!snapshot.data.any((e) => e['group'] == widget.product.group)) {
+            return CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.favorite_border,
+                size: 30,
+              ),
+            );
+          }
+          return CircleAvatar(
+            radius: 30,
+            backgroundColor: Color(0xffFD6565),
+            child: Image.asset(
+              'assets/icons/heart_outline.png',
+              width: 30,
+              height: 30,
+            ),
+          );
+        }
+    );
+  }
+
   @override
   void initState() {
     this.currentUser = _authBloc.getAuthCurrentUser;
@@ -165,6 +212,7 @@ class _ProductScreenState extends State<ProductScreen> {
     _productBloc.productSink.add(product);
     _productBloc.setCurrentProduct(product);
     _productWidgetBloc.showInfoIn.add(false);
+    _getFavorites();
     super.initState();
   }
 
@@ -225,6 +273,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   overflow: Overflow.visible,
                   children: <Widget>[
                     Container(
+                      padding: EdgeInsets.only(top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       height: 208,
                       width: MediaQuery.of(context).size.width,
@@ -232,10 +281,6 @@ class _ProductScreenState extends State<ProductScreen> {
                         color: Colors.white,
                         border: Border(
                           top: BorderSide(
-                            width: 0.5,
-                            color: Colors.black26,
-                          ),
-                          bottom: BorderSide(
                             width: 0.5,
                             color: Colors.black26,
                           ),
@@ -286,27 +331,18 @@ class _ProductScreenState extends State<ProductScreen> {
                         },
                       ),
                     ),
-                    Positioned(
-                      bottom: -30,
-                      right: 20,
-                      child: InkWell(
-                        onTap: () {
-                          _favoriteProduct();
-                        },
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Color(0xffFD6565),
-                          child: Image.asset(
-                            'assets/icons/heart_outline.png',
-                            width: 30,
-                            height: 30,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
                 SizedBox(height: 30),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      _favoriteProduct();
+                    },
+                    child: _likeButton()
+                  ),
+                ),
                 Table(
                   children: [
                     TableRow(

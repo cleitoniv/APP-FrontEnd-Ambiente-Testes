@@ -41,7 +41,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
     int _total = data.fold(
       0,
       (previousValue, element) =>
-          previousValue + (element['product'].value * element['quantity']),
+          previousValue + (element['value'] * element['quantity']),
     );
 
     return Helper.intToMoney(_total);
@@ -139,7 +139,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            'R\$ ${Helper.intToMoney(_data[index]['product'].value)}',
+                            'R\$ ${Helper.intToMoney(_data[index]['value'])}',
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
                                       fontSize: 14,

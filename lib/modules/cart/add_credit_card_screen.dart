@@ -82,7 +82,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {
         // Modular.to.pushReplacementNamed("/cart/payment");
-        Modular.to.pop();
+        Modular.to.pushReplacementNamed('/cart/payment');
         return;
       }
     }

@@ -14,7 +14,7 @@ class CreditsModule extends Module {
   final List<ModularRoute> routes = [
     ChildRoute(
       '/',
-      child: (_, args) => CreditsScreen(),
+      child: (_, args) => CreditsScreen(product: args.params['products'],),
     ),
   ];
 }

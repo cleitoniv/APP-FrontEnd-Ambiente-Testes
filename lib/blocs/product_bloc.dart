@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
+import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
@@ -27,7 +29,7 @@ class ProductBloc extends Disposable {
   }
 
   Future<bool> favorite(String group) async {
-    this.repository.favorite(group);
+    return this.repository.favorite(group);
   }
 
   void fetchProducts(String filtro) async {
@@ -75,10 +77,24 @@ class ProductBloc extends Disposable {
   BehaviorSubject _favoriteProductsList = BehaviorSubject();
   Sink get favoriteProductListSink => _favoriteProductsList.sink;
   Stream get favoriteProductListStream => _favoriteProductsList.stream;
+  get favoriteProductListValue => _favoriteProductsList.value;
 
   StreamController<ProductEvent> _product = BehaviorSubject();
   Sink get productSink => _product.sink;
   Stream<ProductEvent> get productStream => _product.stream;
+
+  StreamController _productRedirected = BehaviorSubject();
+  Sink get productRedirectedSink => _productRedirected.sink;
+  Stream get productRedirectedStream => _productRedirected.stream;
+
+  void setOffers(ProductModel product) async {
+    Offers _offers = await _creditsBloc.fetchCreditOfferSync(product.group);
+    _offersRedirected.sink.add(_offers);
+  }
+
+  StreamController _offersRedirected = BehaviorSubject();
+  Sink get offersRedirectedSink => _offersRedirected.sink;
+  Stream get offersRedirectedStream => _offersRedirected.stream;
 
   StreamController<ProductEvent> _productsList = BehaviorSubject();
   Sink get productListSink => _productsList.sink;
