@@ -29,18 +29,26 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   MaskedTextController _creditCardNumberController;
 
   _onAddCreditCard() {
-    Modular.to.pushNamed('/cart/addCreditCard');
+    Modular.to.pushNamed('/cart/addCreditCard', arguments: {'route': '/credito_financeiro/pagamento'});
   }
 
   _onChangePaymentForm(CreditCardModel creditCard) async {
+    print("credit card");
+    print(creditCard.toJson());
     setState(() {
       billing = false;
+      _lock = true;
     });
     bool selectedCard =
         await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
     if (selectedCard) {
       _creditCardBloc.fetchPaymentMethods();
     }
+
+    setState(() {
+      billing = false;
+      _lock = false;
+    });
   }
 
   _onDelete(int id) async {
@@ -152,7 +160,6 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        print(snapshot.data.valor);
                         return Text(
                           'R\$ ${Helper.intToMoney(snapshot.data.valor)}',
                           style: Theme.of(context).textTheme.headline5.copyWith(
@@ -195,7 +202,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                             child: CircularProgressIndicator(),
                           );
                         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                          _blockFinaliza();
+                          // _blockFinaliza();
                           return Center(
                             child: Text(
                               "Cadastre um cartão!",
@@ -405,7 +412,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
           Padding(
             padding: EdgeInsets.all(20.0),
             child: RaisedButton(
-              onPressed: !_lock ? _finishPayment : null,
+              onPressed: _lock ? null : _finishPayment,
               child: Text(
                 'Finalizar Pedido',
                 style: Theme.of(context).textTheme.button,

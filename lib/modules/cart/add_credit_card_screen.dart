@@ -61,6 +61,8 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
       setState(() {
         isLoading = true;
       });
+      print("cartao number---");
+      print(parseCartaoNumber(_creditCardNumberController.text));
       CreditCard _storeResult = await _creditCardBloc.addCreditCard(
         CreditCardModel(
           cartaoNumber: parseCartaoNumber(_creditCardNumberController.text),
@@ -69,10 +71,13 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
           nomeTitular: _ownerController.text,
         ),
       );
+     // create unique_index(:cartao_credito_cliente, [:cartao_number, :cliente_id])
+
       setState(() {
         isLoading = false;
       });
       if (_storeResult.errorData != null) {
+        print(_storeResult.errorData);
         SnackBar _snackBar = SnackBar(
           content: Text(
             'Falha ao adicionar cartão',
@@ -82,7 +87,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {
         // Modular.to.pushReplacementNamed("/cart/payment");
-        Modular.to.pushReplacementNamed('/cart/payment');
+        Modular.to.pushReplacementNamed(widget.screen['route'] ?? '/cart/payment');
         return;
       }
     }

@@ -41,7 +41,10 @@ class _ProductScreenState extends State<ProductScreen> {
   _showDialogType(String type) {
     if (type == "T") {
       Modular.to.pop();
-    } else {
+    } else if(type == 'CF'){
+      _homeBloc.currentCreditTypeIn.add('Financeiro');
+      Modular.to.pushNamed('/home/1');
+    } else{
       _homeBloc.currentCreditTypeIn.add('Produto');
       _productBloc.productRedirectedSink.add(widget.product);
       _productBloc.setOffers(widget.product);

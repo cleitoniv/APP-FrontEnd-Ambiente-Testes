@@ -66,6 +66,12 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _onChangeCreditType(String type) {
+    print("type----");
+    print(type);
+    if(type == 'Financeiro') {
+      _productBloc.productRedirectedSink.add(null);
+      _productBloc.offersRedirectedSink.add(null);
+    }
     _homeWidgetBloc.currentCreditTypeIn.add(type);
   }
 

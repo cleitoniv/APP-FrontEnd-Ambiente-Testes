@@ -27,8 +27,7 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
 
   void _addCreditoFinanceiro() {
     int value = (_creditValueController.numberValue * 100).toInt();
-    _creditoFinanceiroBloc.creditoFinaceiroSink
-        .add(CreditoFinanceiro(valor: value, installmentCount: 1, desconto: 0));
+    _creditoFinanceiroBloc.creditoFinaceiroSink.add(CreditoFinanceiro(valor: value, installmentCount: 1, desconto: 0));
     Modular.to.pushNamed('/credito_financeiro/pagamento');
   }
 
@@ -64,7 +63,9 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
                   padding: EdgeInsets.all(20.0),
                   child: RaisedButton(
                     elevation: 0,
-                    onPressed: _addCreditoFinanceiro,
+                    onPressed: (){
+                      _addCreditoFinanceiro();
+                    },
                     child: Text(
                       'Adicionar Crédito',
                       style: Theme.of(context).textTheme.button,

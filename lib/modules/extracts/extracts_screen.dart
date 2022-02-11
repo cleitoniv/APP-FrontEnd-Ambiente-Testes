@@ -44,25 +44,26 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
   void initState() {
     super.initState();
     Map<String, dynamic> currentPage = _extractWidgetBloc.currentPageValue;
+    print("currentPage");
     print(currentPage);
     if (widget.prevPage == "NOTIFICATION" &&
         currentPage['type'] == "Financeiro") {
       _extractWidgetBloc.fetchExtratoFinanceiro();
-
-      _pageController = PageController(
-        initialPage: currentPage['page'],
-      );
     } else if (widget.prevPage == "NOTIFICATION" &&
         currentPage['type'] == "Produto") {
       _extractWidgetBloc.fetchExtratoProduto();
-
-      _pageController = PageController(
-        initialPage: currentPage['page'],
-      );
     }
+
+    _pageController = PageController(
+      initialPage: currentPage['page'],
+    );
 
     if (widget.prevPage != "NOTIFICATION") {
       _extractWidgetBloc.extractTypeIn.add("Financeiro");
+      _extractWidgetBloc.fetchExtratoFinanceiro();
+      _pageController = PageController(
+        initialPage: 0,
+      );
     }
   }
 
@@ -75,10 +76,14 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
         leading: GestureDetector(
           onTap: () {
             Modular.to.pop();
-            // Modular.to.pushNamedAndRemoveUntil(
-            //   '/home/0',
-            //   (route) => route.isFirst,
-            // );
+             if(widget.prevPage ==  "NOTIFICATION") {
+               Modular.to.pop();
+             } else {
+               Modular.to.pushNamedAndRemoveUntil(
+                 '/home/0',
+                     (route) => route.isFirst,
+               );
+             }
           },
           child: Icon(
             Icons.arrow_back_ios,

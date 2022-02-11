@@ -50,7 +50,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   _onAddCreditCard() {
     Modular.to
-        .pushNamed('/cart/addCreditCard', arguments: {"screen": "payment"});
+        .pushNamed('/cart/addCreditCard', arguments: {"screen": "/cart/payment"});
   }
 
   _onDelete(int id) async {
@@ -73,19 +73,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _onChangePaymentForm(CreditCardModel creditCard) async {
+    print("credit card---");
+    print(creditCard.toJson());
     setState(() {
       billing = false;
-      _lock = false;
+      _lock = true;
     });
 
-    bool selectedCard =
-        await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
-    print("BILLING");
-    print(billing);
+    bool selectedCard = await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
+
     _cartWidgetBloc.setPaymentMethodBoleto(billing);
+
     if (selectedCard) {
       _creditCardBloc.fetchPaymentMethods();
     }
+
+    setState(() {
+      _lock = false;
+    });
   }
 
   _blockFinaliza() {
@@ -182,7 +187,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             child: CircularProgressIndicator(),
                           );
                         }
-
                         return Text(
                           'R\$ ${_totalToPay(snapshot.data)}',
                           style: Theme.of(context).textTheme.headline5.copyWith(
@@ -225,7 +229,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             child: CircularProgressIndicator(),
                           );
                         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                          _blockFinaliza();
                           return Center(
                             child: Text(
                               "Cadastre um cartão!",
@@ -276,7 +279,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   ),
                                   child: ListTileMoreCustomizable(
                                     onTap: (value) {
-                                      print("1");
                                       _onChangePaymentForm(
                                         _creditCards[index],
                                       );
@@ -359,7 +361,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  _lock = false;
                   billing = true;
                   _cartWidgetBloc.setPaymentMethodBoleto(billing);
                 });
@@ -390,7 +391,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: null,
+                              color: billing ? Colors.white :  Colors.black,
                             ),
                       ),
                     ),
@@ -434,7 +435,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           Padding(
             padding: EdgeInsets.all(20.0),
             child: RaisedButton(
-              onPressed: !_lock ? _finishPayment : null,
+              onPressed: _lock ? null : _finishPayment,
               child: Text(
                 'Finalizar Pedido',
                 style: Theme.of(context).textTheme.button,

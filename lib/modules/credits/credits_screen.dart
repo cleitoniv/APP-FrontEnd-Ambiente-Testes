@@ -55,6 +55,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
   StreamSubscription _productReset;
 
   Offers _offers;
+  Offers _offersFinan = Offers(offers: []);
 
   bool _loadingOffers = false;
 
@@ -224,6 +225,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
     }
   }
 
+
   @override
   void initState() {
     _isLoadingPackage = false;
@@ -253,7 +255,17 @@ class _CreditsScreenState extends State<CreditsScreen> {
         _currentProduct = {"selected": false};
       } else {
         _currentProduct = {"selected": true};
-        this._offers = await _creditsBloc.fetchOffersSync();
+        print("printing....");
+        setState(() {
+          this._loadingOffers = true;
+        });
+
+        Offers of = await _creditsBloc.fetchOffersSync();
+
+        setState(() {
+          this._offers = of;
+          this._loadingOffers = false;
+        });
       }
     });
     print("4");
@@ -294,7 +306,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     stream: _productsBloc.productRedirectedStream,
                     builder: (context, prodRedirectSnapshot) {
                       ProductModel _currentProduct;
-                      var _selected;
+                      bool _selected;
                       if(prodRedirectSnapshot.hasData) {
                         _currentProduct = prodRedirectSnapshot.data;
                         _selected = true;
@@ -346,8 +358,9 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                 child: InkWell(
                                                   onTap: () {
                                                     setState(() {
-                                                      this._currentProduct["selected"] =
-                                                      false;
+                                                      _productsBloc.productRedirectedSink.add(null);
+                                                      _productsBloc.offersRedirectedSink.add(null);
+                                                      this._currentProduct["selected"] = false;
                                                     });
                                                     _creditsBloc.offersSink.add(Offers(
                                                         isEmpty: true,
@@ -571,10 +584,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
                                 if(offerSnapshot.hasData) {
                                   _financialCredits = offerSnapshot.data.offers;
-                                } else {
+                                } else  if(this._offers != null){
                                   _financialCredits =
                                       this._offers?.offers ?? [];
+                                } else {
+                                  _financialCredits = this._offersFinan.offers;
                                 }
+
+                                print("financial credits");
+                                print(this._offers);
 
                                 return Column(
                                   children: [
@@ -688,10 +706,13 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                             _financialCredits[index].discount,
                                                                       ),
                                                                     )
-                                                                  : InkWell(
-                                                                      onTap:
-                                                                          () {
-                                                                        print("aqui A");
+                                                                  : StreamBuilder(
+                                                                      stream: _productsBloc.productRedirectedStream,
+                                                                      builder: (context, productSnapshot) {
+                                                                        return InkWell(
+                                                                            onTap:
+                                                                                () {
+                                                                              print("aqui A");
 //                                                                        bool
 //                                                                            blocked =
 //                                                                            await _authBloc.checkBlockedUser(context);
@@ -699,19 +720,21 @@ class _CreditsScreenState extends State<CreditsScreen> {
 //                                                                            !_lock) {
 //
 //                                                                        }
-                                                                        _addCreditoProduct(
-                                                                            this._currentProduct["product"],
-                                                                            _financialCredits[index]);
+                                                                              _addCreditoProduct(
+                                                                                  productSnapshot.data ?? this._currentProduct["product"],
+                                                                                  _financialCredits[index]);
+                                                                            },
+                                                                            child: CreditProductCardWidget(
+                                                                                precoUnitario: _financialCredits[index]
+                                                                                    .price,
+                                                                                caixas: _financialCredits[index]
+                                                                                    .quantity,
+                                                                                value: _financialCredits[index]
+                                                                                    .total,
+                                                                                percentageTest:
+                                                                                _financialCredits[index].percentageTest));
                                                                       },
-                                                                      child: CreditProductCardWidget(
-                                                                          precoUnitario: _financialCredits[index]
-                                                                              .price,
-                                                                          caixas: _financialCredits[index]
-                                                                              .quantity,
-                                                                          value: _financialCredits[index]
-                                                                              .total,
-                                                                          percentageTest:
-                                                                              _financialCredits[index].percentageTest));
+                                                                    );
                                                             },
                                                           )
                                                         : Center(

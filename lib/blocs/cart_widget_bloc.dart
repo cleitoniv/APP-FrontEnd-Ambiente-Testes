@@ -44,7 +44,6 @@ class CartWidgetBloc extends Disposable {
   Stream<CreditCardModel> get currentPaymentFormOut =>
       _currentPaymentFormController.stream.map(
         (event) {
-          print("EVENT");
           this.setPaymentMethodCartao(event);
           return event;
         },
