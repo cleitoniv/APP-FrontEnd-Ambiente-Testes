@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/devolution_model.dart';
+import 'package:central_oftalmica_app_cliente/models/offer.dart';
 import 'package:central_oftalmica_app_cliente/models/parametro_produto.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -91,6 +93,27 @@ class ProductRepository {
       return response.data["data"];
     } catch(error){
       return [];
+    }
+  }
+
+  Future<Offers> getOffers() async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
+
+    try {
+      Response response = await dio.get('/api/cliente/offers',
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $idToken"
+          }));
+      final offers = response.data['data'].map<OfferModel>((e) {
+        return OfferModel.fromJson(e);
+      }).toList();
+      return Offers(
+          isLoading: false, isEmpty: false, offers: offers, type: "FINAN");
+    } catch (error) {
+      return Offers(
+          isLoading: false, isEmpty: true, offers: null, type: "FINAN");
     }
   }
 

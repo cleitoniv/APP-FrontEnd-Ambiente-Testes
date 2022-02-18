@@ -1,6 +1,8 @@
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/models/points_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -17,9 +19,16 @@ class _PointsScreenState extends State<PointsScreen> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   _checkBlockedUser(context, ontap) async {
-    bool blocked = await _authBloc.checkBlockedUser(context);
-    if (!blocked) {
+    bool blocked = await _authBloc.currentUser();
+    if (blocked) {
       ontap();
+    } else {
+      Dialogs.errorWithWillPopScope(context,
+          barrierDismissible: false,
+          buttonText: "OK",
+          title: "Usuario bloqueado.",
+          subtitle: "No momento voce não pode realizar esse tipo de operação."
+      );
     }
   }
 

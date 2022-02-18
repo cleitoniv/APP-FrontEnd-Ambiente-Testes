@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
@@ -27,6 +28,7 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
+  CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   AuthEvent currentUser;
@@ -43,6 +45,7 @@ class _ProductScreenState extends State<ProductScreen> {
       Modular.to.pop();
     } else if(type == 'CF'){
       _homeBloc.currentCreditTypeIn.add('Financeiro');
+      _productBloc.fetchOffers();
       Modular.to.pushNamed('/home/1');
     } else{
       _homeBloc.currentCreditTypeIn.add('Produto');

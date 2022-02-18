@@ -109,13 +109,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         _isLoadingProduct = true;
                       });
 
-                      bool blocked =
-                      await _authBloc.checkBlockedUser(widget.context);
-
-                      if (!blocked) {
-                        onChangeProduct(_products[index], context);
-                      }
-
+//                      bool blocked =
+//                      await _authBloc.checkBlockedUser(widget.context);
+//
+//                      if (!blocked) {
+//                        onChangeProduct(_products[index], context);
+//                      }
+                      onChangeProduct(_products[index], context);
                       setState(() {
                         _isLoadingProduct = false;
                       });

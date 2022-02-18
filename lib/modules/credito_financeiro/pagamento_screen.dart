@@ -28,6 +28,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   bool _lock = false;
   MaskedTextController _creditCardNumberController;
 
+
   _onAddCreditCard() {
     Modular.to.pushNamed('/cart/addCreditCard', arguments: {'route': '/credito_financeiro/pagamento'});
   }
@@ -78,7 +79,21 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   }
 
   _finishPayment() {
-    Modular.to.pushNamed("/credito_financeiro/finishPayment");
+    var cr = _creditoFinanceiroBloc.creditoFinanceiroValue;
+    print("----cr");
+    print(cr);
+
+    CreditCardList cards = _creditCardBloc.cartaoCreditoValue ?? CreditCardList(list: []);
+
+    if((cards.list ?? []).length <= 0) {
+      Map<String, dynamic> error = {
+        "Atenção": ["Voce precisa selecionar um meio de pagamento!"]
+      };
+      SnackBar _snackbar = ErrorSnackBar.snackBar(this.context, error);
+      _scaffoldKey.currentState.showSnackBar(_snackbar);
+    } else {
+      Modular.to.pushNamed("/credito_financeiro/finishPayment");
+    }
   }
 
   _blockFinaliza() {

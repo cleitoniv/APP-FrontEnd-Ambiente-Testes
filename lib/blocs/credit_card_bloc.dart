@@ -55,6 +55,7 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   BehaviorSubject _cartaoCredito = BehaviorSubject();
   Sink get cartaoCreditoSink => _cartaoCredito.sink;
   Stream get cartaoCreditoStream => _cartaoCredito.stream;
+  get cartaoCreditoValue => _cartaoCredito.value;
 
   BehaviorSubject _currentPaymentFormController = BehaviorSubject();
   Sink get currentPaymentFormIn => _currentPaymentFormController.sink;

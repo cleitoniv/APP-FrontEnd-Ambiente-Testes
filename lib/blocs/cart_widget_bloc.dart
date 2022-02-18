@@ -29,7 +29,8 @@ class CartWidgetBloc extends Disposable {
   }
 
   void setPaymentMethodBoleto(bool billing) {
-    this._paymentMethod = PaymentMethod(isBoleto: billing);
+    this._paymentMethod = PaymentMethod(isBoleto: true);
+    currentPaymentFormIn.add(this._paymentMethod);
   }
 
   PaymentMethod get currentPaymentMethod => this._paymentMethod;
@@ -41,13 +42,7 @@ class CartWidgetBloc extends Disposable {
 
   BehaviorSubject _currentPaymentFormController = BehaviorSubject.seeded(null);
   Sink get currentPaymentFormIn => _currentPaymentFormController.sink;
-  Stream<CreditCardModel> get currentPaymentFormOut =>
-      _currentPaymentFormController.stream.map(
-        (event) {
-          this.setPaymentMethodCartao(event);
-          return event;
-        },
-      );
+  Stream get currentPaymentFormOut => _currentPaymentFormController.stream;
 
   @override
   void dispose() {

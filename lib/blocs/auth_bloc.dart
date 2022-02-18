@@ -51,10 +51,13 @@ class AuthBloc extends Disposable {
     return acceptTerms;
   }
 
+  Future<bool> currentUser() async {
+    return repository.currentUserIsBlocked();
+  }
+
   Future<dynamic> checkBlockedUser(BuildContext context) async {
-    ClienteModel cliente = await repository.currentUserIsBlocked();
-    this._currentUser.data = cliente;
-    if (cliente.sitApp == "B" || cliente.status == 0) {
+    bool blocked = await repository.currentUserIsBlocked();
+    if (blocked) {
       Dialogs.errorWithWillPopScope(context, onTap: () {
         Modular.to.pushNamedAndRemoveUntil(
           '/home/0',

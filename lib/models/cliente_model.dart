@@ -28,6 +28,7 @@ class ClienteModel {
     this.role,
     this.status,
     this.nomeUsuario,
+    this.sitApp
   });
 
   ClienteModel.fromJson(Map<String, dynamic> json) {

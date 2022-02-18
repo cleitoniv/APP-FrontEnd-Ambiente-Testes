@@ -5,7 +5,9 @@ import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -97,36 +99,68 @@ class _FinishPaymentState extends State<FinishPayment> {
   _getPaymentMethod() async {
     final paymentMethod = _cartWidgetBloc.currentPaymentMethod;
     setState(() {
+      print("payment method setted");
+      print(paymentMethod.isBoleto);
       _paymentMethod = paymentMethod.isBoleto;
     });
   }
 
-  _onSubmit() async {
+  _onSubmit(List<Map> cartData) async {
+    if(_totalToPayNumeric(cartData) <= 0) {
+      Dialogs.errorWithWillPopScope(
+          context,
+          barrierDismissible: false,
+          title: "Valor inválido",
+          subtitle: "Não é possivel realizar a compra com o valor selecionado.",
+          buttonText: "OK",
+          onTap: () {
+            Modular.to.pop();
+          }
+      );
+      return;
+    }
+
     setState(() {
       _lock = true;
     });
-    bool blocked = await _authBloc.checkBlockedUser(context);
+
+    bool blocked = await _authBloc.currentUser();
 
     if (blocked) {
       setState(() {
         _lock = false;
       });
+      Dialogs.errorWithWillPopScope(context,
+          barrierDismissible: false,
+          buttonText: "OK",
+          title: "Usuario bloqueado.",
+          subtitle: "No momento voce não pode realizar esse tipo de operação.",
+          onTap: () {
+            Modular.to.pop();
+          }
+      );
       return;
     }
 
     final _taxaEntrega = 0; //_requestBloc.taxaEntregaValue;
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    print("IS BOLETO");
+    print(_paymentMethod.creditCard);
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
       setState(() {
         _lock = false;
       });
-      SnackBar _snackBar = SnackBar(
-        content: Text(
-          'Preencha o Código de Segurança do Cartão',
-        ),
+
+      Dialogs.errorWithWillPopScope(
+          context,
+          barrierDismissible: false,
+          title: "CCV",
+          subtitle: "Voce precisa fornecer o CCV para completar a compra.",
+          buttonText: "OK",
+          onTap: () {
+            Modular.to.pop();
+          }
       );
-      _scaffoldKey.currentState.hideCurrentSnackBar();
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
 
       return;
     }
@@ -207,11 +241,17 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   @override
   Widget build(BuildContext context) {
+    if(_lock) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: CircularProgressIndicator())
+      );
+    }
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(130),
+          preferredSize: Size.fromHeight(135),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -271,124 +311,142 @@ class _FinishPaymentState extends State<FinishPayment> {
             ),
           ),
         ),
-        body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        body: StreamBuilder(
+          stream: _cartWidgetBloc.currentPaymentFormOut,
+          builder: (context, paymentMethod) {
+            print("payment method---");
+            print(paymentMethod.data);
+            if(!paymentMethod.hasData) {
+              return Center(child: CircularProgressIndicator(),);
+            }
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Parcelamento",
-                      style: Theme.of(context).textTheme.headline5.copyWith(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Parcelamento",
+                          style: Theme.of(context).textTheme.headline5.copyWith(
                             fontSize: 18,
                           ),
-                    ),
-                    Container(
-                      height: 20,
-                    ),
-                    Container(
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              width: 1.0,
-                              style: BorderStyle.solid,
-                              color: Theme.of(context).primaryColor),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
                         ),
-                      ),
-                      width: double.infinity,
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<String>(
-                            value: _dropdownValueStatus
-                                ? dropdownValue
-                                : _installments[0],
-                            icon: Icon(Icons.arrow_downward),
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.deepPurple),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.deepPurpleAccent,
+                        Container(
+                          height: 20,
+                        ),
+                        Container(
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  width: 1.0,
+                                  style: BorderStyle.solid,
+                                  color: Theme.of(context).primaryColor),
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
                             ),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                _dropdownValueStatus = true;
-                                _installmentsSelected =
-                                    _installments.indexOf(newValue) + 1;
-                                dropdownValue = newValue;
-                              });
-                            },
-                            items: _installments
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                          ),
+                          width: double.infinity,
+                          child: DropdownButtonHideUnderline(
+                            child: ButtonTheme(
+                              alignedDropdown: true,
+                              child: DropdownButton<String>(
+                                value: _dropdownValueStatus
+                                    ? dropdownValue
+                                    : _installments[0],
+                                icon: Icon(Icons.arrow_downward),
+                                iconSize: 24,
+                                elevation: 16,
+                                style: TextStyle(color: Colors.deepPurple),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.deepPurpleAccent,
+                                ),
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    _dropdownValueStatus = true;
+                                    _installmentsSelected =
+                                        _installments.indexOf(newValue) + 1;
+                                    dropdownValue = newValue;
+                                  });
+                                },
+                                items: _installments
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    Container(
-                      height: 10,
-                    ),
-                    !_paymentMethod
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Código CCV do Cartão",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    .copyWith(fontSize: 18),
+                        Container(
+                          height: 10,
+                        ),
+                        !paymentMethod.data.isBoleto
+                            ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Código CCV do Cartão",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(fontSize: 18),
+                            ),
+                            Container(height: 20),
+                            Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Theme.of(context).primaryColor),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                                ),
                               ),
-                              Container(height: 20),
-                              Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                        width: 1.0,
-                                        style: BorderStyle.solid,
-                                        color: Theme.of(context).primaryColor),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
+                              child: TextFieldWidget(
+                                controller: _ccvController,
+                                prefixIcon: Icon(
+                                  Icons.lock,
+                                  color: Color(0xffA1A1A1),
                                 ),
-                                child: TextFieldWidget(
-                                  controller: _ccvController,
-                                  prefixIcon: Icon(
-                                    Icons.lock,
-                                    color: Color(0xffA1A1A1),
-                                  ),
-                                  width: 120,
-                                  keyboardType: TextInputType.number,
-                                ),
-                              )
-                            ],
-                          )
-                        : Container(height: 20),
+                                width: 120,
+                                keyboardType: TextInputType.number,
+                              ),
+                            )
+                          ],
+                        )
+                            : Container(height: 20),
+                      ],
+                    ),
+                    StreamBuilder(
+                      stream: _requestBloc.cartOut,
+                      builder: (context, cartSnapshot) {
+                        return RaisedButton(
+                          onPressed: _lock ? null : () {
+                            _onSubmit(cartSnapshot.data ?? []);
+                          }, // _onSubmit,
+                          child: Text(
+                            'Finalizar Pedido',
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
-                RaisedButton(
-                  onPressed: _lock ? null : _onSubmit, // _onSubmit,
-                  child: Text(
-                    'Finalizar Pedido',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ));
+              ),
+            );
+          }
+        )
+    );
   }
 }

@@ -22,6 +22,8 @@ class _CartScreenState extends State<CartScreen> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  bool _lock = false;
+
   _onBackToPurchase() {
     _homeWidgetBloc.currentTabIndexIn.add(0);
   }
@@ -67,6 +69,10 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _onSubmit() async {
+    setState(() {
+      this._lock = true;
+    });
+
     List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
 
     int _total = _data.fold(0, (previousValue, element) {
@@ -81,6 +87,10 @@ class _CartScreenState extends State<CartScreen> {
     if (_total == 0) {
       return _orderFinish(_data);
     }
+
+    setState(() {
+      this._lock = false;
+    });
     Modular.to.pushNamed(
       '/cart/payment',
     );
@@ -116,6 +126,11 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(_lock) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator(),),
+      );
+    }
     return Scaffold(
       key: _scaffoldKey,
       body: SafeArea(
@@ -311,13 +326,7 @@ class _CartScreenState extends State<CartScreen> {
                     disabledColor: Theme.of(context).accentColor,
                     onPressed: snapshot.data.isEmpty
                         ? null
-                        : () async {
-                            bool blocked =
-                                await _authBloc.checkBlockedUser(context);
-                            if (!blocked) {
-                              _onSubmit();
-                            }
-                          },
+                        : _onSubmit,
                   ),
                 );
               },

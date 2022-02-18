@@ -37,6 +37,12 @@ class RequestsBloc extends Disposable {
 
   int get currentFilter => _currentRequestFilter.value;
 
+  void getPedidosRepoList(int filtro) async {
+    pedidoReposicaoSink.add(PedidosList(isLoading: true));
+    PedidosList list = await repository.getPedidos(filtro);
+    pedidoReposicaoSink.add(list);
+  }
+
   void getPedidosList(int filtro) async {
     pedidoSink.add(PedidosList(isLoading: true));
     PedidosList list = await repository.getPedidos(filtro);
@@ -46,6 +52,12 @@ class RequestsBloc extends Disposable {
   BehaviorSubject _pedidoController = BehaviorSubject();
   Sink get pedidoSink => _pedidoController.sink;
   Stream get pedidoStream => _pedidoController.stream;
+
+  BehaviorSubject _pedidoReposicaoController = BehaviorSubject();
+  Sink get pedidoReposicaoSink => _pedidoReposicaoController.sink;
+  Stream get pedidoReposicaoStream => _pedidoReposicaoController.stream;
+
+
 
   BehaviorSubject _taxaEntregaController = BehaviorSubject();
   Sink get taxaEntregaSink => _taxaEntregaController.sink;

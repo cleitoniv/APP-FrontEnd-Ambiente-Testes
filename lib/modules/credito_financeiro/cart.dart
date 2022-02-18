@@ -2,6 +2,7 @@ import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -15,7 +16,11 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   int _taxaEntrega = 0;
+
+  bool _lock = false;
 
   _onBackToPurchase() {
     _homeWidgetBloc.currentTabIndexIn.add(1);
@@ -24,7 +29,25 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   }
 
   _onSubmit() {
+    setState(() {
+      this._lock = true;
+    });
+
+    List _cartItems = _requestsBloc.cartItems;
+
+    if(_cartItems.length <= 0) {
+      Map<String, dynamic> error = {
+        "Atenção": ["Voce precisa selecionar um meio de pagamento!"]
+      };
+      SnackBar _snackbar = ErrorSnackBar.snackBar(this.context, error);
+      _scaffoldKey.currentState.showSnackBar(_snackbar);
+    }
+
     _requestsBloc.taxaEntregaSink.add(_taxaEntrega);
+
+    setState(() {
+      this._lock = false;
+    });
 
     Modular.to.pushNamed(
       '/cart/payment',
@@ -49,7 +72,15 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(_lock) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Carrinho', style: Theme.of(context).textTheme.headline4),
       ),
@@ -153,7 +184,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                                   size: 30,
                                   color: Colors.red,
                                 ),
-                                onPressed: () {
+                                onPressed: _lock ? null : () {
                                   _removeItem(_data[index]);
                                 },
                               ))

@@ -1,6 +1,7 @@
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_card_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
@@ -27,6 +28,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
   bool _lock = false;
   bool billing = false;
   bool _onRefresh = false;
+
+  int _valueToPay(List<Map<String, dynamic>> data) {
+    int _total = data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07" ||
+          element["type"] == "T" ||
+          element["tests"] == "Sim" ||
+          element["operation"] == "13") {
+        return previousValue;
+      }
+      return previousValue + element['product'].value * element['quantity'];
+    });
+
+    return _total;
+  }
+
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _taxaEntrega = null;
@@ -135,12 +151,42 @@ class _PaymentScreenState extends State<PaymentScreen> {
     super.dispose();
   }
 
-  _finishPayment() {
-    Modular.to.pushNamed("/cart/finishPayment");
+  _finishPayment(List<Map> cartData) {
+    if(_valueToPay(cartData) <= 0) {
+      Dialogs.errorWithWillPopScope(
+          context,
+          barrierDismissible: false,
+          title: "Valor inválido",
+          subtitle: "Não é possivel realizar a compra com o valor selecionado.",
+          buttonText: "OK",
+          onTap: () {
+            Modular.to.pop();
+          }
+      );
+      return;
+    }
+
+    CreditCardList cards = _creditCardBloc.cartaoCreditoValue ?? CreditCardList(list: []);
+
+    if((cards.list ?? []).length <= 0 && !billing) {
+      Map<String, dynamic> error = {
+        "Atenção": ["Voce precisa selecionar um meio de pagamento!"]
+      };
+      SnackBar _snackbar = ErrorSnackBar.snackBar(this.context, error);
+      _scaffoldKey.currentState.showSnackBar(_snackbar);
+    } else {
+      Modular.to.pushNamed("/cart/finishPayment");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if(_lock) {
+      return Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(child: CircularProgressIndicator())
+      );
+    }
     return Scaffold(
       key: _scaffoldKey,
       appBar: PreferredSize(
@@ -434,12 +480,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           Padding(
             padding: EdgeInsets.all(20.0),
-            child: RaisedButton(
-              onPressed: _lock ? null : _finishPayment,
-              child: Text(
-                'Finalizar Pedido',
-                style: Theme.of(context).textTheme.button,
-              ),
+            child: StreamBuilder(
+              stream: _requestBloc.cartOut,
+              builder: (context, cartSnapshot) {
+                return RaisedButton(
+                  onPressed: _lock ? null : () {
+                    _finishPayment(cartSnapshot.data ?? []);
+                  },
+                  child: Text(
+                    'Finalizar Pedido',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                );
+              },
             ),
           )
         ],

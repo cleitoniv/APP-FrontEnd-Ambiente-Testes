@@ -215,7 +215,7 @@ class AuthRepository {
     }
   }
 
-  Future<dynamic> currentUserIsBlocked() async {
+  Future<bool> currentUserIsBlocked() async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
     try {
@@ -226,7 +226,7 @@ class AuthRepository {
           }));
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
 
-      return cliente;
+      return cliente.sitApp == "B";
     } catch (error) {
       return true;
     }

@@ -32,7 +32,7 @@ class _RepositionScreenState extends State<RepositionScreen> {
     super.initState();
     startTimer();
     // _homeWidgetBloc.currentRequestTypeIn.add("Reposição");
-    _requestsBloc.getPedidosList(2);
+    _requestsBloc.getPedidosRepoList(2);
     _nameController = TextEditingController();
     _numberController = TextEditingController();
     _serialController = TextEditingController();
@@ -313,7 +313,7 @@ class _RepositionScreenState extends State<RepositionScreen> {
                 Container(
                     height: MediaQuery.of(context).size.height * 0.7,
                     child: StreamBuilder(
-                      stream: _requestsBloc.pedidoStream,
+                      stream: _requestsBloc.pedidoReposicaoStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return Center(

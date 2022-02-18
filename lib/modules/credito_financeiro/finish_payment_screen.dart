@@ -5,6 +5,7 @@ import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -30,6 +31,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   bool _paymentMethod = true;
   List<String> _installments = [];
   bool _isButtonDisabled;
+  bool _lock = false;
 
   _onSubmitDialog() {
     _requestBloc.getPedidosList(0);
@@ -74,14 +76,26 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   _onSubmit() async {
     setState(() {
+      _lock = true;
       _isButtonDisabled = true;
     });
-    bool blocked = await _authBloc.checkBlockedUser(context);
+
+    bool blocked = await _authBloc.currentUser();
 
     if (blocked) {
       setState(() {
+        _lock = false;
         _isButtonDisabled = false;
       });
+      Dialogs.errorWithWillPopScope(context,
+        barrierDismissible: false,
+        buttonText: "OK",
+        title: "Usuario bloqueado.",
+        subtitle: "No momento voce não pode realizar esse tipo de operação.",
+        onTap: () {
+          Modular.to.pop();
+        }
+      );
       return;
     }
 
@@ -89,6 +103,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
       setState(() {
+        _lock = false;
         _isButtonDisabled = false;
       });
       _scaffoldKey.currentState.hideCurrentSnackBar();
@@ -109,33 +124,44 @@ class _FinishPaymentState extends State<FinishPayment> {
     final creditoFinan =
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
 
-    bool statusPayment = await _creditoFinanceiroBloc.pagamento(
-        creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
-    print(statusPayment);
+    if(mounted) {
 
-    _ccvController.text = '';
-    if (statusPayment != null && statusPayment == true) {
-      _requestBloc.resetCart();
-      Dialogs.successWithWillPopScope(
-        context,
-        subtitle: 'Compra efetuada com sucesso!',
-        buttonText: 'Ir para Meus Pedidos',
-        barrierDismissible: false,
-        onTap: _onSubmitDialog,
-      );
+      bool statusPayment = await _creditoFinanceiroBloc.pagamento(
+          creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
+
+      if (statusPayment != null && statusPayment == true) {
+        _requestBloc.resetCart();
+        Dialogs.successWithWillPopScope(
+          context,
+          subtitle: 'Compra efetuada com sucesso!',
+          buttonText: 'Ir para Meus Pedidos',
+          barrierDismissible: false,
+          onTap: _onSubmitDialog,
+        );
+      } else {
+        Dialogs.error(
+          context,
+          title: "Atenção",
+          subtitle: 'Erro ao Processar Compra! Verifique os dados do cartão!',
+          buttonText: 'Voltar',
+          onTap: _onBack,
+        );
+      }
+
+      setState(() {
+        _lock = false;
+        _isButtonDisabled = false;
+      });
     } else {
-      Dialogs.error(
-        context,
-        title: "Atenção",
-        subtitle: 'Erro ao Processar Compra! Verifique os dados do cartão!',
-        buttonText: 'Voltar',
-        onTap: _onBack,
+      SnackBar _snackBar = SnackBar(
+        content: Text(
+          'Estamos processando seu pedido!',
+        ),
       );
+
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
     }
 
-    setState(() {
-      _isButtonDisabled = false;
-    });
   }
 
   _calcPaymentInstallment() async {
@@ -159,6 +185,13 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   @override
   Widget build(BuildContext context) {
+    print("lock---");
+    print(_lock);
+    if(_lock) {
+      Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,

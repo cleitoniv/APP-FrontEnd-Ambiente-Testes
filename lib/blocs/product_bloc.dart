@@ -92,6 +92,12 @@ class ProductBloc extends Disposable {
     _offersRedirected.sink.add(_offers);
   }
 
+  void fetchOffers() async {
+    _offersRedirected.add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
+    Offers offers = await repository.getOffers();
+    _offersRedirected.add(offers);
+  }
+
   StreamController _offersRedirected = BehaviorSubject();
   Sink get offersRedirectedSink => _offersRedirected.sink;
   Stream get offersRedirectedStream => _offersRedirected.stream;

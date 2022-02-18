@@ -214,6 +214,7 @@ class RequestsScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
+
           List<PedidoModel> _requests = snapshot.data.list ?? [];
 
           if (_requests.isEmpty) {
