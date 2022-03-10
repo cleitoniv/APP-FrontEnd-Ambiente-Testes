@@ -245,6 +245,7 @@ class _TabsScreenState extends State<TabsScreen>
                 width: 10,
               ),
               itemBuilder: (context, index) {
+
                 return StreamBuilder<String>(
                   stream: _homeWidgetBloc.sightProblemOut,
                   builder: (context, snapshot) {
@@ -435,6 +436,7 @@ class _TabsScreenState extends State<TabsScreen>
       print("4");
       _productBloc.fetchProducts("Todos");
     }
+    print("g5");
     print("5");
 
     _tabController.addListener(() {
@@ -474,7 +476,6 @@ class _TabsScreenState extends State<TabsScreen>
   @override
   void initState() {
     super.initState();
-    print("5");
 
     this._screens = [
       ProductsScreen(),
@@ -503,7 +504,6 @@ class _TabsScreenState extends State<TabsScreen>
         _productBloc.fetchProducts(currentSightProblem);
       }
     });
-
     _initState();
   }
 

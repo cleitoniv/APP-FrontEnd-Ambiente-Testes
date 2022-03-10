@@ -59,8 +59,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print(context);
-    // print("OLAs");
     return SafeArea(
       child: StreamBuilder(
         stream: _productBloc.favoriteProductListStream,

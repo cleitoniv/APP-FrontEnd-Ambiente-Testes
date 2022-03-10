@@ -188,15 +188,18 @@ class _FinishPaymentState extends State<FinishPayment> {
     print("lock---");
     print(_lock);
     if(_lock) {
-      Center(
-        child: CircularProgressIndicator(),
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     }
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(130),
+          preferredSize: Size.fromHeight(133),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -244,7 +247,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                             'R\$ ${Helper.intToMoney(snapshot.data.valor)}',
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                     ),
                           );
                         },

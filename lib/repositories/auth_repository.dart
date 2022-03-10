@@ -26,7 +26,7 @@ class LoginEvent implements Authentication {
   bool loading;
   UserCredential result;
   Map<String, dynamic> errorData;
-  LoginEvent({this.message, this.isValid, this.errorData, this.result});
+  LoginEvent({this.message, this.isValid, this.errorData, this.result, this.loading});
 }
 
 class AuthEvent implements Authentication {
@@ -139,14 +139,17 @@ class AuthRepository {
     String email,
     String password,
   }) async {
+    print("---login");
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return LoginEvent(message: "OK", isValid: true, result: result);
+      return LoginEvent(message: "OK", isValid: true, result: result, loading: false);
     } catch (error) {
-      return LoginEvent(message: "Credenciais Inválidas.", isValid: false);
+      print("error---");
+      print(error);
+      return LoginEvent(message: "Credenciais Inválidas.", isValid: false, loading: false);
     }
   }
 
@@ -211,6 +214,7 @@ class AuthRepository {
 
       return resp.data["status"];
     } catch (error) {
+      print(error);
       return 0;
     }
   }
@@ -235,7 +239,9 @@ class AuthRepository {
   Future<AuthEvent> currentUser(LoginEvent login) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
+
     try {
+      print("getting User---");
       Response resp = await dio.get("/api/cliente/current_user",
           options: Options(headers: {
             "Authorization": "Bearer $idToken",
@@ -245,9 +251,11 @@ class AuthRepository {
       print(resp);
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
       if (cliente.sitApp == "A") {
+        print("A");
         return AuthEvent(
             isValid: true, data: cliente, loading: false, integrated: false);
       } else if (cliente.sitApp == "B") {
+        print("B");
         return AuthEvent(
             isBlocked: true,
             isValid: true,
@@ -258,37 +266,40 @@ class AuthRepository {
               "Bloqueado": ["Você não tem permissão para acessar sua conta!"]
             });
       } else if (cliente.sitApp == "N" || cliente.sitApp == "I") {
+        print("NI");
         return AuthEvent(
             isValid: false,
             integrated: true,
             data: cliente,
-            loading: true,
+            loading: false,
             errorData: {
               "Cadastro": [
                 "Erro no seu cadastro. Entre em contato com a Central Oftalmica."
               ]
             });
       } else if (cliente.sitApp == "E") {
+        print("E");
         return AuthEvent(
             isValid: false,
             integrated: true,
             data: cliente,
-            loading: true,
+            loading: false,
             errorData: {
               "Login": [
                 "Não foi possivel fazer o Login, aguarde seu cadastro ser aprovado."
               ]
             });
       } else {
-        print("1");
+        print("else");
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
+      print("login---error");
       print(error);
       _auth.signOut();
       print("2222");
 
-      return AuthEvent(isValid: false, data: null, loading: true, errorData: {
+      return AuthEvent(isValid: false, data: null, loading: false, errorData: {
         "Login": [
           "Tivemos problema ao tentar fazer o seu login. Se o erro persistir entre em contato com a Central Oftálmica."
         ]

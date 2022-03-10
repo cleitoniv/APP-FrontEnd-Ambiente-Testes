@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/devolution_model.dart';
@@ -226,8 +227,9 @@ class ProductRepository {
       return ProductList(
           list: products, isEmpty: false, isLoading: false, filters: filters);
     } catch (error) {
+      log("error-- ${error}");
       return ProductList(
-          list: null, isEmpty: true, isLoading: false, filters: ["Todos"]);
+          list: [], isEmpty: true, isLoading: false, filters: ["Todos"]);
     }
   }
 

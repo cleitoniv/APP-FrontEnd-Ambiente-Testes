@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
@@ -637,7 +639,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       int _quantity = int.parse(_lensDireitoController.text) +
           int.parse(_lensEsquerdoController.text) +
           int.parse(_lensController.text);
-
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),
         'quantity': _first['current'] == "Mesmo grau em ambos"
@@ -647,6 +648,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           'esquerdo': int.parse(_lensEsquerdoController.text),
           'direito': int.parse(_lensDireitoController.text)
         },
+        'value': data['product'].value,
         'tests': _first['test'],
         'operation': _parseOperation(widget.type),
         'product': data['product'],
@@ -1874,6 +1876,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       setState(() {
                         _isLoadingSecondButton = true;
                       });
+                      log("${currentProduct.product.value}");
+
                       await _onAddToCart({
                         'product': currentProduct.product,
                       }, 'Normal');

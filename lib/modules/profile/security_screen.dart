@@ -59,23 +59,27 @@ class _SecurityScreenState extends State<SecurityScreen> {
         );
       } else {
         _message = 'Senha alterada com sucesso';
-        Timer(Duration(seconds: 2), () {
-          Modular.to.pop();
-        });
+//        Timer(Duration(seconds: 2), () {
+//          Modular.to.pop();
+//        });
       }
 
       SnackBar _snackBar = SnackBar(
         content: Text(_message),
       );
 
+      setState(() {
+        _lock = false;
+      });
+
       _scaffoldKey.currentState.showSnackBar(
         _snackBar,
       );
+    } else {
+      setState(() {
+        _lock = false;
+      });
     }
-
-    setState(() {
-      _lock = false;
-    });
   }
 
   @override
@@ -112,6 +116,12 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
   @override
   Widget build(BuildContext context) {
+//    if(_lock) {
+//      return Scaffold(
+//        backgroundColor: Colors.white,
+//        body: Center(child: CircularProgressIndicator(),),
+//      );
+//    }
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(

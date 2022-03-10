@@ -60,7 +60,8 @@ class Helper {
   }
 
   static String emailValidator(String text) {
-    if (text.isEmpty || text.indexOf('@') == -1 || text.indexOf('.') == -1) {
+    bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(text);
+    if (text.isEmpty || text.indexOf('@') == -1 || text.indexOf('.') == -1 || !emailValid) {
       return 'Email inválido';
     }
 
