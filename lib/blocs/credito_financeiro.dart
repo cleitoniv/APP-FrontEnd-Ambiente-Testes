@@ -7,6 +7,11 @@ class CreditoFinanceiro {
   int installmentCount;
   int desconto;
   CreditoFinanceiro({this.valor, this.installmentCount, this.desconto});
+
+  void set installment(int installment) {
+    installmentCount = installment;
+  }
+
 }
 
 class CreditoFinanceiroBloc extends Disposable {

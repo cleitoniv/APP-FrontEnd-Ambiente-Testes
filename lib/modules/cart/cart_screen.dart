@@ -54,6 +54,7 @@ class _CartScreenState extends State<CartScreen> {
 
     if (_order.isValid) {
       _requestsBloc.resetCart();
+      _cartWidgetBloc.cartTotalItemsSink.add(0);
       Dialogs.success(
         context,
         subtitle: 'Compra efetuada com sucesso!',

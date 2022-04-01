@@ -136,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
         });
 
         print("checking app sit");
-        print(_checkSitapp(_cliente.data));
         print(_cliente.isValid);
         if (_cliente.isValid && _checkSitapp(_cliente.data).isValid) {
           print("--cliente data 4");

@@ -27,6 +27,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   MaskedTextController _creditCardNumberController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _dropdownValueStatus = true;
+  int _installmentsSelected = 1;
   String dropdownValue = '';
   bool _paymentMethod = true;
   List<String> _installments = [];
@@ -75,12 +76,14 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
+    print("ok--");
     setState(() {
       _lock = true;
       _isButtonDisabled = true;
     });
 
     bool blocked = await _authBloc.currentUser();
+    print("ok--");
 
     if (blocked) {
       setState(() {
@@ -98,6 +101,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       );
       return;
     }
+    print("ok--");
 
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
 
@@ -106,6 +110,7 @@ class _FinishPaymentState extends State<FinishPayment> {
         _lock = false;
         _isButtonDisabled = false;
       });
+
       _scaffoldKey.currentState.hideCurrentSnackBar();
 
       SnackBar _snackBar = SnackBar(
@@ -121,13 +126,22 @@ class _FinishPaymentState extends State<FinishPayment> {
       return;
     }
 
-    final creditoFinan =
+    final CreditoFinanceiro creditoFinan=
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
 
     if(mounted) {
+      print("ok--");
+
+      creditoFinan.installment = _installmentsSelected;
+
+      print("got here ---133");
 
       bool statusPayment = await _creditoFinanceiroBloc.pagamento(
           creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
+
+      setState(() {
+        _lock = false;
+      });
 
       if (statusPayment != null && statusPayment == true) {
         _requestBloc.resetCart();
@@ -153,6 +167,10 @@ class _FinishPaymentState extends State<FinishPayment> {
         _isButtonDisabled = false;
       });
     } else {
+      setState(() {
+        _lock = false;
+        _isButtonDisabled = false;
+      });
       SnackBar _snackBar = SnackBar(
         content: Text(
           'Estamos processando seu pedido!',
@@ -185,8 +203,6 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   @override
   Widget build(BuildContext context) {
-    print("lock---");
-    print(_lock);
     if(_lock) {
       return Scaffold(
         backgroundColor: Colors.white,
@@ -309,7 +325,11 @@ class _FinishPaymentState extends State<FinishPayment> {
                             ),
                             onChanged: (String newValue) {
                               setState(() {
+                                print("---");
+                                print(newValue);
                                 _dropdownValueStatus = true;
+                                _installmentsSelected =
+                                    _installments.indexOf(newValue) + 1;
                                 dropdownValue = newValue;
                               });
                             },
