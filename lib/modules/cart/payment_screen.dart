@@ -89,8 +89,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _onChangePaymentForm(CreditCardModel creditCard) async {
-    print("credit card---");
-    print(creditCard.toJson());
     setState(() {
       billing = false;
       _lock = true;
@@ -104,8 +102,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
       _creditCardBloc.fetchPaymentMethods();
     }
 
-    setState(() {
-      _lock = false;
+    Future.delayed(const Duration(milliseconds: 500), () {
+
+// Here you can write your code
+
+      setState(() {
+        _lock = false;
+      });
+
     });
   }
 
@@ -413,10 +417,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
               Padding(
                 padding: EdgeInsets.all(20),
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
-                      billing = true;
-                      _cartWidgetBloc.setPaymentMethodBoleto(billing);
+                      _lock = true;
+                    });
+                    Future.delayed(const Duration(milliseconds: 1000), () {
+
+                      setState(() {
+                        billing = true;
+                        _lock = false;
+                        _cartWidgetBloc.setPaymentMethodBoleto(billing);
+                      });
+
                     });
                   },
                   child: Container(
