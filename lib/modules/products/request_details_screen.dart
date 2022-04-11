@@ -503,9 +503,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
-    print(widget.type);
-    print(currentProduct.product.tests);
-
     if (isValidDate(_birthdayController.text)) {
       return;
     }
@@ -664,26 +661,26 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       print(int.parse(_lensDireitoController.text));
       print(int.parse(_lensEsquerdoController.text));
       print(currentProduct.product.tests);
-      if (widget.type != "A" &&
-              _data["tests"] == "Sim" &&
-              currentProduct.product.tests <= 0 ||
-          widget.type != "A" &&
-              _data["tests"] == "Sim" &&
-              currentProduct.product.tests <
-                  int.parse(_lensDireitoController.text) +
-                      _cartTotalTest +
-                      int.parse(_lensEsquerdoController.text) ||
-          _data["tests"] == "Sim" &&
-              currentProduct.product.tests <
-                  int.parse(_lensController.text) + _cartTotalTest) {
-        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-          "Limite Atingido": ["Você não possui caixas de teste suficiente"]
-        });
-        _scaffoldKey.currentState.showSnackBar(
-          _snack,
-        );
-        return;
-      }
+//      if (widget.type != "A" &&
+//              _data["tests"] == "Sim" &&
+//              currentProduct.product.tests <= 0 ||
+//          widget.type != "A" &&
+//              _data["tests"] == "Sim" &&
+//              currentProduct.product.tests <
+//                  int.parse(_lensDireitoController.text) +
+//                      _cartTotalTest +
+//                      int.parse(_lensEsquerdoController.text) ||
+//          _data["tests"] == "Sim" &&
+//              currentProduct.product.tests <
+//                  int.parse(_lensController.text) + _cartTotalTest) {
+//        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+//          "Limite Atingido": ["Você não possui caixas de teste suficiente"]
+//        });
+//        _scaffoldKey.currentState.showSnackBar(
+//          _snack,
+//        );
+//        return;
+//      }
 
       if (_data['operation'] == "07" && _data["tests"] == "Sim" ||
           _data['operation'] == "01" && _data["tests"] == "Sim" ||

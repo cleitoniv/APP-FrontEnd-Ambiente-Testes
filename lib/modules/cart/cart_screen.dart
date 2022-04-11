@@ -99,7 +99,7 @@ class _CartScreenState extends State<CartScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07" || element["operation"] == "00") {
+      if (element["operation"] == "07" || element["operation"] == "00" || element["operation"] == "04") {
         return previousValue;
       }
       return previousValue + (element['product'].value * element['quantity']);
