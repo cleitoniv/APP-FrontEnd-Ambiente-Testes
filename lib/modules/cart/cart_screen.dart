@@ -29,15 +29,17 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _removeItem(Map<String, dynamic> data) {
-    int _total = _cartWidgetBloc.currentCartTotalItems;
+    setState((){
+      int _total = _cartWidgetBloc.currentCartTotalItems;
 
-    if (data["removeItem"] == "Sim") {
-      _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
-    } else {
-      _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
-    }
+      if (data["removeItem"] == "Sim") {
+        _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
+      } else {
+        _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+      }
 
-    _requestsBloc.removeFromCart(data);
+      _requestsBloc.removeFromCart(data);
+    });
   }
 
   _onSubmitDialog() {
