@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/profile_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
@@ -36,6 +38,7 @@ class _FormScreenState extends State<FormScreen> {
   bool isLoading = false;
 
   _onAddUser() async {
+
     if (!_formKey.currentState.validate()) {
       return;
     }

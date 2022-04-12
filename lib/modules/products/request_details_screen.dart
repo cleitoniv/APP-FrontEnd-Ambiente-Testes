@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
@@ -501,9 +503,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
-    print(widget.type);
-    print(currentProduct.product.tests);
-
     if (isValidDate(_birthdayController.text)) {
       return;
     }
@@ -637,7 +636,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       int _quantity = int.parse(_lensDireitoController.text) +
           int.parse(_lensEsquerdoController.text) +
           int.parse(_lensController.text);
-
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),
         'quantity': _first['current'] == "Mesmo grau em ambos"
@@ -647,6 +645,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           'esquerdo': int.parse(_lensEsquerdoController.text),
           'direito': int.parse(_lensDireitoController.text)
         },
+        'value': data['product'].value,
         'tests': _first['test'],
         'operation': _parseOperation(widget.type),
         'product': data['product'],
@@ -662,26 +661,26 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       print(int.parse(_lensDireitoController.text));
       print(int.parse(_lensEsquerdoController.text));
       print(currentProduct.product.tests);
-      if (widget.type != "A" &&
-              _data["tests"] == "Sim" &&
-              currentProduct.product.tests <= 0 ||
-          widget.type != "A" &&
-              _data["tests"] == "Sim" &&
-              currentProduct.product.tests <
-                  int.parse(_lensDireitoController.text) +
-                      _cartTotalTest +
-                      int.parse(_lensEsquerdoController.text) ||
-          _data["tests"] == "Sim" &&
-              currentProduct.product.tests <
-                  int.parse(_lensController.text) + _cartTotalTest) {
-        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-          "Limite Atingido": ["Você não possui caixas de teste suficiente"]
-        });
-        _scaffoldKey.currentState.showSnackBar(
-          _snack,
-        );
-        return;
-      }
+//      if (widget.type != "A" &&
+//              _data["tests"] == "Sim" &&
+//              currentProduct.product.tests <= 0 ||
+//          widget.type != "A" &&
+//              _data["tests"] == "Sim" &&
+//              currentProduct.product.tests <
+//                  int.parse(_lensDireitoController.text) +
+//                      _cartTotalTest +
+//                      int.parse(_lensEsquerdoController.text) ||
+//          _data["tests"] == "Sim" &&
+//              currentProduct.product.tests <
+//                  int.parse(_lensController.text) + _cartTotalTest) {
+//        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+//          "Limite Atingido": ["Você não possui caixas de teste suficiente"]
+//        });
+//        _scaffoldKey.currentState.showSnackBar(
+//          _snack,
+//        );
+//        return;
+//      }
 
       if (_data['operation'] == "07" && _data["tests"] == "Sim" ||
           _data['operation'] == "01" && _data["tests"] == "Sim" ||
@@ -1874,6 +1873,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       setState(() {
                         _isLoadingSecondButton = true;
                       });
+                      log("${currentProduct.product.value}");
+
                       await _onAddToCart({
                         'product': currentProduct.product,
                       }, 'Normal');

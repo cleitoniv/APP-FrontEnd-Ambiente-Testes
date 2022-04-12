@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
@@ -230,8 +231,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
   void initState() {
     _isLoadingPackage = false;
     _currentProduct = {"selected": false};
-    print("widget product");
-    print(widget.product);
     if(widget.product != null) {
       _currentProduct['product'] = widget.product;
       _currentProduct['selected'] = true;
@@ -324,8 +323,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                       return StreamBuilder(
                           stream: _productsBloc.creditProductListStream,
                           builder: (context, snapshot) {
-                            print("products");
-                            print(snapshot.data);
                             if (!snapshot.hasData) {
                               return Container();
                             } else if (snapshot.data.isLoading) {
@@ -397,8 +394,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                 ),
                               );
                             }
-                            print("snapshot");
-                            print(snapshot.data.toString());
+                            log("snapshot");
+                            log("${snapshot.data}");
                             ProductList _productCredits = snapshot.data;
                             return Column(
                               children: [

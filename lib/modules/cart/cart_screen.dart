@@ -29,17 +29,15 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _removeItem(Map<String, dynamic> data) {
-    setState((){
-      int _total = _cartWidgetBloc.currentCartTotalItems;
+    int _total = _cartWidgetBloc.currentCartTotalItems;
 
-      if (data["removeItem"] == "Sim") {
-        _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
-      } else {
-        _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
-      }
+    if (data["removeItem"] == "Sim") {
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
+    } else {
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    }
 
-      _requestsBloc.removeFromCart(data);
-    });
+    _requestsBloc.removeFromCart(data);
   }
 
   _onSubmitDialog() {
@@ -56,6 +54,7 @@ class _CartScreenState extends State<CartScreen> {
 
     if (_order.isValid) {
       _requestsBloc.resetCart();
+      _cartWidgetBloc.cartTotalItemsSink.add(0);
       Dialogs.success(
         context,
         subtitle: 'Compra efetuada com sucesso!',
@@ -100,7 +99,7 @@ class _CartScreenState extends State<CartScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07" || element["operation"] == "00") {
+      if (element["operation"] == "07" || element["operation"] == "00" || element["operation"] == "04") {
         return previousValue;
       }
       return previousValue + (element['product'].value * element['quantity']);
@@ -110,21 +109,25 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   String selectPrice(Map<String, dynamic> item) {
-    if (item["operation"] == "07") {
-      return 'R\$ ${Helper.intToMoney(item['product'].valueProduto)}';
-      // return Helper.intToMoney(item['product'].valueProduto);
-    } else if (item["operation"] == "13") {
-      return 'R\$ ${Helper.intToMoney(item['product'].valueFinan)}';
-      // return Helper.intToMoney(item['product'].valueFinan);
-    } else if (item["operation"] == "01") {
-      return 'R\$ ${Helper.intToMoney(item['product'].value)}';
-    } else if (item["operation"] == "01" && item['tests'] == "Sim") {
-      return '';
-    } else if (item["operation"] == "00") {
-      return '';
-    }
-    return "";
+    return 'R\$ ${Helper.intToMoney(item['product'].value)}';
   }
+
+//  String selectPrice(Map<String, dynamic> item) {
+//    if (item["operation"] == "07") {
+//      return 'R\$ ${Helper.intToMoney(item['product'].valueProduto)}';
+//      // return Helper.intToMoney(item['product'].valueProduto);
+//    } else if (item["operation"] == "13") {
+//      return 'R\$ ${Helper.intToMoney(item['product'].valueFinan)}';
+//      // return Helper.intToMoney(item['product'].valueFinan);
+//    } else if (item["operation"] == "01") {
+//      return 'R\$ ${Helper.intToMoney(item['product'].value)}';
+//    } else if (item["operation"] == "01" && item['tests'] == "Sim") {
+//      return '';
+//    } else if (item["operation"] == "00") {
+//      return '';
+//    }
+//    return "";
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +228,7 @@ class _CartScreenState extends State<CartScreen> {
                                   .textTheme
                                   .subtitle1
                                   .copyWith(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                   ),
                             ),
                           ),
@@ -238,7 +241,7 @@ class _CartScreenState extends State<CartScreen> {
                             selectPrice(_data[index]),
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                     ),
                           ),
                           Align(

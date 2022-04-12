@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
@@ -61,6 +63,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
+    log("${data}");
     int _total = data.fold(
       0,
       (previousValue, element) =>
@@ -161,7 +164,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                             '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
                             style:
                                 Theme.of(context).textTheme.subtitle1.copyWith(
-                                      fontSize: 14,
+                                      fontSize: 10,
                                     ),
                           ),
                         ],

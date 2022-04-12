@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -33,6 +34,8 @@ class _ProductScreenState extends State<ProductScreen> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   AuthEvent currentUser;
   HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
+
+  bool _lock = false;
 
   _onShowInfo(bool value) {
     _productWidgetBloc.showInfoIn.add(!value);
@@ -152,11 +155,23 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   _favoriteProduct() async {
+    setState(() {
+      _lock = true;
+    });
+
     bool success = await _productBloc.favorite(widget.product.group);
-    print(success);
-    if(success) {
-      await Modular.to.pushReplacementNamed('/products/${widget.product.id}', arguments: widget.product);
-    }
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+
+// Here you can write your code
+
+      setState(() {
+        if(success) {
+          Modular.to.pushReplacementNamed('/products/${widget.product.id}', arguments: widget.product);
+        }
+      });
+
+    });
   }
 
   _handleSingleOrder(ProductModel product) {
@@ -224,6 +239,14 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(_lock) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhes do Produto'),

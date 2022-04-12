@@ -89,8 +89,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _onChangePaymentForm(CreditCardModel creditCard) async {
-    print("credit card---");
-    print(creditCard.toJson());
     setState(() {
       billing = false;
       _lock = true;
@@ -104,8 +102,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
       _creditCardBloc.fetchPaymentMethods();
     }
 
-    setState(() {
-      _lock = false;
+    Future.delayed(const Duration(milliseconds: 500), () {
+
+// Here you can write your code
+
+      setState(() {
+        _lock = false;
+      });
+
     });
   }
 
@@ -248,255 +252,273 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                setState(() {
-                  _onRefresh = true;
-                });
-                await _creditCardBloc.fetchPaymentMethods();
-                setState(() {
-                  _onRefresh = false;
-                });
-              },
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-                children: <Widget>[
-                  StreamBuilder(
-                      stream: _creditCardBloc.cartaoCreditoStream,
-                      builder: (context, snapshot) {
-                        if (_onRefresh) {
-                          return Container();
-                        }
-                        if (!snapshot.hasData || snapshot.data.isLoading) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-                          return Center(
-                            child: Text(
-                              "Cadastre um cartão!",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(fontSize: 20),
-                            ),
-                          );
-                        }
-                        final _creditCards = snapshot.data.list;
+      body: StreamBuilder(
+        stream: _creditCardBloc.cartaoCreditoStream,
+        builder: (context, snapshot){
+          if (snapshot.hasData && snapshot.data.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      _onRefresh = true;
+                    });
+                    await _creditCardBloc.fetchPaymentMethods();
+                    setState(() {
+                      _onRefresh = false;
+                    });
+                  },
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+                    children: <Widget>[
+                      StreamBuilder(
+                          stream: _creditCardBloc.cartaoCreditoStream,
+                          builder: (context, snapshot) {
+                            if (_onRefresh) {
+                              return Container();
+                            }
+                            if (!snapshot.hasData || snapshot.data.isLoading) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+                              return Center(
+                                child: Text(
+                                  "Cadastre um cartão!",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(fontSize: 20),
+                                ),
+                              );
+                            }
+                            final _creditCards = snapshot.data.list;
 
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          primary: false,
-                          itemCount: _creditCards.length,
-                          separatorBuilder: (context, index) => SizedBox(
-                            height: 15,
-                          ),
-                          itemBuilder: (context, index) {
-                            return StreamBuilder(
-                              stream: _creditCardBloc.currentPaymentFormOut,
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Container();
-                                }
+                            return ListView.separated(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: _creditCards.length,
+                              separatorBuilder: (context, index) => SizedBox(
+                                height: 15,
+                              ),
+                              itemBuilder: (context, index) {
+                                return StreamBuilder(
+                                  stream: _creditCardBloc.currentPaymentFormOut,
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Container();
+                                    }
 
-                                final _currentPaymentForm = snapshot.data;
+                                    final _currentPaymentForm = snapshot.data;
 
-                                _creditCardNumberController.updateText(
-                                    _creditCards[index].cartaoNumber);
-                                return AnimatedContainer(
-                                  duration: Duration(
-                                    milliseconds: 100,
-                                  ),
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: _colorizeCredCardList(
+                                    _creditCardNumberController.updateText(
+                                        _creditCards[index].cartaoNumber);
+                                    return AnimatedContainer(
+                                      duration: Duration(
+                                        milliseconds: 100,
+                                      ),
+                                      height: 50,
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: _colorizeCredCardList(
                                             _currentPaymentForm.id,
                                             _creditCards[index].id)
-                                        ? Theme.of(context).accentColor
-                                        : Color(0xffF1F1F1),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: ListTileMoreCustomizable(
-                                    onTap: (value) {
-                                      _onChangePaymentForm(
-                                        _creditCards[index],
-                                      );
+                                            ? Theme.of(context).accentColor
+                                            : Color(0xffF1F1F1),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: ListTileMoreCustomizable(
+                                        onTap: (value) {
+                                          _onChangePaymentForm(
+                                            _creditCards[index],
+                                          );
 
-                                      return;
-                                    },
-                                    contentPadding: const EdgeInsets.all(0),
-                                    horizontalTitleGap: 10,
-                                    // leading: Image.asset(
-                                    //   'assets/icons/barcode.png',
-                                    //   width: 30,
-                                    //   height: 25,
-                                    //   fit: BoxFit.contain,
-                                    // ),
-                                    leading: Icon(
-                                      Icons.credit_card,
-                                    ),
-                                    title: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        _obfuscateText(
-                                            _creditCardNumberController.text),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
+                                          return;
+                                        },
+                                        contentPadding: const EdgeInsets.all(0),
+                                        horizontalTitleGap: 10,
+                                        // leading: Image.asset(
+                                        //   'assets/icons/barcode.png',
+                                        //   width: 30,
+                                        //   height: 25,
+                                        //   fit: BoxFit.contain,
+                                        // ),
+                                        leading: Icon(
+                                          Icons.credit_card,
+                                        ),
+                                        title: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: Text(
+                                            _obfuscateText(
+                                                _creditCardNumberController.text),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1
+                                                .copyWith(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                               color: _colorizeCredCardList(
-                                                      _currentPaymentForm.id,
-                                                      _creditCards[index].id)
+                                                  _currentPaymentForm.id,
+                                                  _creditCards[index].id)
                                                   ? Colors.white
                                                   : null,
                                             ),
-                                      ),
-                                    ),
-                                    trailing: Container(
-                                      height: 50,
-                                      width: 80,
-                                      child: Row(
-                                        mainAxisAlignment:
+                                          ),
+                                        ),
+                                        trailing: Container(
+                                          height: 50,
+                                          width: 80,
+                                          child: Row(
+                                            mainAxisAlignment:
                                             MainAxisAlignment.end,
-                                        children: [
-                                          _currentPaymentForm.id ==
+                                            children: [
+                                              _currentPaymentForm.id ==
                                                   _creditCards[index].id
-                                              ? Icon(
-                                                  Icons.check,
-                                                  color: Colors.white,
-                                                  size: 25,
-                                                )
-                                              : Container(
-                                                  width: 25,
-                                                ),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.delete_outline,
-                                              color:
+                                                  ? Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                                size: 25,
+                                              )
+                                                  : Container(
+                                                width: 25,
+                                              ),
+                                              IconButton(
+                                                icon: Icon(
+                                                  Icons.delete_outline,
+                                                  color:
                                                   Colors.red.withOpacity(0.7),
-                                            ),
-                                            onPressed: () {
-                                              _onDelete(_creditCards[index].id);
-                                            },
-                                          )
-                                        ],
+                                                ),
+                                                onPressed: () {
+                                                  _onDelete(_creditCards[index].id);
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
+                                    );
+                                  },
                                 );
                               },
                             );
-                          },
-                        );
-                      }),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  billing = true;
-                  _cartWidgetBloc.setPaymentMethodBoleto(billing);
-                });
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: billing
-                      ? Theme.of(context).accentColor
-                      : Color(0xffF1F1F1),
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(0, 2),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
+                          }),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0),
-                      child: Text(
-                        'Boleto',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+              ),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      _lock = true;
+                    });
+                    Future.delayed(const Duration(milliseconds: 1000), () {
+
+                      setState(() {
+                        billing = true;
+                        _lock = false;
+                        _cartWidgetBloc.setPaymentMethodBoleto(billing);
+                      });
+
+                    });
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: billing
+                          ? Theme.of(context).accentColor
+                          : Color(0xffF1F1F1),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 2),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25.0),
+                          child: Text(
+                            'Boleto',
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                               color: billing ? Colors.white :  Colors.black,
                             ),
-                      ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: Icon(
+                            Icons.check,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20.0),
-                      child: Icon(
-                        Icons.check,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-            child: RaisedButton.icon(
-              onPressed: _onAddCreditCard,
-              elevation: 0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-                side: BorderSide(
-                  width: 2,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              icon: Icon(
-                MaterialCommunityIcons.plus,
-                color: Theme.of(context).primaryColor,
-              ),
-              label: Text(
-                'Adicionar Outro Cartão',
-                style: Theme.of(context).textTheme.button.copyWith(
+              Padding(
+                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: RaisedButton.icon(
+                  onPressed: _onAddCreditCard,
+                  elevation: 0,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    side: BorderSide(
+                      width: 2,
                       color: Theme.of(context).primaryColor,
                     ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: StreamBuilder(
-              stream: _requestBloc.cartOut,
-              builder: (context, cartSnapshot) {
-                return RaisedButton(
-                  onPressed: _lock ? null : () {
-                    _finishPayment(cartSnapshot.data ?? []);
-                  },
-                  child: Text(
-                    'Finalizar Pedido',
-                    style: Theme.of(context).textTheme.button,
                   ),
-                );
-              },
-            ),
-          )
-        ],
-      ),
+                  icon: Icon(
+                    MaterialCommunityIcons.plus,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  label: Text(
+                    'Adicionar Outro Cartão',
+                    style: Theme.of(context).textTheme.button.copyWith(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(20.0),
+                child: StreamBuilder(
+                  stream: _requestBloc.cartOut,
+                  builder: (context, cartSnapshot) {
+                    return RaisedButton(
+                      onPressed: _lock ? null : () {
+                        _finishPayment(cartSnapshot.data ?? []);
+                      },
+                      child: Text(
+                        'Finalizar Pedido',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          );
+        },
+      )
     );
   }
 }

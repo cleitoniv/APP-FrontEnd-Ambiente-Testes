@@ -26,8 +26,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   }
 
   _removeItemCard() {
-    int _total = _cartWidgetBloc.currentCartTotalItems;
-    _cartWidgetBloc.cartTotalItemsSink.add(_total - _total);
+    _cartWidgetBloc.cartTotalItemsSink.add(0);
   }
 
   _onSubmit() {
@@ -67,13 +66,13 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
     if (_order.isValid) {
       _requestsBloc.resetCart();
+      _removeItemCard();
       Dialogs.success(
         context,
         subtitle: 'Compra efetuada com sucesso!',
         buttonText: 'Ir para Meus Pedidos',
         onTap: _onSubmitDialog,
       );
-      _removeItemCard();
     } else {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, _order.error);
       _scaffoldKey.currentState.showSnackBar(

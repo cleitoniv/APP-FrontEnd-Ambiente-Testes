@@ -32,6 +32,7 @@ class ClienteModel {
   });
 
   ClienteModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     id = json['id'];
     nome = json['nome'];
     codigo = json['codigo'];
