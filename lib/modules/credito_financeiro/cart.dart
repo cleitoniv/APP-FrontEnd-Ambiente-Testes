@@ -63,12 +63,15 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    log("${data}");
     int _total = data.fold(
       0,
-      (previousValue, element) =>
-          previousValue + (element['value'] * element['quantity']),
-    );
+      (previousValue, element) {
+        if (element["operation"] == "07" || element["operation"] == "00" ||
+            element["operation"] == "04") {
+          return previousValue;
+        }
+        return previousValue + (element['product'].value * element['quantity']);
+      });
 
     return Helper.intToMoney(_total);
   }
