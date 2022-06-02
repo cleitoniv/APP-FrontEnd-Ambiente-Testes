@@ -206,6 +206,7 @@ class PaymentRepository {
           }));
       return true;
     } catch (error) {
+      print(error);
       return false;
     }
   }

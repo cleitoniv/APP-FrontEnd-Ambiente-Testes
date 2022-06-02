@@ -10,8 +10,8 @@ class ClientHttp {
   ClientHttp() {
     dio.interceptors.clear();
     dio.options.baseUrl = API;
-    dio.options.connectTimeout = 15000;
-    dio.options.receiveTimeout = 15000;
+    dio.options.connectTimeout = 30000;
+    dio.options.receiveTimeout = 30000;
 
     dio.interceptors.add(
       InterceptorsWrapper(
