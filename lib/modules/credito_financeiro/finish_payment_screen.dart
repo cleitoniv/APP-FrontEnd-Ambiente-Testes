@@ -130,11 +130,8 @@ class _FinishPaymentState extends State<FinishPayment> {
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
 
     if(mounted) {
-      print("ok--");
 
       creditoFinan.installment = _installmentsSelected;
-
-      print("got here ---133");
 
       bool statusPayment = await _creditoFinanceiroBloc.pagamento(
           creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
@@ -142,17 +139,22 @@ class _FinishPaymentState extends State<FinishPayment> {
       setState(() {
         _lock = false;
       });
-
-      if (statusPayment != null && statusPayment == true) {
+      if(statusPayment != null && statusPayment) {
+        _cartWidgetBloc.cartTotalItemsSink.add(0);
         _requestBloc.resetCart();
         Dialogs.successWithWillPopScope(
           context,
-          subtitle: 'Compra efetuada com sucesso!',
+          subtitle: 'Estamos processando seu pedido!',
           buttonText: 'Ir para Meus Pedidos',
           barrierDismissible: false,
           onTap: _onSubmitDialog,
         );
       } else {
+        creditoFinan.installment = _installments.length;
+        setState(() {
+          _installmentsSelected = 1;
+          _dropdownValueStatus = false;
+        });
         Dialogs.error(
           context,
           title: "Atenção",
@@ -190,6 +192,9 @@ class _FinishPaymentState extends State<FinishPayment> {
     setState(() {
       dropdownValue = '1x de $totalPay';
     });
+
+    print("finan installment count");
+    print(creditoFinan.installmentCount);
 
     if (creditoFinan.installmentCount > 1) {
       for (var i = 1; i < creditoFinan.installmentCount + 1; i++) {

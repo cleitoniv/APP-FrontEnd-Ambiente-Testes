@@ -22,6 +22,8 @@ class ItemPedidoModel {
         "esfericoE": e['esferico_e'] ?? '-',
         "cilindricoE": e['cilindro_e'] ?? '-',
         "eixoE": e['eixo_e'] ?? '-',
+        "qtdD": e["qtd_d"] ?? 0,
+        "qtdE": e["qtd_e"] ?? 0,
         "duracao": e['duracao'],
         "tipoVenda": e["type"],
         "operation": e["operation"],

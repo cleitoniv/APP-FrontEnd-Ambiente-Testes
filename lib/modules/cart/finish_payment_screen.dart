@@ -120,10 +120,6 @@ class _FinishPaymentState extends State<FinishPayment> {
       return;
     }
 
-    setState(() {
-      _lock = true;
-    });
-
     bool blocked = await _authBloc.currentUser();
 
     if (blocked) {
@@ -188,6 +184,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     }, _paymentMethod.isBoleto);
     _ccvController.text = '';
     if (statusPayment != null && statusPayment == true) {
+      _cartWidgetBloc.cartTotalItemsSink.add(0);
       _requestBloc.resetCart();
       Dialogs.successWithWillPopScope(
         context,
@@ -198,6 +195,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       );
       _removeItem();
     } else {
+
       setState(() {
         _lock = false;
       });
@@ -216,6 +214,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
 
     final _cart = await _requestBloc.cartOut.first;
+
     setState(() {
       _totalPay = int.parse(
         _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
@@ -432,6 +431,9 @@ class _FinishPaymentState extends State<FinishPayment> {
                       builder: (context, cartSnapshot) {
                         return RaisedButton(
                           onPressed: _lock ? null : () {
+                            setState(() {
+                              _lock = true;
+                            });
                             _onSubmit(cartSnapshot.data ?? []);
                           }, // _onSubmit,
                           child: Text(

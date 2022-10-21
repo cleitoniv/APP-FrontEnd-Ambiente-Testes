@@ -20,6 +20,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   int _taxaEntrega = 0;
+  bool _lock = false;
+
 
   _onBackToPurchase() {
     Modular.to.pushNamed("/home/0");
@@ -46,6 +48,10 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     if (_total == 0) {
       return _orderFinish(_data);
     }
+
+    setState(() {
+      this._lock = false;
+    });
 
     Modular.to.pushNamed(
       '/cart/payment',
@@ -134,6 +140,11 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(_lock) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator(),),
+      );
+    }
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -387,7 +398,12 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                         style: Theme.of(context).textTheme.button,
                       ),
                       disabledColor: Theme.of(context).accentColor,
-                      onPressed: snapshot.data.isEmpty ? null : _onSubmit,
+                      onPressed: _lock ? null : () {
+                        setState(() {
+                          _lock = true;
+                          _onSubmit();
+                        });
+                      },
                     ),
                   );
                 },

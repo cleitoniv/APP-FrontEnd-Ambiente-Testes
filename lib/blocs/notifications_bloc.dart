@@ -18,6 +18,10 @@ class NotificationBloc extends Bloc<NotificationModel> {
     return repository.readNotification(id);
   }
 
+  Future<bool> delete(int id) async {
+    return repository.delete(id);
+  }
+
   BehaviorSubject _notificationsController = BehaviorSubject();
   Sink get notificationsSink => _notificationsController.sink;
   Stream get notificationsStream => _notificationsController.stream;

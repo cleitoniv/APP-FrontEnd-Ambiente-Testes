@@ -204,7 +204,6 @@ class RequestsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("OLA PEDIDO");
     return SafeArea(
       child: StreamBuilder(
         stream: _requestsBloc.pedidoStream,

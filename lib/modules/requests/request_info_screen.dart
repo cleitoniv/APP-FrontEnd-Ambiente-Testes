@@ -138,7 +138,8 @@ class RequestInfoScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           List<ItemPedidoModel> items =
                               pedidoInfo.data.pedido.items;
-
+                          print("items---");
+                          print(items[index].items.length);
                           return Container(
                             margin: const EdgeInsets.symmetric(
                               vertical: 20,
@@ -230,6 +231,8 @@ class RequestInfoScreen extends StatelessWidget {
                                   scrollDirection: Axis.vertical,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index2) {
+                                    print("quantidade");
+                                    print(items[index].items[index2]['quantidade']);
                                     return Column(
                                       children: [
                                         ListTileMoreCustomizable(
@@ -707,6 +710,47 @@ class RequestInfoScreen extends StatelessWidget {
                                                                             .normal,
                                                                   ),
                                                             ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text('Qtd.',
+                                                                textScaleFactor:
+                                                                1.25,
+                                                                style: Theme.of(
+                                                                    context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                  fontSize:
+                                                                  14,
+                                                                  color: Colors
+                                                                      .black38,
+                                                                ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["qtdE"] ?? "-"}',
+                                                              textScaleFactor:
+                                                              1.25,
+                                                              style: Theme.of(
+                                                                  context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                fontSize:
+                                                                14,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .normal,
+                                                              ),
+                                                            ))
                                                       ])
                                                 ],
                                               ),
@@ -921,6 +965,47 @@ class RequestInfoScreen extends StatelessWidget {
                                                                         FontWeight
                                                                             .normal,
                                                                   ),
+                                                            ))
+                                                      ]),
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text('Qtd.',
+                                                                textScaleFactor:
+                                                                1.25,
+                                                                style: Theme.of(
+                                                                    context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                  fontSize:
+                                                                  14,
+                                                                  color: Colors
+                                                                      .black38,
+                                                                ))),
+                                                        Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["qtdD"] ?? "-"}',
+                                                              textScaleFactor:
+                                                              1.25,
+                                                              style: Theme.of(
+                                                                  context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                fontSize:
+                                                                14,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .normal,
+                                                              ),
                                                             ))
                                                       ])
                                                 ],

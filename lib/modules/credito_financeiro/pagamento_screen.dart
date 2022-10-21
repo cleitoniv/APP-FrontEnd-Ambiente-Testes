@@ -34,8 +34,6 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   }
 
   _onChangePaymentForm(CreditCardModel creditCard) async {
-    print("credit card");
-    print(creditCard.toJson());
     setState(() {
       billing = false;
       _lock = true;
@@ -43,7 +41,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
     bool selectedCard =
         await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
     if (selectedCard) {
-      _creditCardBloc.fetchPaymentMethods();
+      _creditCardBloc.fetchPaymentMethodsChange();
     }
 
     setState(() {
@@ -81,7 +79,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   _finishPayment() {
     var cr = _creditoFinanceiroBloc.creditoFinanceiroValue;
     print("----cr");
-    print(cr);
+    print(cr.installmentCount);
 
     CreditCardList cards = _creditCardBloc.cartaoCreditoValue ?? CreditCardList(list: []);
 
@@ -107,7 +105,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   @override
   void initState() {
     super.initState();
-    _creditCardBloc.fetchPaymentMethods();
+    _creditCardBloc.fetchPaymentMethodsFinan();
     _creditCardNumberController = new MaskedTextController(
       mask: '0000 0000 0000 0000',
     );

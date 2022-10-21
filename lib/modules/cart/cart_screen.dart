@@ -70,9 +70,6 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _onSubmit() async {
-    setState(() {
-      this._lock = true;
-    });
 
     List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
 
@@ -106,6 +103,12 @@ class _CartScreenState extends State<CartScreen> {
     });
 
     return Helper.intToMoney(_total);
+  }
+
+  bool hasPrice(Map<String, dynamic> item) {
+    print("------ has price");
+    print(item["operation"] != "07" && item["operation"] != "00" && item["operation"] != "04");
+    return item["operation"] != "07" && item["operation"] != "00" && item["operation"] != "04";
   }
 
   String selectPrice(Map<String, dynamic> item) {
@@ -237,13 +240,13 @@ class _CartScreenState extends State<CartScreen> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Text(
+                          hasPrice(_data[index]) ? Text(
                             selectPrice(_data[index]),
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
                                       fontSize: 12,
                                     ),
-                          ),
+                          ) : Container(),
                           Align(
                               alignment: Alignment.center,
                               child: _data[index]['removeItem'] == 'Sim' ||
@@ -331,7 +334,12 @@ class _CartScreenState extends State<CartScreen> {
                     disabledColor: Theme.of(context).accentColor,
                     onPressed: snapshot.data.isEmpty
                         ? null
-                        : _onSubmit,
+                        : () {
+                      setState(() {
+                        this._lock = true;
+                      });
+                      _onSubmit();
+                    },
                   ),
                 );
               },

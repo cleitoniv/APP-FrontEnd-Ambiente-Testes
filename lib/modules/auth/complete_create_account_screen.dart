@@ -305,7 +305,6 @@ class _CompleteCreateAccountScreenState
         'labelText': 'Endereço',
         'controller': _addressController,
         'validator': Helper.lengthValidator,
-        'keyboardType': TextInputType.number,
         'enabled': this.enabled
       },
       {

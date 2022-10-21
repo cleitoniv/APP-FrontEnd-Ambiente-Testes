@@ -15,10 +15,54 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   Future<void> fetchPaymentMethods() async {
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
-    print("fetching cards");
     try {
-      CreditCardModel currentCard =
-          list.list.firstWhere((element) => element.status == 1);
+      PaymentMethod crPaymentForm = currentPaymentValue;
+      if(crPaymentForm == null) {
+        CreditCardModel currentCard = list.list.firstWhere((element) => element.status == 1);
+        _cartWidgetBloc.setPaymentMethodCartao(currentCard);
+      }
+      this.cartaoCreditoSink.add(list);
+    } catch (e) {
+      if (list.list.length > 0) {
+        currentPaymentFormIn.add(list.list[0]);
+        _cartWidgetBloc.setPaymentMethodCartao(list.list[0]);
+        this.cartaoCreditoSink.add(list);
+      } else {
+        this
+            .cartaoCreditoSink
+            .add(CreditCardList(isEmpty: true, isLoading: false));
+      }
+    }
+  }
+
+  Future<void> fetchPaymentMethodsFinan() async {
+    this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
+    CreditCardList list = await repository.index();
+    try {
+      PaymentMethod crPaymentForm = currentPaymentValue;
+      if(crPaymentForm == null || crPaymentForm.isBoleto) {
+        CreditCardModel currentCard = list.list.firstWhere((element) => element.status == 1);
+        _cartWidgetBloc.setPaymentMethodCartao(currentCard);
+      }
+      this.cartaoCreditoSink.add(list);
+    } catch (e) {
+      if (list.list.length > 0) {
+        currentPaymentFormIn.add(list.list[0]);
+        _cartWidgetBloc.setPaymentMethodCartao(list.list[0]);
+        this.cartaoCreditoSink.add(list);
+      } else {
+        this
+            .cartaoCreditoSink
+            .add(CreditCardList(isEmpty: true, isLoading: false));
+      }
+    }
+  }
+
+  Future<void> fetchPaymentMethodsChange() async {
+    this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
+    CreditCardList list = await repository.index();
+    try {
+      CreditCardModel currentCard = list.list.firstWhere((element) => element.status == 1);
       currentPaymentFormIn.add(currentCard);
       _cartWidgetBloc.setPaymentMethodCartao(currentCard);
       // _cartWidgetBloc.setPaymentMethodCartao("13", currentCard);
@@ -60,6 +104,7 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   BehaviorSubject _currentPaymentFormController = BehaviorSubject();
   Sink get currentPaymentFormIn => _currentPaymentFormController.sink;
   Stream get currentPaymentFormOut => _currentPaymentFormController.stream;
+  get currentPaymentValue => _currentPaymentFormController.value;
 
   Future<RemoveCard> removeCard(int id) async {
     return repository.removeCard(id);

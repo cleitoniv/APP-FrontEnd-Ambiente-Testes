@@ -38,6 +38,16 @@ class ProductBloc extends Disposable {
     productListSink.add(list);
   }
 
+  bool validateProductTest(int qtd) {
+    if(this._currentProduct.product.tests - qtd > 0) {
+      this._currentProduct.product.productTests = this._currentProduct.product.tests - qtd;
+      productSink.add(this._currentProduct);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void fetchProduct(int id) async {
     productSink.add(Product(isLoading: true));
     this._currentProduct = await repository.show(id: id);

@@ -6,6 +6,7 @@ import 'package:central_oftalmica_app_cliente/blocs/payments_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/notification_model.dart';
+import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -25,6 +26,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   PaymentsWidgetBloc _paymentsWidgetBloc = Modular.get<PaymentsWidgetBloc>();
 
   ExtractWidgetBloc _extractWidgetBloc = Modular.get<ExtractWidgetBloc>();
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _onTap(NotificationModel notification) async {
     await _notificationBloc.readNotification(notification.id);
@@ -55,6 +58,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       _extractWidgetBloc.extractTypeIn.add("Produto");
       _extractWidgetBloc.currentPageSink.add({'type': "Produto", 'page': 1});
       Modular.to.pushNamed("/extracts", arguments: "NOTIFICATION");
+    }
+  }
+
+  _deleteNotifications(int id) async {
+    bool deleted = await _notificationBloc.delete(id);
+    if(deleted) {
+      Modular.to.pushReplacementNamed("/notifications");
+    } else {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Notificações": ["Não foi possivel realizar essa operação no momento. Tente mais tarde."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
     }
   }
 
@@ -94,6 +111,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Notificações'),
         centerTitle: false,
@@ -166,6 +184,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       ],
                     ),
                   ),
+                  trailing: IconButton(icon: Icon(Icons.cancel_outlined, color: Colors.redAccent,), onPressed: () {
+                    _deleteNotifications(_notifications[index].id);
+                }),
                   subtitle: AutoSizeText(
                     _notifications[index].subtitle,
                     style: Theme.of(context).textTheme.subtitle1.copyWith(

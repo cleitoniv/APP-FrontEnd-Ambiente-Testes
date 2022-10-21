@@ -99,7 +99,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _cartWidgetBloc.setPaymentMethodBoleto(billing);
 
     if (selectedCard) {
-      _creditCardBloc.fetchPaymentMethods();
+      _creditCardBloc.fetchPaymentMethodsChange();
     }
 
     Future.delayed(const Duration(milliseconds: 500), () {

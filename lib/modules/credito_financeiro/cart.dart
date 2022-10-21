@@ -31,9 +31,6 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   }
 
   _onSubmit() {
-    setState(() {
-      this._lock = true;
-    });
 
     List _cartItems = _requestsBloc.cartItems;
 
@@ -58,7 +55,14 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
 
   _removeItem(Map<String, dynamic> data) {
     int _total = _cartWidgetBloc.currentCartTotalItems;
-    _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    print("--- remove");
+    print(_total);
+    if (data["removeItem"] == "Sim") {
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
+    } else {
+      _cartWidgetBloc.cartTotalItemsSink.add(_total - 1);
+    }
+
     _requestsBloc.removeFromCart(data);
   }
 
@@ -278,7 +282,12 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                       style: Theme.of(context).textTheme.button,
                     ),
                     disabledColor: Theme.of(context).accentColor,
-                    onPressed: snapshot.data.isEmpty ? null : _onSubmit,
+                    onPressed: snapshot.data.isEmpty ? null : () {
+                      setState(() {
+                        this._lock = true;
+                      });
+                      _onSubmit();
+                    },
                   ),
                 );
               },

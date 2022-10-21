@@ -60,6 +60,27 @@ class NotificationsRepository extends Repository<NotificationModel> {
     }
   }
 
+  Future<bool> delete(int id) async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
+
+    try {
+      await dio.delete(
+        "/api/cliente/notifications/$id",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $idToken",
+            "Content-Type": "application/json"
+          },
+        ),
+      );
+      return true;
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
   Future<List<NotificationModel>> index() async {
     try {
       Response response = await dio.get(

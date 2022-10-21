@@ -18,7 +18,6 @@ class CartWidgetBloc extends Disposable {
 
   Future<bool> setPaymentMethodCartao(CreditCardModel card) async {
     bool selectedCard = await repository.selectCreditCard(card.id);
-
     if (selectedCard) {
       this._paymentMethod = PaymentMethod(isBoleto: false, creditCard: card);
       currentPaymentFormIn.add(this._paymentMethod);

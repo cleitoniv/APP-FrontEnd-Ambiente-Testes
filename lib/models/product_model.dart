@@ -143,6 +143,10 @@ class ProductModel {
 
   void setValue(int val) => this.value = val;
 
+  set productTests(int qtd) {
+    this.tests = qtd;
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;

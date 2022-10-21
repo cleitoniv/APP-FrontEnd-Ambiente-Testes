@@ -59,13 +59,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   FocusNode caixasOlhoDireitoFocus = new FocusNode();
   bool _isLoadingSecondButton;
   bool _isLoadingPrimaryButton;
+  String _hasTests = 'Não';
 
   int _calculateCreditProduct() {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
 
     int _total = _cart.fold(0, (previousValue, element) {
       if (element["operation"] == "07" &&
-          element['product'].group == currentProduct.product.group) {
+          element['product'].group == currentProduct.product.group && element['tests'] == 'Não') {
         return previousValue + element['quantity'];
       }
       return previousValue;
@@ -89,8 +90,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
 
     int _total = _cart.fold(0, (previousValue, element) {
-      if (element["operation"] == "00" &&
-          element['product'].group == currentProduct.product.group) {
+
+      if (((element["operation"] == "00" &&
+          element['product'].group == currentProduct.product.group) ||
+          (element['product'].group == currentProduct.product.group && element['tests'] == 'Sim'))) {
         return previousValue + element['quantity'];
       }
       return previousValue;
@@ -229,6 +232,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onAddLensEsquerdo() {
+
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
@@ -352,6 +356,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
   }
 
+  Widget _accessory(Widget widget) {
+    return currentProduct.product.hasAcessorio ? widget : Container();
+  }
+
   Widget _checkForAcessorio(Widget widget) {
     return !currentProduct.product.hasAcessorio ? widget : Container();
   }
@@ -461,9 +469,33 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onAddToCart(Map data, String typeButton) async {
+    Map<dynamic, dynamic> _first =
+      await _productWidgetBloc.pacientInfoOut.first;
+
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
+
+    int _quantity = int.parse(_lensDireitoController.text) +
+        int.parse(_lensEsquerdoController.text) +
+        int.parse(_lensController.text);
+
+    int _qtd = _first['current'] == "Mesmo grau em ambos"
+        ? int.parse(_lensController.text) * 2
+        : _quantity;
+
+    if (currentProduct.product.tests <
+        _qtd + _cartTotalTest &&
+        (widget.type == "T" || (_hasTests == 'Sim' && (widget.type != "A" && widget.type != "CF")))) {
+      print("490 ---");
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Limite de caixas atingido."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
 
     var invalidBoxes = SnackBar(
         content: Text("Quantidade de caixas tem que ser maior que 0."));
@@ -547,9 +579,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
 
     if (currentProduct.product.boxes <
-            int.parse(_lensEsquerdoController.text) +
-                cartTotal +
-                int.parse(_lensDireitoController.text) &&
+            _qtd + cartTotal &&
         widget.type == "C") {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
@@ -563,6 +593,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 _cartTotalTest +
                 int.parse(_lensDireitoController.text) &&
         widget.type == "T") {
+      print("598 ---");
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
       });
@@ -590,6 +621,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 cartTotal +
                 int.parse(_lensEsquerdoController.text) &&
         widget.type == "C") {
+      print("626 ---");
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
       });
@@ -602,8 +634,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 _cartTotalTest +
                 int.parse(_lensEsquerdoController.text) &&
         widget.type == "T") {
+      print("640 ---");
+
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Limite de caixas atingido."]
+      "Limite Atingido": ["Limite de caixas atingido."]
       });
       _scaffoldKey.currentState.showSnackBar(
         _snack,
@@ -624,18 +658,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
-    Map<dynamic, dynamic> _first =
-        await _productWidgetBloc.pacientInfoOut.first;
-
     final errors = await _checkParameters(
         new Map<String, dynamic>.from(_first[_first['current']]),
         data['product'],
         new Map<String, dynamic>.from(_first));
 
     if (errors.keys.length <= 0) {
-      int _quantity = int.parse(_lensDireitoController.text) +
-          int.parse(_lensEsquerdoController.text) +
-          int.parse(_lensController.text);
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),
         'quantity': _first['current'] == "Mesmo grau em ambos"
@@ -897,6 +925,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onChangedTest(dynamic value) {
+    _hasTests = value;
     _onAddParam({'test': value});
   }
 
@@ -1341,12 +1370,53 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             ).toList(),
           ),
           SizedBox(height: 20),
-          _checkForAcessorio(Text(
+          Text(
             'Parâmetros',
             style: Theme.of(context).textTheme.headline5,
             textAlign: TextAlign.center,
-          )),
-          _checkForAcessorio(SizedBox(height: 10)),
+          ),
+          SizedBox(height: 10),
+          _accessory(
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                          !currentProduct.product.hasAcessorio
+                              ? 'Quantidade de caixas'
+                              : 'Quantidade',
+                          style: Theme.of(context).textTheme.subtitle1),
+                      TextFieldWidget(
+                        width: 150,
+                        controller: _lensController,
+                        readOnly: false,
+                        focus: caixasFocus,
+                        keyboardType: TextInputType.number,
+                        inputFormattersActivated: true,
+                        prefixIcon: IconButton(
+                          icon: Icon(
+                            Icons.remove,
+                            color: Colors.black26,
+                            size: 30,
+                          ),
+                          onPressed: _onRemoveLens,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            Icons.add,
+                            color: Colors.black26,
+                            size: 30,
+                          ),
+                          onPressed: _onAddLens,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+          ),
           _checkForAcessorio(Text(
             'Defina os parâmetros do produto',
             style: Theme.of(context).textTheme.subtitle1,
@@ -1420,6 +1490,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
+
               if (!snapshot.hasData) {
                 return Center(
                   child: CircularProgressIndicator(),
