@@ -233,6 +233,14 @@ class RequestInfoScreen extends StatelessWidget {
                                   itemBuilder: (context, index2) {
                                     print("quantidade");
                                     print(items[index].items[index2]['quantidade']);
+                                    bool isTest = items[index].items[index2]
+                                    [
+                                    'produto_teste'] !=
+                                        null &&
+                                        items[index].items[
+                                        index2]
+                                        ['tests'] ==
+                                            "S";
                                     return Column(
                                       children: [
                                         ListTileMoreCustomizable(
@@ -410,7 +418,7 @@ class RequestInfoScreen extends StatelessWidget {
                                             trailing: FittedBox(
                                               fit: BoxFit.contain,
                                               child: Text(
-                                                'R\$ ${Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
+                                                'R\$ ${isTest ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline5

@@ -221,14 +221,19 @@ class _FinishPaymentState extends State<FinishPayment> {
       );
     });
 
-    final _installmentsList = await _creditCardBloc.fetchInstallments(
+    var _installmentsList = await _creditCardBloc.fetchInstallments(
         _totalToPayNumeric(_cart), _paymentMethod.isBoleto);
-
+    var seen = Set();
+    _installmentsList = _installmentsList.where((item) => seen.add(item['parcela'])).toList();
+    print("installment list");
+    print(_installmentsList);
     if (_installmentsList.length > 0) {
+      print("installments here---");
+      print(_installments);
       setState(() {
         dropdownValue = _installmentsList[0]['parcela'];
       });
-
+      _installments = [];
       for (var item in _installmentsList) {
         _installments.add(item['parcela'].toString());
       }
@@ -315,6 +320,7 @@ class _FinishPaymentState extends State<FinishPayment> {
           builder: (context, paymentMethod) {
             print("payment method---");
             print(paymentMethod.data);
+            print(_installments);
             if(!paymentMethod.hasData) {
               return Center(child: CircularProgressIndicator(),);
             }

@@ -104,6 +104,8 @@ class ProductWidgetBloc extends Disposable {
         (event) => event,
       );
 
+  Map<dynamic, dynamic> get pacientInfo => _pacientInfoController.value;
+
   BehaviorSubject _showInfoController = BehaviorSubject.seeded(false);
   Sink get showInfoIn => _showInfoController.sink;
   Stream<bool> get showInfoOut => _showInfoController.stream.map(

@@ -145,32 +145,41 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
 
+    var _pacientInfo = _productWidgetBloc.pacientInfo;
+    print("149---");
+    print(_pacientInfo['current']);
+    int factor;
+    if(_pacientInfo['current'] == 'Mesmo grau em ambos') {
+      factor = 2;
+    } else {
+      factor = 1;
+    }
     if (widget.type == "C") {
-      int olho = int.parse(_lensController.text);
+      int olho = int.parse(_lensController.text) * factor;
       if (currentProduct.product.boxes > olho + cartTotal) {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "T") {
-      int olho = int.parse(_lensController.text);
+      int olho = int.parse(_lensController.text) * factor;
       if (currentProduct.product.tests > olho + _cartTotalTest) {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "CF") {
-      int olho = int.parse(_lensController.text);
+      int olho = int.parse(_lensController.text) * factor;
       if (_authBloc.getAuthCurrentUser.data.money >
           olho * currentProduct.product.valueFinan + _cartTotalFinancial) {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else {
@@ -188,41 +197,39 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
+
+    int olhoDireito = int.parse(_lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
+    int olhoEsquerdo = int.parse(_lensEsquerdoController.text == '' ? '0' : _lensEsquerdoController.text);
+
     if (widget.type == "C") {
-      int olhoDireito = int.parse(_lensDireitoController.text);
-      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
       if (currentProduct.product.boxes >
           olhoDireito + olhoEsquerdo + cartTotal) {
         _lensDireitoController.text =
-            '${int.parse(_lensDireitoController.text) + 1}';
+            '${olhoDireito + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
         return _lensDireitoController.text = "1";
       }
     } else if (widget.type == "T") {
-      int olhoDireito = int.parse(_lensDireitoController.text);
-      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
       if (currentProduct.product.tests >
           olhoDireito + olhoEsquerdo + _cartTotalTest) {
         _lensDireitoController.text =
-            '${int.parse(_lensDireitoController.text) + 1}';
+            '${olhoDireito + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "CF") {
-      int olhoDireito = int.parse(_lensDireitoController.text);
-      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
       if (_authBloc.getAuthCurrentUser.data.money >
           (olhoEsquerdo + olhoDireito) * currentProduct.product.valueFinan +
               _cartTotalFinancial) {
         _lensDireitoController.text =
-            '${int.parse(_lensDireitoController.text) + 1}';
+            '${olhoDireito + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensDireitoController.text = "1";
       }
     } else {
@@ -237,46 +244,44 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
 
+    int olhoDireito = int.parse(_lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
+    int olhoEsquerdo = int.parse(_lensEsquerdoController.text == '' ? '0' : _lensEsquerdoController.text);
+
     if (widget.type == "C") {
-      int olhoDireito = int.parse(_lensDireitoController.text);
-      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
+
       if (currentProduct.product.boxes >
           olhoDireito + olhoEsquerdo + cartTotal) {
         _lensEsquerdoController.text =
             '${int.parse(_lensEsquerdoController.text) + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "T") {
-      int olhoDireito = int.parse(_lensDireitoController.text);
-      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
-      if (currentProduct.product.tests >
+      if (currentProduct.product.tests >=
           olhoDireito + olhoEsquerdo + _cartTotalTest) {
         _lensEsquerdoController.text =
-            '${int.parse(_lensEsquerdoController.text) + 1}';
+            '${olhoEsquerdo + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensEsquerdoController.text = "1";
       }
     } else if (widget.type == "CF") {
-      int olhoEsquerdo = int.parse(_lensEsquerdoController.text);
-      int olhoDireito = int.parse(_lensDireitoController.text);
       if (_authBloc.getAuthCurrentUser.data.money >
           (olhoDireito + olhoEsquerdo) * currentProduct.product.valueFinan +
               _cartTotalFinancial) {
         _lensEsquerdoController.text =
-            '${int.parse(_lensEsquerdoController.text) + 1}';
+            '${olhoEsquerdo + 1}';
       } else {
-        _showDialog("Limite atingido.",
-            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+//        _showDialog("Limite atingido.",
+//            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensEsquerdoController.text = "1";
       }
     } else {
       _lensEsquerdoController.text =
-          '${int.parse(_lensEsquerdoController.text) + 1}';
+          '${olhoEsquerdo + 1}';
     }
   }
 
@@ -484,6 +489,20 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ? int.parse(_lensController.text) * 2
         : _quantity;
 
+
+    if (_authBloc.getAuthCurrentUser.data.money <
+        (( _qtd * currentProduct.product.valueFinan) +
+            _cartTotalFinancial) &&
+        widget.type == "CF") {
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+      });
+      _scaffoldKey.currentState.showSnackBar(
+        _snack,
+      );
+      return;
+    }
+
     if (currentProduct.product.tests <
         _qtd + _cartTotalTest &&
         (widget.type == "T" || (_hasTests == 'Sim' && (widget.type != "A" && widget.type != "CF")))) {
@@ -670,8 +689,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             ? int.parse(_lensController.text) * 2
             : _quantity,
         'quantity_for_eye': {
-          'esquerdo': int.parse(_lensEsquerdoController.text),
-          'direito': int.parse(_lensDireitoController.text)
+          'esquerdo': _first['current'] == "Mesmo grau em ambos"
+              ? int.parse(_lensController.text)
+              : int.parse(_lensEsquerdoController.text),
+          'direito': _first['current'] == "Mesmo grau em ambos"
+              ? int.parse(_lensController.text)
+              : int.parse(_lensDireitoController.text)
         },
         'value': data['product'].value,
         'tests': _first['test'],
@@ -685,7 +708,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
-
+      print(_data);
       print(int.parse(_lensDireitoController.text));
       print(int.parse(_lensEsquerdoController.text));
       print(currentProduct.product.tests);
@@ -1078,6 +1101,71 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _productBloc.fetchParametros(currentProduct.product.group);
 
     _productWidgetBloc.resetPacientInfo();
+
+    _lensController.addListener(() {
+      print(_lensController.text);
+      validateLensQuantity("ambos");
+    });
+
+    _lensDireitoController.addListener(() {
+      validateLensQuantity("direito");
+    });
+
+    _lensEsquerdoController.addListener(() {
+      validateLensQuantity("esquerdo");
+    });
+  }
+
+  void validateLensQuantity(String type) async {
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
+
+    int cartTotal = _calculateCreditProduct();
+    int _cartTotalTest = _calculateCreditTest();
+    int _cartTotalFinancial = _calculateCreditFinancial();
+
+    int _quantity = int.parse(_lensDireitoController.text == '' ? '0' : _lensDireitoController.text) +
+        int.parse(_lensEsquerdoController.text == '' ? '0' : _lensEsquerdoController.text) +
+        int.parse(_lensController.text == '' ? '0' : _lensController.text);
+
+    int _qtd = _first['current'] == "Mesmo grau em ambos"
+        ? int.parse(_lensController.text == '' ? '0' : _lensController.text) * 2
+        : _quantity;
+    print("condition");
+    print(currentProduct.product.tests);
+    print(_qtd);
+    print(currentProduct.product.tests < _qtd + _cartTotalTest && widget.type == "T");
+    if (_authBloc.getAuthCurrentUser.data.money <
+        (( _qtd * currentProduct.product.valueFinan) +
+            _cartTotalFinancial) &&
+        widget.type == "CF") {
+      _showDialog("Limite atingido.",
+        "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+      setState(() {
+        if(type == "esquerdo") _lensEsquerdoController.text = '';
+        if(type == "direito") _lensDireitoController.text = '';
+        if(type == "ambos") _lensController.text = '';
+      });
+    } else if (widget.type == "C") {
+      if (currentProduct.product.boxes < _qtd + cartTotal) {
+        _showDialog("Limite atingido.",
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        setState(() {
+          if(type == "esquerdo") _lensEsquerdoController.text = '';
+          if(type == "direito") _lensDireitoController.text = '';
+          if(type == "ambos") _lensController.text = '';
+        });
+      }
+    } else if (currentProduct.product.tests < _qtd + _cartTotalTest &&
+        widget.type == "T") {
+      _showDialog("Limite atingido. 2",
+          "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+      setState(() {
+        if(type == "esquerdo") _lensEsquerdoController.text = '';
+        if(type == "direito") _lensDireitoController.text = '';
+        if(type == "ambos") _lensController.text = '';
+      });
+    }
   }
 
   List<Map<String, dynamic>> generateProductParams(Parametros parametro) {
@@ -1538,10 +1626,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   size: 30,
                                 ),
                                 onPressed: _onAddLens,
-                              ),
-                            ),
-                          ],
-                        ),
+              ),
+              ),
+              ],
+              ),
+
                       ),
                     ),
                     SizedBox(height: 30),
