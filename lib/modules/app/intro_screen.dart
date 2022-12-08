@@ -59,7 +59,7 @@ class _IntroScreenState extends State<IntroScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        overflow: Overflow.visible,
+        clipBehavior: Clip.none,
         children: <Widget>[
           PageView.builder(
             controller: _pageController,

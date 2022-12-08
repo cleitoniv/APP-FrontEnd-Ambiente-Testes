@@ -44,7 +44,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   List<Map> _fieldData;
   bool isInvalid = false;
   TextEditingController _nameController;
@@ -66,7 +67,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
     int _total = _cart.fold(0, (previousValue, element) {
       if (element["operation"] == "07" &&
-          element['product'].group == currentProduct.product.group && element['tests'] == 'Não') {
+          element['product'].group == currentProduct.product.group &&
+          element['tests'] == 'Não') {
         return previousValue + element['quantity'];
       }
       return previousValue;
@@ -90,10 +92,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
 
     int _total = _cart.fold(0, (previousValue, element) {
-
       if (((element["operation"] == "00" &&
-          element['product'].group == currentProduct.product.group) ||
-          (element['product'].group == currentProduct.product.group && element['tests'] == 'Sim'))) {
+              element['product'].group == currentProduct.product.group) ||
+          (element['product'].group == currentProduct.product.group &&
+              element['tests'] == 'Sim'))) {
         return previousValue + element['quantity'];
       }
       return previousValue;
@@ -126,7 +128,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           title: Text(title, style: Theme.of(context).textTheme.headline5),
           content: Text(content),
           actions: [
-            RaisedButton(
+            ElevatedButton(
                 child: Text(
                   "Ok",
                   style: TextStyle(color: Colors.white),
@@ -149,7 +151,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     print("149---");
     print(_pacientInfo['current']);
     int factor;
-    if(_pacientInfo['current'] == 'Mesmo grau em ambos') {
+    if (_pacientInfo['current'] == 'Mesmo grau em ambos') {
       factor = 2;
     } else {
       factor = 1;
@@ -198,14 +200,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
 
-    int olhoDireito = int.parse(_lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
-    int olhoEsquerdo = int.parse(_lensEsquerdoController.text == '' ? '0' : _lensEsquerdoController.text);
+    int olhoDireito = int.parse(
+        _lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
+    int olhoEsquerdo = int.parse(_lensEsquerdoController.text == ''
+        ? '0'
+        : _lensEsquerdoController.text);
 
     if (widget.type == "C") {
       if (currentProduct.product.boxes >
           olhoDireito + olhoEsquerdo + cartTotal) {
-        _lensDireitoController.text =
-            '${olhoDireito + 1}';
+        _lensDireitoController.text = '${olhoDireito + 1}';
       } else {
 //        _showDialog("Limite atingido.",
 //            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
@@ -214,8 +218,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     } else if (widget.type == "T") {
       if (currentProduct.product.tests >
           olhoDireito + olhoEsquerdo + _cartTotalTest) {
-        _lensDireitoController.text =
-            '${olhoDireito + 1}';
+        _lensDireitoController.text = '${olhoDireito + 1}';
       } else {
 //        _showDialog("Limite atingido.",
 //            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
@@ -225,8 +228,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       if (_authBloc.getAuthCurrentUser.data.money >
           (olhoEsquerdo + olhoDireito) * currentProduct.product.valueFinan +
               _cartTotalFinancial) {
-        _lensDireitoController.text =
-            '${olhoDireito + 1}';
+        _lensDireitoController.text = '${olhoDireito + 1}';
       } else {
 //        _showDialog("Limite atingido.",
 //            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
@@ -239,16 +241,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _onAddLensEsquerdo() {
-
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
 
-    int olhoDireito = int.parse(_lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
-    int olhoEsquerdo = int.parse(_lensEsquerdoController.text == '' ? '0' : _lensEsquerdoController.text);
+    int olhoDireito = int.parse(
+        _lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
+    int olhoEsquerdo = int.parse(_lensEsquerdoController.text == ''
+        ? '0'
+        : _lensEsquerdoController.text);
 
     if (widget.type == "C") {
-
       if (currentProduct.product.boxes >
           olhoDireito + olhoEsquerdo + cartTotal) {
         _lensEsquerdoController.text =
@@ -261,8 +264,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     } else if (widget.type == "T") {
       if (currentProduct.product.tests >=
           olhoDireito + olhoEsquerdo + _cartTotalTest) {
-        _lensEsquerdoController.text =
-            '${olhoEsquerdo + 1}';
+        _lensEsquerdoController.text = '${olhoEsquerdo + 1}';
       } else {
 //        _showDialog("Limite atingido.",
 //            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
@@ -272,16 +274,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       if (_authBloc.getAuthCurrentUser.data.money >
           (olhoDireito + olhoEsquerdo) * currentProduct.product.valueFinan +
               _cartTotalFinancial) {
-        _lensEsquerdoController.text =
-            '${olhoEsquerdo + 1}';
+        _lensEsquerdoController.text = '${olhoEsquerdo + 1}';
       } else {
 //        _showDialog("Limite atingido.",
 //            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensEsquerdoController.text = "1";
       }
     } else {
-      _lensEsquerdoController.text =
-          '${olhoEsquerdo + 1}';
+      _lensEsquerdoController.text = '${olhoEsquerdo + 1}';
     }
   }
 
@@ -475,7 +475,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   _onAddToCart(Map data, String typeButton) async {
     Map<dynamic, dynamic> _first =
-      await _productWidgetBloc.pacientInfoOut.first;
+        await _productWidgetBloc.pacientInfoOut.first;
 
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
@@ -489,10 +489,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ? int.parse(_lensController.text) * 2
         : _quantity;
 
-
     if (_authBloc.getAuthCurrentUser.data.money <
-        (( _qtd * currentProduct.product.valueFinan) +
-            _cartTotalFinancial) &&
+            ((_qtd * currentProduct.product.valueFinan) +
+                _cartTotalFinancial) &&
         widget.type == "CF") {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
@@ -503,9 +502,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
-    if (currentProduct.product.tests <
-        _qtd + _cartTotalTest &&
-        (widget.type == "T" || (_hasTests == 'Sim' && (widget.type != "A" && widget.type != "CF")))) {
+    if (currentProduct.product.tests < _qtd + _cartTotalTest &&
+        (widget.type == "T" ||
+            (_hasTests == 'Sim' &&
+                (widget.type != "A" && widget.type != "CF")))) {
       print("490 ---");
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
@@ -597,9 +597,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
-    if (currentProduct.product.boxes <
-            _qtd + cartTotal &&
-        widget.type == "C") {
+    if (currentProduct.product.boxes < _qtd + cartTotal && widget.type == "C") {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
       });
@@ -656,7 +654,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       print("640 ---");
 
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-      "Limite Atingido": ["Limite de caixas atingido."]
+        "Limite Atingido": ["Limite de caixas atingido."]
       });
       _scaffoldKey.currentState.showSnackBar(
         _snack,
@@ -1124,8 +1122,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
 
-    int _quantity = int.parse(_lensDireitoController.text == '' ? '0' : _lensDireitoController.text) +
-        int.parse(_lensEsquerdoController.text == '' ? '0' : _lensEsquerdoController.text) +
+    int _quantity = int.parse(_lensDireitoController.text == ''
+            ? '0'
+            : _lensDireitoController.text) +
+        int.parse(_lensEsquerdoController.text == ''
+            ? '0'
+            : _lensEsquerdoController.text) +
         int.parse(_lensController.text == '' ? '0' : _lensController.text);
 
     int _qtd = _first['current'] == "Mesmo grau em ambos"
@@ -1134,26 +1136,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     print("condition");
     print(currentProduct.product.tests);
     print(_qtd);
-    print(currentProduct.product.tests < _qtd + _cartTotalTest && widget.type == "T");
+    print(currentProduct.product.tests < _qtd + _cartTotalTest &&
+        widget.type == "T");
     if (_authBloc.getAuthCurrentUser.data.money <
-        (( _qtd * currentProduct.product.valueFinan) +
-            _cartTotalFinancial) &&
+            ((_qtd * currentProduct.product.valueFinan) +
+                _cartTotalFinancial) &&
         widget.type == "CF") {
       _showDialog("Limite atingido.",
-        "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+          "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
       setState(() {
-        if(type == "esquerdo") _lensEsquerdoController.text = '';
-        if(type == "direito") _lensDireitoController.text = '';
-        if(type == "ambos") _lensController.text = '';
+        if (type == "esquerdo") _lensEsquerdoController.text = '';
+        if (type == "direito") _lensDireitoController.text = '';
+        if (type == "ambos") _lensController.text = '';
       });
     } else if (widget.type == "C") {
       if (currentProduct.product.boxes < _qtd + cartTotal) {
         _showDialog("Limite atingido.",
             "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         setState(() {
-          if(type == "esquerdo") _lensEsquerdoController.text = '';
-          if(type == "direito") _lensDireitoController.text = '';
-          if(type == "ambos") _lensController.text = '';
+          if (type == "esquerdo") _lensEsquerdoController.text = '';
+          if (type == "direito") _lensDireitoController.text = '';
+          if (type == "ambos") _lensController.text = '';
         });
       }
     } else if (currentProduct.product.tests < _qtd + _cartTotalTest &&
@@ -1161,9 +1164,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       _showDialog("Limite atingido. 2",
           "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
       setState(() {
-        if(type == "esquerdo") _lensEsquerdoController.text = '';
-        if(type == "direito") _lensDireitoController.text = '';
-        if(type == "ambos") _lensController.text = '';
+        if (type == "esquerdo") _lensEsquerdoController.text = '';
+        if (type == "direito") _lensDireitoController.text = '';
+        if (type == "ambos") _lensController.text = '';
       });
     }
   }
@@ -1204,33 +1207,29 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   Widget _getValueLabel(String type) {
-    return Column(
-        children: [
-          Container(
-            padding: EdgeInsets.only(top: 8),
-            height: 30,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                _getIcon(type),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                    _getType(type),
-                    style:
-                    Theme.of(context).textTheme.subtitle1.copyWith(
+    return Column(children: [
+      Container(
+        padding: EdgeInsets.only(top: 8),
+        height: 30,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _getIcon(type),
+            FittedBox(
+              fit: BoxFit.contain,
+              child: Text(
+                _getType(type),
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
                       color: Colors.black45,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                     ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-
-        ]
-    );
+          ],
+        ),
+      ),
+    ]);
   }
 
   Widget _priceTable(BuildContext context) {
@@ -1243,18 +1242,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       width: 30,
       child: Column(
         children: [
-          Text("Tabela de Preços", style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 20),),
-          SizedBox(height: 10,),
+          Text(
+            "Tabela de Preços",
+            style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 20),
+          ),
+          SizedBox(
+            height: 10,
+          ),
           Table(
             children: [
               TableRow(
                 children: [
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Center(child: Text("${_getBuyValue("A")}", style: TextStyle(
-                        color: Color(0xff707070),
-                        fontWeight: FontWeight.w700
-                    ),),),
+                    child: Center(
+                      child: Text(
+                        "${_getBuyValue("A")}",
+                        style: TextStyle(
+                            color: Color(0xff707070),
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(4),
@@ -1266,10 +1274,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 children: [
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Center(child: Text("${_getBuyValue("C")}", style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.w700
-                    )),),
+                    child: Center(
+                      child: Text("${_getBuyValue("C")}",
+                          style: TextStyle(
+                              color: Theme.of(context).accentColor,
+                              fontWeight: FontWeight.w700)),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(4),
@@ -1281,10 +1291,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 children: [
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Center(child: Text("${_getBuyValue("CF")}", style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w700
-                    )),),
+                    child: Center(
+                      child: Text("${_getBuyValue("CF")}",
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w700)),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(4),
@@ -1296,7 +1308,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 children: [
                   TableCell(
                     verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Center(child: Text("---"),),
+                    child: Center(
+                      child: Text("---"),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(4),
@@ -1305,7 +1319,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 ],
               )
             ],
-          )],
+          )
+        ],
       ),
     );
   }
@@ -1344,8 +1359,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       tests: currentProduct.product.tests,
                       imageUrl: currentProduct.product.imageUrl,
                       credits: currentProduct.product.boxes,
-                      onTap: () async {
-                      },
+                      onTap: () async {},
                     ),
 //                    CachedNetworkImage(
 //                      errorWidget: (context, url, error) =>
@@ -1357,7 +1371,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 //                      fit: BoxFit.contain,
 //                    ),
 
-                 //   Text("${_getBuyValue(widget.type)}", style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 17),)
+                    //   Text("${_getBuyValue(widget.type)}", style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 17),)
                   ]),
               SizedBox(width: 20),
               Expanded(
@@ -1387,10 +1401,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   SizedBox(height: 40),
                   Column(
                     children: [
-                      Text("Modo de compra", style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).primaryColor
-                      ),),
+                      Text(
+                        "Modo de compra",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: Theme.of(context).primaryColor),
+                      ),
                       _getValueLabel(widget.type)
                     ],
                   )
@@ -1398,7 +1414,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               )),
             ],
           ),
-          SizedBox(height: 15,),
+          SizedBox(
+            height: 15,
+          ),
           Divider(
             height: 50,
             thickness: 0.2,
@@ -1413,7 +1431,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     fit: BoxFit.contain,
                     child: AutoSizeText(
                       'Informações do Paciente',
-                     // textScaleFactor: 1.10,
+                      // textScaleFactor: 1.10,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.headline5,
                       textAlign: TextAlign.center,
@@ -1434,7 +1452,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           Text(
             'Gestão do Paciente & Pontos Controle o período para reavaliação do seu paciente preenchendo o nome e a data de nascimento, opcionalmente completando com o CPF dele, voce acumula pontos para compras futuras.',
             style: Theme.of(context).textTheme.subtitle1,
-           // textScaleFactor: 1.25,
+            // textScaleFactor: 1.25,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 30),
@@ -1464,47 +1482,45 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 10),
-          _accessory(
-              FittedBox(
-                fit: BoxFit.contain,
-                child: Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                          !currentProduct.product.hasAcessorio
-                              ? 'Quantidade de caixas'
-                              : 'Quantidade',
-                          style: Theme.of(context).textTheme.subtitle1),
-                      TextFieldWidget(
-                        width: 150,
-                        controller: _lensController,
-                        readOnly: false,
-                        focus: caixasFocus,
-                        keyboardType: TextInputType.number,
-                        inputFormattersActivated: true,
-                        prefixIcon: IconButton(
-                          icon: Icon(
-                            Icons.remove,
-                            color: Colors.black26,
-                            size: 30,
-                          ),
-                          onPressed: _onRemoveLens,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.add,
-                            color: Colors.black26,
-                            size: 30,
-                          ),
-                          onPressed: _onAddLens,
-                        ),
+          _accessory(FittedBox(
+            fit: BoxFit.contain,
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                      !currentProduct.product.hasAcessorio
+                          ? 'Quantidade de caixas'
+                          : 'Quantidade',
+                      style: Theme.of(context).textTheme.subtitle1),
+                  TextFieldWidget(
+                    width: 150,
+                    controller: _lensController,
+                    readOnly: false,
+                    focus: caixasFocus,
+                    keyboardType: TextInputType.number,
+                    inputFormattersActivated: true,
+                    prefixIcon: IconButton(
+                      icon: Icon(
+                        Icons.remove,
+                        color: Colors.black26,
+                        size: 30,
                       ),
-                    ],
+                      onPressed: _onRemoveLens,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.black26,
+                        size: 30,
+                      ),
+                      onPressed: _onAddLens,
+                    ),
                   ),
-                ),
-              )
-          ),
+                ],
+              ),
+            ),
+          )),
           _checkForAcessorio(Text(
             'Defina os parâmetros do produto',
             style: Theme.of(context).textTheme.subtitle1,
@@ -1578,7 +1594,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
             stream: _productWidgetBloc.pacientInfoOut,
             builder: (context, snapshot) {
-
               if (!snapshot.hasData) {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -1626,11 +1641,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   size: 30,
                                 ),
                                 onPressed: _onAddLens,
-              ),
-              ),
-              ],
-              ),
-
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: 30),
@@ -1963,13 +1977,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               top: 20,
             ),
             child: !_isLoadingPrimaryButton
-                ? RaisedButton.icon(
+                ? ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).accentColor,
+                        elevation: 0),
                     icon: Icon(
                       MaterialCommunityIcons.plus,
                       color: Colors.white,
                     ),
-                    color: Theme.of(context).accentColor,
-                    elevation: 0,
                     onPressed: () async {
                       setState(() {
                         _isLoadingPrimaryButton = true;
@@ -1998,10 +2013,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   margin: const EdgeInsets.only(
                     top: 20,
                   ),
-                  child: RaisedButton.icon(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: e['color'], elevation: 0),
                     icon: e['icon'],
-                    color: e['color'],
-                    elevation: 0,
                     onPressed: e['onTap'],
                     label: FittedBox(
                       fit: BoxFit.contain,
@@ -2020,15 +2035,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               top: 20,
             ),
             child: !_isLoadingSecondButton
-                ? RaisedButton.icon(
+                ? ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        elevation: 0),
                     icon: Image.asset(
                       'assets/icons/cart.png',
                       width: 20,
                       height: 20,
                       color: Colors.white,
                     ),
-                    color: Theme.of(context).primaryColor,
-                    elevation: 0,
                     onPressed: () async {
                       setState(() {
                         _isLoadingSecondButton = true;

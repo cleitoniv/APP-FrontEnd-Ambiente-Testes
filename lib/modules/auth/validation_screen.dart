@@ -69,7 +69,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
             children: [
               Container(
                 width: 200,
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: _exitApp,
                   child: Text(
                     'Sair',

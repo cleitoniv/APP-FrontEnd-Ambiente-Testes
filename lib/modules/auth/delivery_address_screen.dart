@@ -21,7 +21,8 @@ class DeliveryAddressRegisterScreenState
     extends State<DeliveryAddressRegisterScreen> {
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   MaskedTextController _zipCodeDeliveryController;
   TextEditingController _addressDeliveryController;
@@ -287,7 +288,7 @@ class DeliveryAddressRegisterScreenState
                   ).toList(),
                 ),
                 SizedBox(height: 30),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: _handleSubmit,
                   child: Text(
                     'Completar Cadastro',

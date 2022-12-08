@@ -25,7 +25,8 @@ class _FinishPaymentState extends State<FinishPayment> {
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
   TextEditingController _ccvController;
   MaskedTextController _creditCardNumberController;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   bool _dropdownValueStatus = true;
   int _installmentsSelected = 1;
   String dropdownValue = '';
@@ -91,14 +92,13 @@ class _FinishPaymentState extends State<FinishPayment> {
         _isButtonDisabled = false;
       });
       Dialogs.errorWithWillPopScope(context,
-        barrierDismissible: false,
-        buttonText: "OK",
-        title: "Usuario bloqueado.",
-        subtitle: "No momento voce não pode realizar esse tipo de operação.",
-        onTap: () {
-          Modular.to.pop();
-        }
-      );
+          barrierDismissible: false,
+          buttonText: "OK",
+          title: "Usuario bloqueado.",
+          subtitle: "No momento voce não pode realizar esse tipo de operação.",
+          onTap: () {
+        Modular.to.pop();
+      });
       return;
     }
     print("ok--");
@@ -126,11 +126,10 @@ class _FinishPaymentState extends State<FinishPayment> {
       return;
     }
 
-    final CreditoFinanceiro creditoFinan=
+    final CreditoFinanceiro creditoFinan =
         await _creditoFinanceiroBloc.creditoFinaceiroStream.first;
 
-    if(mounted) {
-
+    if (mounted) {
       creditoFinan.installment = _installmentsSelected;
 
       bool statusPayment = await _creditoFinanceiroBloc.pagamento(
@@ -139,7 +138,7 @@ class _FinishPaymentState extends State<FinishPayment> {
       setState(() {
         _lock = false;
       });
-      if(statusPayment != null && statusPayment) {
+      if (statusPayment != null && statusPayment) {
         _cartWidgetBloc.cartTotalItemsSink.add(0);
         _requestBloc.resetCart();
         Dialogs.successWithWillPopScope(
@@ -181,7 +180,6 @@ class _FinishPaymentState extends State<FinishPayment> {
 
       _scaffoldKey.currentState.showSnackBar(_snackBar);
     }
-
   }
 
   _calcPaymentInstallment() async {
@@ -208,7 +206,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   @override
   Widget build(BuildContext context) {
-    if(_lock) {
+    if (_lock) {
       return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -390,7 +388,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                         : Container(height: 20),
                   ],
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: _isButtonDisabled ? null : _onSubmit, // _onSubmit,
                   child: Text(
                     'Finalizar Pedido',

@@ -23,7 +23,8 @@ class _CompleteCreateAccountScreenState
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   MaskedTextController _cpfController;
   TextEditingController _nameController;
@@ -273,7 +274,7 @@ class _CompleteCreateAccountScreenState
           ),
           content: Text(content),
           actions: [
-            RaisedButton(
+            ElevatedButton(
                 child: Text(
                   "Ok",
                   style: TextStyle(color: Colors.white),
@@ -708,10 +709,10 @@ class _CompleteCreateAccountScreenState
                   ).toList(),
                 ),
                 SizedBox(height: 30),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () {
                     if (!_formKey.currentState.validate()) {
-                      Scaffold.of(context).showSnackBar(SnackBar(
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text(
                               "Corrija os erros em vermelho antes de enviar.")));
                     } else {

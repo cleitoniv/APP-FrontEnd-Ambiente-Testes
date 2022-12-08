@@ -117,7 +117,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                 ),
                 Stack(
-                  overflow: Overflow.visible,
+                  clipBehavior: Clip.none,
                   children: <Widget>[
                     Container(
                       margin: const EdgeInsets.only(top: 30),
@@ -153,18 +153,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           if (!snapshot.hasData) {
                             return Center(child: CircularProgressIndicator());
                           }
-                          return RaisedButton(
+                          return ElevatedButton(
                             onPressed: () => _onShowInfo(
                               snapshot.data,
                             ),
-                            padding: const EdgeInsets.all(0),
-                            color: snapshot.data
-                                ? Theme.of(context).accentColor
-                                : Color(0xffA5A5A5),
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
+                            style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(0),
+                                backgroundColor: snapshot.data
+                                    ? Theme.of(context).accentColor
+                                    : Color(0xffA5A5A5),
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                )),
                             child: Text(
                               '+INFO',
                               style: Theme.of(context)
@@ -445,7 +446,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   stream: _productWidgetBloc.showInfoOut,
                   builder: (context, snapshot) {
                     if (snapshot.hasData && snapshot.data) {
-                      return RaisedButton(
+                      return ElevatedButton(
                         onPressed: () => _onShowInfo(
                           snapshot.data,
                         ),
@@ -470,10 +471,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             (item) {
                               return Container(
                                 margin: const EdgeInsets.only(top: 20),
-                                child: RaisedButton(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: item['color'],
+                                      elevation: 0),
                                   onPressed: item['onTap'],
-                                  color: item['color'],
-                                  elevation: 0,
                                   child: Text(
                                     item['title'],
                                     style: Theme.of(context).textTheme.button,

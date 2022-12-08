@@ -33,7 +33,8 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   TextEditingController _corController;
   TextEditingController _adicaoController;
   Map<String, dynamic> hasParams;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   _onChangeParams(Map<String, dynamic> data,
       {String key, current, param}) async {
@@ -533,7 +534,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                     builder: (context, snapshot) {
                       return Opacity(
                         opacity: 1,
-                        child: RaisedButton.icon(
+                        child: ElevatedButton.icon(
                           onPressed: () {
                             _onSubmit(
                                 productSnapshot
@@ -543,9 +544,11 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                                 productSnapshot
                                     .data.devolution.product["title"]);
                           },
-                          elevation: 0,
-                          disabledColor: Theme.of(context).primaryColor,
-                          color: Theme.of(context).primaryColor,
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              disabledBackgroundColor:
+                                  Theme.of(context).primaryColor,
+                              backgroundColor: Theme.of(context).primaryColor),
                           icon: Image.asset(
                             'assets/icons/cart.png',
                             width: 20,

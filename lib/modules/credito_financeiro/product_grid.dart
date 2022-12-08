@@ -21,7 +21,8 @@ class _CreditProductGridScreenState extends State<CreditProductGridScreen>
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   TabController _tabController;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   _onChangeSightProblem(String sightProblem) {
     _productBloc.fetchProducts(sightProblem);

@@ -27,8 +27,7 @@ class _PointsScreenState extends State<PointsScreen> {
           barrierDismissible: false,
           buttonText: "OK",
           title: "Usuario bloqueado.",
-          subtitle: "No momento voce não pode realizar esse tipo de operação."
-      );
+          subtitle: "No momento voce não pode realizar esse tipo de operação.");
     }
   }
 
@@ -232,18 +231,19 @@ class _PointsScreenState extends State<PointsScreen> {
               (item) {
                 return Container(
                   margin: const EdgeInsets.only(top: 20),
-                  child: RaisedButton.icon(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: item['color'],
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          side: BorderSide(
+                            width: item['border'],
+                            color: item['textColor'],
+                          ),
+                        )),
                     icon: item['icon'],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      side: BorderSide(
-                        width: item['border'],
-                        color: item['textColor'],
-                      ),
-                    ),
                     onPressed: () => _checkBlockedUser(context, item["onTap"]),
-                    color: item['color'],
-                    elevation: 0,
                     label: Text(
                       item['title'],
                       style: Theme.of(context).textTheme.button.copyWith(

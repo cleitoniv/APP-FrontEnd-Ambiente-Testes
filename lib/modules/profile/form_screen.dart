@@ -24,7 +24,8 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   UserBloc _userBloc = Modular.get<UserBloc>();
@@ -38,7 +39,6 @@ class _FormScreenState extends State<FormScreen> {
   bool isLoading = false;
 
   _onAddUser() async {
-
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -120,8 +120,8 @@ class _FormScreenState extends State<FormScreen> {
           ),
           content: Text("Essa ação não pode ser desfeita! Continuar?"),
           actions: [
-            RaisedButton(
-              color: Colors.red,
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: Text(
                 "Sim",
                 style: TextStyle(color: Colors.white),
@@ -129,7 +129,7 @@ class _FormScreenState extends State<FormScreen> {
               onPressed: _onDeleteUser,
             ),
             SizedBox(height: 10),
-            RaisedButton(
+            ElevatedButton(
                 child: Text(
                   "Cancelar",
                   style: TextStyle(color: Colors.white),
@@ -337,13 +337,13 @@ class _FormScreenState extends State<FormScreen> {
                   widget.formType == "edit"
               ? isLoading
                   ? Center(child: CircularProgressIndicator())
-                  : RaisedButton(
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(elevation: 0),
                       onPressed: accept
                           ? null
                           : widget.formType == 'edit'
                               ? _onSaveInfo
                               : _onAddUser,
-                      elevation: 0,
                       child: Text(
                         widget.formType == 'edit'
                             ? 'Salvar Alterações de Usuário'
@@ -353,13 +353,13 @@ class _FormScreenState extends State<FormScreen> {
                     )
               : isLoading
                   ? Center(child: CircularProgressIndicator())
-                  : RaisedButton(
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(elevation: 0),
                       onPressed: !accept
                           ? null
                           : widget.formType == 'edit'
                               ? _onSaveInfo
                               : _onAddUser,
-                      elevation: 0,
                       child: Text(
                         widget.formType == 'edit'
                             ? 'Salvar Alterações de Usuário'
@@ -370,10 +370,10 @@ class _FormScreenState extends State<FormScreen> {
           SizedBox(height: 30),
           _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
               ? widget.formType == 'edit'
-                  ? RaisedButton(
-                      color: Colors.red,
+                  ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red, elevation: 0),
                       onPressed: _showDialog,
-                      elevation: 0,
                       child: Text(
                         'Excluir Usuário',
                         style: Theme.of(context).textTheme.button,

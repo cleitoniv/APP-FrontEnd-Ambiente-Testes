@@ -75,7 +75,7 @@ class _EffectuationScreenState extends State<EffectuationScreen> {
             ),
             SizedBox(height: 30),
             !_isLoadingButton
-                ? RaisedButton(
+                ? ElevatedButton(
                     onPressed: _onSubmit,
                     child: Text(
                       'Concluir Solicitação',

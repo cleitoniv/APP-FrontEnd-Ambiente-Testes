@@ -22,15 +22,16 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
       Modular.get<CreditoFinanceiroBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   bool _onRefresh = false;
   bool billing = false;
   bool _lock = false;
   MaskedTextController _creditCardNumberController;
 
-
   _onAddCreditCard() {
-    Modular.to.pushNamed('/cart/addCreditCard', arguments: {'route': '/credito_financeiro/pagamento'});
+    Modular.to.pushNamed('/cart/addCreditCard',
+        arguments: {'route': '/credito_financeiro/pagamento'});
   }
 
   _onChangePaymentForm(CreditCardModel creditCard) async {
@@ -81,9 +82,10 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
     print("----cr");
     print(cr.installmentCount);
 
-    CreditCardList cards = _creditCardBloc.cartaoCreditoValue ?? CreditCardList(list: []);
+    CreditCardList cards =
+        _creditCardBloc.cartaoCreditoValue ?? CreditCardList(list: []);
 
-    if((cards.list ?? []).length <= 0) {
+    if ((cards.list ?? []).length <= 0) {
       Map<String, dynamic> error = {
         "Atenção": ["Voce precisa selecionar um meio de pagamento!"]
       };
@@ -398,17 +400,18 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
           // ),
           Padding(
             padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-            child: RaisedButton.icon(
+            child: ElevatedButton.icon(
               onPressed: _onAddCreditCard,
-              elevation: 0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-                side: BorderSide(
-                  width: 2,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
+              style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    side: BorderSide(
+                      width: 2,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  )),
               icon: Icon(
                 MaterialCommunityIcons.plus,
                 color: Theme.of(context).primaryColor,
@@ -424,7 +427,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
           ),
           Padding(
             padding: EdgeInsets.all(20.0),
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: _lock ? null : _finishPayment,
               child: Text(
                 'Finalizar Pedido',

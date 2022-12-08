@@ -103,7 +103,7 @@ class _HelpScreenState extends State<HelpScreen> {
             },
           ),
           Container(
-              child: RaisedButton(
+              child: ElevatedButton(
             onPressed: () => _openTicket(),
             child: Text(
               'Abrir um ticket',

@@ -25,7 +25,7 @@ class CardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.loose,
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: <Widget>[
         Container(
           padding: const EdgeInsets.all(20),
@@ -124,7 +124,7 @@ class CardWidgetOtherValue extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.loose,
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(4.0),
@@ -190,7 +190,7 @@ class CreditProductCardWidget extends StatelessWidget {
     return precoUnitario != null
         ? Stack(
             fit: StackFit.loose,
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: <Widget>[
               Stack(
                 children: [

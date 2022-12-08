@@ -46,11 +46,11 @@ class _ProductScreenState extends State<ProductScreen> {
   _showDialogType(String type) {
     if (type == "T") {
       Modular.to.pop();
-    } else if(type == 'CF'){
+    } else if (type == 'CF') {
       _homeBloc.currentCreditTypeIn.add('Financeiro');
       _productBloc.fetchOffers();
       Modular.to.pushNamed('/home/1');
-    } else{
+    } else {
       _homeBloc.currentCreditTypeIn.add('Produto');
       _productBloc.productRedirectedSink.add(widget.product);
       _productBloc.setOffers(widget.product);
@@ -74,7 +74,7 @@ class _ProductScreenState extends State<ProductScreen> {
             ),
             content: Text(content),
             actions: [
-              RaisedButton(
+              ElevatedButton(
                   child: Text(
                     "Ok",
                     style: TextStyle(color: Colors.white),
@@ -83,7 +83,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     Modular.to.pop();
                   }),
               SizedBox(height: 10),
-              RaisedButton(
+              ElevatedButton(
                   child: Text(
                     "Compre crédito",
                     style: TextStyle(color: Colors.white),
@@ -132,7 +132,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 content:
                     Text("Adquira saldo de teste para conseguir solicitar."),
                 actions: [
-                  RaisedButton(
+                  ElevatedButton(
                       child: Text(
                         "Ok",
                         style: TextStyle(color: Colors.white),
@@ -162,15 +162,14 @@ class _ProductScreenState extends State<ProductScreen> {
     bool success = await _productBloc.favorite(widget.product.group);
 
     Future.delayed(const Duration(milliseconds: 500), () {
-
 // Here you can write your code
 
       setState(() {
-        if(success) {
-          Modular.to.pushReplacementNamed('/products/${widget.product.id}', arguments: widget.product);
+        if (success) {
+          Modular.to.pushReplacementNamed('/products/${widget.product.id}',
+              arguments: widget.product);
         }
       });
-
     });
   }
 
@@ -198,11 +197,11 @@ class _ProductScreenState extends State<ProductScreen> {
     return StreamBuilder(
         stream: _productBloc.favoriteProductListStream,
         builder: (context, snapshot) {
-          if(!snapshot.hasData) {
+          if (!snapshot.hasData) {
             return Container();
           }
 
-          if(!snapshot.data.any((e) => e['group'] == widget.product.group)) {
+          if (!snapshot.data.any((e) => e['group'] == widget.product.group)) {
             return CircleAvatar(
               radius: 30,
               backgroundColor: Colors.white,
@@ -221,8 +220,7 @@ class _ProductScreenState extends State<ProductScreen> {
               height: 30,
             ),
           );
-        }
-    );
+        });
   }
 
   @override
@@ -239,7 +237,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if(_lock) {
+    if (_lock) {
       return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -299,7 +297,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   ),
                 ),
                 Stack(
-                  overflow: Overflow.visible,
+                  clipBehavior: Clip.none,
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.only(top: 10),
@@ -332,17 +330,18 @@ class _ProductScreenState extends State<ProductScreen> {
                           if (!snapshot.hasData) {
                             return Center(child: CircularProgressIndicator());
                           }
-                          return RaisedButton(
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(0),
+                                backgroundColor: snapshot.data
+                                    ? Theme.of(context).accentColor
+                                    : Color(0xffA5A5A5),
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                )),
                             onPressed: () => _onShowInfo(
                               snapshot.data,
-                            ),
-                            padding: const EdgeInsets.all(0),
-                            color: snapshot.data
-                                ? Theme.of(context).accentColor
-                                : Color(0xffA5A5A5),
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
                             ),
                             child: FittedBox(
                               fit: BoxFit.contain,
@@ -366,11 +365,10 @@ class _ProductScreenState extends State<ProductScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: () {
-                      _favoriteProduct();
-                    },
-                    child: _likeButton()
-                  ),
+                      onTap: () {
+                        _favoriteProduct();
+                      },
+                      child: _likeButton()),
                 ),
                 Table(
                   children: [
@@ -593,7 +591,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   stream: _productWidgetBloc.showInfoOut,
                   builder: (context, snapshot) {
                     if (snapshot.hasData && snapshot.data) {
-                      return RaisedButton(
+                      return ElevatedButton(
                         onPressed: () => _onShowInfo(
                           snapshot.data,
                         ),
@@ -655,10 +653,11 @@ class _ProductScreenState extends State<ProductScreen> {
                             (item) {
                               return Container(
                                 margin: const EdgeInsets.only(top: 20),
-                                child: RaisedButton(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: item['color'],
+                                      elevation: 0),
                                   onPressed: item['onTap'],
-                                  color: item['color'],
-                                  elevation: 0,
                                   child: FittedBox(
                                     fit: BoxFit.contain,
                                     child: Text(

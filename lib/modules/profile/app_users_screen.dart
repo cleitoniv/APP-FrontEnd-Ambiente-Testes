@@ -76,7 +76,7 @@ class _AppUsersScreenState extends State<AppUsersScreen> {
                       _onEditUser(snapshot.data.usuarios[index]);
                     },
                     child: Stack(
-                      overflow: Overflow.visible,
+                      clipBehavior: Clip.none,
                       children: <Widget>[
                         Container(
                           alignment: Alignment.center,
@@ -135,10 +135,11 @@ class _AppUsersScreenState extends State<AppUsersScreen> {
           ),
           SizedBox(height: 30),
           _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
-              ? RaisedButton.icon(
+              ? ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Theme.of(context).primaryColor),
                   onPressed: _onAddUser,
-                  elevation: 0,
-                  color: Theme.of(context).primaryColor,
                   icon: Icon(
                     MaterialCommunityIcons.plus,
                     color: Colors.white,

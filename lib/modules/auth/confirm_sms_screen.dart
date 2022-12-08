@@ -34,7 +34,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
           ),
           content: Text(content),
           actions: [
-            RaisedButton(
+            ElevatedButton(
                 child: Text(
                   "Ok",
                   style: TextStyle(color: Colors.white),
@@ -132,7 +132,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
             Container(
               width: 500,
               margin: EdgeInsets.only(left: 100),
-              child: RaisedButton(
+              child: ElevatedButton(
                 onPressed: _lock ? null : _requireCodeSms,
                 child: Text(
                   _requestCodeController,
@@ -155,7 +155,7 @@ class _ConfirmSmsState extends State<ConfirmSmsScreen> {
               ),
             ),
             SizedBox(height: 30),
-            RaisedButton(
+            ElevatedButton(
               onPressed: _handleConfirmSms,
               child: Text(
                 'Confirmar',

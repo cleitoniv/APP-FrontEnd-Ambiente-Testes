@@ -27,7 +27,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   ExtractWidgetBloc _extractWidgetBloc = Modular.get<ExtractWidgetBloc>();
 
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   _onTap(NotificationModel notification) async {
     await _notificationBloc.readNotification(notification.id);
@@ -63,11 +64,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   _deleteNotifications(int id) async {
     bool deleted = await _notificationBloc.delete(id);
-    if(deleted) {
+    if (deleted) {
       Modular.to.pushReplacementNamed("/notifications");
     } else {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Notificações": ["Não foi possivel realizar essa operação no momento. Tente mais tarde."]
+        "Notificações": [
+          "Não foi possivel realizar essa operação no momento. Tente mais tarde."
+        ]
       });
       _scaffoldKey.currentState.showSnackBar(
         _snack,
@@ -184,9 +187,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       ],
                     ),
                   ),
-                  trailing: IconButton(icon: Icon(Icons.cancel_outlined, color: Colors.redAccent,), onPressed: () {
-                    _deleteNotifications(_notifications[index].id);
-                }),
+                  trailing: IconButton(
+                      icon: Icon(
+                        Icons.cancel_outlined,
+                        color: Colors.redAccent,
+                      ),
+                      onPressed: () {
+                        _deleteNotifications(_notifications[index].id);
+                      }),
                   subtitle: AutoSizeText(
                     _notifications[index].subtitle,
                     style: Theme.of(context).textTheme.subtitle1.copyWith(

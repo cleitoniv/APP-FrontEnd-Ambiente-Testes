@@ -12,7 +12,8 @@ class PaymentsScreen extends StatefulWidget {
 
 class _PaymentsScreenState extends State<PaymentsScreen> {
   PaymentsWidgetBloc _paymentsWidgetBloc = Modular.get<PaymentsWidgetBloc>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   _onChangePaymentType(String value) {
     _paymentsWidgetBloc.paymentTypeIn.add(value);
@@ -101,7 +102,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
 
   Widget _renderCopyBarCode(PaymentModel e) {
     if (e.method == "BOLETO") {
-      return RaisedButton(
+      return ElevatedButton(
         onPressed: () => _onCopyBarcode("${e.codigoBarra}"),
         child: Text(
           'Copiar Código de Barra',

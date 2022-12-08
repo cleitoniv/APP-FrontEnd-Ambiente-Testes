@@ -1,4 +1,4 @@
-import 'package:barcode_scan/barcode_scan.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
@@ -187,7 +187,7 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
               },
             ),
             SizedBox(height: 30),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () async {
                 bool blocked = await _authBloc.checkBlockedUser(context);
                 if (!blocked) {

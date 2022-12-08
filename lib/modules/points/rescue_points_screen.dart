@@ -158,7 +158,7 @@ class _RescuePointsScreenState extends State<RescuePointsScreen> {
                   SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(20),
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       onPressed: () async {
                         bool blocked =
                             await _authBloc.checkBlockedUser(context);

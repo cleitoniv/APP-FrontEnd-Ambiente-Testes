@@ -17,7 +17,8 @@ class SecurityScreen extends StatefulWidget {
 class _SecurityScreenState extends State<SecurityScreen> {
   ProfileWidgetBloc _profileWidgetBloc = Modular.get<ProfileWidgetBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   TextEditingController _passwordController;
   List<Map> _data;
@@ -181,11 +182,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
                         );
                       } else {
                         return TextFieldWidget(
-                            keyboardType: TextInputType.visiblePassword,
-                            obscureText: _passwordConfirmObscure,
-                            labelText: _data[index]['labelText'],
-                            suffixIcon: IconButton(
-                              onPressed: () =>
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: _passwordConfirmObscure,
+                          labelText: _data[index]['labelText'],
+                          suffixIcon: IconButton(
+                            onPressed: () =>
                                 _onShowPasswordType(_data[index]['type']),
                             icon: Icon(
                               snapshot.data
@@ -207,7 +208,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
                 }),
           ),
           SizedBox(height: 30),
-          RaisedButton(
+          ElevatedButton(
             onPressed: _lock ? null : () => _onSubmit(),
             child: Text(
               'Alterar Senha',

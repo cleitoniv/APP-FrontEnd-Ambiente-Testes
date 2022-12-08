@@ -18,7 +18,8 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   int _taxaEntrega = 0;
 
@@ -31,10 +32,9 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   }
 
   _onSubmit() {
-
     List _cartItems = _requestsBloc.cartItems;
 
-    if(_cartItems.length <= 0) {
+    if (_cartItems.length <= 0) {
       Map<String, dynamic> error = {
         "Atenção": ["Voce precisa selecionar um meio de pagamento!"]
       };
@@ -67,22 +67,21 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    int _total = data.fold(
-      0,
-      (previousValue, element) {
-        if (element["operation"] == "07" || element["operation"] == "00" ||
-            element["operation"] == "04") {
-          return previousValue;
-        }
-        return previousValue + (element['product'].value * element['quantity']);
-      });
+    int _total = data.fold(0, (previousValue, element) {
+      if (element["operation"] == "07" ||
+          element["operation"] == "00" ||
+          element["operation"] == "04") {
+        return previousValue;
+      }
+      return previousValue + (element['product'].value * element['quantity']);
+    });
 
     return Helper.intToMoney(_total);
   }
 
   @override
   Widget build(BuildContext context) {
-    if(_lock) {
+    if (_lock) {
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -194,9 +193,11 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                                   size: 30,
                                   color: Colors.red,
                                 ),
-                                onPressed: _lock ? null : () {
-                                  _removeItem(_data[index]);
-                                },
+                                onPressed: _lock
+                                    ? null
+                                    : () {
+                                        _removeItem(_data[index]);
+                                      },
                               ))
                         ],
                       ),
@@ -252,9 +253,9 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
               ],
             ),
             SizedBox(height: 30),
-            RaisedButton(
-              color: Color(0xffF1F1F1),
-              elevation: 0,
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor: Color(0xffF1F1F1), elevation: 0),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Text(
@@ -275,19 +276,22 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                 }
                 return Opacity(
                   opacity: snapshot.data.isEmpty ? 0.5 : 1,
-                  child: RaisedButton(
-                    elevation: 0,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        disabledBackgroundColor: Theme.of(context).accentColor),
                     child: Text(
                       'Finalizar Pedido',
                       style: Theme.of(context).textTheme.button,
                     ),
-                    disabledColor: Theme.of(context).accentColor,
-                    onPressed: snapshot.data.isEmpty ? null : () {
-                      setState(() {
-                        this._lock = true;
-                      });
-                      _onSubmit();
-                    },
+                    onPressed: snapshot.data.isEmpty
+                        ? null
+                        : () {
+                            setState(() {
+                              this._lock = true;
+                            });
+                            _onSubmit();
+                          },
                   ),
                 );
               },

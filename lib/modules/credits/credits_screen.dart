@@ -99,8 +99,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
       _lock = true;
     });
 
-    _onAddToCart(product, offer.quantity, offer.price,
-        offer.percentageTest);
+    _onAddToCart(product, offer.quantity, offer.price, offer.percentageTest);
     _creditsBloc.offersSink
         .add(Offers(isEmpty: true, isLoading: false, type: "CREDIT"));
     setState(() {
@@ -180,8 +179,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  RaisedButton(
-                    elevation: 0,
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(elevation: 0),
                     onPressed: _onAddCredit,
                     child: Text(
                       'Adicionar Crédito',
@@ -192,7 +191,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
               );
             } else {
               if (_currentType == "Financeiro") {
-                // return RaisedButton(
+                // return ElevatedButton(
                 //   elevation: 0,
                 //   onPressed: () {
                 //     _onTapPersonalizedValue(snapshot.data);
@@ -221,17 +220,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
   }
 
   _getCreditType() async {
-    if(await _homeBloc.currentCreditTypeOut.isEmpty) {
+    if (await _homeBloc.currentCreditTypeOut.isEmpty) {
       _homeBloc.currentCreditTypeIn.add('Financeiro');
     }
   }
-
 
   @override
   void initState() {
     _isLoadingPackage = false;
     _currentProduct = {"selected": false};
-    if(widget.product != null) {
+    if (widget.product != null) {
       _currentProduct['product'] = widget.product;
       _currentProduct['selected'] = true;
     }
@@ -296,7 +294,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Stack(
-        overflow: Overflow.clip,
+        clipBehavior: Clip.hardEdge,
         children: <Widget>[
           Positioned(
             left: 20,
@@ -311,7 +309,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     builder: (context, prodRedirectSnapshot) {
                       ProductModel _currentProduct;
                       bool _selected;
-                      if(prodRedirectSnapshot.hasData) {
+                      if (prodRedirectSnapshot.hasData) {
                         _currentProduct = prodRedirectSnapshot.data;
                         _selected = true;
                       } else {
@@ -336,7 +334,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                       width: double.infinity,
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Row(
                                             children: [
@@ -344,17 +342,18 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                 flex: 11,
                                                 child: Center(
                                                   child: Container(
-                                                      margin: EdgeInsets.only(top: 25, bottom: 25),
+                                                      margin: EdgeInsets.only(
+                                                          top: 25, bottom: 25),
                                                       child: Text(
                                                         _currentProduct.title,
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .headline5
                                                             .copyWith(
-                                                            color: Colors.black38,
-                                                            fontSize: 18),
-                                                      )
-                                                  ),
+                                                                color: Colors
+                                                                    .black38,
+                                                                fontSize: 18),
+                                                      )),
                                                 ),
                                               ),
                                               Expanded(
@@ -362,29 +361,36 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                 child: InkWell(
                                                   onTap: () {
                                                     setState(() {
-                                                      _productsBloc.productRedirectedSink.add(null);
-                                                      _productsBloc.offersRedirectedSink.add(null);
-                                                      this._currentProduct["selected"] = false;
+                                                      _productsBloc
+                                                          .productRedirectedSink
+                                                          .add(null);
+                                                      _productsBloc
+                                                          .offersRedirectedSink
+                                                          .add(null);
+                                                      this._currentProduct[
+                                                          "selected"] = false;
                                                     });
-                                                    _creditsBloc.offersSink.add(Offers(
-                                                        isEmpty: true,
-                                                        isLoading: false,
-                                                        type: "CREDIT"));
+                                                    _creditsBloc.offersSink.add(
+                                                        Offers(
+                                                            isEmpty: true,
+                                                            isLoading: false,
+                                                            type: "CREDIT"));
                                                   },
                                                   child: Center(
-                                                    child: Icon(Icons.cancel, color: Colors.red, size: 40,),
+                                                    child: Icon(
+                                                      Icons.cancel,
+                                                      color: Colors.red,
+                                                      size: 40,
+                                                    ),
                                                   ),
                                                 ),
                                               )
                                             ],
                                           ),
                                           ProductWidget(
-                                            credits: _currentProduct
-                                                .boxes,
-                                            tests: _currentProduct
-                                                .tests,
-                                            imageUrl: _currentProduct
-                                                .imageUrl,
+                                            credits: _currentProduct.boxes,
+                                            tests: _currentProduct.tests,
+                                            imageUrl: _currentProduct.imageUrl,
                                             title: "",
                                           ),
                                         ],
@@ -408,7 +414,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                       // textScaleFactor: 1.25,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
-                                      style: Theme.of(context).textTheme.headline5,
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
                                     ),
                                   ),
                                 ),
@@ -420,8 +427,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                       itemCount: _productCredits.list.length,
                                       separatorBuilder: (context, index) =>
                                           SizedBox(
-                                            width: 20,
-                                          ),
+                                        width: 20,
+                                      ),
                                       itemBuilder: (context, index) {
                                         return GestureDetector(
                                             onTap: () async {
@@ -429,14 +436,14 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                   _productCredits.list[index]);
                                             },
                                             child: ProductWidget(
-                                              credits:
-                                              _productCredits.list[index].boxes,
-                                              tests:
-                                              _productCredits.list[index].tests,
+                                              credits: _productCredits
+                                                  .list[index].boxes,
+                                              tests: _productCredits
+                                                  .list[index].tests,
                                               imageUrl: _productCredits
                                                   .list[index].imageUrl,
-                                              title:
-                                              _productCredits.list[index].title,
+                                              title: _productCredits
+                                                  .list[index].title,
                                             ));
                                       },
                                     ))
@@ -568,154 +575,164 @@ class _CreditsScreenState extends State<CreditsScreen> {
                             }
 
                             return StreamBuilder(
-                              builder: (context, offSnapshot) {
-                                return StreamBuilder(
-                                  stream: _productsBloc.offersRedirectedStream,
-                                  builder: (context, offerSnapshot) {
-                                    if (this._loadingOffers) {
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    } else if (!_currentProduct["selected"] && !offerSnapshot.hasData) {
-                                      return Center(
-                                          child: FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Text(
-                                                "Selecione um produto para ver as ofertas."),
-                                          ));
-                                    }
-                                    List<OfferModel> _financialCredits;
+                                builder: (context, offSnapshot) {
+                              return StreamBuilder(
+                                stream: _productsBloc.offersRedirectedStream,
+                                builder: (context, offerSnapshot) {
+                                  if (this._loadingOffers) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else if (!_currentProduct["selected"] &&
+                                      !offerSnapshot.hasData) {
+                                    return Center(
+                                        child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                          "Selecione um produto para ver as ofertas."),
+                                    ));
+                                  }
+                                  List<OfferModel> _financialCredits;
 
-                                    if(offerSnapshot.hasData) {
-                                      _financialCredits = offerSnapshot.data.offers;
-                                    } else  if(this._offers != null){
-                                      _financialCredits =
-                                          this._offers?.offers ?? [];
-                                    } else {
-                                      _financialCredits = this._offersFinan.offers;
-                                    }
+                                  if (offerSnapshot.hasData) {
+                                    _financialCredits =
+                                        offerSnapshot.data.offers;
+                                  } else if (this._offers != null) {
+                                    _financialCredits =
+                                        this._offers?.offers ?? [];
+                                  } else {
+                                    _financialCredits =
+                                        this._offersFinan.offers;
+                                  }
 
-                                    print("financial credits");
+                                  print("financial credits");
 
-                                    return Column(
-                                      children: [
-                                        _currentType != 'Financeiro'
-                                            ? Expanded(
-                                          flex: 10,
-                                          child: Container(
-                                              height: 200,
-                                              child: !_isLoadingPackage
-                                                  ? _financialCredits.length >
-                                                  0
-                                                  ? ListView.separated(
-                                                padding:
-                                                const EdgeInsets
-                                                    .only(
-                                                    left: 20,
-                                                    right: 20),
-                                                shrinkWrap: true,
-                                                scrollDirection:
-                                                _currentType ==
-                                                    'Financeiro'
-                                                    ? Axis
-                                                    .vertical
-                                                    : Axis
-                                                    .horizontal,
-                                                itemCount: _currentType ==
-                                                    'Financeiro'
-                                                    ? _financialCredits
-                                                    .length +
-                                                    1
-                                                    : _financialCredits
-                                                    .length,
-                                                separatorBuilder:
-                                                    (context,
-                                                    index) {
-                                                  if (index == 0 &&
-                                                      _currentType ==
-                                                          'Financeiro') {
-                                                    return SizedBox(
-                                                      height: 15,
-                                                    );
-                                                  }
-                                                  if (_currentType ==
-                                                      'Financeiro') {
-                                                    return SizedBox(
-                                                      height: 5,
-                                                    );
-                                                  } else {
-                                                    return SizedBox(
-                                                      width: 20,
-                                                    );
-                                                  }
-                                                },
-                                                itemBuilder:
-                                                    (context,
-                                                    index) {
-                                                  if (index == 0 &&
-                                                      _currentType ==
-                                                          'Financeiro') {
-                                                    return Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        FittedBox(
-                                                          fit: BoxFit
-                                                              .contain,
-                                                          child:
-                                                          Text(
-                                                            "Selecione o Pacote",
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .headline5,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    );
-                                                  }
+                                  return Column(
+                                    children: [
+                                      _currentType != 'Financeiro'
+                                          ? Expanded(
+                                              flex: 10,
+                                              child: Container(
+                                                  height: 200,
+                                                  child: !_isLoadingPackage
+                                                      ? _financialCredits
+                                                                  .length >
+                                                              0
+                                                          ? ListView.separated(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 20,
+                                                                      right:
+                                                                          20),
+                                                              shrinkWrap: true,
+                                                              scrollDirection:
+                                                                  _currentType ==
+                                                                          'Financeiro'
+                                                                      ? Axis
+                                                                          .vertical
+                                                                      : Axis
+                                                                          .horizontal,
+                                                              itemCount: _currentType ==
+                                                                      'Financeiro'
+                                                                  ? _financialCredits
+                                                                          .length +
+                                                                      1
+                                                                  : _financialCredits
+                                                                      .length,
+                                                              separatorBuilder:
+                                                                  (context,
+                                                                      index) {
+                                                                if (index ==
+                                                                        0 &&
+                                                                    _currentType ==
+                                                                        'Financeiro') {
+                                                                  return SizedBox(
+                                                                    height: 15,
+                                                                  );
+                                                                }
+                                                                if (_currentType ==
+                                                                    'Financeiro') {
+                                                                  return SizedBox(
+                                                                    height: 5,
+                                                                  );
+                                                                } else {
+                                                                  return SizedBox(
+                                                                    width: 20,
+                                                                  );
+                                                                }
+                                                              },
+                                                              itemBuilder:
+                                                                  (context,
+                                                                      index) {
+                                                                if (index ==
+                                                                        0 &&
+                                                                    _currentType ==
+                                                                        'Financeiro') {
+                                                                  return Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      FittedBox(
+                                                                        fit: BoxFit
+                                                                            .contain,
+                                                                        child:
+                                                                            Text(
+                                                                          "Selecione o Pacote",
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .headline5,
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  );
+                                                                }
 
-                                                  if (_currentType ==
-                                                      'Financeiro') {
-                                                    index -= 1;
-                                                  }
+                                                                if (_currentType ==
+                                                                    'Financeiro') {
+                                                                  index -= 1;
+                                                                }
 
-                                                  return _currentType ==
-                                                      'Financeiro'
-                                                      ? InkWell(
-                                                    onTap:
-                                                        () {
-                                                      print("aqui B");
-                                                      setState(
-                                                              () {
-                                                            _isLoadingPackage =
-                                                            true;
-                                                          });
-                                                      _addCreditoFinanceiro(
-                                                          _financialCredits[index]);
-                                                      setState(
-                                                              () {
-                                                            _isLoadingPackage =
-                                                            false;
-                                                          });
-                                                    },
-                                                    child:
-                                                    CardWidget(
-                                                      parcels:
-                                                      _financialCredits[index].installmentCount,
-                                                      value: _financialCredits[index]
-                                                          .value,
-                                                      discount:
-                                                      _financialCredits[index].discount,
-                                                    ),
-                                                  )
-                                                      : StreamBuilder(
-                                                    stream: _productsBloc.productRedirectedStream,
-                                                    builder: (context, productSnapshot) {
-                                                      return InkWell(
-                                                          onTap:
-                                                              () {
-                                                            print("aqui A");
+                                                                return _currentType ==
+                                                                        'Financeiro'
+                                                                    ? InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          print(
+                                                                              "aqui B");
+                                                                          setState(
+                                                                              () {
+                                                                            _isLoadingPackage =
+                                                                                true;
+                                                                          });
+                                                                          _addCreditoFinanceiro(
+                                                                              _financialCredits[index]);
+                                                                          setState(
+                                                                              () {
+                                                                            _isLoadingPackage =
+                                                                                false;
+                                                                          });
+                                                                        },
+                                                                        child:
+                                                                            CardWidget(
+                                                                          parcels:
+                                                                              _financialCredits[index].installmentCount,
+                                                                          value:
+                                                                              _financialCredits[index].value,
+                                                                          discount:
+                                                                              _financialCredits[index].discount,
+                                                                        ),
+                                                                      )
+                                                                    : StreamBuilder(
+                                                                        stream:
+                                                                            _productsBloc.productRedirectedStream,
+                                                                        builder:
+                                                                            (context,
+                                                                                productSnapshot) {
+                                                                          return InkWell(
+                                                                              onTap: () {
+                                                                                print("aqui A");
 //                                                                        bool
 //                                                                            blocked =
 //                                                                            await _authBloc.checkBlockedUser(context);
@@ -723,151 +740,133 @@ class _CreditsScreenState extends State<CreditsScreen> {
 //                                                                            !_lock) {
 //
 //                                                                        }
-                                                            _addCreditoProduct(
-                                                                productSnapshot.data ?? this._currentProduct["product"],
-                                                                _financialCredits[index]);
-                                                          },
-                                                          child: CreditProductCardWidget(
-                                                              precoUnitario: _financialCredits[index]
-                                                                  .price,
-                                                              caixas: _financialCredits[index]
-                                                                  .quantity,
-                                                              value: _financialCredits[index]
-                                                                  .total,
-                                                              percentageTest:
-                                                              _financialCredits[index].percentageTest));
-                                                    },
-                                                  );
-                                                },
-                                              )
-                                                  : Center(
-                                                child: Container(
-                                                  child: Text(
-                                                      "Não há pacotes para esse produto."),
-                                                ),
-                                              )
-                                                  : Center(
-                                                  child:
-                                                  CircularProgressIndicator())),
-                                        )
-                                            : Expanded(
-                                          flex: 10,
-                                          child: Container(
-                                              height: 200,
-                                              child: !_isLoadingPackage
-                                                  ? _financialCredits.length >
-                                                  0
-                                                  ? Column(
-                                                children: [
-                                                  FittedBox(
-                                                    fit: BoxFit
-                                                        .contain,
-                                                    child: Text(
-                                                      "Selecione o Pacote",
-                                                      style: Theme.of(
-                                                          context)
-                                                          .textTheme
-                                                          .headline5,
-                                                    ),
-                                                  ),
-                                                  GridView.builder(
-                                                    gridDelegate:
-                                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                                        crossAxisCount:
-                                                        2),
-                                                    padding:
-                                                    const EdgeInsets
-                                                        .only(
-                                                        left:
-                                                        20,
-                                                        right:
-                                                        20),
-                                                    shrinkWrap:
-                                                    true,
-                                                    scrollDirection:
-                                                    _currentType ==
-                                                        'Financeiro'
-                                                        ? Axis
-                                                        .vertical
-                                                        : Axis
-                                                        .horizontal,
-                                                    itemCount: _currentType ==
-                                                        'Financeiro'
-                                                        ? _financialCredits
-                                                        .length +
-                                                        1
-                                                        : _financialCredits
-                                                        .length,
-                                                    itemBuilder:
-                                                        (context,
-                                                        index) {
-                                                      if (index >=
-                                                          _financialCredits
-                                                              .length) {
-                                                        return _otherValue();
-                                                      }
-                                                      return _currentType ==
-                                                          'Financeiro'
-                                                          ? InkWell(
-                                                        onTap:
-                                                            () async {
-                                                          setState(() {
-                                                            _isLoadingPackage = true;
-                                                          });
-                                                          _addCreditoFinanceiro(_financialCredits[index]);
-                                                          setState(() {
-                                                            _isLoadingPackage = false;
-                                                          });
-                                                        },
-                                                        child:
-                                                        Padding(
-                                                          padding:
-                                                          EdgeInsets.all(5),
+                                                                                _addCreditoProduct(productSnapshot.data ?? this._currentProduct["product"], _financialCredits[index]);
+                                                                              },
+                                                                              child: CreditProductCardWidget(precoUnitario: _financialCredits[index].price, caixas: _financialCredits[index].quantity, value: _financialCredits[index].total, percentageTest: _financialCredits[index].percentageTest));
+                                                                        },
+                                                                      );
+                                                              },
+                                                            )
+                                                          : Center(
+                                                              child: Container(
+                                                                child: Text(
+                                                                    "Não há pacotes para esse produto."),
+                                                              ),
+                                                            )
+                                                      : Center(
                                                           child:
-                                                          CardWidget(
-                                                            parcels: _financialCredits[index].installmentCount,
-                                                            value: _financialCredits[index].value,
-                                                            discount: _financialCredits[index].discount,
-                                                          ),
-                                                        ),
-                                                      )
-                                                          : InkWell(
-
-                                                        onTap:
-                                                            () async {
-                                                          print("OLA");
-                                                          _addCreditoProduct(this._currentProduct["product"], _financialCredits[index]);
-                                                        },
-                                                        child:
-                                                        CreditProductCardWidget(
-                                                          precoUnitario:
-                                                          _financialCredits[index].price,
-                                                          caixas:
-                                                          _financialCredits[index].quantity,
-                                                          value:
-                                                          _financialCredits[index].total,
-                                                        ),
-                                                      );
-                                                    },
-                                                  )
-                                                ],
-                                              )
-                                                  : Center(
-                                                child: Container(
-                                                  child: Text(
-                                                      "Não há pacotes para esse produto."),
-                                                ),
-                                              )
-                                                  : Center(
-                                                  child:
-                                                  CircularProgressIndicator())),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            );
+                                                              CircularProgressIndicator())),
+                                            )
+                                          : Expanded(
+                                              flex: 10,
+                                              child: Container(
+                                                  height: 200,
+                                                  child: !_isLoadingPackage
+                                                      ? _financialCredits
+                                                                  .length >
+                                                              0
+                                                          ? Column(
+                                                              children: [
+                                                                FittedBox(
+                                                                  fit: BoxFit
+                                                                      .contain,
+                                                                  child: Text(
+                                                                    "Selecione o Pacote",
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .headline5,
+                                                                  ),
+                                                                ),
+                                                                GridView
+                                                                    .builder(
+                                                                  gridDelegate:
+                                                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                                                          crossAxisCount:
+                                                                              2),
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      left: 20,
+                                                                      right:
+                                                                          20),
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  scrollDirection: _currentType ==
+                                                                          'Financeiro'
+                                                                      ? Axis
+                                                                          .vertical
+                                                                      : Axis
+                                                                          .horizontal,
+                                                                  itemCount: _currentType ==
+                                                                          'Financeiro'
+                                                                      ? _financialCredits
+                                                                              .length +
+                                                                          1
+                                                                      : _financialCredits
+                                                                          .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          index) {
+                                                                    if (index >=
+                                                                        _financialCredits
+                                                                            .length) {
+                                                                      return _otherValue();
+                                                                    }
+                                                                    return _currentType ==
+                                                                            'Financeiro'
+                                                                        ? InkWell(
+                                                                            onTap:
+                                                                                () async {
+                                                                              setState(() {
+                                                                                _isLoadingPackage = true;
+                                                                              });
+                                                                              _addCreditoFinanceiro(_financialCredits[index]);
+                                                                              setState(() {
+                                                                                _isLoadingPackage = false;
+                                                                              });
+                                                                            },
+                                                                            child:
+                                                                                Padding(
+                                                                              padding: EdgeInsets.all(5),
+                                                                              child: CardWidget(
+                                                                                parcels: _financialCredits[index].installmentCount,
+                                                                                value: _financialCredits[index].value,
+                                                                                discount: _financialCredits[index].discount,
+                                                                              ),
+                                                                            ),
+                                                                          )
+                                                                        : InkWell(
+                                                                            onTap:
+                                                                                () async {
+                                                                              print("OLA");
+                                                                              _addCreditoProduct(this._currentProduct["product"], _financialCredits[index]);
+                                                                            },
+                                                                            child:
+                                                                                CreditProductCardWidget(
+                                                                              precoUnitario: _financialCredits[index].price,
+                                                                              caixas: _financialCredits[index].quantity,
+                                                                              value: _financialCredits[index].total,
+                                                                            ),
+                                                                          );
+                                                                  },
+                                                                )
+                                                              ],
+                                                            )
+                                                          : Center(
+                                                              child: Container(
+                                                                child: Text(
+                                                                    "Não há pacotes para esse produto."),
+                                                              ),
+                                                            )
+                                                      : Center(
+                                                          child:
+                                                              CircularProgressIndicator())),
+                                            ),
+                                    ],
+                                  );
+                                },
+                              );
+                            });
                           },
                         );
                       },

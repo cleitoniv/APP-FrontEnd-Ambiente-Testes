@@ -82,7 +82,7 @@ class _TicketScreenState extends State<TicketScreen> {
                 ),
                 SizedBox(height: 50),
                 _isLoading == false
-                    ? RaisedButton(
+                    ? ElevatedButton(
                         onPressed: () async {
                           if (!_formKey.currentState.validate()) {
                           } else {

@@ -15,7 +15,8 @@ class PasswordResetScreen extends StatefulWidget {
 class _PasswordResetScreenState extends State<PasswordResetScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   TextEditingController _emailController;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   bool isLoading = false;
 
@@ -103,7 +104,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                     ? Center(child: CircularProgressIndicator())
                     : Container(
                         width: 150,
-                        child: RaisedButton(
+                        child: ElevatedButton(
                           onPressed: _sendResetEmail,
                           child: Text(
                             'Enviar',

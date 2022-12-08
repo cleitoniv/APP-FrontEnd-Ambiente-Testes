@@ -38,7 +38,7 @@ class Dialogs {
               style: Theme.of(context).textTheme.subtitle1,
             ),
             SizedBox(height: 30),
-            RaisedButton(
+            ElevatedButton(
               onPressed: onTap,
               child: Text(
                 buttonText,
@@ -91,7 +91,7 @@ class Dialogs {
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               SizedBox(height: 30),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: onTap,
                 child: Text(
                   buttonText,
@@ -145,7 +145,7 @@ class Dialogs {
               style: Theme.of(context).textTheme.subtitle1,
             ),
             SizedBox(height: 30),
-            RaisedButton(
+            ElevatedButton(
               onPressed: onTap,
               child: Text(
                 buttonText,
@@ -200,7 +200,7 @@ class Dialogs {
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               SizedBox(height: 30),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: onTap,
                 child: Text(
                   buttonText,
@@ -253,7 +253,7 @@ class Dialogs {
               style: Theme.of(context).textTheme.subtitle1,
             ),
             SizedBox(height: 30),
-            RaisedButton(
+            ElevatedButton(
               onPressed: onTap,
               child: Text(
                 buttonText,
@@ -275,8 +275,8 @@ class Dialogs {
     String title = 'Deseja confirmarresgate de pontos?',
     String subtitle =
         'Ao confirmar iremos converter seus Pontos em Crédito Financeiro, tem certeza que deseja resgatar?',
-        bool barrierDismissible = false,
-      }) {
+    bool barrierDismissible = false,
+  }) {
     List<Map> _renderButtonData(BuildContext context) {
       return [
         {
@@ -328,10 +328,10 @@ class Dialogs {
                 margin: const EdgeInsets.only(
                   top: 10,
                 ),
-                child: RaisedButton(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0, backgroundColor: e['color']),
                   onPressed: e['onTap'],
-                  elevation: 0,
-                  color: e['color'],
                   child: FittedBox(
                     fit: BoxFit.contain,
                     child: Text(
@@ -407,10 +407,10 @@ class Dialogs {
                 margin: const EdgeInsets.only(
                   top: 10,
                 ),
-                child: RaisedButton(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0, backgroundColor: e['color']),
                   onPressed: e['onTap'],
-                  elevation: 0,
-                  color: e['color'],
                   child: Text(
                     e['title'],
                     style: Theme.of(context).textTheme.button.copyWith(

@@ -30,19 +30,17 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
     print("okk----");
     print(_creditValueController.value.text.isEmpty);
     print(_creditValueController.value);
-    if(_creditValueController.value.text == "R\$ 0,00") {
-      Dialogs.errorWithWillPopScope(
-          context,
+    if (_creditValueController.value.text == "R\$ 0,00") {
+      Dialogs.errorWithWillPopScope(context,
           title: "Valor incorreto",
-          subtitle: "Digite um valor valido!",
-          onTap: (){
-            Modular.to.pop();
-          },
-          buttonText: "OK");
+          subtitle: "Digite um valor valido!", onTap: () {
+        Modular.to.pop();
+      }, buttonText: "OK");
       return;
     }
     int value = (_creditValueController.numberValue * 100).toInt();
-    _creditoFinanceiroBloc.creditoFinaceiroSink.add(CreditoFinanceiro(valor: value, installmentCount: 1, desconto: 0));
+    _creditoFinanceiroBloc.creditoFinaceiroSink
+        .add(CreditoFinanceiro(valor: value, installmentCount: 1, desconto: 0));
     Modular.to.pushNamed('/credito_financeiro/pagamento');
   }
 
@@ -76,9 +74,9 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
               ),
               Padding(
                   padding: EdgeInsets.all(20.0),
-                  child: RaisedButton(
-                    elevation: 0,
-                    onPressed: (){
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(elevation: 0),
+                    onPressed: () {
                       _addCreditoFinanceiro();
                     },
                     child: Text(

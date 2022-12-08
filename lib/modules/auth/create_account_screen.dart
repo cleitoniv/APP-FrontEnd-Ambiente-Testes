@@ -24,7 +24,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   TextEditingController _nameController;
   TextEditingController _emailController;
   MaskedTextController _phoneController;
@@ -92,7 +93,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
           content: Text(content),
           actions: [
-            RaisedButton(
+            ElevatedButton(
                 child: Text(
                   "Ok",
                   style: TextStyle(color: Colors.white),
@@ -162,12 +163,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             ],
           ),
           actions: <Widget>[
-            new FlatButton(
+            new TextButton(
                 child: const Text('EDITAR TELEFONE'),
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            new FlatButton(
+            new TextButton(
                 child: const Text('CONFIRMAR'), onPressed: _handleConfirmSms)
           ],
         ),
@@ -486,7 +487,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
               SizedBox(height: 30),
               !this._isLoading
-                  ? RaisedButton(
+                  ? ElevatedButton(
                       onPressed:
                           !_lock ? null : _confirmSmsDialog, //  _handleSubmit,
                       child: Text(

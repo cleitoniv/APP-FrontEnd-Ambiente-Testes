@@ -21,7 +21,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   AuthWidgetBloc _authWidgetBloc = Modular.get<AuthWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _emailController;
   TextEditingController _passwordController;
@@ -153,7 +154,6 @@ class _LoginScreenState extends State<LoginScreen> {
             _authBloc.setLoginEvent(_login);
             final prefs = await _prefs;
             final int rememberStatus = prefs.getInt('rememberStatus');
-
 
             if (rememberStatus != null) {
               prefs.setString('emailStored', _emailController.text);
@@ -361,7 +361,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 30),
               !_isLoading
-                  ? RaisedButton(
+                  ? ElevatedButton(
                       onPressed: () => _onLogin(),
                       child: Text(
                         'Entrar',

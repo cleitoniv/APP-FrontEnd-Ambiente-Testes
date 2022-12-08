@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:barcode_scan/barcode_scan.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
@@ -48,7 +48,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           ),
           content: Text(content),
           actions: [
-            RaisedButton(
+            ElevatedButton(
                 child: Text(
                   "Ok",
                   style: TextStyle(color: Colors.white),
@@ -330,7 +330,18 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
             keyboardType: TextInputType.text,
           ),
           SizedBox(height: 30),
-          RaisedButton.icon(
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+                elevation: 0,
+                disabledBackgroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: BorderSide(
+                    width: 2,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                )),
             onPressed: !_lock
                 ? () async {
                     setState(() {
@@ -345,16 +356,6 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
                     });
                   }
                 : null,
-            elevation: 0,
-            disabledColor: Colors.white,
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                width: 2,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
             icon: Icon(
               MaterialCommunityIcons.plus,
               color: Theme.of(context).primaryColor,
@@ -430,7 +431,7 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           SizedBox(height: 20),
           SizedBox(height: 30),
           !_isLoadingButton
-              ? RaisedButton(
+              ? ElevatedButton(
                   onPressed: () async {
                     setState(() {
                       _isLoadingButton = true;

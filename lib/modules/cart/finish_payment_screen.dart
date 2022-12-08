@@ -106,17 +106,14 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit(List<Map> cartData) async {
-    if(_totalToPayNumeric(cartData) <= 0) {
-      Dialogs.errorWithWillPopScope(
-          context,
+    if (_totalToPayNumeric(cartData) <= 0) {
+      Dialogs.errorWithWillPopScope(context,
           barrierDismissible: false,
           title: "Valor inválido",
           subtitle: "Não é possivel realizar a compra com o valor selecionado.",
-          buttonText: "OK",
-          onTap: () {
-            Modular.to.pop();
-          }
-      );
+          buttonText: "OK", onTap: () {
+        Modular.to.pop();
+      });
       return;
     }
 
@@ -132,9 +129,8 @@ class _FinishPaymentState extends State<FinishPayment> {
           title: "Usuario bloqueado.",
           subtitle: "No momento voce não pode realizar esse tipo de operação.",
           onTap: () {
-            Modular.to.pop();
-          }
-      );
+        Modular.to.pop();
+      });
       return;
     }
 
@@ -147,16 +143,13 @@ class _FinishPaymentState extends State<FinishPayment> {
         _lock = false;
       });
 
-      Dialogs.errorWithWillPopScope(
-          context,
+      Dialogs.errorWithWillPopScope(context,
           barrierDismissible: false,
           title: "CCV",
           subtitle: "Voce precisa fornecer o CCV para completar a compra.",
-          buttonText: "OK",
-          onTap: () {
-            Modular.to.pop();
-          }
-      );
+          buttonText: "OK", onTap: () {
+        Modular.to.pop();
+      });
 
       return;
     }
@@ -195,7 +188,6 @@ class _FinishPaymentState extends State<FinishPayment> {
       );
       _removeItem();
     } else {
-
       setState(() {
         _lock = false;
       });
@@ -224,7 +216,8 @@ class _FinishPaymentState extends State<FinishPayment> {
     var _installmentsList = await _creditCardBloc.fetchInstallments(
         _totalToPayNumeric(_cart), _paymentMethod.isBoleto);
     var seen = Set();
-    _installmentsList = _installmentsList.where((item) => seen.add(item['parcela'])).toList();
+    _installmentsList =
+        _installmentsList.where((item) => seen.add(item['parcela'])).toList();
     print("installment list");
     print(_installmentsList);
     if (_installmentsList.length > 0) {
@@ -245,11 +238,10 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   @override
   Widget build(BuildContext context) {
-    if(_lock) {
+    if (_lock) {
       return Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(child: CircularProgressIndicator())
-      );
+          backgroundColor: Colors.white,
+          body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
         key: _scaffoldKey,
@@ -316,145 +308,151 @@ class _FinishPaymentState extends State<FinishPayment> {
           ),
         ),
         body: StreamBuilder(
-          stream: _cartWidgetBloc.currentPaymentFormOut,
-          builder: (context, paymentMethod) {
-            print("payment method---");
-            print(paymentMethod.data);
-            print(_installments);
-            if(!paymentMethod.hasData) {
-              return Center(child: CircularProgressIndicator(),);
-            }
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Parcelamento",
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 18,
+            stream: _cartWidgetBloc.currentPaymentFormOut,
+            builder: (context, paymentMethod) {
+              print("payment method---");
+              print(paymentMethod.data);
+              print(_installments);
+              if (!paymentMethod.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Parcelamento",
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 18,
+                                    ),
                           ),
-                        ),
-                        Container(
-                          height: 20,
-                        ),
-                        Container(
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  width: 1.0,
-                                  style: BorderStyle.solid,
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                            ),
+                          Container(
+                            height: 20,
                           ),
-                          width: double.infinity,
-                          child: DropdownButtonHideUnderline(
-                            child: ButtonTheme(
-                              alignedDropdown: true,
-                              child: DropdownButton<String>(
-                                value: _dropdownValueStatus
-                                    ? dropdownValue
-                                    : _installments[0],
-                                icon: Icon(Icons.arrow_downward),
-                                iconSize: 24,
-                                elevation: 16,
-                                style: TextStyle(color: Colors.deepPurple),
-                                underline: Container(
-                                  height: 2,
-                                  color: Colors.deepPurpleAccent,
-                                ),
-                                onChanged: (String newValue) {
-                                  setState(() {
-                                    _dropdownValueStatus = true;
-                                    _installmentsSelected =
-                                        _installments.indexOf(newValue) + 1;
-                                    dropdownValue = newValue;
-                                  });
-                                },
-                                items: _installments
-                                    .map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
+                          Container(
+                            decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    width: 1.0,
+                                    style: BorderStyle.solid,
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
                               ),
                             ),
-                          ),
-                        ),
-                        Container(
-                          height: 10,
-                        ),
-                        !paymentMethod.data.isBoleto
-                            ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Código CCV do Cartão",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(fontSize: 18),
+                            width: double.infinity,
+                            child: DropdownButtonHideUnderline(
+                              child: ButtonTheme(
+                                alignedDropdown: true,
+                                child: DropdownButton<String>(
+                                  value: _dropdownValueStatus
+                                      ? dropdownValue
+                                      : _installments[0],
+                                  icon: Icon(Icons.arrow_downward),
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  style: TextStyle(color: Colors.deepPurple),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.deepPurpleAccent,
+                                  ),
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      _dropdownValueStatus = true;
+                                      _installmentsSelected =
+                                          _installments.indexOf(newValue) + 1;
+                                      dropdownValue = newValue;
+                                    });
+                                  },
+                                  items: _installments
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
                             ),
-                            Container(height: 20),
-                            Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Theme.of(context).primaryColor),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              child: TextFieldWidget(
-                                controller: _ccvController,
-                                prefixIcon: Icon(
-                                  Icons.lock,
-                                  color: Color(0xffA1A1A1),
-                                ),
-                                width: 120,
-                                keyboardType: TextInputType.number,
-                              ),
-                            )
-                          ],
-                        )
-                            : Container(height: 20),
-                      ],
-                    ),
-                    StreamBuilder(
-                      stream: _requestBloc.cartOut,
-                      builder: (context, cartSnapshot) {
-                        return RaisedButton(
-                          onPressed: _lock ? null : () {
-                            setState(() {
-                              _lock = true;
-                            });
-                            _onSubmit(cartSnapshot.data ?? []);
-                          }, // _onSubmit,
-                          child: Text(
-                            'Finalizar Pedido',
-                            style: Theme.of(context).textTheme.button,
                           ),
-                        );
-                      },
-                    ),
-                  ],
+                          Container(
+                            height: 10,
+                          ),
+                          !paymentMethod.data.isBoleto
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Código CCV do Cartão",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5
+                                          .copyWith(fontSize: 18),
+                                    ),
+                                    Container(height: 20),
+                                    Container(
+                                      decoration: ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0)),
+                                        ),
+                                      ),
+                                      child: TextFieldWidget(
+                                        controller: _ccvController,
+                                        prefixIcon: Icon(
+                                          Icons.lock,
+                                          color: Color(0xffA1A1A1),
+                                        ),
+                                        width: 120,
+                                        keyboardType: TextInputType.number,
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : Container(height: 20),
+                        ],
+                      ),
+                      StreamBuilder(
+                        stream: _requestBloc.cartOut,
+                        builder: (context, cartSnapshot) {
+                          return ElevatedButton(
+                            onPressed: _lock
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _lock = true;
+                                    });
+                                    _onSubmit(cartSnapshot.data ?? []);
+                                  }, // _onSubmit,
+                            child: Text(
+                              'Finalizar Pedido',
+                              style: Theme.of(context).textTheme.button,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }
-        )
-    );
+              );
+            }));
   }
 }

@@ -256,8 +256,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   },
                 ),
                 SizedBox(height: 30),
-                RaisedButton(
-                  elevation: 0,
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(elevation: 0),
                   onPressed: _lock
                       ? null
                       : () {

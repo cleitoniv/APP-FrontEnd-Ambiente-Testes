@@ -17,11 +17,11 @@ class ProductCartScreen extends StatefulWidget {
 class _ProductCartScreenState extends State<ProductCartScreen> {
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   int _taxaEntrega = 0;
   bool _lock = false;
-
 
   _onBackToPurchase() {
     Modular.to.pushNamed("/home/0");
@@ -140,9 +140,11 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if(_lock) {
+    if (_lock) {
       return Scaffold(
-        body: Center(child: CircularProgressIndicator(),),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     }
     return WillPopScope(
@@ -368,9 +370,9 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 ],
               ),
               SizedBox(height: 30),
-              RaisedButton(
-                color: Color(0xffF1F1F1),
-                elevation: 0,
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xffF1F1F1), elevation: 0),
                 child: FittedBox(
                   fit: BoxFit.contain,
                   child: Text(
@@ -391,19 +393,23 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                   }
                   return Opacity(
                     opacity: snapshot.data.isEmpty ? 0.5 : 1,
-                    child: RaisedButton(
-                      elevation: 0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          disabledBackgroundColor:
+                              Theme.of(context).accentColor,
+                          elevation: 0),
                       child: Text(
                         'Finalizar Pedido',
                         style: Theme.of(context).textTheme.button,
                       ),
-                      disabledColor: Theme.of(context).accentColor,
-                      onPressed: _lock ? null : () {
-                        setState(() {
-                          _lock = true;
-                          _onSubmit();
-                        });
-                      },
+                      onPressed: _lock
+                          ? null
+                          : () {
+                              setState(() {
+                                _lock = true;
+                                _onSubmit();
+                              });
+                            },
                     ),
                   );
                 },

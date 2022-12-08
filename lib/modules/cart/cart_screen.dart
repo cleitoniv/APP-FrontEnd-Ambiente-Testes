@@ -20,7 +20,8 @@ class _CartScreenState extends State<CartScreen> {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   bool _lock = false;
 
@@ -70,7 +71,6 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _onSubmit() async {
-
     List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
 
     int _total = _data.fold(0, (previousValue, element) {
@@ -96,7 +96,9 @@ class _CartScreenState extends State<CartScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07" || element["operation"] == "00" || element["operation"] == "04") {
+      if (element["operation"] == "07" ||
+          element["operation"] == "00" ||
+          element["operation"] == "04") {
         return previousValue;
       }
       return previousValue + (element['product'].value * element['quantity']);
@@ -107,8 +109,12 @@ class _CartScreenState extends State<CartScreen> {
 
   bool hasPrice(Map<String, dynamic> item) {
     print("------ has price");
-    print(item["operation"] != "07" && item["operation"] != "00" && item["operation"] != "04");
-    return item["operation"] != "07" && item["operation"] != "00" && item["operation"] != "04";
+    print(item["operation"] != "07" &&
+        item["operation"] != "00" &&
+        item["operation"] != "04");
+    return item["operation"] != "07" &&
+        item["operation"] != "00" &&
+        item["operation"] != "04";
   }
 
   String selectPrice(Map<String, dynamic> item) {
@@ -134,9 +140,11 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if(_lock) {
+    if (_lock) {
       return Scaffold(
-        body: Center(child: CircularProgressIndicator(),),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     }
     return Scaffold(
@@ -240,13 +248,17 @@ class _CartScreenState extends State<CartScreen> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          hasPrice(_data[index]) ? Text(
-                            selectPrice(_data[index]),
-                            style:
-                                Theme.of(context).textTheme.headline5.copyWith(
-                                      fontSize: 12,
-                                    ),
-                          ) : Container(),
+                          hasPrice(_data[index])
+                              ? Text(
+                                  selectPrice(_data[index]),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(
+                                        fontSize: 12,
+                                      ),
+                                )
+                              : Container(),
                           Align(
                               alignment: Alignment.center,
                               child: _data[index]['removeItem'] == 'Sim' ||
@@ -299,9 +311,9 @@ class _CartScreenState extends State<CartScreen> {
               ],
             ),
             SizedBox(height: 30),
-            RaisedButton(
-              color: Color(0xffF1F1F1),
-              elevation: 0,
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xffF1F1F1), elevation: 0),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Text(
@@ -322,8 +334,10 @@ class _CartScreenState extends State<CartScreen> {
                 }
                 return Opacity(
                   opacity: snapshot.data.isEmpty ? 0.5 : 1,
-                  child: RaisedButton(
-                    elevation: 0,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        disabledBackgroundColor: Theme.of(context).accentColor,
+                        elevation: 0),
                     child: FittedBox(
                       fit: BoxFit.contain,
                       child: Text(
@@ -331,15 +345,14 @@ class _CartScreenState extends State<CartScreen> {
                         style: Theme.of(context).textTheme.button,
                       ),
                     ),
-                    disabledColor: Theme.of(context).accentColor,
                     onPressed: snapshot.data.isEmpty
                         ? null
                         : () {
-                      setState(() {
-                        this._lock = true;
-                      });
-                      _onSubmit();
-                    },
+                            setState(() {
+                              this._lock = true;
+                            });
+                            _onSubmit();
+                          },
                   ),
                 );
               },

@@ -66,7 +66,7 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _onChangeCreditType(String type) {
-    if(type == "Produto") {
+    if (type == "Produto") {
       _productBloc.offersRedirectedSink.add(null);
       _productBloc.productRedirectedSink.add(null);
     }
@@ -199,7 +199,7 @@ class _TabsScreenState extends State<TabsScreen>
       builder: (c) => AlertDialog(
         content: Text('Você realmente deseja sair?'),
         actions: [
-          FlatButton(
+          TextButton(
             child: Text(
               'Sim',
               style:
@@ -208,7 +208,7 @@ class _TabsScreenState extends State<TabsScreen>
             onPressed: _onExitApp,
           ),
           SizedBox(width: 20),
-          FlatButton(
+          TextButton(
             child: Text(
               'Não',
               style:
@@ -245,7 +245,6 @@ class _TabsScreenState extends State<TabsScreen>
                 width: 10,
               ),
               itemBuilder: (context, index) {
-
                 return StreamBuilder<String>(
                   stream: _homeWidgetBloc.sightProblemOut,
                   builder: (context, snapshot) {
@@ -429,7 +428,7 @@ class _TabsScreenState extends State<TabsScreen>
     await _authBloc.fetchCurrentUser();
     String _currentProdFilter = _homeWidgetBloc.currentSightProblem;
     print("2");
-    if(_currentProdFilter != null) {
+    if (_currentProdFilter != null) {
       print("3");
       _productBloc.fetchProducts(_currentProdFilter);
     } else {
@@ -479,7 +478,9 @@ class _TabsScreenState extends State<TabsScreen>
 
     this._screens = [
       ProductsScreen(),
-      CreditsScreen(product: widget.product,),
+      CreditsScreen(
+        product: widget.product,
+      ),
       CartScreen(),
       RequestsScreen(),
     ];
@@ -599,7 +600,7 @@ class _TabsScreenState extends State<TabsScreen>
                                       GestureDetector(
                                         onTap: _handleNotifications,
                                         child: Stack(
-                                          overflow: Overflow.visible,
+                                          clipBehavior: Clip.none,
                                           children: <Widget>[
                                             Image.asset(
                                               'assets/icons/bell.png',

@@ -19,7 +19,8 @@ class AddCreditCardScreen extends StatefulWidget {
 }
 
 class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
   TextEditingController _ownerController;
@@ -71,7 +72,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
           nomeTitular: _ownerController.text,
         ),
       );
-     // create unique_index(:cartao_credito_cliente, [:cartao_number, :cliente_id])
+      // create unique_index(:cartao_credito_cliente, [:cartao_number, :cliente_id])
 
       setState(() {
         isLoading = false;
@@ -87,7 +88,8 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {
         // Modular.to.pushReplacementNamed("/cart/payment");
-        Modular.to.pushReplacementNamed(widget.screen['route'] ?? '/cart/payment');
+        Modular.to
+            .pushReplacementNamed(widget.screen['route'] ?? '/cart/payment');
         return;
       }
     }
@@ -223,10 +225,10 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
             SizedBox(height: 30),
             isLoading
                 ? Center(child: CircularProgressIndicator())
-                : RaisedButton(
+                : ElevatedButton(
                     onPressed: () {
                       if (!_formKey.currentState.validate()) {
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
                             content: Text(
                                 "Corrija os erros em vermelho antes de enviar.")));
                       } else {
