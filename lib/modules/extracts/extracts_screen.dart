@@ -17,7 +17,6 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
   PageController _pageController;
 
   _onChangeExtractType(String type) {
-    print(type);
     if (type == "Financeiro") {
       _extractWidgetBloc.fetchExtratoFinanceiro();
     } else {
@@ -44,8 +43,6 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
   void initState() {
     super.initState();
     Map<String, dynamic> currentPage = _extractWidgetBloc.currentPageValue;
-    print("currentPage");
-    print(currentPage);
     if (widget.prevPage == "NOTIFICATION" &&
         currentPage['type'] == "Financeiro") {
       _extractWidgetBloc.fetchExtratoFinanceiro();
@@ -76,14 +73,14 @@ class _ExtractsScreenState extends State<ExtractsScreen> {
         leading: GestureDetector(
           onTap: () {
             Modular.to.pop();
-             if(widget.prevPage ==  "NOTIFICATION") {
-               Modular.to.pop();
-             } else {
-               Modular.to.pushNamedAndRemoveUntil(
-                 '/home/0',
-                     (route) => route.isFirst,
-               );
-             }
+            if (widget.prevPage == "NOTIFICATION") {
+              Modular.to.pop();
+            } else {
+              Modular.to.pushNamedAndRemoveUntil(
+                '/home/0',
+                (route) => route.isFirst,
+              );
+            }
           },
           child: Icon(
             Icons.arrow_back_ios,

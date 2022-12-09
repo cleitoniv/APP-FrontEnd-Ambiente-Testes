@@ -424,19 +424,13 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _initState() async {
-    print("1");
     await _authBloc.fetchCurrentUser();
     String _currentProdFilter = _homeWidgetBloc.currentSightProblem;
-    print("2");
     if (_currentProdFilter != null) {
-      print("3");
       _productBloc.fetchProducts(_currentProdFilter);
     } else {
-      print("4");
       _productBloc.fetchProducts("Todos");
     }
-    print("g5");
-    print("5");
 
     _tabController.addListener(() {
       _homeWidgetBloc.currentTabIndexIn.add(

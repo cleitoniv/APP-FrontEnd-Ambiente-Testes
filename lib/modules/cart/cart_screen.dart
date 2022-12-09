@@ -108,10 +108,6 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   bool hasPrice(Map<String, dynamic> item) {
-    print("------ has price");
-    print(item["operation"] != "07" &&
-        item["operation"] != "03" &&
-        item["operation"] != "04");
     return item["operation"] != "07" &&
         item["operation"] != "03" &&
         item["operation"] != "04";

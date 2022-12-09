@@ -188,7 +188,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         'password': _passwordController.text,
       };
       final String authResult = await _authWidgetBloc.registerGuestToken(data);
-      print(authResult);
       if (authResult == "ok") {
         LoginEvent firstAccess =
             await _authBloc.firstAccess({'nome': data['name'], ...data});
@@ -206,7 +205,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           });
         }
       } else {
-        print("aqui");
         final errors = {
           "WEAK-PASSWORD": {
             "Senha": ["Senha deve conter no minimo 6 caracteres."]

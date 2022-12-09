@@ -26,7 +26,8 @@ class LoginEvent implements Authentication {
   bool loading;
   UserCredential result;
   Map<String, dynamic> errorData;
-  LoginEvent({this.message, this.isValid, this.errorData, this.result, this.loading});
+  LoginEvent(
+      {this.message, this.isValid, this.errorData, this.result, this.loading});
 }
 
 class AuthEvent implements Authentication {
@@ -139,17 +140,16 @@ class AuthRepository {
     String email,
     String password,
   }) async {
-    print("---login");
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return LoginEvent(message: "OK", isValid: true, result: result, loading: false);
+      return LoginEvent(
+          message: "OK", isValid: true, result: result, loading: false);
     } catch (error) {
-      print("error---");
-      print(error);
-      return LoginEvent(message: "Credenciais Inválidas.", isValid: false, loading: false);
+      return LoginEvent(
+          message: "Credenciais Inválidas.", isValid: false, loading: false);
     }
   }
 
@@ -214,7 +214,6 @@ class AuthRepository {
 
       return resp.data["status"];
     } catch (error) {
-      print(error);
       return 0;
     }
   }
@@ -241,21 +240,16 @@ class AuthRepository {
     String idToken = await user.getIdToken();
 
     try {
-      print("getting User---");
       Response resp = await dio.get("/api/cliente/current_user",
           options: Options(headers: {
             "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
-      print("currentUser--");
-      print(resp);
       ClienteModel cliente = ClienteModel.fromJson(resp.data);
       if (cliente.sitApp == "A") {
-        print("A");
         return AuthEvent(
             isValid: true, data: cliente, loading: false, integrated: false);
       } else if (cliente.sitApp == "B") {
-        print("B");
         return AuthEvent(
             isBlocked: true,
             isValid: true,
@@ -266,7 +260,6 @@ class AuthRepository {
               "Bloqueado": ["Você não tem permissão para acessar sua conta!"]
             });
       } else if (cliente.sitApp == "N" || cliente.sitApp == "I") {
-        print("NI");
         return AuthEvent(
             isValid: false,
             integrated: true,
@@ -278,7 +271,6 @@ class AuthRepository {
               ]
             });
       } else if (cliente.sitApp == "E") {
-        print("E");
         return AuthEvent(
             isValid: false,
             integrated: true,
@@ -290,14 +282,10 @@ class AuthRepository {
               ]
             });
       } else {
-        print("else");
         return AuthEvent(isValid: true, data: cliente, loading: false);
       }
     } catch (error) {
-      print("login---error");
-      print(error);
       _auth.signOut();
-      print("2222");
 
       return AuthEvent(isValid: false, data: null, loading: false, errorData: {
         "Login": [

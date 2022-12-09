@@ -105,7 +105,6 @@ class _IntroScreenState extends State<IntroScreen> {
           StreamBuilder<int>(
               stream: _introBloc.currentSlideOut,
               builder: (context, snapshot) {
-                print(snapshot.data);
                 return Positioned(
                   bottom: 25,
                   right: 20,

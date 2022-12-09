@@ -99,8 +99,6 @@ class _FinishPaymentState extends State<FinishPayment> {
   _getPaymentMethod() async {
     final paymentMethod = _cartWidgetBloc.currentPaymentMethod;
     setState(() {
-      print("payment method setted");
-      print(paymentMethod.isBoleto);
       _paymentMethod = paymentMethod.isBoleto;
     });
   }
@@ -136,8 +134,6 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     final _taxaEntrega = 0; //_requestBloc.taxaEntregaValue;
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
-    print("IS BOLETO");
-    print(_paymentMethod.creditCard);
     if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
       setState(() {
         _lock = false;
@@ -153,7 +149,6 @@ class _FinishPaymentState extends State<FinishPayment> {
 
       return;
     }
-    print("5");
 
     if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       setState(() {
@@ -218,11 +213,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     var seen = Set();
     _installmentsList =
         _installmentsList.where((item) => seen.add(item['parcela'])).toList();
-    print("installment list");
-    print(_installmentsList);
     if (_installmentsList.length > 0) {
-      print("installments here---");
-      print(_installments);
       setState(() {
         dropdownValue = _installmentsList[0]['parcela'];
       });
@@ -310,9 +301,6 @@ class _FinishPaymentState extends State<FinishPayment> {
         body: StreamBuilder(
             stream: _cartWidgetBloc.currentPaymentFormOut,
             builder: (context, paymentMethod) {
-              print("payment method---");
-              print(paymentMethod.data);
-              print(_installments);
               if (!paymentMethod.hasData) {
                 return Center(
                   child: CircularProgressIndicator(),

@@ -78,10 +78,6 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   }
 
   _finishPayment() {
-    var cr = _creditoFinanceiroBloc.creditoFinanceiroValue;
-    print("----cr");
-    print(cr.installmentCount);
-
     CreditCardList cards =
         _creditCardBloc.cartaoCreditoValue ?? CreditCardList(list: []);
 

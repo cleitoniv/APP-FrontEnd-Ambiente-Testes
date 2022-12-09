@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class ErrorSnackBar {
   static SnackBar snackBar(
       BuildContext context, Map<String, dynamic> errorData) {
-    print(errorData);
     return SnackBar(
       backgroundColor: Colors.white,
       content: Container(

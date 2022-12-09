@@ -90,15 +90,9 @@ class _LoginScreenState extends State<LoginScreen> {
         'password': _passwordController.text,
       });
 
-      print("login attemppt");
-
       LoginEvent _login = await _authBloc.loginOut.first;
 
-      print("login ok");
-      print(_login);
       if (!_login.isValid) {
-        print("--cliente data 1");
-
         SnackBar _snackBar = SnackBar(
           content: Text(_login.message),
         );
@@ -111,13 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
           _snackBar,
         );
       } else if (_login.result.user.emailVerified) {
-        print("--cliente data 2");
-
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
-        print(_cliente.data);
         if (_cliente.data != null && _cliente.data.status == 0) {
-          print("--cliente data 3");
-          print("1");
           await _auth.signOut();
 
           setState(() {
@@ -136,11 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
           this._isLoading = false;
         });
 
-        print("checking app sit");
-        print(_cliente.isValid);
         if (_cliente.isValid && _checkSitapp(_cliente.data).isValid) {
-          print("--cliente data 4");
-          print(_cliente.data);
           if (!_cliente.data.cadastrado) {
             setState(() {
               this._isLoading = false;
@@ -149,8 +134,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 .add({'email': _cliente.data.email, 'ddd': '27'});
             Modular.to.pushNamed('/auth/activityPerformed');
           } else if (_cliente.isValid) {
-            print("--cliente data 5");
-
             _authBloc.setLoginEvent(_login);
             final prefs = await _prefs;
             final int rememberStatus = prefs.getInt('rememberStatus');
@@ -166,12 +149,9 @@ class _LoginScreenState extends State<LoginScreen> {
               (route) => route.isFirst, //(Route<dynamic> route) => false
             );
           } else {
-            print("--cliente data 6");
             Modular.to.pushNamed('/auth/validate');
           }
         } else {
-          print("--cliente data 7");
-
           if (_cliente.integrated) {
             Modular.to.pushNamed('/auth/validate');
           }
@@ -180,13 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _auth.signOut();
         }
       } else {
-        print("--cliente data 8");
-
-        print("3");
-
         try {
-          print("--cliente data 9");
-
           await _login.result.user.sendEmailVerification();
 
           setState(() {
@@ -196,9 +170,6 @@ class _LoginScreenState extends State<LoginScreen> {
             "Verificar email": ["Te enviamos um email de verificaçao"]
           });
         } catch (e) {
-          print("--cliente data 9");
-
-          print("VERIFICAR EMAIL");
           setState(() {
             this._isLoading = false;
           });
@@ -207,8 +178,6 @@ class _LoginScreenState extends State<LoginScreen> {
             "Verificar email": ["Te enviamos um email de verificaçao"]
           });
         }
-        print("--cliente data 9");
-
         _auth.signOut();
       }
     }

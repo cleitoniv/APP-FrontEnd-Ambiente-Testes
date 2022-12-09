@@ -77,14 +77,12 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit() async {
-    print("ok--");
     setState(() {
       _lock = true;
       _isButtonDisabled = true;
     });
 
     bool blocked = await _authBloc.currentUser();
-    print("ok--");
 
     if (blocked) {
       setState(() {
@@ -101,7 +99,6 @@ class _FinishPaymentState extends State<FinishPayment> {
       });
       return;
     }
-    print("ok--");
 
     final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
 
@@ -190,9 +187,6 @@ class _FinishPaymentState extends State<FinishPayment> {
     setState(() {
       dropdownValue = '1x de $totalPay';
     });
-
-    print("finan installment count");
-    print(creditoFinan.installmentCount);
 
     if (creditoFinan.installmentCount > 1) {
       for (var i = 1; i < creditoFinan.installmentCount + 1; i++) {
@@ -332,8 +326,6 @@ class _FinishPaymentState extends State<FinishPayment> {
                               ),
                               onChanged: (String newValue) {
                                 setState(() {
-                                  print("---");
-                                  print(newValue);
                                   _dropdownValueStatus = true;
                                   _installmentsSelected =
                                       _installments.indexOf(newValue) + 1;

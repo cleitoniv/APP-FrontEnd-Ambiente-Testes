@@ -233,17 +233,14 @@ class _CreditsScreenState extends State<CreditsScreen> {
       _currentProduct['product'] = widget.product;
       _currentProduct['selected'] = true;
     }
-    print("1");
     _productsBloc.fetchCreditProducts("Todos");
     _currentUser = _authBloc.getAuthCurrentUser;
-    print("2");
     _creditsBloc.indexFinancialIn.add(_currentUser);
     _productReset = _creditsBloc.creditProductSelectedStream.listen((event) {
       if (!event) {
         _currentProduct = {"selected": false};
       }
     });
-    print("3");
 
     _homeBloc.currentCreditTypeOut.listen((event) async {
       if (event == "Produto") {
@@ -254,7 +251,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
         _currentProduct = {"selected": false};
       } else {
         _currentProduct = {"selected": true};
-        print("printing....");
         setState(() {
           this._loadingOffers = true;
         });
@@ -270,7 +266,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
         });
       }
     });
-    print("4");
 
     _onNavigate();
     _creditValueController = MoneyMaskedTextController(
@@ -278,7 +273,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
       leftSymbol: 'R\$ ',
       thousandSeparator: '.',
     );
-    print("5");
     super.initState();
   }
 
@@ -316,8 +310,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                         _currentProduct = this._currentProduct['product'];
                         _selected = this._currentProduct['selected'];
                       }
-                      print("selected---");
-                      print(_selected);
                       return StreamBuilder(
                           stream: _productsBloc.creditProductListStream,
                           builder: (context, snapshot) {
@@ -605,8 +597,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                         this._offersFinan.offers;
                                   }
 
-                                  print("financial credits");
-
                                   return Column(
                                     children: [
                                       _currentType != 'Financeiro'
@@ -699,8 +689,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                     ? InkWell(
                                                                         onTap:
                                                                             () {
-                                                                          print(
-                                                                              "aqui B");
                                                                           setState(
                                                                               () {
                                                                             _isLoadingPackage =
@@ -732,7 +720,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                                 productSnapshot) {
                                                                           return InkWell(
                                                                               onTap: () {
-                                                                                print("aqui A");
 //                                                                        bool
 //                                                                            blocked =
 //                                                                            await _authBloc.checkBlockedUser(context);
@@ -838,7 +825,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                         : InkWell(
                                                                             onTap:
                                                                                 () async {
-                                                                              print("OLA");
                                                                               _addCreditoProduct(this._currentProduct["product"], _financialCredits[index]);
                                                                             },
                                                                             child:

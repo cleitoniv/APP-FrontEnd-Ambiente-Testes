@@ -148,8 +148,6 @@ class _FormScreenState extends State<FormScreen> {
     Modular.to.pop();
     DeleteUsuarioCliente updateUser =
         await _userBloc.deleteUsuarioCliente(widget.usuario.id);
-    print("----");
-    print(updateUser);
     if (updateUser.isValid) {
       _userBloc.fetchUsuariosCliente();
       Modular.to.pop();

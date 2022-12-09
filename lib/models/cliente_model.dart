@@ -20,19 +20,17 @@ class ClienteModel {
   bool cadastrado;
   Map<String, dynamic> notifications;
 
-  ClienteModel({
-    this.id,
-    this.codigo,
-    this.loja,
-    this.cnpjCpf,
-    this.role,
-    this.status,
-    this.nomeUsuario,
-    this.sitApp
-  });
+  ClienteModel(
+      {this.id,
+      this.codigo,
+      this.loja,
+      this.cnpjCpf,
+      this.role,
+      this.status,
+      this.nomeUsuario,
+      this.sitApp});
 
   ClienteModel.fromJson(Map<String, dynamic> json) {
-    print(json);
     id = json['id'];
     nome = json['nome'];
     codigo = json['codigo'];

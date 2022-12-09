@@ -55,8 +55,6 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
 
   _removeItem(Map<String, dynamic> data) {
     int _total = _cartWidgetBloc.currentCartTotalItems;
-    print("--- remove");
-    print(_total);
     if (data["removeItem"] == "Sim") {
       _cartWidgetBloc.cartTotalItemsSink.add(_total - 2);
     } else {

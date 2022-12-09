@@ -79,20 +79,17 @@ class ProductRepository {
   Future<List> favorites(AuthEvent currentUser) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
-    print("currentUser");
-    print(currentUser);
     try {
-      Response response = await dio.get('/api/cliente/favorite?user_id=${currentUser.data.id}&page=1&page_size=1000',
+      Response response = await dio.get(
+          '/api/cliente/favorite?user_id=${currentUser.data.id}&page=1&page_size=1000',
           options: Options(
             headers: {
               "Content-Type": "application/json",
               "Authorization": "Bearer $idToken"
             },
           ));
-      print("response");
-      print(response.data["data"]);
       return response.data["data"];
-    } catch(error){
+    } catch (error) {
       return [];
     }
   }
@@ -134,16 +131,12 @@ class ProductRepository {
         ),
         data: jsonEncode(
           {
-            "param": {
-              "group": group,
-              "user_id": currentUser.data.id
-            }
+            "param": {"group": group, "user_id": currentUser.data.id}
           },
         ),
       );
       return true;
     } catch (error) {
-      print(error);
       return false;
     }
   }

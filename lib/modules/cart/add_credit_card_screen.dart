@@ -62,8 +62,6 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
       setState(() {
         isLoading = true;
       });
-      print("cartao number---");
-      print(parseCartaoNumber(_creditCardNumberController.text));
       CreditCard _storeResult = await _creditCardBloc.addCreditCard(
         CreditCardModel(
           cartaoNumber: parseCartaoNumber(_creditCardNumberController.text),
@@ -78,7 +76,6 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         isLoading = false;
       });
       if (_storeResult.errorData != null) {
-        print(_storeResult.errorData);
         SnackBar _snackBar = SnackBar(
           content: Text(
             'Falha ao adicionar cartão',

@@ -61,7 +61,7 @@ class AuthBloc extends Disposable {
       Dialogs.errorWithWillPopScope(context, onTap: () {
         Modular.to.pushNamedAndRemoveUntil(
           '/home/0',
-              (route) => route.isFirst, //(Route<dynamic> route) => false
+          (route) => route.isFirst, //(Route<dynamic> route) => false
         );
       },
           buttonText: "Entendi",
@@ -105,13 +105,9 @@ class AuthBloc extends Disposable {
   Future<void> fetchCurrentUser() async {
     try {
       this.clienteDataSink.add(AuthEvent(loading: true));
-      print("here CU");
       this._currentUser = await repository.currentUser(this.login);
-      print("here CU1");
-      print("currentUser");
-      print(this._currentUser);
       this.clienteDataSink.add(this._currentUser);
-    } catch(error) {
+    } catch (error) {
       print(error);
     }
   }

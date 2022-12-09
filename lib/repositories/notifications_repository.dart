@@ -76,7 +76,6 @@ class NotificationsRepository extends Repository<NotificationModel> {
       );
       return true;
     } catch (error) {
-      print(error);
       return false;
     }
   }

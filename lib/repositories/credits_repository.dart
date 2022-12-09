@@ -121,8 +121,6 @@ class CreditsRepository {
       CreditoFinanceiro credito, int cartaoId, bool isBoleto) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
-    print("installment count");
-    print(credito.installmentCount);
 
     try {
       await dio.post(
@@ -145,7 +143,6 @@ class CreditsRepository {
       );
       return true;
     } catch (error) {
-      print(error);
       return false;
     }
   }

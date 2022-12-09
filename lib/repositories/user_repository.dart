@@ -151,7 +151,6 @@ class UserRepository {
             "Content-Type": "application/json"
           }));
 
-      print(response);
       if (response.statusCode == 201) {
         return AddUsuarioCliente(isValid: true, data: response.data["data"]);
       } else {
@@ -161,8 +160,6 @@ class UserRepository {
       }
     } catch (error) {
       final error400 = error as DioError;
-      print("error--------");
-      print(error400.response);
       // final message = error400.response.data["data"]["errors"];
 
       return AddUsuarioCliente(
@@ -184,7 +181,6 @@ class UserRepository {
             "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
-
 
       List<UsuarioClienteModel> usuarios =
           response.data["data"].map<UsuarioClienteModel>((e) {

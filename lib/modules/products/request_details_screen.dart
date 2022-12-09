@@ -79,7 +79,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   int _calculateCreditFinancial() {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
     int _total = _cart.fold(0, (previousValue, element) {
-      if (element["operation"] == "13") {
+      if (element["operation"] == "13" &&
+          element['product'].group == currentProduct.product.group &&
+          element['tests'] == 'Não') {
         return previousValue +
             (element['quantity'] * element["product"].valueFinan);
       }
@@ -90,12 +92,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   int _calculateCreditTest() {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
-    print(_cart);
     int _total = _cart.fold(0, (previousValue, element) {
       if (((element["operation"] == "03" &&
-              element['product'].group == currentProduct.product.group) ||
-          (element['product'].group == currentProduct.product.group &&
-              element['tests'] == 'Sim'))) {
+          element['product'].group == currentProduct.product.group))) {
         return previousValue + element['quantity'];
       }
       return previousValue;
@@ -148,8 +147,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _cartTotalFinancial = _calculateCreditFinancial();
 
     var _pacientInfo = _productWidgetBloc.pacientInfo;
-    print("149---");
-    print(_pacientInfo['current']);
     int factor;
     if (_pacientInfo['current'] == 'Mesmo grau em ambos') {
       factor = 2;
@@ -179,10 +176,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       }
     } else if (widget.type == "CF") {
       int olho = int.parse(_lensController.text) * factor;
-      print("181---");
-      print(olho * currentProduct.product.valueFinan);
-      print(_cartTotalFinancial);
-      print(_authBloc.getAuthCurrentUser.data.money);
       if (_authBloc.getAuthCurrentUser.data.money >
           olho * currentProduct.product.valueFinan + _cartTotalFinancial) {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
@@ -206,8 +199,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
-    print("202");
-    print(_lensDireitoController.text);
     int olhoDireito = int.parse(
         _lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
     int olhoEsquerdo = int.parse(_lensEsquerdoController.text == ''
@@ -252,7 +243,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
-    print("248");
     int olhoDireito = int.parse(
         _lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
     int olhoEsquerdo = int.parse(_lensEsquerdoController.text == ''
@@ -512,15 +502,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       );
       return;
     }
-    print("params-----");
-    print(_qtd);
-    print(_cartTotalTest);
-    print(currentProduct.product.tests);
     if (currentProduct.product.tests < _qtd + _cartTotalTest &&
         (widget.type == "T" ||
             (_hasTests == 'Sim' &&
                 (widget.type != "A" && widget.type != "CF")))) {
-      print("490 ---");
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
       });
@@ -529,8 +514,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       );
       return;
     }
-    print("518---");
-    print(widget.type);
     var invalidBoxes = SnackBar(
         content: Text("Quantidade de caixas tem que ser maior que 0."));
 
@@ -625,7 +608,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 _cartTotalTest +
                 int.parse(_lensDireitoController.text) &&
         widget.type == "T") {
-      print("598 ---");
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
       });
@@ -653,7 +635,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 cartTotal +
                 int.parse(_lensEsquerdoController.text) &&
         widget.type == "C") {
-      print("626 ---");
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
       });
@@ -666,8 +647,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 _cartTotalTest +
                 int.parse(_lensEsquerdoController.text) &&
         widget.type == "T") {
-      print("640 ---");
-
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
       });
@@ -721,11 +700,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
-      print("data---------");
-      print(_data);
-      print(int.parse(_lensDireitoController.text));
-      print(int.parse(_lensEsquerdoController.text));
-      print(currentProduct.product.tests);
 //      if (widget.type != "A" &&
 //              _data["tests"] == "Sim" &&
 //              currentProduct.product.tests <= 0 ||
@@ -766,8 +740,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         Modular.to.pushNamed("/cart/product");
       }
     } else {
-      print("763");
-      print(_scaffoldKey.currentState);
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
       _scaffoldKey.currentState.showSnackBar(
         _snack,
@@ -1119,7 +1091,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _productWidgetBloc.resetPacientInfo();
 
     _lensController.addListener(() {
-      print(_lensController.text);
       validateLensQuantity("ambos");
     });
 
@@ -1151,11 +1122,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _qtd = _first['current'] == "Mesmo grau em ambos"
         ? int.parse(_lensController.text == '' ? '0' : _lensController.text) * 2
         : _quantity;
-    print("condition");
-    print(currentProduct.product.tests);
-    print(_qtd);
-    print(currentProduct.product.tests < _qtd + _cartTotalTest &&
-        widget.type == "T");
+
     if (_authBloc.getAuthCurrentUser.data.money <
             ((_qtd * currentProduct.product.valueFinan) +
                 _cartTotalFinancial) &&

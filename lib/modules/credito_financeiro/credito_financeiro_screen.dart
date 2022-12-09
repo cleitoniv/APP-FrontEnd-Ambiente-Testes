@@ -27,9 +27,6 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
   }
 
   void _addCreditoFinanceiro() {
-    print("okk----");
-    print(_creditValueController.value.text.isEmpty);
-    print(_creditValueController.value);
     if (_creditValueController.value.text == "R\$ 0,00") {
       Dialogs.errorWithWillPopScope(context,
           title: "Valor incorreto",

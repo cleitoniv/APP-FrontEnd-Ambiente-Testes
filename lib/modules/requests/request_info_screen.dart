@@ -138,8 +138,6 @@ class RequestInfoScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           List<ItemPedidoModel> items =
                               pedidoInfo.data.pedido.items;
-                          print("items---");
-                          print(items[index].items.length);
                           return Container(
                             margin: const EdgeInsets.symmetric(
                               vertical: 20,
@@ -231,8 +229,6 @@ class RequestInfoScreen extends StatelessWidget {
                                   scrollDirection: Axis.vertical,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index2) {
-                                    print("quantidade");
-                                    print(items[index].items[index2]['quantidade']);
                                     bool isTest = items[index].items[index2]
                                     [
                                     'produto_teste'] !=
