@@ -179,9 +179,7 @@ class _CompleteCreateAccountScreenState
           ),
         );
 
-        _scaffoldKey.currentState.showSnackBar(
-          _snackBar,
-        );
+        _scaffoldKey.currentState.showSnackBar(_snackBar);
       }
     } else {
       Modular.to.pushNamed('/auth/deliveryAddressRegister');
@@ -587,146 +585,148 @@ class _CompleteCreateAccountScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          'Complete seu cadastro',
-          textAlign: TextAlign.left,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Complete seu cadastro',
+            textAlign: TextAlign.left,
+          ),
+          centerTitle: false,
         ),
-        centerTitle: false,
-      ),
-      body: Form(
-        key: _formKey,
-        child: StreamBuilder(
-          stream: _authWidgetBloc.createAccountDataOut,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            }
+        body: Form(
+          key: _formKey,
+          child: StreamBuilder(
+            stream: _authWidgetBloc.createAccountDataOut,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-            if (snapshot.data["activity"] == "Usuário de Lente Contato") {
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Prezado Cliente",
-                        style: Theme.of(context).textTheme.headline5,
-                        textAlign: TextAlign.center,
-                      )
-                    ],
+              if (snapshot.data["activity"] == "Usuário de Lente Contato") {
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Prezado Cliente",
+                          style: Theme.of(context).textTheme.headline5,
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.all(15.0),
+                      child: Text(
+                        "Sentimos muito, este aplicativo é voltado apenas para profissionais da área.",
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                          "Por favor, converse com seu oftamologista ou clinica especializada para realizar um pedido para atender sua necessidade.",
+                          style: Theme.of(context).textTheme.subtitle1),
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text("Obrigado!",
+                              style: Theme.of(context).textTheme.subtitle1),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                );
+              }
+              return ListView(
+                padding: const EdgeInsets.all(20),
+                children: <Widget>[
+                  Text(
+                    snapshot.data["activity"],
+                    style: Theme.of(context).textTheme.headline5,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.all(15.0),
+                  Text(
+                    'Preencha os campos abaixo para completar seu cadastro',
+                    style: Theme.of(context).textTheme.subtitle1,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 30),
+                  Column(
+                    children: defineCadastralTerms(snapshot.data['ramo']).map(
+                      (e) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: TextFieldWidget(
+                            textCapitalization: e['textCapitalization'],
+                            focus: e['focus'],
+                            labelText: e['labelText'],
+                            prefixIcon: e['prefixIcon'],
+                            controller: e['controller'],
+                            validator: e['validator'],
+                            keyboardType: e['keyboardType'],
+                            enabled: e['enabled'],
+                          ),
+                        );
+                      },
+                    ).toList(),
+                  ),
+                  SizedBox(height: 30),
+                  Text(
+                    'Endereço',
+                    style: Theme.of(context).textTheme.headline5,
+                    textAlign: TextAlign.center,
+                  ),
+                  Column(
+                    children: registerAddressTerms().map(
+                      (e) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: TextFieldWidget(
+                            focus: e['focus'],
+                            labelText: e['labelText'],
+                            prefixIcon: Icon(
+                              MaterialCommunityIcons.map_marker,
+                              color: Color(0xffA1A1A1),
+                            ),
+                            controller: e['controller'],
+                            validator: e['validator'],
+                            enabled: e['enabled'],
+                            keyboardType: e['keyboardType'],
+                          ),
+                        );
+                      },
+                    ).toList(),
+                  ),
+                  SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (!_formKey.currentState.validate()) {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                                "Corrija os erros em vermelho antes de enviar.")));
+                      } else {
+                        _handleSubmit();
+                      }
+                    },
                     child: Text(
-                      "Sentimos muito, este aplicativo é voltado apenas para profissionais da área.",
-                      style: Theme.of(context).textTheme.subtitle1,
+                      this.textRegister,
+                      style: Theme.of(context).textTheme.button,
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text(
-                        "Por favor, converse com seu oftamologista ou clinica especializada para realizar um pedido para atender sua necessidade.",
-                        style: Theme.of(context).textTheme.subtitle1),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text("Obrigado!",
-                            style: Theme.of(context).textTheme.subtitle1),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 20),
                 ],
               );
-            }
-            return ListView(
-              padding: const EdgeInsets.all(20),
-              children: <Widget>[
-                Text(
-                  snapshot.data["activity"],
-                  style: Theme.of(context).textTheme.headline5,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Preencha os campos abaixo para completar seu cadastro',
-                  style: Theme.of(context).textTheme.subtitle1,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 30),
-                Column(
-                  children: defineCadastralTerms(snapshot.data['ramo']).map(
-                    (e) {
-                      return Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: TextFieldWidget(
-                          textCapitalization: e['textCapitalization'],
-                          focus: e['focus'],
-                          labelText: e['labelText'],
-                          prefixIcon: e['prefixIcon'],
-                          controller: e['controller'],
-                          validator: e['validator'],
-                          keyboardType: e['keyboardType'],
-                          enabled: e['enabled'],
-                        ),
-                      );
-                    },
-                  ).toList(),
-                ),
-                SizedBox(height: 30),
-                Text(
-                  'Endereço',
-                  style: Theme.of(context).textTheme.headline5,
-                  textAlign: TextAlign.center,
-                ),
-                Column(
-                  children: registerAddressTerms().map(
-                    (e) {
-                      return Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: TextFieldWidget(
-                          focus: e['focus'],
-                          labelText: e['labelText'],
-                          prefixIcon: Icon(
-                            MaterialCommunityIcons.map_marker,
-                            color: Color(0xffA1A1A1),
-                          ),
-                          controller: e['controller'],
-                          validator: e['validator'],
-                          enabled: e['enabled'],
-                          keyboardType: e['keyboardType'],
-                        ),
-                      );
-                    },
-                  ).toList(),
-                ),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    if (!_formKey.currentState.validate()) {
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                              "Corrija os erros em vermelho antes de enviar.")));
-                    } else {
-                      _handleSubmit();
-                    }
-                  },
-                  child: Text(
-                    this.textRegister,
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
-              ],
-            );
-          },
+            },
+          ),
         ),
       ),
     );

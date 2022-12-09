@@ -241,63 +241,65 @@ class DeliveryAddressRegisterScreenState
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          'Complete seu cadastro',
-          textAlign: TextAlign.left,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Complete seu cadastro',
+            textAlign: TextAlign.left,
+          ),
+          centerTitle: false,
         ),
-        centerTitle: false,
-      ),
-      body: Form(
-        key: _formKey,
-        child: StreamBuilder(
-          stream: _authWidgetBloc.createAccountDataOut,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            }
-            return ListView(
-              padding: const EdgeInsets.all(20),
-              children: <Widget>[
-                Text(
-                  'Endereço de Entrega',
-                  style: Theme.of(context).textTheme.headline5,
-                  textAlign: TextAlign.center,
-                ),
-                Column(
-                  children: _fieldAddressDelivery.map(
-                    (e) {
-                      return Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: TextFieldWidget(
-                          focus: e['focus'],
-                          labelText: e['labelText'],
-                          prefixIcon: Icon(
-                            MaterialCommunityIcons.map_marker,
-                            color: Color(0xffA1A1A1),
-                          ),
-                          controller: e['controller'],
-                          validator: e['validator'],
-                          enabled: this.enabled,
-                          keyboardType: e['keyboardType'],
-                        ),
-                      );
-                    },
-                  ).toList(),
-                ),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: _handleSubmit,
-                  child: Text(
-                    'Completar Cadastro',
-                    style: Theme.of(context).textTheme.button,
+        body: Form(
+          key: _formKey,
+          child: StreamBuilder(
+            stream: _authWidgetBloc.createAccountDataOut,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return ListView(
+                padding: const EdgeInsets.all(20),
+                children: <Widget>[
+                  Text(
+                    'Endereço de Entrega',
+                    style: Theme.of(context).textTheme.headline5,
+                    textAlign: TextAlign.center,
                   ),
-                ),
-              ],
-            );
-          },
+                  Column(
+                    children: _fieldAddressDelivery.map(
+                      (e) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: TextFieldWidget(
+                            focus: e['focus'],
+                            labelText: e['labelText'],
+                            prefixIcon: Icon(
+                              MaterialCommunityIcons.map_marker,
+                              color: Color(0xffA1A1A1),
+                            ),
+                            controller: e['controller'],
+                            validator: e['validator'],
+                            enabled: this.enabled,
+                            keyboardType: e['keyboardType'],
+                          ),
+                        );
+                      },
+                    ).toList(),
+                  ),
+                  SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: _handleSubmit,
+                    child: Text(
+                      'Completar Cadastro',
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

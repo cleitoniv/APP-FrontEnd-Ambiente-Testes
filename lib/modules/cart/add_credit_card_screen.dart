@@ -163,84 +163,86 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Adicionar Cartão de Crédito'),
-        centerTitle: false,
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: <Widget>[
-            Text(
-              'Informações do Cartão',
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 30),
-            ListView.separated(
-              shrinkWrap: true,
-              primary: false,
-              itemCount: _data.take(2).length,
-              separatorBuilder: (context, index) => SizedBox(
-                height: 10,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Adicionar Cartão de Crédito'),
+          centerTitle: false,
+        ),
+        body: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: <Widget>[
+              Text(
+                'Informações do Cartão',
+                style: Theme.of(context).textTheme.headline5,
+                textAlign: TextAlign.center,
               ),
-              itemBuilder: (context, index) {
-                return TextFieldWidget(
-                  labelText: _data[index]['labelText'],
-                  prefixIcon: Icon(
-                    _data[index]['icon'],
-                    color: Color(0xffA1A1A1),
-                  ),
-                  validator: _data[index]['validator'],
-                  controller: _data[index]['controller'],
-                  keyboardType: _data[index]['keyboard_type'],
-                );
-              },
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: _data.skip(2).map(
-                (e) {
+              SizedBox(height: 30),
+              ListView.separated(
+                shrinkWrap: true,
+                primary: false,
+                itemCount: _data.take(2).length,
+                separatorBuilder: (context, index) => SizedBox(
+                  height: 10,
+                ),
+                itemBuilder: (context, index) {
                   return TextFieldWidget(
-                    validator: e['validator'],
-                    width: e['labelText'] == 'Validade do cartão'
-                        ? MediaQuery.of(context).size.width / 2
-                        : MediaQuery.of(context).size.width / 3.2,
-                    labelText: e['labelText'],
+                    labelText: _data[index]['labelText'],
                     prefixIcon: Icon(
-                      e['icon'],
+                      _data[index]['icon'],
                       color: Color(0xffA1A1A1),
                     ),
-                    controller: e['controller'],
-                    keyboardType: e['keyboard_type'],
+                    validator: _data[index]['validator'],
+                    controller: _data[index]['controller'],
+                    keyboardType: _data[index]['keyboard_type'],
                   );
                 },
-              ).toList(),
-            ),
-            SizedBox(height: 30),
-            isLoading
-                ? Center(child: CircularProgressIndicator())
-                : ElevatedButton(
-                    onPressed: () {
-                      if (!_formKey.currentState.validate()) {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text(
-                                "Corrija os erros em vermelho antes de enviar.")));
-                      } else {
-                        _onSubmit();
-                      }
-                    },
-                    child: Text(
-                      'Adicionar cartão',
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                  )
-          ],
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: _data.skip(2).map(
+                  (e) {
+                    return TextFieldWidget(
+                      validator: e['validator'],
+                      width: e['labelText'] == 'Validade do cartão'
+                          ? MediaQuery.of(context).size.width / 2
+                          : MediaQuery.of(context).size.width / 3.2,
+                      labelText: e['labelText'],
+                      prefixIcon: Icon(
+                        e['icon'],
+                        color: Color(0xffA1A1A1),
+                      ),
+                      controller: e['controller'],
+                      keyboardType: e['keyboard_type'],
+                    );
+                  },
+                ).toList(),
+              ),
+              SizedBox(height: 30),
+              isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      onPressed: () {
+                        if (!_formKey.currentState.validate()) {
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                  "Corrija os erros em vermelho antes de enviar.")));
+                        } else {
+                          _onSubmit();
+                        }
+                      },
+                      child: Text(
+                        'Adicionar cartão',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    )
+            ],
+          ),
         ),
       ),
     );

@@ -51,7 +51,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   int _totalToPayNumeric(List<Map<String, dynamic>> data) {
     return data.fold(0, (previousValue, element) {
       if (element["operation"] == "07" ||
-          element["operation"] == "00" ||
+          element["operation"] == "03" ||
           element["tests"] == "Sim" ||
           element["operation"] == "13") {
         return previousValue;

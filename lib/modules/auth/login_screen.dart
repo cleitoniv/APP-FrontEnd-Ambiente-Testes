@@ -280,121 +280,123 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.only(top: 90, bottom: 90),
-                  child: Container(
-                      height: 90,
-                      child: Align(
-                        alignment: Alignment.center,
-                        heightFactor: 4,
-                        child: Image.asset(
-                          'assets/images/logo_alinhada.png',
-                          fit: BoxFit.scaleDown,
-                        ),
-                      ))),
-              TextFieldWidget(
-                labelText: 'Email',
-                controller: _emailController,
-                prefixIcon: Icon(
-                  Icons.email,
-                  color: Color(0xffA1A1A1),
-                ),
-                validator: Helper.emailValidator,
-              ),
-              SizedBox(height: 20),
-              TextFieldWidget(
-                labelText: 'Senha',
-                controller: _passwordController,
-                obscureText: this._enabledPassword,
-                suffixIcon: IconButton(
-                  onPressed: _onShowPassword,
-                  icon: Icon(
-                    this._enabledPassword
-                        ? Icons.remove_red_eye
-                        : MaterialCommunityIcons.eye_off,
+      child: Scaffold(
+        body: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.only(top: 90, bottom: 90),
+                    child: Container(
+                        height: 90,
+                        child: Align(
+                          alignment: Alignment.center,
+                          heightFactor: 4,
+                          child: Image.asset(
+                            'assets/images/logo_alinhada.png',
+                            fit: BoxFit.scaleDown,
+                          ),
+                        ))),
+                TextFieldWidget(
+                  labelText: 'Email',
+                  controller: _emailController,
+                  prefixIcon: Icon(
+                    Icons.email,
                     color: Color(0xffA1A1A1),
                   ),
+                  validator: Helper.emailValidator,
                 ),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: Color(0xffA1A1A1),
-                ),
-                validator: Helper.lengthValidator,
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _remember,
-                        onChanged: (bool value) => _rememberMe(),
-                      ),
-                      FittedBox(
-                          fit: BoxFit.contain, child: Text("Lembrar Email"))
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: _onPasswordReset,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        'Esqueceu a senha?',
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.subtitle2.copyWith(
-                              color: Theme.of(context).accentColor,
-                              decoration: TextDecoration.underline,
-                            ),
-                      ),
+                SizedBox(height: 20),
+                TextFieldWidget(
+                  labelText: 'Senha',
+                  controller: _passwordController,
+                  obscureText: this._enabledPassword,
+                  suffixIcon: IconButton(
+                    onPressed: _onShowPassword,
+                    icon: Icon(
+                      this._enabledPassword
+                          ? Icons.remove_red_eye
+                          : MaterialCommunityIcons.eye_off,
+                      color: Color(0xffA1A1A1),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 30),
-              !_isLoading
-                  ? ElevatedButton(
-                      onPressed: () => _onLogin(),
-                      child: Text(
-                        'Entrar',
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    )
-                  : Center(
-                      child: CircularProgressIndicator(),
-                    ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                heightFactor: MediaQuery.of(context).size.height / 145,
-                child: Text.rich(
-                  TextSpan(
-                    text: 'Não possui conta ainda? ',
-                    style: Theme.of(context).textTheme.subtitle2.copyWith(
-                          color: Color(0xffA5A5A5),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: Color(0xffA1A1A1),
+                  ),
+                  validator: Helper.lengthValidator,
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _remember,
+                          onChanged: (bool value) => _rememberMe(),
                         ),
-                    children: [
-                      TextSpan(
-                        text: 'Cadastre-se',
-                        style: Theme.of(context).textTheme.subtitle2.copyWith(
-                              color: Theme.of(context).accentColor,
-                              decoration: TextDecoration.underline,
-                            ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = _onCreateAccount,
+                        FittedBox(
+                            fit: BoxFit.contain, child: Text("Lembrar Email"))
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: _onPasswordReset,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Esqueceu a senha?',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                color: Theme.of(context).accentColor,
+                                decoration: TextDecoration.underline,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                !_isLoading
+                    ? ElevatedButton(
+                        onPressed: () => _onLogin(),
+                        child: Text(
+                          'Entrar',
+                          style: Theme.of(context).textTheme.button,
+                        ),
                       )
-                    ],
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  heightFactor: MediaQuery.of(context).size.height / 145,
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'Não possui conta ainda? ',
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                            color: Color(0xffA5A5A5),
+                          ),
+                      children: [
+                        TextSpan(
+                          text: 'Cadastre-se',
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                color: Theme.of(context).accentColor,
+                                decoration: TextDecoration.underline,
+                              ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = _onCreateAccount,
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -90,9 +90,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   int _calculateCreditTest() {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
-
+    print(_cart);
     int _total = _cart.fold(0, (previousValue, element) {
-      if (((element["operation"] == "00" &&
+      if (((element["operation"] == "03" &&
               element['product'].group == currentProduct.product.group) ||
           (element['product'].group == currentProduct.product.group &&
               element['tests'] == 'Sim'))) {
@@ -156,13 +156,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     } else {
       factor = 1;
     }
+
+    if (_lensController.text == '') _lensController.text = '0';
+
     if (widget.type == "C") {
       int olho = int.parse(_lensController.text) * factor;
       if (currentProduct.product.boxes > olho + cartTotal) {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "T") {
@@ -170,18 +173,22 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       if (currentProduct.product.tests > olho + _cartTotalTest) {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "CF") {
       int olho = int.parse(_lensController.text) * factor;
+      print("181---");
+      print(olho * currentProduct.product.valueFinan);
+      print(_cartTotalFinancial);
+      print(_authBloc.getAuthCurrentUser.data.money);
       if (_authBloc.getAuthCurrentUser.data.money >
           olho * currentProduct.product.valueFinan + _cartTotalFinancial) {
         _lensController.text = '${int.parse(_lensController.text) + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else {
@@ -199,7 +206,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
-
+    print("202");
+    print(_lensDireitoController.text);
     int olhoDireito = int.parse(
         _lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
     int olhoEsquerdo = int.parse(_lensEsquerdoController.text == ''
@@ -211,8 +219,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           olhoDireito + olhoEsquerdo + cartTotal) {
         _lensDireitoController.text = '${olhoDireito + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
         return _lensDireitoController.text = "1";
       }
     } else if (widget.type == "T") {
@@ -220,8 +228,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           olhoDireito + olhoEsquerdo + _cartTotalTest) {
         _lensDireitoController.text = '${olhoDireito + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "O limite de caixa estorou. Você possui menos que a quantidade selecionada, verifique se contém caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "CF") {
@@ -230,8 +238,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               _cartTotalFinancial) {
         _lensDireitoController.text = '${olhoDireito + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensDireitoController.text = "1";
       }
     } else {
@@ -244,7 +252,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
-
+    print("248");
     int olhoDireito = int.parse(
         _lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
     int olhoEsquerdo = int.parse(_lensEsquerdoController.text == ''
@@ -257,8 +265,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _lensEsquerdoController.text =
             '${int.parse(_lensEsquerdoController.text) + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensController.text = "1";
       }
     } else if (widget.type == "T") {
@@ -266,8 +274,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           olhoDireito + olhoEsquerdo + _cartTotalTest) {
         _lensEsquerdoController.text = '${olhoEsquerdo + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensEsquerdoController.text = "1";
       }
     } else if (widget.type == "CF") {
@@ -276,8 +284,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               _cartTotalFinancial) {
         _lensEsquerdoController.text = '${olhoEsquerdo + 1}';
       } else {
-//        _showDialog("Limite atingido.",
-//            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
+        _showDialog("Limite atingido.",
+            "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         return _lensEsquerdoController.text = "1";
       }
     } else {
@@ -356,6 +364,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return "07";
     } else if (type == "CF") {
       return "13";
+    }
+    if (type == "T") {
+      return "03";
     } else {
       return "01";
     }
@@ -501,7 +512,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       );
       return;
     }
-
+    print("params-----");
+    print(_qtd);
+    print(_cartTotalTest);
+    print(currentProduct.product.tests);
     if (currentProduct.product.tests < _qtd + _cartTotalTest &&
         (widget.type == "T" ||
             (_hasTests == 'Sim' &&
@@ -515,7 +529,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       );
       return;
     }
-
+    print("518---");
+    print(widget.type);
     var invalidBoxes = SnackBar(
         content: Text("Quantidade de caixas tem que ser maior que 0."));
 
@@ -554,7 +569,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
 
-    if (isValidDate(_birthdayController.text)) {
+    if (isValidDate(_birthdayController.text, context)) {
       return;
     }
     if (int.parse(_lensDireitoController.text) +
@@ -706,6 +721,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
+      print("data---------");
       print(_data);
       print(int.parse(_lensDireitoController.text));
       print(int.parse(_lensEsquerdoController.text));
@@ -750,6 +766,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         Modular.to.pushNamed("/cart/product");
       }
     } else {
+      print("763");
+      print(_scaffoldKey.currentState);
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, errors);
       _scaffoldKey.currentState.showSnackBar(
         _snack,
@@ -761,8 +779,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Modular.to.pushNamed("/home/0");
   }
 
-  _onPurchase() async {
-    if (isValidDate(_birthdayController.text)) {
+  _onPurchase(BuildContext context) async {
+    if (isValidDate(_birthdayController.text, context)) {
       return;
     }
 
@@ -894,7 +912,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
   }
 
-  _onAddCurrentParam(Map<dynamic, dynamic> data) async {
+  _onAddCurrentParam(Map<dynamic, dynamic> data, BuildContext context) async {
     if (widget.type == "C") {
       if (data['current'] == 'Graus diferentes em cada olho' &&
           currentProduct.product.boxes < 2) {
@@ -995,7 +1013,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     });
   }
 
-  bool isValidDate(String input) {
+  bool isValidDate(String input, BuildContext context) {
     SnackBar _snackBar;
     DateTime now = new DateTime.now();
     var splitDate = input.split("/");
@@ -1161,7 +1179,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       }
     } else if (currentProduct.product.tests < _qtd + _cartTotalTest &&
         widget.type == "T") {
-      _showDialog("Limite atingido. 2",
+      _showDialog("Limite atingido.",
           "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
       setState(() {
         if (type == "esquerdo") _lensEsquerdoController.text = '';
@@ -1327,749 +1345,760 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Detalhes do Pedido'),
-        centerTitle: false,
-        actions: [
-          Padding(
-              padding: EdgeInsets.only(right: 40, top: 5),
-              child: IconButton(
-                icon: Icon(Icons.shopping_cart,
-                    size: 40, color: Colors.green[300]),
-                onPressed: () {
-                  Modular.to.pushNamed("/cart/product");
-                },
-              ))
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    ProductProfileWidget(
-                      value: currentProduct.product.value,
-                      title: currentProduct.product.title,
-                      tests: currentProduct.product.tests,
-                      imageUrl: currentProduct.product.imageUrl,
-                      credits: currentProduct.product.boxes,
-                      onTap: () async {},
-                    ),
-//                    CachedNetworkImage(
-//                      errorWidget: (context, url, error) =>
-//                          Image.asset('assets/images/no_image_product.jpeg'),
-//                      imageUrl: currentProduct.product.imageUrl,
-//                      width: 120,
-//                      height: 100,
-//                      alignment: Alignment.center,
-//                      fit: BoxFit.contain,
-//                    ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Detalhes do Pedido'),
+          centerTitle: false,
+          actions: [
+            Padding(
+                padding: EdgeInsets.only(right: 40, top: 5),
+                child: IconButton(
+                  icon: Icon(Icons.shopping_cart,
+                      size: 40, color: Colors.green[300]),
+                  onPressed: () {
+                    Modular.to.pushNamed("/cart/product");
+                  },
+                ))
+          ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      ProductProfileWidget(
+                        value: currentProduct.product.value,
+                        title: currentProduct.product.title,
+                        tests: currentProduct.product.tests -
+                            _calculateCreditTest(),
+                        imageUrl: currentProduct.product.imageUrl,
+                        credits: currentProduct.product.boxes,
+                        screen: 'request_details_screen',
+                        onTap: () async {},
+                      ),
+                      //                    CachedNetworkImage(
+                      //                      errorWidget: (context, url, error) =>
+                      //                          Image.asset('assets/images/no_image_product.jpeg'),
+                      //                      imageUrl: currentProduct.product.imageUrl,
+                      //                      width: 120,
+                      //                      height: 100,
+                      //                      alignment: Alignment.center,
+                      //                      fit: BoxFit.contain,
+                      //                    ),
 
-                    //   Text("${_getBuyValue(widget.type)}", style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 17),)
-                  ]),
-              SizedBox(width: 20),
-              Expanded(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                      'Produto',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Colors.black38,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
-                    ),
-                  ),
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text('${currentProduct.product.title}',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: Colors.black45,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700)),
-                  ),
-                  SizedBox(height: 40),
-                  Column(
-                    children: [
-                      Text(
-                        "Modo de compra",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            color: Theme.of(context).primaryColor),
-                      ),
-                      _getValueLabel(widget.type)
-                    ],
-                  )
-                ],
-              )),
-            ],
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Divider(
-            height: 50,
-            thickness: 0.2,
-            color: Color(0xffa1a1a1),
-          ),
-          Container(
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: AutoSizeText(
-                      'Informações do Paciente',
-                      // textScaleFactor: 1.10,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.headline5,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.help_outline,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      _pacienteInfo(context);
-                    },
-                  ),
-                ],
-              )),
-          SizedBox(height: 10),
-          Text(
-            'Gestão do Paciente & Pontos Controle o período para reavaliação do seu paciente preenchendo o nome e a data de nascimento, opcionalmente completando com o CPF dele, voce acumula pontos para compras futuras.',
-            style: Theme.of(context).textTheme.subtitle1,
-            // textScaleFactor: 1.25,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 30),
-          Column(
-            children: _fieldData.take(3).map(
-              (e) {
-                return Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: TextFieldWidget(
-                    labelText: e['labelText'],
-                    prefixIcon: Icon(
-                      e['icon'],
-                      color: Color(0xffa1a1a1),
-                    ),
-                    controller: e['controller'],
-                    validator: e['validator'],
-                    keyboardType: e['keyboardType'],
-                  ),
-                );
-              },
-            ).toList(),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Parâmetros',
-            style: Theme.of(context).textTheme.headline5,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 10),
-          _accessory(FittedBox(
-            fit: BoxFit.contain,
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                      !currentProduct.product.hasAcessorio
-                          ? 'Quantidade de caixas'
-                          : 'Quantidade',
-                      style: Theme.of(context).textTheme.subtitle1),
-                  TextFieldWidget(
-                    width: 150,
-                    controller: _lensController,
-                    readOnly: false,
-                    focus: caixasFocus,
-                    keyboardType: TextInputType.number,
-                    inputFormattersActivated: true,
-                    prefixIcon: IconButton(
-                      icon: Icon(
-                        Icons.remove,
-                        color: Colors.black26,
-                        size: 30,
-                      ),
-                      onPressed: _onRemoveLens,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.black26,
-                        size: 30,
-                      ),
-                      onPressed: _onAddLens,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )),
-          _checkForAcessorio(Text(
-            'Defina os parâmetros do produto',
-            style: Theme.of(context).textTheme.subtitle1,
-            textAlign: TextAlign.center,
-          )),
-          SizedBox(height: 30),
-          _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
-            stream: _productWidgetBloc.pacientInfoOut,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return _checkForAcessorio(InputDecorator(
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(0),
-                  labelText: 'Escolha os olhos',
-                  labelStyle: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                  alignLabelWithHint: true,
-                  prefixIcon: Icon(
-                    Icons.remove_red_eye,
-                    color: Color(0xffA1A1A1),
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: DropdownButton(
-                      value: snapshot.data['current'],
-                      items: [
-                        'Olho direito',
-                        'Olho esquerdo',
-                        'Mesmo grau em ambos',
-                        'Graus diferentes em cada olho',
-                      ].map(
-                        (e) {
-                          return DropdownMenuItem(
-                            child: FittedBox(
-                                fit: BoxFit.contain, child: Text('$e')),
-                            value: e,
-                          );
-                        },
-                      ).toList(),
-                      onChanged: (value) => _onAddCurrentParam({
-                        'current': value,
-                      }),
-                    ),
-                  ),
-                ),
-              )
-                  //   DropdownWidget(
-                  //   labelText: 'Escolha os olhos',
-                  //   items: [
-                  //     'Olho direito',
-                  //     'Olho esquerdo',
-                  //     'Mesmo grau em ambos',
-                  //     'Graus diferentes em cada olho',
-                  //   ],
-                  //   onChanged: (value) => _onAddCurrentParam({
-                  //     'current': value,
-                  //   }),
-                  //   currentValue: snapshot.data['current'],
-                  // )
-                  );
-            },
-          )),
-          _checkForAcessorio(SizedBox(height: 20)),
-          _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
-            stream: _productWidgetBloc.pacientInfoOut,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.data['current'] !=
-                  'Graus diferentes em cada olho') {
-                return Column(
+                      //   Text("${_getBuyValue(widget.type)}", style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 17),)
+                    ]),
+                SizedBox(width: 20),
+                Expanded(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    _checkForAcessorio(Text(
-                      '${snapshot.data['current']}',
-                      style: Theme.of(context).textTheme.headline5,
-                      textAlign: TextAlign.center,
-                    )),
-                    SizedBox(height: 30),
                     FittedBox(
                       fit: BoxFit.contain,
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                                !currentProduct.product.hasAcessorio
-                                    ? 'Quantidade de caixas'
-                                    : 'Quantidade',
-                                style: Theme.of(context).textTheme.subtitle1),
-                            TextFieldWidget(
-                              width: 150,
-                              controller: _lensController,
-                              readOnly: false,
-                              focus: caixasFocus,
-                              keyboardType: TextInputType.number,
-                              inputFormattersActivated: true,
-                              prefixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.remove,
-                                  color: Colors.black26,
-                                  size: 30,
-                                ),
-                                onPressed: _onRemoveLens,
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.add,
-                                  color: Colors.black26,
-                                  size: 30,
-                                ),
-                                onPressed: _onAddLens,
-                              ),
+                      child: Text(
+                        'Produto',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Colors.black38,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
                             ),
-                          ],
-                        ),
                       ),
                     ),
-                    SizedBox(height: 30),
-                    StreamBuilder(
-                        stream: _productBloc.parametroListStream,
-                        builder: (context, parametroSnapshot) {
-                          if (!parametroSnapshot.hasData ||
-                              parametroSnapshot.data.isLoading) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          final _productParams =
-                              generateProductParams(parametroSnapshot.data);
-
-                          return ListView.separated(
-                            shrinkWrap: true,
-                            primary: false,
-                            itemCount: _productParams.length,
-                            separatorBuilder: (context, index) => SizedBox(
-                              height: 10,
-                            ),
-                            itemBuilder: (context, index) {
-                              return _productParams[index]['enabled']
-                                  ? TextFieldWidget(
-                                      readOnly: true,
-                                      suffixIcon: Icon(
-                                        Icons.keyboard_arrow_down,
-                                        color: Color(0xffa1a1a1),
-                                      ),
-                                      controller: TextEditingController()
-                                        ..text =
-                                            "${snapshot.data[snapshot.data['current']][_productParams[index]['key']].toString()}",
-                                      labelText: _productParams[index]
-                                          ['labelText'],
-                                      onTap: () => _onShowOptions(
-                                        _productParams[index],
-                                      ),
-                                    )
-                                  : Container();
-                            },
-                          );
-                        }),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: <Widget>[
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text('${currentProduct.product.title}',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              color: Colors.black45,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700)),
+                    ),
+                    SizedBox(height: 40),
                     Column(
-                      children: <Widget>[
-                        _checkForAcessorio(Text(
+                      children: [
+                        Text(
+                          "Modo de compra",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              color: Theme.of(context).primaryColor),
+                        ),
+                        _getValueLabel(widget.type)
+                      ],
+                    )
+                  ],
+                )),
+              ],
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Divider(
+              height: 50,
+              thickness: 0.2,
+              color: Color(0xffa1a1a1),
+            ),
+            Container(
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: AutoSizeText(
+                        'Informações do Paciente',
+                        // textScaleFactor: 1.10,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.headline5,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.help_outline,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        _pacienteInfo(context);
+                      },
+                    ),
+                  ],
+                )),
+            SizedBox(height: 10),
+            Text(
+              'Gestão do Paciente & Pontos Controle o período para reavaliação do seu paciente preenchendo o nome e a data de nascimento, opcionalmente completando com o CPF dele, voce acumula pontos para compras futuras.',
+              style: Theme.of(context).textTheme.subtitle1,
+              // textScaleFactor: 1.25,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 30),
+            Column(
+              children: _fieldData.take(3).map(
+                (e) {
+                  return Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: TextFieldWidget(
+                      labelText: e['labelText'],
+                      prefixIcon: Icon(
+                        e['icon'],
+                        color: Color(0xffa1a1a1),
+                      ),
+                      controller: e['controller'],
+                      validator: e['validator'],
+                      keyboardType: e['keyboardType'],
+                    ),
+                  );
+                },
+              ).toList(),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Parâmetros',
+              style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 10),
+            _accessory(FittedBox(
+              fit: BoxFit.contain,
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                        !currentProduct.product.hasAcessorio
+                            ? 'Quantidade de caixas'
+                            : 'Quantidade',
+                        style: Theme.of(context).textTheme.subtitle1),
+                    TextFieldWidget(
+                      width: 150,
+                      controller: _lensController,
+                      readOnly: false,
+                      focus: caixasFocus,
+                      keyboardType: TextInputType.number,
+                      inputFormattersActivated: true,
+                      prefixIcon: IconButton(
+                        icon: Icon(
+                          Icons.remove,
+                          color: Colors.black26,
+                          size: 30,
+                        ),
+                        onPressed: _onRemoveLens,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.add,
+                          color: Colors.black26,
+                          size: 30,
+                        ),
+                        onPressed: _onAddLens,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )),
+            _checkForAcessorio(Text(
+              'Defina os parâmetros do produto',
+              style: Theme.of(context).textTheme.subtitle1,
+              textAlign: TextAlign.center,
+            )),
+            SizedBox(height: 30),
+            _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
+              stream: _productWidgetBloc.pacientInfoOut,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return _checkForAcessorio(InputDecorator(
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(0),
+                    labelText: 'Escolha os olhos',
+                    labelStyle: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                    alignLabelWithHint: true,
+                    prefixIcon: Icon(
+                      Icons.remove_red_eye,
+                      color: Color(0xffA1A1A1),
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: DropdownButton(
+                        value: snapshot.data['current'],
+                        items: [
                           'Olho direito',
-                          style: Theme.of(context).textTheme.headline5,
-                          textAlign: TextAlign.center,
-                        )),
-                        SizedBox(height: 30),
-                        FittedBox(
-                          fit: BoxFit.contain,
+                          'Olho esquerdo',
+                          'Mesmo grau em ambos',
+                          'Graus diferentes em cada olho',
+                        ].map(
+                          (e) {
+                            return DropdownMenuItem(
+                              child: FittedBox(
+                                  fit: BoxFit.contain, child: Text('$e')),
+                              value: e,
+                            );
+                          },
+                        ).toList(),
+                        onChanged: (value) => _onAddCurrentParam({
+                          'current': value,
+                        }, context),
+                      ),
+                    ),
+                  ),
+                )
+                    //   DropdownWidget(
+                    //   labelText: 'Escolha os olhos',
+                    //   items: [
+                    //     'Olho direito',
+                    //     'Olho esquerdo',
+                    //     'Mesmo grau em ambos',
+                    //     'Graus diferentes em cada olho',
+                    //   ],
+                    //   onChanged: (value) => _onAddCurrentParam({
+                    //     'current': value,
+                    //   }),
+                    //   currentValue: snapshot.data['current'],
+                    // )
+                    );
+              },
+            )),
+            _checkForAcessorio(SizedBox(height: 20)),
+            _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
+              stream: _productWidgetBloc.pacientInfoOut,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.data['current'] !=
+                    'Graus diferentes em cada olho') {
+                  return Column(
+                    children: <Widget>[
+                      _checkForAcessorio(Text(
+                        '${snapshot.data['current']}',
+                        style: Theme.of(context).textTheme.headline5,
+                        textAlign: TextAlign.center,
+                      )),
+                      SizedBox(height: 30),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Container(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
+                              Text(
                                   !currentProduct.product.hasAcessorio
                                       ? 'Quantidade de caixas'
                                       : 'Quantidade',
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style: Theme.of(context).textTheme.subtitle1),
+                              TextFieldWidget(
+                                width: 150,
+                                controller: _lensController,
+                                readOnly: false,
+                                focus: caixasFocus,
+                                keyboardType: TextInputType.number,
+                                inputFormattersActivated: true,
+                                prefixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.remove,
+                                    color: Colors.black26,
+                                    size: 30,
+                                  ),
+                                  onPressed: _onRemoveLens,
                                 ),
-                              ),
-                              FittedBox(
-                                fit: BoxFit.contain,
-                                child: TextFieldWidget(
-                                  width: 120,
-                                  controller: _lensDireitoController,
-                                  readOnly: false,
-                                  focus: caixasOlhoDireitoFocus,
-                                  keyboardType: TextInputType.number,
-                                  inputFormattersActivated: true,
-                                  prefixIcon: IconButton(
-                                    icon: Icon(
-                                      Icons.remove,
-                                      color: Colors.black26,
-                                      size: 30,
-                                    ),
-                                    onPressed: _onRemoveLensDireito,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.add,
+                                    color: Colors.black26,
+                                    size: 30,
                                   ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      Icons.add,
-                                      color: Colors.black26,
-                                      size: 30,
-                                    ),
-                                    onPressed: _onAddLensDireito,
-                                  ),
+                                  onPressed: _onAddLens,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        StreamBuilder(
-                            stream: _productBloc.parametroListStream,
-                            builder: (context, parametroSnapshot) {
-                              if (!parametroSnapshot.hasData ||
-                                  parametroSnapshot.data.isLoading) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              }
-
-                              final _productParams =
-                                  generateProductParams(parametroSnapshot.data);
-
-                              return ListView.separated(
-                                shrinkWrap: true,
-                                primary: false,
-                                itemCount: _productParams.length,
-                                separatorBuilder: (context, index) => SizedBox(
-                                  height: 10,
-                                ),
-                                itemBuilder: (context, index) {
-                                  return _productParams[index]['enabled']
-                                      ? TextFieldWidget(
-                                          readOnly: true,
-                                          suffixIcon: Icon(
-                                            Icons.keyboard_arrow_down,
-                                            color: Color(0xffa1a1a1),
-                                          ),
-                                          controller: TextEditingController()
-                                            ..text =
-                                                "${snapshot.data['Graus diferentes em cada olho']['direito'][_productParams[index]['key']].toString()}",
-                                          labelText: _productParams[index]
-                                              ['labelText'],
-                                          onTap: () => _onShowOptions(
-                                            _productParams[index],
-                                            key: 'direito',
-                                          ),
-                                        )
-                                      : Container();
-                                },
+                      ),
+                      SizedBox(height: 30),
+                      StreamBuilder(
+                          stream: _productBloc.parametroListStream,
+                          builder: (context, parametroSnapshot) {
+                            if (!parametroSnapshot.hasData ||
+                                parametroSnapshot.data.isLoading) {
+                              return Center(
+                                child: CircularProgressIndicator(),
                               );
-                            }),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Column(
-                      children: <Widget>[
-                        _checkForAcessorio(Text(
-                          'Olho esquerdo',
-                          style: Theme.of(context).textTheme.headline5,
-                          textAlign: TextAlign.center,
-                        )),
-                        SizedBox(height: 30),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              !currentProduct.product.hasAcessorio
-                                  ? 'Quantidade de caixas'
-                                  : 'Quantidade',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            TextFieldWidget(
-                              width: 120,
-                              controller: _lensEsquerdoController,
-                              readOnly: false,
-                              focus: caixasOlhoEsquerdoFocus,
-                              keyboardType: TextInputType.number,
-                              inputFormattersActivated: true,
-                              prefixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.remove,
-                                  color: Colors.black26,
-                                  size: 30,
-                                ),
-                                onPressed: _onRemoveLensEsquerdo,
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.add,
-                                  color: Colors.black26,
-                                  size: 30,
-                                ),
-                                onPressed: _onAddLensEsquerdo,
-                              ),
-                            ),
-                          ],
-                        ),
-                        StreamBuilder(
-                            stream: _productBloc.parametroListStream,
-                            builder: (context, parametroSnapshot) {
-                              if (!parametroSnapshot.hasData ||
-                                  parametroSnapshot.data.isLoading) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              }
+                            }
+                            final _productParams =
+                                generateProductParams(parametroSnapshot.data);
 
-                              final _productParams =
-                                  generateProductParams(parametroSnapshot.data);
-
-                              return ListView.separated(
-                                shrinkWrap: true,
-                                primary: false,
-                                itemCount: _productParams.length,
-                                separatorBuilder: (context, index) => SizedBox(
-                                  height: 10,
-                                ),
-                                itemBuilder: (context, index) {
-                                  return _productParams[index]['enabled']
-                                      ? TextFieldWidget(
-                                          readOnly: true,
-                                          suffixIcon: Icon(
-                                            Icons.keyboard_arrow_down,
-                                            color: Color(0xffa1a1a1),
-                                          ),
-                                          controller: TextEditingController()
-                                            ..text =
-                                                "${snapshot.data['Graus diferentes em cada olho']['esquerdo'][_productParams[index]['key']].toString()}",
-                                          labelText: _productParams[index]
-                                              ['labelText'],
-                                          onTap: () => _onShowOptions(
-                                            _productParams[index],
-                                            key: 'esquerdo',
-                                          ),
-                                        )
-                                      : Container();
-                                },
-                              );
-                            }),
-                      ],
-                    ),
-                  ],
-                );
-              }
-            },
-          )),
-          SizedBox(
-            height: 20,
-          ),
-          SizedBox(height: 10),
-          currentProduct.product.hasTest && widget.type != "T"
-              ? _checkForAcessorio(StreamBuilder<Map>(
-                  stream: _productWidgetBloc.pacientInfoOut,
-                  builder: (context, snapshot) {
-                    return DropdownWidget(
-                        items: ['Não', 'Sim'],
-                        currentValue:
-                            snapshot.hasData ? snapshot.data['test'] : null,
-                        labelText: 'Teste?',
-                        onChanged: _onChangedTest);
-                  },
-                ))
-              : Container(),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.symmetric(
-              vertical: 30,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  offset: Offset(0, 2),
-                  blurRadius: 10,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
+                            return ListView.separated(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: _productParams.length,
+                              separatorBuilder: (context, index) => SizedBox(
+                                height: 10,
+                              ),
+                              itemBuilder: (context, index) {
+                                return _productParams[index]['enabled']
+                                    ? TextFieldWidget(
+                                        readOnly: true,
+                                        suffixIcon: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          color: Color(0xffa1a1a1),
+                                        ),
+                                        controller: TextEditingController()
+                                          ..text =
+                                              "${snapshot.data[snapshot.data['current']][_productParams[index]['key']].toString()}",
+                                        labelText: _productParams[index]
+                                            ['labelText'],
+                                        onTap: () => _onShowOptions(
+                                          _productParams[index],
+                                        ),
+                                      )
+                                    : Container();
+                              },
+                            );
+                          }),
+                    ],
+                  );
+                } else {
+                  return Column(
                     children: <Widget>[
-                      ListTileMoreCustomizable(
-                        contentPadding: const EdgeInsets.all(0),
-                        horizontalTitleGap: 0,
-                        leading: Image.asset(
-                          'assets/icons/map_marker.png',
+                      Column(
+                        children: <Widget>[
+                          _checkForAcessorio(Text(
+                            'Olho direito',
+                            style: Theme.of(context).textTheme.headline5,
+                            textAlign: TextAlign.center,
+                          )),
+                          SizedBox(height: 30),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    !currentProduct.product.hasAcessorio
+                                        ? 'Quantidade de caixas'
+                                        : 'Quantidade',
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ),
+                                ),
+                                FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: TextFieldWidget(
+                                    width: 120,
+                                    controller: _lensDireitoController,
+                                    readOnly: false,
+                                    focus: caixasOlhoDireitoFocus,
+                                    keyboardType: TextInputType.number,
+                                    inputFormattersActivated: true,
+                                    prefixIcon: IconButton(
+                                      icon: Icon(
+                                        Icons.remove,
+                                        color: Colors.black26,
+                                        size: 30,
+                                      ),
+                                      onPressed: _onRemoveLensDireito,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        Icons.add,
+                                        color: Colors.black26,
+                                        size: 30,
+                                      ),
+                                      onPressed: _onAddLensDireito,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          StreamBuilder(
+                              stream: _productBloc.parametroListStream,
+                              builder: (context, parametroSnapshot) {
+                                if (!parametroSnapshot.hasData ||
+                                    parametroSnapshot.data.isLoading) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                }
+
+                                final _productParams = generateProductParams(
+                                    parametroSnapshot.data);
+
+                                return ListView.separated(
+                                  shrinkWrap: true,
+                                  primary: false,
+                                  itemCount: _productParams.length,
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(
+                                    height: 10,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return _productParams[index]['enabled']
+                                        ? TextFieldWidget(
+                                            readOnly: true,
+                                            suffixIcon: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Color(0xffa1a1a1),
+                                            ),
+                                            controller: TextEditingController()
+                                              ..text =
+                                                  "${snapshot.data['Graus diferentes em cada olho']['direito'][_productParams[index]['key']].toString()}",
+                                            labelText: _productParams[index]
+                                                ['labelText'],
+                                            onTap: () => _onShowOptions(
+                                              _productParams[index],
+                                              key: 'direito',
+                                            ),
+                                          )
+                                        : Container();
+                                  },
+                                );
+                              }),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Column(
+                        children: <Widget>[
+                          _checkForAcessorio(Text(
+                            'Olho esquerdo',
+                            style: Theme.of(context).textTheme.headline5,
+                            textAlign: TextAlign.center,
+                          )),
+                          SizedBox(height: 30),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                !currentProduct.product.hasAcessorio
+                                    ? 'Quantidade de caixas'
+                                    : 'Quantidade',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                              TextFieldWidget(
+                                width: 120,
+                                controller: _lensEsquerdoController,
+                                readOnly: false,
+                                focus: caixasOlhoEsquerdoFocus,
+                                keyboardType: TextInputType.number,
+                                inputFormattersActivated: true,
+                                prefixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.remove,
+                                    color: Colors.black26,
+                                    size: 30,
+                                  ),
+                                  onPressed: _onRemoveLensEsquerdo,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.add,
+                                    color: Colors.black26,
+                                    size: 30,
+                                  ),
+                                  onPressed: _onAddLensEsquerdo,
+                                ),
+                              ),
+                            ],
+                          ),
+                          StreamBuilder(
+                              stream: _productBloc.parametroListStream,
+                              builder: (context, parametroSnapshot) {
+                                if (!parametroSnapshot.hasData ||
+                                    parametroSnapshot.data.isLoading) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                }
+
+                                final _productParams = generateProductParams(
+                                    parametroSnapshot.data);
+
+                                return ListView.separated(
+                                  shrinkWrap: true,
+                                  primary: false,
+                                  itemCount: _productParams.length,
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(
+                                    height: 10,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return _productParams[index]['enabled']
+                                        ? TextFieldWidget(
+                                            readOnly: true,
+                                            suffixIcon: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Color(0xffa1a1a1),
+                                            ),
+                                            controller: TextEditingController()
+                                              ..text =
+                                                  "${snapshot.data['Graus diferentes em cada olho']['esquerdo'][_productParams[index]['key']].toString()}",
+                                            labelText: _productParams[index]
+                                                ['labelText'],
+                                            onTap: () => _onShowOptions(
+                                              _productParams[index],
+                                              key: 'esquerdo',
+                                            ),
+                                          )
+                                        : Container();
+                                  },
+                                );
+                              }),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+              },
+            )),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(height: 10),
+            currentProduct.product.hasTest && widget.type != "T"
+                ? _checkForAcessorio(StreamBuilder<Map>(
+                    stream: _productWidgetBloc.pacientInfoOut,
+                    builder: (context, snapshot) {
+                      return DropdownWidget(
+                          items: ['Não', 'Sim'],
+                          currentValue:
+                              snapshot.hasData ? snapshot.data['test'] : null,
+                          labelText: 'Teste?',
+                          onChanged: _onChangedTest);
+                    },
+                  ))
+                : Container(),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              margin: const EdgeInsets.symmetric(
+                vertical: 30,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(0, 2),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        ListTileMoreCustomizable(
+                          contentPadding: const EdgeInsets.all(0),
+                          horizontalTitleGap: 0,
+                          leading: Image.asset(
+                            'assets/icons/map_marker.png',
+                            width: 25,
+                            height: 25,
+                          ),
+                          title: Text(
+                            'Endereço de Entrega',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 16,
+                                    ),
+                          ),
+                          subtitle: Text(
+                            '${currentProduct.product.enderecoEntrega}',
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    height: 30,
+                    color: Color(0xffF1F1F1),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/truck.png',
                           width: 25,
                           height: 25,
                         ),
-                        title: Text(
-                          'Endereço de Entrega',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                                fontSize: 16,
-                              ),
+                        SizedBox(width: 10),
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                            'Entrega prevista em ${currentProduct.product.previsaoEntrega} dias',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 16,
+                                    ),
+                          ),
                         ),
-                        subtitle: Text(
-                          '${currentProduct.product.enderecoEntrega}',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  height: 30,
-                  color: Color(0xffF1F1F1),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset(
-                        'assets/icons/truck.png',
-                        width: 25,
-                        height: 25,
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(
+                top: 20,
+              ),
+              child: !_isLoadingPrimaryButton
+                  ? ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).accentColor,
+                          elevation: 0),
+                      icon: Icon(
+                        MaterialCommunityIcons.plus,
+                        color: Colors.white,
                       ),
-                      SizedBox(width: 10),
-                      FittedBox(
+                      onPressed: () async {
+                        setState(() {
+                          _isLoadingPrimaryButton = true;
+                        });
+                        await _onPurchase(context);
+                        setState(() {
+                          _isLoadingPrimaryButton = false;
+                        });
+                      },
+                      label: FittedBox(
+                        fit: BoxFit.contain,
+                        child: AutoSizeText(
+                          'Adicione e Continue Solicitando',
+                          overflow: TextOverflow.fade,
+                          style: Theme.of(context).textTheme.button.copyWith(
+                              color: Colors.white,
+                              fontSize: _verifyFontSize2()),
+                        ),
+                      ),
+                    )
+                  : Center(child: CircularProgressIndicator()),
+            ),
+            Column(
+                children: _renderButtonData(currentProduct.product).map(
+              (e) {
+                return Container(
+                    margin: const EdgeInsets.only(
+                      top: 20,
+                    ),
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: e['color'], elevation: 0),
+                      icon: e['icon'],
+                      onPressed: e['onTap'],
+                      label: FittedBox(
                         fit: BoxFit.contain,
                         child: Text(
-                          'Entrega prevista em ${currentProduct.product.previsaoEntrega} dias',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                                fontSize: 16,
-                              ),
+                          e['text'] ?? "-",
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.button.copyWith(
+                              color: e['textColor'],
+                              fontSize: _verifyFontSize()),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(
-              top: 20,
-            ),
-            child: !_isLoadingPrimaryButton
-                ? ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).accentColor,
-                        elevation: 0),
-                    icon: Icon(
-                      MaterialCommunityIcons.plus,
-                      color: Colors.white,
-                    ),
-                    onPressed: () async {
-                      setState(() {
-                        _isLoadingPrimaryButton = true;
-                      });
-                      await _onPurchase();
-                      setState(() {
-                        _isLoadingPrimaryButton = false;
-                      });
-                    },
-                    label: FittedBox(
-                      fit: BoxFit.contain,
-                      child: AutoSizeText(
-                        'Adicione e Continue Solicitando',
-                        overflow: TextOverflow.fade,
-                        style: Theme.of(context).textTheme.button.copyWith(
-                            color: Colors.white, fontSize: _verifyFontSize2()),
+                    ));
+              },
+            ).toList()),
+            Container(
+              margin: const EdgeInsets.only(
+                top: 20,
+              ),
+              child: !_isLoadingSecondButton
+                  ? ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          elevation: 0),
+                      icon: Image.asset(
+                        'assets/icons/cart.png',
+                        width: 20,
+                        height: 20,
+                        color: Colors.white,
                       ),
-                    ),
-                  )
-                : Center(child: CircularProgressIndicator()),
-          ),
-          Column(
-              children: _renderButtonData(currentProduct.product).map(
-            (e) {
-              return Container(
-                  margin: const EdgeInsets.only(
-                    top: 20,
-                  ),
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: e['color'], elevation: 0),
-                    icon: e['icon'],
-                    onPressed: e['onTap'],
-                    label: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        e['text'] ?? "-",
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.button.copyWith(
-                            color: e['textColor'], fontSize: _verifyFontSize()),
-                      ),
-                    ),
-                  ));
-            },
-          ).toList()),
-          Container(
-            margin: const EdgeInsets.only(
-              top: 20,
-            ),
-            child: !_isLoadingSecondButton
-                ? ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        elevation: 0),
-                    icon: Image.asset(
-                      'assets/icons/cart.png',
-                      width: 20,
-                      height: 20,
-                      color: Colors.white,
-                    ),
-                    onPressed: () async {
-                      setState(() {
-                        _isLoadingSecondButton = true;
-                      });
-                      log("${currentProduct.product.value}");
+                      onPressed: () async {
+                        setState(() {
+                          _isLoadingSecondButton = true;
+                        });
+                        log("${currentProduct.product.value}");
 
-                      await _onAddToCart({
-                        'product': currentProduct.product,
-                      }, 'Normal');
-                      setState(() {
-                        _isLoadingSecondButton = false;
-                      });
-                    },
-                    label: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        'Adicionar ao Carrinho',
-                        style: Theme.of(context).textTheme.button.copyWith(
-                            color: Colors.white, fontSize: _verifyFontSize()),
+                        await _onAddToCart({
+                          'product': currentProduct.product,
+                        }, 'Normal');
+                        setState(() {
+                          _isLoadingSecondButton = false;
+                        });
+                      },
+                      label: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'Adicionar ao Carrinho',
+                          style: Theme.of(context).textTheme.button.copyWith(
+                              color: Colors.white, fontSize: _verifyFontSize()),
+                        ),
                       ),
-                    ),
-                  )
-                : Center(child: CircularProgressIndicator()),
-          )
-        ],
+                    )
+                  : Center(child: CircularProgressIndicator()),
+            )
+          ],
+        ),
       ),
     );
   }

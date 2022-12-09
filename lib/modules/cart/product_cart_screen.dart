@@ -89,7 +89,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   String selectPrice(Map<String, dynamic> item) {
     if (item["type"] == "T") {
-      item.update("operation", (value) => "00");
+      item.update("operation", (value) => "03");
     }
 
     if (item["operation"] == "07" && item['tests'] == "Não") {
@@ -105,7 +105,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
       return '';
     } else if (item["operation"] == "01" && item['tests'] == "Não") {
       return 'R\$ ${Helper.intToMoney(item['product'].value)}';
-    } else if (item["operation"] == "00") {
+    } else if (item["operation"] == "03") {
       return '';
     }
     return "";
@@ -149,272 +149,276 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     }
     return WillPopScope(
       onWillPop: () async => false,
-      child: Scaffold(
+      child: ScaffoldMessenger(
         key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Carrinho', style: Theme.of(context).textTheme.headline4),
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-        ),
-        body: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: <Widget>[
-              StreamBuilder(
-                stream: _requestsBloc.cartOut,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      heightFactor: 3,
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasData && snapshot.data.length <= 0) {
-                    return Center(
-                      heightFactor: 3,
-                      child: Text(
-                        'Seu carrinho está vazio',
-                        style: Theme.of(context).textTheme.headline6.copyWith(
-                              color: Color(0xffa1a1a1),
-                              fontSize: 14,
-                            ),
-                      ),
-                    );
-                  }
+        child: Scaffold(
+          appBar: AppBar(
+            title:
+                Text('Carrinho', style: Theme.of(context).textTheme.headline4),
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+          ),
+          body: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: <Widget>[
+                StreamBuilder(
+                  stream: _requestsBloc.cartOut,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        heightFactor: 3,
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasData && snapshot.data.length <= 0) {
+                      return Center(
+                        heightFactor: 3,
+                        child: Text(
+                          'Seu carrinho está vazio',
+                          style: Theme.of(context).textTheme.headline6.copyWith(
+                                color: Color(0xffa1a1a1),
+                                fontSize: 14,
+                              ),
+                        ),
+                      );
+                    }
 
-                  List<Map<String, dynamic>> _data = snapshot.data;
-                  return ListView.separated(
-                    primary: false,
-                    addSemanticIndexes: true,
-                    shrinkWrap: true,
-                    itemCount: _data.length,
-                    separatorBuilder: (context, index) => Divider(
-                      height: 25,
-                      thickness: 1,
-                      color: Colors.black12,
-                    ),
-                    itemBuilder: (context, index) {
-                      if (_data[index]["type"] == "T") {
-                        _data[index].update("operation", (value) => "00");
-                      }
-                      return Column(
-                        children: [
-                          ListTileMoreCustomizable(
-                            contentPadding: const EdgeInsets.all(0),
-                            horizontalTitleGap: 10,
-                            leading: _data[index]["tests"] != "Sim" &&
-                                    _data[index]["type"] != "T"
-                                ? Image.network(
-                                    _data[index]['product'].imageUrl,
-                                    errorBuilder: (context, url, error) =>
-                                        Image.asset(
-                                            'assets/images/no_image_product.jpeg'),
-                                  )
-                                : Image.network(
-                                    _data[index]['product'].imageUrlTest,
-                                    errorBuilder: (context, url, error) =>
-                                        Image.asset(
-                                            'assets/images/no_image_product.jpeg'),
-                                  ),
-                            title: _data[index]["type"] != "T" &&
-                                    _data[index]['tests'] == "Não"
-                                ? Text(
-                                    '${_data[index]['product'].title}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .copyWith(
-                                          fontSize: 14,
-                                        ),
-                                  )
-                                : _data[index]['product'].produtoTeste != null
-                                    ? Text(
-                                        '${_data[index]['product'].produtoTeste}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
-                                              fontSize: 14,
-                                            ),
-                                      )
-                                    : Text(
-                                        '${_data[index]['product'].title}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
-                                              fontSize: 14,
-                                            ),
-                                      ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 5),
-                                Text(
-                                  'Quantidade: ${_data[index]['quantity']}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1
-                                      .copyWith(
-                                        color: Colors.black38,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                SizedBox(height: 5),
-                                Row(
-                                  children: [
-                                    CircleAvatar(
-                                        backgroundColor: Helper.buyTypeBuild(
-                                            context,
-                                            _data[index]['operation'],
-                                            _data[index]['tests'])['color'],
-                                        radius: 10,
-                                        child: Helper.buyTypeBuild(
-                                            context,
-                                            _data[index]['operation'],
-                                            _data[index]['tests'])['icon']),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
+                    List<Map<String, dynamic>> _data = snapshot.data;
+                    return ListView.separated(
+                      primary: false,
+                      addSemanticIndexes: true,
+                      shrinkWrap: true,
+                      itemCount: _data.length,
+                      separatorBuilder: (context, index) => Divider(
+                        height: 25,
+                        thickness: 1,
+                        color: Colors.black12,
+                      ),
+                      itemBuilder: (context, index) {
+                        if (_data[index]["type"] == "T") {
+                          _data[index].update("operation", (value) => "00");
+                        }
+                        return Column(
+                          children: [
+                            ListTileMoreCustomizable(
+                              contentPadding: const EdgeInsets.all(0),
+                              horizontalTitleGap: 10,
+                              leading: _data[index]["tests"] != "Sim" &&
+                                      _data[index]["type"] != "T"
+                                  ? Image.network(
+                                      _data[index]['product'].imageUrl,
+                                      errorBuilder: (context, url, error) =>
+                                          Image.asset(
+                                              'assets/images/no_image_product.jpeg'),
+                                    )
+                                  : Image.network(
+                                      _data[index]['product'].imageUrlTest,
+                                      errorBuilder: (context, url, error) =>
+                                          Image.asset(
+                                              'assets/images/no_image_product.jpeg'),
+                                    ),
+                              title: _data[index]["type"] != "T" &&
+                                      _data[index]['tests'] == "Não"
+                                  ? Text(
+                                      '${_data[index]['product'].title}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle1
                                           .copyWith(
                                             fontSize: 14,
                                           ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(
-                                  selectPrice(_data[index]),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      .copyWith(
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                _data[index]['removeItem'] == 'Sim' ||
-                                        _data[index]['removeItem'] == null
-                                    ? IconButton(
-                                        icon: Icon(
-                                          Icons.close,
-                                          size: 30,
-                                          color: Colors.red,
+                                    )
+                                  : _data[index]['product'].produtoTeste != null
+                                      ? Text(
+                                          '${_data[index]['product'].produtoTeste}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1
+                                              .copyWith(
+                                                fontSize: 14,
+                                              ),
+                                        )
+                                      : Text(
+                                          '${_data[index]['product'].title}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1
+                                              .copyWith(
+                                                fontSize: 14,
+                                              ),
                                         ),
-                                        onPressed: () {
-                                          _removeItem(_data[index]);
-                                        },
-                                      )
-                                    : Container()
-                              ],
-                            ),
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(left: 60),
-                          //   child: Row(
-                          //     children: [
-                          //       _data[index]["operation"] == "01" ||
-                          //               _data[index]["operation"] == "07" &&
-                          //                   _data[index]["tests"] == "Sim"
-                          //           ? Row(
-                          //               children: [
-                          //                 Icon(Icons.remove_red_eye,
-                          //                     color: Colors.black54),
-                          //                 Text(
-                          //                     "\tVocê pediu teste deste produto.",
-                          //                     style: TextStyle(fontSize: 12))
-                          //               ],
-                          //             )
-                          //           : Container(),
-                          //     ],
-                          //   ),
-                          // )
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-              Divider(
-                height: 25,
-                thickness: 1,
-                color: Colors.black12,
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Total',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 18,
-                        ),
-                  ),
-                  StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _requestsBloc.cartOut,
-                      builder: (context, snapshot) {
-                        return Text(
-                          snapshot.hasData
-                              ? 'R\$ ${_totalToPay(snapshot.data)}'
-                              : '',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                                fontSize: 18,
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 5),
+                                  Text(
+                                    'Quantidade: ${_data[index]['quantity']}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        .copyWith(
+                                          color: Colors.black38,
+                                          fontSize: 14,
+                                        ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                          backgroundColor: Helper.buyTypeBuild(
+                                              context,
+                                              _data[index]['operation'],
+                                              _data[index]['tests'])['color'],
+                                          radius: 10,
+                                          child: Helper.buyTypeBuild(
+                                              context,
+                                              _data[index]['operation'],
+                                              _data[index]['tests'])['icon']),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            .copyWith(
+                                              fontSize: 14,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text(
+                                    selectPrice(_data[index]),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
+                                  ),
+                                  _data[index]['removeItem'] == 'Sim' ||
+                                          _data[index]['removeItem'] == null
+                                      ? IconButton(
+                                          icon: Icon(
+                                            Icons.close,
+                                            size: 30,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () {
+                                            _removeItem(_data[index]);
+                                          },
+                                        )
+                                      : Container()
+                                ],
+                              ),
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(left: 60),
+                            //   child: Row(
+                            //     children: [
+                            //       _data[index]["operation"] == "01" ||
+                            //               _data[index]["operation"] == "07" &&
+                            //                   _data[index]["tests"] == "Sim"
+                            //           ? Row(
+                            //               children: [
+                            //                 Icon(Icons.remove_red_eye,
+                            //                     color: Colors.black54),
+                            //                 Text(
+                            //                     "\tVocê pediu teste deste produto.",
+                            //                     style: TextStyle(fontSize: 12))
+                            //               ],
+                            //             )
+                            //           : Container(),
+                            //     ],
+                            //   ),
+                            // )
+                          ],
                         );
-                      }),
-                ],
-              ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xffF1F1F1), elevation: 0),
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                    'Continue Comprando',
-                    style: Theme.of(context).textTheme.button.copyWith(
-                          color: Theme.of(context).accentColor,
-                        ),
-                  ),
+                      },
+                    );
+                  },
                 ),
-                onPressed: _onBackToPurchase,
-              ),
-              SizedBox(height: 20),
-              StreamBuilder<List<Map<String, dynamic>>>(
-                stream: _requestsBloc.cartOut,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container();
-                  }
-                  return Opacity(
-                    opacity: snapshot.data.isEmpty ? 0.5 : 1,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          disabledBackgroundColor:
-                              Theme.of(context).accentColor,
-                          elevation: 0),
-                      child: Text(
-                        'Finalizar Pedido',
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                      onPressed: _lock
-                          ? null
-                          : () {
-                              setState(() {
-                                _lock = true;
-                                _onSubmit();
-                              });
-                            },
+                Divider(
+                  height: 25,
+                  thickness: 1,
+                  color: Colors.black12,
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Total',
+                      style: Theme.of(context).textTheme.headline5.copyWith(
+                            fontSize: 18,
+                          ),
                     ),
-                  );
-                },
-              ),
-            ],
+                    StreamBuilder<List<Map<String, dynamic>>>(
+                        stream: _requestsBloc.cartOut,
+                        builder: (context, snapshot) {
+                          return Text(
+                            snapshot.hasData
+                                ? 'R\$ ${_totalToPay(snapshot.data)}'
+                                : '',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontSize: 18,
+                                    ),
+                          );
+                        }),
+                  ],
+                ),
+                SizedBox(height: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xffF1F1F1), elevation: 0),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'Continue Comprando',
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: Theme.of(context).accentColor,
+                          ),
+                    ),
+                  ),
+                  onPressed: _onBackToPurchase,
+                ),
+                SizedBox(height: 20),
+                StreamBuilder<List<Map<String, dynamic>>>(
+                  stream: _requestsBloc.cartOut,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container();
+                    }
+                    return Opacity(
+                      opacity: snapshot.data.isEmpty ? 0.5 : 1,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            disabledBackgroundColor:
+                                Theme.of(context).accentColor,
+                            elevation: 0),
+                        child: Text(
+                          'Finalizar Pedido',
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                        onPressed: _lock
+                            ? null
+                            : () {
+                                setState(() {
+                                  _lock = true;
+                                  _onSubmit();
+                                });
+                              },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

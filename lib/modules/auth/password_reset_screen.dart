@@ -68,53 +68,56 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Recuperar Senha',
-            textAlign: TextAlign.left,
+    return ScaffoldMessenger(
+      key: _scaffoldKey,
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Recuperar Senha',
+              textAlign: TextAlign.left,
+            ),
+            centerTitle: false,
           ),
-          centerTitle: false,
-        ),
-        key: _scaffoldKey,
-        body: Row(
-          children: [
-            Expanded(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                  child: Text(
-                    "Insira seu email e nós enviaremos para voçê as instruções para mudar sua senha.",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .copyWith(fontSize: 18),
+          key: _scaffoldKey,
+          body: Row(
+            children: [
+              Expanded(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                    child: Text(
+                      "Insira seu email e nós enviaremos para voçê as instruções para mudar sua senha.",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(fontSize: 18),
+                    ),
                   ),
-                ),
-                Padding(
-                    padding: EdgeInsets.only(left: 30, right: 30, bottom: 20),
-                    child: TextFieldWidget(
-                      controller: _emailController,
-                      prefixIcon: Icon(Icons.email, color: Color(0xffA1A1A1)),
-                      labelText: "Email",
-                    )),
-                isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : Container(
-                        width: 150,
-                        child: ElevatedButton(
-                          onPressed: _sendResetEmail,
-                          child: Text(
-                            'Enviar',
-                            style: Theme.of(context).textTheme.button,
+                  Padding(
+                      padding: EdgeInsets.only(left: 30, right: 30, bottom: 20),
+                      child: TextFieldWidget(
+                        controller: _emailController,
+                        prefixIcon: Icon(Icons.email, color: Color(0xffA1A1A1)),
+                        labelText: "Email",
+                      )),
+                  isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : Container(
+                          width: 150,
+                          child: ElevatedButton(
+                            onPressed: _sendResetEmail,
+                            child: Text(
+                              'Enviar',
+                              style: Theme.of(context).textTheme.button,
+                            ),
                           ),
-                        ),
-                      )
-              ],
-            ))
-          ],
-        ));
+                        )
+                ],
+              ))
+            ],
+          )),
+    );
   }
 }

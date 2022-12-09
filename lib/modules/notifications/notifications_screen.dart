@@ -113,99 +113,105 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Notificações'),
-        centerTitle: false,
-      ),
-      body: StreamBuilder(
-        stream: _notificationBloc.notificationsStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.data.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (!snapshot.hasData || snapshot.data.isEmpty) {
-            return Center(
-              child: Text(
-                  "Nao foi possivel carregar suas notificacoes no momento."),
-            );
-          }
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Notificações'),
+          centerTitle: false,
+        ),
+        body: StreamBuilder(
+          stream: _notificationBloc.notificationsStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || snapshot.data.isLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+              return Center(
+                child: Text(
+                    "Nao foi possivel carregar suas notificacoes no momento."),
+              );
+            }
 
-          List<NotificationModel> _notifications = snapshot.data.list;
-          return ListView.separated(
-            padding: const EdgeInsets.all(20),
-            itemCount: _notifications.length,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 20,
-            ),
-            itemBuilder: (context, index) {
-              return Opacity(
-                opacity: _notifications[index].isRead ? 0.5 : 1,
-                child: ListTileMoreCustomizable(
-                  onTap: (value) => _onTap(
-                    _notifications[index],
-                  ),
-                  contentPadding: const EdgeInsets.all(0),
-                  horizontalTitleGap: 0,
-                  leading: Image.asset(
-                    _renderIcon(
+            List<NotificationModel> _notifications = snapshot.data.list;
+            return ListView.separated(
+              padding: const EdgeInsets.all(20),
+              itemCount: _notifications.length,
+              separatorBuilder: (context, index) => SizedBox(
+                height: 20,
+              ),
+              itemBuilder: (context, index) {
+                return Opacity(
+                  opacity: _notifications[index].isRead ? 0.5 : 1,
+                  child: ListTileMoreCustomizable(
+                    onTap: (value) => _onTap(
                       _notifications[index],
                     ),
-                    width: 25,
-                    height: 25,
-                  ),
-                  title: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        FittedBox(
-                          fit: BoxFit.contain,
-                          child: AutoSizeText(
-                            _notifications[index].title,
-                            style:
-                                Theme.of(context).textTheme.headline5.copyWith(
-                                      fontSize: 16,
-                                    ),
+                    contentPadding: const EdgeInsets.all(0),
+                    horizontalTitleGap: 0,
+                    leading: Image.asset(
+                      _renderIcon(
+                        _notifications[index],
+                      ),
+                      width: 25,
+                      height: 25,
+                    ),
+                    title: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: AutoSizeText(
+                              _notifications[index].title,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 16,
+                                  ),
+                            ),
                           ),
-                        ),
-                        FittedBox(
-                          fit: BoxFit.contain,
-                          child: AutoSizeText(
-                            Helper.dateToMonth(
-                              _notifications[index].date,
-                            ).replaceAll('de', '').replaceAll('\n', ''),
-                            style:
-                                Theme.of(context).textTheme.subtitle1.copyWith(
-                                      fontSize: 14,
-                                      color: Colors.black38,
-                                    ),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: AutoSizeText(
+                              Helper.dateToMonth(
+                                _notifications[index].date,
+                              ).replaceAll('de', '').replaceAll('\n', ''),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(
+                                    fontSize: 14,
+                                    color: Colors.black38,
+                                  ),
+                            ),
                           ),
+                        ],
+                      ),
+                    ),
+                    trailing: IconButton(
+                        icon: Icon(
+                          Icons.cancel_outlined,
+                          color: Colors.redAccent,
                         ),
-                      ],
+                        onPressed: () {
+                          _deleteNotifications(_notifications[index].id);
+                        }),
+                    subtitle: AutoSizeText(
+                      _notifications[index].subtitle,
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            fontSize: 14,
+                          ),
                     ),
                   ),
-                  trailing: IconButton(
-                      icon: Icon(
-                        Icons.cancel_outlined,
-                        color: Colors.redAccent,
-                      ),
-                      onPressed: () {
-                        _deleteNotifications(_notifications[index].id);
-                      }),
-                  subtitle: AutoSizeText(
-                    _notifications[index].subtitle,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

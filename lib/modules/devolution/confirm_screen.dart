@@ -347,224 +347,228 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Devolução'),
-          centerTitle: false,
-        ),
-        body: StreamBuilder(
-            stream: _devolutionWidgetBloc.currentDevolutionStream,
-            builder: (context, productSnapshot) {
-              if (!productSnapshot.hasData || productSnapshot.data.isLoading) {
-                return Center(child: CircularProgressIndicator());
-              }
-              return ListView(
-                padding: const EdgeInsets.all(20),
-                children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    height: 100,
-                    child: ListTileMoreCustomizable(
-                        contentPadding: const EdgeInsets.all(5),
-                        leading: CachedNetworkImage(
-                          errorWidget: (context, url, error) => Image.asset(
-                              'assets/images/no_image_product.jpeg'),
-                          imageUrl: productSnapshot
-                              .data.devolution.product["imageUrl"],
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        ),
-                        title: Text(
-                            "${productSnapshot.data.devolution.product["title"]}"),
-                        subtitle: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                                "${productSnapshot.data.devolution.quantidade} Caixas"),
-                            SizedBox(width: 20),
-                            Text(
-                                "NF ${productSnapshot.data.devolution.product["nf"]}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    .copyWith(fontSize: 15))
-                          ],
-                        )),
-                  ),
-                  Divider(
-                    height: 20,
-                    thickness: 1,
-                  ),
-                  Text(
-                    'Informações do Paciente',
-                    style: Theme.of(context).textTheme.headline5,
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    'Separe o pedido por paciente, assim você terá mais controle de reposição e acumulará Pontos que se tornam Crédito Financeiro!',
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 30),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    primary: false,
-                    itemCount: _pacientInfo.length,
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: 10,
-                    ),
-                    itemBuilder: (context, index) {
-                      return TextFieldWidget(
-                        labelText: _pacientInfo[index]['labelText'],
-                        prefixIcon: Icon(
-                          _pacientInfo[index]['icon'],
-                          color: Color(0xffA1A1A1),
-                        ),
-                        controller: _pacientInfo[index]['controller'],
-                        validator: _pacientInfo[index]['validator'],
-                        keyboardType: _pacientInfo[index]['keyboardType'],
-                      );
-                    },
-                  ),
-                  SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'Quantidade de caixas',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      TextFieldWidget(
-                          width: 120,
-                          controller: _lensController,
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          inputFormattersActivated: true,
-                          prefixIcon: IconButton(
-                            icon: Icon(
-                              Icons.remove,
-                              color: Colors.black26,
-                              size: 30,
-                            ),
-                            onPressed: _onRemoveLens,
+    return ScaffoldMessenger(
+      key: _scaffoldKey,
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text('Devolução'),
+            centerTitle: false,
+          ),
+          body: StreamBuilder(
+              stream: _devolutionWidgetBloc.currentDevolutionStream,
+              builder: (context, productSnapshot) {
+                if (!productSnapshot.hasData ||
+                    productSnapshot.data.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      height: 100,
+                      child: ListTileMoreCustomizable(
+                          contentPadding: const EdgeInsets.all(5),
+                          leading: CachedNetworkImage(
+                            errorWidget: (context, url, error) => Image.asset(
+                                'assets/images/no_image_product.jpeg'),
+                            imageUrl: productSnapshot
+                                .data.devolution.product["imageUrl"],
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
                           ),
-                          suffixIcon: IconButton(
+                          title: Text(
+                              "${productSnapshot.data.devolution.product["title"]}"),
+                          subtitle: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                  "${productSnapshot.data.devolution.quantidade} Caixas"),
+                              SizedBox(width: 20),
+                              Text(
+                                  "NF ${productSnapshot.data.devolution.product["nf"]}",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(fontSize: 15))
+                            ],
+                          )),
+                    ),
+                    Divider(
+                      height: 20,
+                      thickness: 1,
+                    ),
+                    Text(
+                      'Informações do Paciente',
+                      style: Theme.of(context).textTheme.headline5,
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'Separe o pedido por paciente, assim você terá mais controle de reposição e acumulará Pontos que se tornam Crédito Financeiro!',
+                      style: Theme.of(context).textTheme.subtitle1,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 30),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      primary: false,
+                      itemCount: _pacientInfo.length,
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: 10,
+                      ),
+                      itemBuilder: (context, index) {
+                        return TextFieldWidget(
+                          labelText: _pacientInfo[index]['labelText'],
+                          prefixIcon: Icon(
+                            _pacientInfo[index]['icon'],
+                            color: Color(0xffA1A1A1),
+                          ),
+                          controller: _pacientInfo[index]['controller'],
+                          validator: _pacientInfo[index]['validator'],
+                          keyboardType: _pacientInfo[index]['keyboardType'],
+                        );
+                      },
+                    ),
+                    SizedBox(height: 20.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Quantidade de caixas',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        TextFieldWidget(
+                            width: 120,
+                            controller: _lensController,
+                            readOnly: true,
+                            keyboardType: TextInputType.number,
+                            inputFormattersActivated: true,
+                            prefixIcon: IconButton(
                               icon: Icon(
-                                Icons.add,
+                                Icons.remove,
                                 color: Colors.black26,
                                 size: 30,
                               ),
-                              onPressed: () {
-                                _onAddLens(
-                                    productSnapshot.data.devolution.quantidade);
-                              })),
-                    ],
-                  ),
-                  StreamBuilder(
-                      stream: _devolutionWidgetBloc.parametroListStream,
-                      builder: (context, paramsSnapshot) {
-                        if (!paramsSnapshot.hasData ||
-                            paramsSnapshot.data.isLoading) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (!paramsSnapshot.data.isValid) {
-                          return Center(child: Text("Carregando parametros"));
-                        }
+                              onPressed: _onRemoveLens,
+                            ),
+                            suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.black26,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  _onAddLens(productSnapshot
+                                      .data.devolution.quantidade);
+                                })),
+                      ],
+                    ),
+                    StreamBuilder(
+                        stream: _devolutionWidgetBloc.parametroListStream,
+                        builder: (context, paramsSnapshot) {
+                          if (!paramsSnapshot.hasData ||
+                              paramsSnapshot.data.isLoading) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (!paramsSnapshot.data.isValid) {
+                            return Center(child: Text("Carregando parametros"));
+                          }
 
-                        final _productParamsGenerated =
-                            generateProductParams(paramsSnapshot.data);
+                          final _productParamsGenerated =
+                              generateProductParams(paramsSnapshot.data);
 
-                        return Column(
-                          children: [
-                            DropdownWidget(
-                              labelText: 'Escolha o olho',
-                              items: [
-                                'Olho direito',
-                                'Olho esquerdo',
-                              ],
-                              onChanged: (value) => _addOlho(value),
-                              currentValue: 'Olho direito',
-                            ),
-                            SizedBox(height: 20.0),
-                            Text(
-                              'Parâmetros',
-                              style: Theme.of(context).textTheme.headline5,
-                              textAlign: TextAlign.center,
-                            ),
-                            Text(
-                              'Defina os parâmetros do produto',
-                              style: Theme.of(context).textTheme.subtitle1,
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 30),
-                            ListView.separated(
-                              shrinkWrap: true,
-                              primary: false,
-                              itemCount: _productParamsGenerated.length,
-                              separatorBuilder: (context, index) => SizedBox(
-                                height: 10,
+                          return Column(
+                            children: [
+                              DropdownWidget(
+                                labelText: 'Escolha o olho',
+                                items: [
+                                  'Olho direito',
+                                  'Olho esquerdo',
+                                ],
+                                onChanged: (value) => _addOlho(value),
+                                currentValue: 'Olho direito',
                               ),
-                              itemBuilder: (context, index) {
-                                return TextFieldWidget(
-                                  readOnly: true,
-                                  labelText: _productParamsGenerated[index]
-                                      ['labelText'],
-                                  suffixIcon: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: Color(0xffa1a1a1),
-                                  ),
-                                  controller: _productParamsGenerated[index]
-                                      ['controller'],
-                                  onTap: () => _onShowOptions(
-                                      _productParamsGenerated[index],
-                                      key: 'esquerdo',
-                                      param: _productParamsGenerated[index]
-                                          ['key']),
-                                );
-                              },
+                              SizedBox(height: 20.0),
+                              Text(
+                                'Parâmetros',
+                                style: Theme.of(context).textTheme.headline5,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                'Defina os parâmetros do produto',
+                                style: Theme.of(context).textTheme.subtitle1,
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 30),
+                              ListView.separated(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount: _productParamsGenerated.length,
+                                separatorBuilder: (context, index) => SizedBox(
+                                  height: 10,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return TextFieldWidget(
+                                    readOnly: true,
+                                    labelText: _productParamsGenerated[index]
+                                        ['labelText'],
+                                    suffixIcon: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Color(0xffa1a1a1),
+                                    ),
+                                    controller: _productParamsGenerated[index]
+                                        ['controller'],
+                                    onTap: () => _onShowOptions(
+                                        _productParamsGenerated[index],
+                                        key: 'esquerdo',
+                                        param: _productParamsGenerated[index]
+                                            ['key']),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        }),
+                    SizedBox(height: 30),
+                    SizedBox(height: 20),
+                    StreamBuilder<bool>(
+                      stream: _devolutionWidgetBloc.buttonCartStatusOut,
+                      builder: (context, snapshot) {
+                        return Opacity(
+                          opacity: 1,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              _onSubmit(
+                                  productSnapshot
+                                      .data.devolution.product["group"],
+                                  productSnapshot
+                                      .data.devolution.product["num_serie"],
+                                  productSnapshot
+                                      .data.devolution.product["title"]);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                disabledBackgroundColor:
+                                    Theme.of(context).primaryColor,
+                                backgroundColor:
+                                    Theme.of(context).primaryColor),
+                            icon: Image.asset(
+                              'assets/icons/cart.png',
+                              width: 20,
+                              height: 20,
+                              color: Colors.white,
                             ),
-                          ],
+                            label: Text(
+                              'Confirmar Solicitação',
+                              style: Theme.of(context).textTheme.button,
+                            ),
+                          ),
                         );
-                      }),
-                  SizedBox(height: 30),
-                  SizedBox(height: 20),
-                  StreamBuilder<bool>(
-                    stream: _devolutionWidgetBloc.buttonCartStatusOut,
-                    builder: (context, snapshot) {
-                      return Opacity(
-                        opacity: 1,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            _onSubmit(
-                                productSnapshot
-                                    .data.devolution.product["group"],
-                                productSnapshot
-                                    .data.devolution.product["num_serie"],
-                                productSnapshot
-                                    .data.devolution.product["title"]);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              disabledBackgroundColor:
-                                  Theme.of(context).primaryColor,
-                              backgroundColor: Theme.of(context).primaryColor),
-                          icon: Image.asset(
-                            'assets/icons/cart.png',
-                            width: 20,
-                            height: 20,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            'Confirmar Solicitação',
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              );
-            }));
+                      },
+                    ),
+                  ],
+                );
+              })),
+    );
   }
 }

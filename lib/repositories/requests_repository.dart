@@ -121,7 +121,7 @@ class RequestsRepository {
           'olho_esquerdo': e['Olho esquerdo'] ?? null,
           'olho_ambos': e['Mesmo grau em ambos'] ?? null
         };
-      } else if (e["operation"] == "00") {
+      } else if (e["operation"] == "03") {
         return {
           'type': e['type'],
           'operation': e['operation'],

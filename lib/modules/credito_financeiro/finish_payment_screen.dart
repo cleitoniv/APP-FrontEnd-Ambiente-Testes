@@ -214,190 +214,198 @@ class _FinishPaymentState extends State<FinishPayment> {
         ),
       );
     }
-    return Scaffold(
-        key: _scaffoldKey,
-        resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(133),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+    return ScaffoldMessenger(
+      key: _scaffoldKey,
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(133),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(0, 2),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                  ),
+                ],
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  offset: Offset(0, 2),
-                  blurRadius: 10,
-                  spreadRadius: 1,
-                ),
-              ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  AppBar(
+                    title: Text('Pagamento'),
+                    centerTitle: false,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Total',
+                          style: Theme.of(context).textTheme.headline5.copyWith(
+                                fontSize: 18,
+                              ),
+                        ),
+                        StreamBuilder(
+                          stream: _creditoFinanceiroBloc.creditoFinaceiroStream,
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            return Text(
+                              'R\$ ${Helper.intToMoney(snapshot.data.valor)}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 16,
+                                  ),
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                AppBar(
-                  title: Text('Pagamento'),
-                  centerTitle: false,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
+          ),
+          body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        'Total',
+                        "Parcelamento",
                         style: Theme.of(context).textTheme.headline5.copyWith(
                               fontSize: 18,
                             ),
                       ),
-                      StreamBuilder(
-                        stream: _creditoFinanceiroBloc.creditoFinaceiroStream,
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-
-                          return Text(
-                            'R\$ ${Helper.intToMoney(snapshot.data.valor)}',
-                            style:
-                                Theme.of(context).textTheme.headline5.copyWith(
-                                      fontSize: 16,
+                      Container(
+                        height: 20,
+                      ),
+                      Container(
+                        decoration: ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                width: 1.0,
+                                style: BorderStyle.solid,
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                          ),
+                        ),
+                        width: double.infinity,
+                        child: DropdownButtonHideUnderline(
+                          child: ButtonTheme(
+                            alignedDropdown: true,
+                            child: DropdownButton<String>(
+                              value: _dropdownValueStatus
+                                  ? dropdownValue
+                                  : _installments[0],
+                              icon: Icon(Icons.arrow_downward),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: TextStyle(color: Colors.deepPurple),
+                              underline: Container(
+                                height: 2,
+                                color: Colors.deepPurpleAccent,
+                              ),
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  print("---");
+                                  print(newValue);
+                                  _dropdownValueStatus = true;
+                                  _installmentsSelected =
+                                      _installments.indexOf(newValue) + 1;
+                                  dropdownValue = newValue;
+                                });
+                              },
+                              items: _installments
+                                  .map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 10,
+                      ),
+                      !_paymentMethod
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Código CCV do Cartão",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(fontSize: 18),
+                                ),
+                                Container(height: 20),
+                                Container(
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          width: 1.0,
+                                          style: BorderStyle.solid,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0)),
                                     ),
-                          );
-                        },
-                      )
+                                  ),
+                                  child: TextFieldWidget(
+                                    controller: _ccvController,
+                                    prefixIcon: Icon(
+                                      Icons.lock,
+                                      color: Color(0xffA1A1A1),
+                                    ),
+                                    width: 120,
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                )
+                              ],
+                            )
+                          : Container(height: 20),
                     ],
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Parcelamento",
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 18,
-                          ),
+                  ElevatedButton(
+                    onPressed:
+                        _isButtonDisabled ? null : _onSubmit, // _onSubmit,
+                    child: Text(
+                      'Finalizar Pedido',
+                      style: Theme.of(context).textTheme.button,
                     ),
-                    Container(
-                      height: 20,
-                    ),
-                    Container(
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              width: 1.0,
-                              style: BorderStyle.solid,
-                              color: Theme.of(context).primaryColor),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                      ),
-                      width: double.infinity,
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<String>(
-                            value: _dropdownValueStatus
-                                ? dropdownValue
-                                : _installments[0],
-                            icon: Icon(Icons.arrow_downward),
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.deepPurple),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.deepPurpleAccent,
-                            ),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                print("---");
-                                print(newValue);
-                                _dropdownValueStatus = true;
-                                _installmentsSelected =
-                                    _installments.indexOf(newValue) + 1;
-                                dropdownValue = newValue;
-                              });
-                            },
-                            items: _installments
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 10,
-                    ),
-                    !_paymentMethod
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Código CCV do Cartão",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    .copyWith(fontSize: 18),
-                              ),
-                              Container(height: 20),
-                              Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                        width: 1.0,
-                                        style: BorderStyle.solid,
-                                        color: Theme.of(context).primaryColor),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                ),
-                                child: TextFieldWidget(
-                                  controller: _ccvController,
-                                  prefixIcon: Icon(
-                                    Icons.lock,
-                                    color: Color(0xffA1A1A1),
-                                  ),
-                                  width: 120,
-                                  keyboardType: TextInputType.number,
-                                ),
-                              )
-                            ],
-                          )
-                        : Container(height: 20),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: _isButtonDisabled ? null : _onSubmit, // _onSubmit,
-                  child: Text(
-                    'Finalizar Pedido',
-                    style: Theme.of(context).textTheme.button,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 }

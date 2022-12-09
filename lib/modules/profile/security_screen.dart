@@ -123,99 +123,101 @@ class _SecurityScreenState extends State<SecurityScreen> {
 //        body: Center(child: CircularProgressIndicator(),),
 //      );
 //    }
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Segurança'),
-        centerTitle: false,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: <Widget>[
-          Text(
-            'Alterar sua senha',
-            style: Theme.of(context).textTheme.headline5,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Para alterar sua senha, digite a nova senha e confirme.',
-            style: Theme.of(context).textTheme.subtitle1,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 30),
-          Form(
-            key: _formKey,
-            child: ListView.separated(
-                shrinkWrap: true,
-                primary: false,
-                itemCount: _data.length,
-                separatorBuilder: (context, index) => SizedBox(
-                      height: 10,
-                    ),
-                itemBuilder: (context, index) {
-                  return StreamBuilder<bool>(
-                    stream: _profileWidgetBloc.securityShowPasswordOut,
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      if (_data[index]['type'] == 'senha') {
-                        return TextFieldWidget(
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: _passwordObscure,
-                          labelText: _data[index]['labelText'],
-                          suffixIcon: IconButton(
-                            onPressed: () =>
-                                _onShowPasswordType(_data[index]['type']),
-                            icon: Icon(
-                              snapshot.data
-                                  ? MaterialCommunityIcons.eye
-                                  : MaterialCommunityIcons.eye_off,
-                              color: Color(0xffa1a1a1),
-                            ),
-                          ),
-                          prefixIcon: Icon(
-                            MaterialCommunityIcons.lock,
-                            color: Color(0xffA1A1A1),
-                          ),
-                          controller: _data[index]['controller'],
-                          validator: _data[index]['validator'],
-                        );
-                      } else {
-                        return TextFieldWidget(
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: _passwordConfirmObscure,
-                          labelText: _data[index]['labelText'],
-                          suffixIcon: IconButton(
-                            onPressed: () =>
-                                _onShowPasswordType(_data[index]['type']),
-                            icon: Icon(
-                              snapshot.data
-                                  ? MaterialCommunityIcons.eye
-                                  : MaterialCommunityIcons.eye_off,
-                              color: Color(0xffa1a1a1),
-                            ),
-                          ),
-                          prefixIcon: Icon(
-                            MaterialCommunityIcons.lock,
-                            color: Color(0xffA1A1A1),
-                          ),
-                          controller: _data[index]['controller'],
-                          validator: _data[index]['validator'],
-                        );
-                      }
-                    },
-                  );
-                }),
-          ),
-          SizedBox(height: 30),
-          ElevatedButton(
-            onPressed: _lock ? null : () => _onSubmit(),
-            child: Text(
-              'Alterar Senha',
-              style: Theme.of(context).textTheme.button,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Segurança'),
+          centerTitle: false,
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: <Widget>[
+            Text(
+              'Alterar sua senha',
+              style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
             ),
-          )
-        ],
+            SizedBox(height: 10),
+            Text(
+              'Para alterar sua senha, digite a nova senha e confirme.',
+              style: Theme.of(context).textTheme.subtitle1,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 30),
+            Form(
+              key: _formKey,
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: _data.length,
+                  separatorBuilder: (context, index) => SizedBox(
+                        height: 10,
+                      ),
+                  itemBuilder: (context, index) {
+                    return StreamBuilder<bool>(
+                      stream: _profileWidgetBloc.securityShowPasswordOut,
+                      initialData: false,
+                      builder: (context, snapshot) {
+                        if (_data[index]['type'] == 'senha') {
+                          return TextFieldWidget(
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: _passwordObscure,
+                            labelText: _data[index]['labelText'],
+                            suffixIcon: IconButton(
+                              onPressed: () =>
+                                  _onShowPasswordType(_data[index]['type']),
+                              icon: Icon(
+                                snapshot.data
+                                    ? MaterialCommunityIcons.eye
+                                    : MaterialCommunityIcons.eye_off,
+                                color: Color(0xffa1a1a1),
+                              ),
+                            ),
+                            prefixIcon: Icon(
+                              MaterialCommunityIcons.lock,
+                              color: Color(0xffA1A1A1),
+                            ),
+                            controller: _data[index]['controller'],
+                            validator: _data[index]['validator'],
+                          );
+                        } else {
+                          return TextFieldWidget(
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: _passwordConfirmObscure,
+                            labelText: _data[index]['labelText'],
+                            suffixIcon: IconButton(
+                              onPressed: () =>
+                                  _onShowPasswordType(_data[index]['type']),
+                              icon: Icon(
+                                snapshot.data
+                                    ? MaterialCommunityIcons.eye
+                                    : MaterialCommunityIcons.eye_off,
+                                color: Color(0xffa1a1a1),
+                              ),
+                            ),
+                            prefixIcon: Icon(
+                              MaterialCommunityIcons.lock,
+                              color: Color(0xffA1A1A1),
+                            ),
+                            controller: _data[index]['controller'],
+                            validator: _data[index]['validator'],
+                          );
+                        }
+                      },
+                    );
+                  }),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: _lock ? null : () => _onSubmit(),
+              child: Text(
+                'Alterar Senha',
+                style: Theme.of(context).textTheme.button,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

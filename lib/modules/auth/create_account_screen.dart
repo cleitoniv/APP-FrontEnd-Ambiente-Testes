@@ -8,6 +8,7 @@ import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -263,7 +264,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       {
         'textCapitalization': TextCapitalization.words,
         'maxLength': 15,
-        'maxLengthEnforce': true,
+        'maxLengthEnforce': MaxLengthEnforcement.enforced,
         'labelText': 'Como gostaria de ser chamado?',
         'prefixIcon': Icon(
           Icons.person,
@@ -369,134 +370,138 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          'Cadastre-se',
-          textAlign: TextAlign.left,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Cadastre-se',
+            textAlign: TextAlign.left,
+          ),
+          centerTitle: false,
         ),
-        centerTitle: false,
-      ),
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: <Widget>[
-              Text(
-                'Seja bem-vindo!',
-                style: Theme.of(context).textTheme.headline5,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Preencha os campos abaixo para criar sua conta em nosso aplicativo!',
-                style: Theme.of(context).textTheme.subtitle1,
-                textAlign: TextAlign.center,
-              ),
-              Column(
-                children: _fieldData.take(5).map(
-                  (e) {
-                    return Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: TextFieldWidget(
-                        maxLength: e['maxLength'],
-                        maxLengthEnforce: e['maxLengthEnforce'],
-                        textCapitalization: e['textCapitalization'],
-                        labelText: e['labelText'],
-                        prefixIcon: e['prefixIcon'],
-                        controller: e['controller'],
-                        validator: e['validator'],
-                        keyboardType: e['keyboardType'],
-                      ),
-                    );
-                  },
-                ).toList(),
-              ),
-              SizedBox(height: 30),
-              Text(
-                'Escolha sua senha',
-                style: Theme.of(context).textTheme.headline5,
-                textAlign: TextAlign.center,
-              ),
-              Column(
-                children: _fieldData.skip(5).map(
-                  (e) {
-                    if (e['type'] == 'confirm') {
+        body: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: <Widget>[
+                Text(
+                  'Seja bem-vindo!',
+                  style: Theme.of(context).textTheme.headline5,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Preencha os campos abaixo para criar sua conta em nosso aplicativo!',
+                  style: Theme.of(context).textTheme.subtitle1,
+                  textAlign: TextAlign.center,
+                ),
+                Column(
+                  children: _fieldData.take(5).map(
+                    (e) {
                       return Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: TextFieldWidget(
-                            labelText: e['labelText'],
-                            prefixIcon: e['prefixIcon'],
-                            controller: e['controller'],
-                            suffixIcon: e['suffixIcon'],
-                            validator: e['validator'],
-                            keyboardType: e['keyboardType'],
-                            obscureText: this._passwordConfirmObscure,
-                          ));
-                    } else {
-                      return Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: TextFieldWidget(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: TextFieldWidget(
+                          maxLength: e['maxLength'],
+                          maxLengthEnforce: e['maxLengthEnforce'],
+                          textCapitalization: e['textCapitalization'],
+                          labelText: e['labelText'],
+                          prefixIcon: e['prefixIcon'],
+                          controller: e['controller'],
+                          validator: e['validator'],
+                          keyboardType: e['keyboardType'],
+                        ),
+                      );
+                    },
+                  ).toList(),
+                ),
+                SizedBox(height: 30),
+                Text(
+                  'Escolha sua senha',
+                  style: Theme.of(context).textTheme.headline5,
+                  textAlign: TextAlign.center,
+                ),
+                Column(
+                  children: _fieldData.skip(5).map(
+                    (e) {
+                      if (e['type'] == 'confirm') {
+                        return Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: TextFieldWidget(
                               labelText: e['labelText'],
                               prefixIcon: e['prefixIcon'],
                               controller: e['controller'],
                               suffixIcon: e['suffixIcon'],
                               validator: e['validator'],
                               keyboardType: e['keyboardType'],
-                              obscureText: this._passwordObscure));
-                    }
-                  },
-                ).toList(),
-              ),
-              SizedBox(height: 10),
-              Row(
-                children: <Widget>[
-                  StreamBuilder<bool>(
-                    stream: _authWidgetBloc.createAccountTermOut,
-                    builder: (context, snapshot) {
-                      return Checkbox(
-                        value:
-                            _lock, // snapshot.hasData ? snapshot.data : false,
-                        onChanged: _handleAcceptTerm,
-                      );
+                              obscureText: this._passwordConfirmObscure,
+                            ));
+                      } else {
+                        return Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: TextFieldWidget(
+                                labelText: e['labelText'],
+                                prefixIcon: e['prefixIcon'],
+                                controller: e['controller'],
+                                suffixIcon: e['suffixIcon'],
+                                validator: e['validator'],
+                                keyboardType: e['keyboardType'],
+                                obscureText: this._passwordObscure));
+                      }
                     },
-                  ),
-                  Text.rich(
-                    TextSpan(
-                      text: 'Aceito os ',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            fontSize: 14,
-                          ),
-                      children: [
-                        TextSpan(
-                          text: 'Termos de responsabilidade',
-                          style: Theme.of(context).textTheme.subtitle2.copyWith(
-                                color: Theme.of(context).accentColor,
-                                decoration: TextDecoration.underline,
-                                fontSize: 14,
-                              ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = _handleShowTerm,
-                        ),
-                      ],
+                  ).toList(),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: <Widget>[
+                    StreamBuilder<bool>(
+                      stream: _authWidgetBloc.createAccountTermOut,
+                      builder: (context, snapshot) {
+                        return Checkbox(
+                          value:
+                              _lock, // snapshot.hasData ? snapshot.data : false,
+                          onChanged: _handleAcceptTerm,
+                        );
+                      },
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              !this._isLoading
-                  ? ElevatedButton(
-                      onPressed:
-                          !_lock ? null : _confirmSmsDialog, //  _handleSubmit,
-                      child: Text(
-                        _requestCodeController,
-                        style: Theme.of(context).textTheme.button,
+                    Text.rich(
+                      TextSpan(
+                        text: 'Aceito os ',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontSize: 14,
+                            ),
+                        children: [
+                          TextSpan(
+                            text: 'Termos de responsabilidade',
+                            style:
+                                Theme.of(context).textTheme.subtitle2.copyWith(
+                                      color: Theme.of(context).accentColor,
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 14,
+                                    ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = _handleShowTerm,
+                          ),
+                        ],
                       ),
-                    )
-                  : Center(child: CircularProgressIndicator()),
-            ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                !this._isLoading
+                    ? ElevatedButton(
+                        onPressed: !_lock
+                            ? null
+                            : _confirmSmsDialog, //  _handleSubmit,
+                        child: Text(
+                          _requestCodeController,
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                      )
+                    : Center(child: CircularProgressIndicator()),
+              ],
+            ),
           ),
         ),
       ),

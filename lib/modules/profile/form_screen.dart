@@ -9,6 +9,7 @@ import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart'
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
@@ -175,7 +176,7 @@ class _FormScreenState extends State<FormScreen> {
       {
         'labelText': 'Nome',
         'maxLength': 15,
-        'maxLengthEnforce': true,
+        'maxLengthEnforce': MaxLengthEnforcement.enforced,
         'capitalization': TextCapitalization.words,
         'controller': _nameController,
         'icon': Icons.person,
@@ -211,177 +212,182 @@ class _FormScreenState extends State<FormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Usuários do Aplicativo'),
-        centerTitle: false,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: <Widget>[
-          Text(
-            widget.formType == 'edit' ? 'Editar Usuário' : 'Cadastrar Usuário',
-            style: Theme.of(context).textTheme.headline5,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 30),
-          Form(
-            key: _formKey,
-            child: ListView.separated(
-              shrinkWrap: true,
-              primary: false,
-              itemCount: _data.length,
-              separatorBuilder: (context, index) => SizedBox(
-                height: 10,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Usuários do Aplicativo'),
+          centerTitle: false,
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: <Widget>[
+            Text(
+              widget.formType == 'edit'
+                  ? 'Editar Usuário'
+                  : 'Cadastrar Usuário',
+              style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 30),
+            Form(
+              key: _formKey,
+              child: ListView.separated(
+                shrinkWrap: true,
+                primary: false,
+                itemCount: _data.length,
+                separatorBuilder: (context, index) => SizedBox(
+                  height: 10,
+                ),
+                itemBuilder: (context, index) {
+                  return TextFieldWidget(
+                    maxLength: _data[index]['maxLength'],
+                    maxLengthEnforce: _data[index]['maxLengthEnforce'],
+                    textCapitalization: _data[index]['capitalization'],
+                    enabled: _data[index]['enabled'],
+                    validator: _data[index]["validator"],
+                    labelText: _data[index]['labelText'],
+                    prefixIcon: Icon(
+                      _data[index]['icon'],
+                      color: Color(0xffA1A1A1),
+                    ),
+                    controller: _data[index]['controller']
+                      ..text = _data[index]['value'],
+                  );
+                },
               ),
-              itemBuilder: (context, index) {
-                return TextFieldWidget(
-                  maxLength: _data[index]['maxLength'],
-                  maxLengthEnforce: _data[index]['maxLengthEnforce'],
-                  textCapitalization: _data[index]['capitalization'],
-                  enabled: _data[index]['enabled'],
-                  validator: _data[index]["validator"],
-                  labelText: _data[index]['labelText'],
-                  prefixIcon: Icon(
-                    _data[index]['icon'],
-                    color: Color(0xffA1A1A1),
-                  ),
-                  controller: _data[index]['controller']
-                    ..text = _data[index]['value'],
-                );
-              },
             ),
-          ),
-          ListTileMoreCustomizable(
-            dense: true,
-            contentPadding: const EdgeInsets.all(0),
-            horizontalTitleGap: 0,
-            leading: Image.asset(
-              'assets/icons/info.png',
-              width: 25,
-              height: 25,
+            ListTileMoreCustomizable(
+              dense: true,
+              contentPadding: const EdgeInsets.all(0),
+              horizontalTitleGap: 0,
+              leading: Image.asset(
+                'assets/icons/info.png',
+                width: 25,
+                height: 25,
+              ),
+              title: Text(
+                'Senha gerada automaticamente.',
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      fontSize: 14,
+                    ),
+              ),
             ),
-            title: Text(
-              'Senha gerada automaticamente.',
-              style: Theme.of(context).textTheme.subtitle1.copyWith(
-                    fontSize: 14,
-                  ),
-            ),
-          ),
-          widget.formType == "edit"
-              ? Container()
-              : Row(children: <Widget>[
-                  Checkbox(
-                    value: accept,
-                    onChanged: _accepTermUser,
-                  ),
-                  Text.rich(
-                    TextSpan(
-                      text: 'Aceito os ',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            fontSize: 14,
+            widget.formType == "edit"
+                ? Container()
+                : Row(children: <Widget>[
+                    Checkbox(
+                      value: accept,
+                      onChanged: _accepTermUser,
+                    ),
+                    Text.rich(
+                      TextSpan(
+                        text: 'Aceito os ',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontSize: 14,
+                            ),
+                        children: [
+                          TextSpan(
+                            text: 'Termos de responsabilidade',
+                            style:
+                                Theme.of(context).textTheme.subtitle2.copyWith(
+                                      color: Theme.of(context).accentColor,
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 14,
+                                    ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = _handleShowTerm,
                           ),
-                      children: [
-                        TextSpan(
-                          text: 'Termos de responsabilidade',
-                          style: Theme.of(context).textTheme.subtitle2.copyWith(
-                                color: Theme.of(context).accentColor,
-                                decoration: TextDecoration.underline,
-                                fontSize: 14,
-                              ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = _handleShowTerm,
+                        ],
+                      ),
+                    ),
+                  ]),
+            // widget.formType == 'edit'
+            //     ? ListTileMoreCustomizable(
+            //         dense: true,
+            //         contentPadding: const EdgeInsets.all(0),
+            //         horizontalTitleGap: 0,
+            //         title: Text(
+            //           'Ativar/Desativar Usuário',
+            //           style: Theme.of(context).textTheme.subtitle1.copyWith(
+            //                 fontSize: 14,
+            //               ),
+            //         ),
+            //         trailing: StreamBuilder<bool>(
+            //           stream: _profileWidgetBloc.userStatusOut,
+            //           builder: (context, snapshot) {
+            //             if (_authBlock.getAuthCurrentUser.data.role ==
+            //                 'CLIENTE') {
+            //               if (snapshot.hasData) {
+            //                 return Switch(
+            //                   value: snapshot.data,
+            //                   activeColor: Theme.of(context).primaryColor,
+            //                   onChanged: (value) => _onChangeUserStatus(value),
+            //                 );
+            //               } else {
+            //                 return Switch(
+            //                   value: false,
+            //                   activeColor: Theme.of(context).primaryColor,
+            //                   onChanged: (value) => _onChangeUserStatus(value),
+            //                 );
+            //               }
+            //             }
+            //             return Container();
+            //           },
+            //         ),
+            //       ):
+            Container(),
+            SizedBox(height: 30),
+            _authBlock.getAuthCurrentUser.data.role == 'CLIENTE' &&
+                    widget.formType == "edit"
+                ? isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(elevation: 0),
+                        onPressed: accept
+                            ? null
+                            : widget.formType == 'edit'
+                                ? _onSaveInfo
+                                : _onAddUser,
+                        child: Text(
+                          widget.formType == 'edit'
+                              ? 'Salvar Alterações de Usuário'
+                              : 'Cadastrar Novo Usuário',
+                          style: Theme.of(context).textTheme.button,
                         ),
-                      ],
-                    ),
-                  ),
-                ]),
-          // widget.formType == 'edit'
-          //     ? ListTileMoreCustomizable(
-          //         dense: true,
-          //         contentPadding: const EdgeInsets.all(0),
-          //         horizontalTitleGap: 0,
-          //         title: Text(
-          //           'Ativar/Desativar Usuário',
-          //           style: Theme.of(context).textTheme.subtitle1.copyWith(
-          //                 fontSize: 14,
-          //               ),
-          //         ),
-          //         trailing: StreamBuilder<bool>(
-          //           stream: _profileWidgetBloc.userStatusOut,
-          //           builder: (context, snapshot) {
-          //             if (_authBlock.getAuthCurrentUser.data.role ==
-          //                 'CLIENTE') {
-          //               if (snapshot.hasData) {
-          //                 return Switch(
-          //                   value: snapshot.data,
-          //                   activeColor: Theme.of(context).primaryColor,
-          //                   onChanged: (value) => _onChangeUserStatus(value),
-          //                 );
-          //               } else {
-          //                 return Switch(
-          //                   value: false,
-          //                   activeColor: Theme.of(context).primaryColor,
-          //                   onChanged: (value) => _onChangeUserStatus(value),
-          //                 );
-          //               }
-          //             }
-          //             return Container();
-          //           },
-          //         ),
-          //       ):
-          Container(),
-          SizedBox(height: 30),
-          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE' &&
-                  widget.formType == "edit"
-              ? isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      style: ElevatedButton.styleFrom(elevation: 0),
-                      onPressed: accept
-                          ? null
-                          : widget.formType == 'edit'
-                              ? _onSaveInfo
-                              : _onAddUser,
-                      child: Text(
-                        widget.formType == 'edit'
-                            ? 'Salvar Alterações de Usuário'
-                            : 'Cadastrar Novo Usuário',
-                        style: Theme.of(context).textTheme.button,
+                      )
+                : isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(elevation: 0),
+                        onPressed: !accept
+                            ? null
+                            : widget.formType == 'edit'
+                                ? _onSaveInfo
+                                : _onAddUser,
+                        child: Text(
+                          widget.formType == 'edit'
+                              ? 'Salvar Alterações de Usuário'
+                              : 'Cadastrar Novo Usuário',
+                          style: Theme.of(context).textTheme.button,
+                        ),
                       ),
-                    )
-              : isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      style: ElevatedButton.styleFrom(elevation: 0),
-                      onPressed: !accept
-                          ? null
-                          : widget.formType == 'edit'
-                              ? _onSaveInfo
-                              : _onAddUser,
-                      child: Text(
-                        widget.formType == 'edit'
-                            ? 'Salvar Alterações de Usuário'
-                            : 'Cadastrar Novo Usuário',
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    ),
-          SizedBox(height: 30),
-          _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
-              ? widget.formType == 'edit'
-                  ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red, elevation: 0),
-                      onPressed: _showDialog,
-                      child: Text(
-                        'Excluir Usuário',
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    )
-                  : Container()
-              : Container()
-        ],
+            SizedBox(height: 30),
+            _authBlock.getAuthCurrentUser.data.role == 'CLIENTE'
+                ? widget.formType == 'edit'
+                    ? ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red, elevation: 0),
+                        onPressed: _showDialog,
+                        child: Text(
+                          'Excluir Usuário',
+                          style: Theme.of(context).textTheme.button,
+                        ),
+                      )
+                    : Container()
+                : Container()
+          ],
+        ),
       ),
     );
   }
