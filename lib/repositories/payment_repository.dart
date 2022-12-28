@@ -151,6 +151,38 @@ class PaymentRepository {
           'olho_esquerdo': e['Olho esquerdo'] ?? null,
           'olho_ambos': e['Mesmo grau em ambos'] ?? null
         };
+      } else if (e['operation'] == '03') {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'grupo_teste': e['product'].groupTest,
+              'produto_teste': e['product'].produtoTeste,
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['tests'] == "Não"
+                  ? e['product'].group
+                  : e['product'].groupTest,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['product'].value,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': e['tests'] ?? 'N'
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
       } else {
         return {
           'operation': e['operation'],

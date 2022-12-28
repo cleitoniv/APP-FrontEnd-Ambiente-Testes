@@ -60,8 +60,13 @@ class Helper {
   }
 
   static String emailValidator(String text) {
-    bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(text);
-    if (text.isEmpty || text.indexOf('@') == -1 || text.indexOf('.') == -1 || !emailValid) {
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(text);
+    if (text.isEmpty ||
+        text.indexOf('@') == -1 ||
+        text.indexOf('.') == -1 ||
+        !emailValid) {
       return 'Email inválido';
     }
 
@@ -293,7 +298,7 @@ class Helper {
             };
         }
         break;
-      case '00':
+      case '03':
         return {
           'title': 'Teste',
           'color': Colors.white,
@@ -323,6 +328,8 @@ class Helper {
 
   static Map<String, dynamic> buyTypeBuild(
       BuildContext context, String operation, String tests) {
+    print("331");
+    print(operation);
     switch (operation) {
       case '13':
         return {
@@ -410,7 +417,7 @@ class Helper {
         }
         break;
 
-      case '00':
+      case '03':
         return {
           'title': 'Teste',
           'color': Colors.white,

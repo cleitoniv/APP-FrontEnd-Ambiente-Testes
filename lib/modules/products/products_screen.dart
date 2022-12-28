@@ -30,11 +30,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   _getFavorites() async {
-    if(_authBloc.getAuthCurrentUser != null) {
+    if (_authBloc.getAuthCurrentUser != null) {
       await _productBloc.favorites(_authBloc.getAuthCurrentUser);
     } else {
       _currentUserSS = _authBloc.clienteDataStream.listen((event) {
-        if(event != null && event.data != null) {
+        if (event != null && event.data != null) {
           _productBloc.favorites(event);
         }
       });
@@ -52,7 +52,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    if(_currentUserSS != null) {
+    if (_currentUserSS != null) {
       _currentUserSS.cancel();
     }
   }
@@ -75,7 +75,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
               List<ProductModel> _products = snapshot.data.list;
 
               _products = _products.map((e) {
-                if(favoriteSnapshot.data.any((e1) => e1['group'] == e.group)) {
+                print("${e.boxes}");
+                if (favoriteSnapshot.data.any((e1) => e1['group'] == e.group)) {
                   e.factor = 100;
                 }
 
@@ -84,28 +85,27 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
               _products.sort((a, b) => a.factor.compareTo(b.factor));
               _products = _products.reversed.toList();
-
               return !_isLoadingProduct
                   ? GridView.builder(
-                itemCount: _products.length,
-                padding: const EdgeInsets.all(10),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 5,
-                  crossAxisSpacing: 20,
-                  childAspectRatio: 0.7,
-                ),
-                itemBuilder: (context, index) {
-                  return ProductWidget(
-                    value: _products[index].value,
-                    title: _products[index].title,
-                    tests: _products[index].tests,
-                    imageUrl: _products[index].imageUrl,
-                    credits: _products[index].boxes,
-                    onTap: () async {
-                      setState(() {
-                        _isLoadingProduct = true;
-                      });
+                      itemCount: _products.length,
+                      padding: const EdgeInsets.all(10),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 20,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemBuilder: (context, index) {
+                        return ProductWidget(
+                          value: _products[index].value,
+                          title: _products[index].title,
+                          tests: _products[index].tests,
+                          imageUrl: _products[index].imageUrl,
+                          credits: _products[index].boxes,
+                          onTap: () async {
+                            setState(() {
+                              _isLoadingProduct = true;
+                            });
 
 //                      bool blocked =
 //                      await _authBloc.checkBlockedUser(widget.context);
@@ -113,14 +113,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
 //                      if (!blocked) {
 //                        onChangeProduct(_products[index], context);
 //                      }
-                      onChangeProduct(_products[index], context);
-                      setState(() {
-                        _isLoadingProduct = false;
-                      });
-                    },
-                  );
-                },
-              )
+                            onChangeProduct(_products[index], context);
+                            setState(() {
+                              _isLoadingProduct = false;
+                            });
+                          },
+                        );
+                      },
+                    )
                   : Center(child: CircularProgressIndicator());
             },
           );

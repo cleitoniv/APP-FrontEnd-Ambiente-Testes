@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
@@ -65,6 +66,13 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
       '/home/3',
       (route) => route.isFirst,
     );
+  }
+
+  bool hasPrice(Map<String, dynamic> item) {
+    return item["operation"] != "07" &&
+        item["operation"] != "03" &&
+        item["operation"] != "04" &&
+        item["operation"] != "13";
   }
 
   _orderFinish(List<Map<String, dynamic>> _data) async {
@@ -196,7 +204,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                       ),
                       itemBuilder: (context, index) {
                         if (_data[index]["type"] == "T") {
-                          _data[index].update("operation", (value) => "00");
+                          _data[index].update("operation", (value) => "03");
                         }
                         return Column(
                           children: [
@@ -205,11 +213,15 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                               horizontalTitleGap: 10,
                               leading: _data[index]["tests"] != "Sim" &&
                                       _data[index]["type"] != "T"
-                                  ? Image.network(
-                                      _data[index]['product'].imageUrl,
-                                      errorBuilder: (context, url, error) =>
+                                  ? CachedNetworkImage(
+                                      errorWidget: (context, url, error) =>
                                           Image.asset(
                                               'assets/images/no_image_product.jpeg'),
+                                      imageUrl:
+                                          _data[index]['product'].imageUrl,
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.fill,
                                     )
                                   : Image.network(
                                       _data[index]['product'].imageUrlTest,
@@ -291,15 +303,17 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  Text(
-                                    selectPrice(_data[index]),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5
-                                        .copyWith(
-                                          fontSize: 14,
-                                        ),
-                                  ),
+                                  hasPrice(_data[index])
+                                      ? Text(
+                                          selectPrice(_data[index]),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              .copyWith(
+                                                fontSize: 14,
+                                              ),
+                                        )
+                                      : Container(),
                                   _data[index]['removeItem'] == 'Sim' ||
                                           _data[index]['removeItem'] == null
                                       ? IconButton(
@@ -405,7 +419,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                           'Finalizar Pedido',
                           style: Theme.of(context).textTheme.button,
                         ),
-                        onPressed: _lock
+                        onPressed: _lock || snapshot.data.isEmpty
                             ? null
                             : () {
                                 setState(() {

@@ -60,6 +60,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   FocusNode caixasOlhoDireitoFocus = new FocusNode();
   bool _isLoadingSecondButton;
   bool _isLoadingPrimaryButton;
+  bool _isProcessing;
   String _hasTests = 'Não';
 
   int _calculateCreditProduct() {
@@ -79,9 +80,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   int _calculateCreditFinancial() {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
     int _total = _cart.fold(0, (previousValue, element) {
-      if (element["operation"] == "13" &&
-          element['product'].group == currentProduct.product.group &&
-          element['tests'] == 'Não') {
+      if (element["operation"] == "13" && element['tests'] == 'Não') {
         return previousValue +
             (element['quantity'] * element["product"].valueFinan);
       }
@@ -94,7 +93,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
     int _total = _cart.fold(0, (previousValue, element) {
       if (((element["operation"] == "03" &&
-          element['product'].group == currentProduct.product.group))) {
+              element['product'].group == currentProduct.product.group)) ||
+          (element["operation"] == "07" &&
+              element['product'].group == currentProduct.product.group &&
+              element['tests'] == 'Sim')) {
+        return previousValue + element['quantity'];
+      }
+      return previousValue;
+    });
+    return _total;
+  }
+
+  int _calculateProductCreditTest() {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+    int _total = _cart.fold(0, (previousValue, element) {
+      if ((element["operation"] == "03" &&
+              element['product'].group == currentProduct.product.group) ||
+          (element["operation"] == "07" &&
+              element['product'].group == currentProduct.product.group &&
+              element['tests'] == 'Sim')) {
         return previousValue + element['quantity'];
       }
       return previousValue;
@@ -474,13 +491,21 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return errors;
   }
 
+  _lockCart(locked) {
+    setState(() {
+      _isProcessing = locked;
+    });
+  }
+
   _onAddToCart(Map data, String typeButton) async {
+    _lockCart(true);
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
 
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
     int _cartTotalFinancial = _calculateCreditFinancial();
+    int _cartProductTest = _calculateProductCreditTest();
 
     int _quantity = int.parse(_lensDireitoController.text) +
         int.parse(_lensEsquerdoController.text) +
@@ -489,7 +514,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _qtd = _first['current'] == "Mesmo grau em ambos"
         ? int.parse(_lensController.text) * 2
         : _quantity;
-
     if (_authBloc.getAuthCurrentUser.data.money <
             ((_qtd * currentProduct.product.valueFinan) +
                 _cartTotalFinancial) &&
@@ -500,19 +524,37 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       _scaffoldKey.currentState.showSnackBar(
         _snack,
       );
+      _lockCart(false);
       return;
     }
     if (currentProduct.product.tests < _qtd + _cartTotalTest &&
-        (widget.type == "T" ||
-            (_hasTests == 'Sim' &&
-                (widget.type != "A" && widget.type != "CF")))) {
+        widget.type == "T") {
       SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
         "Limite Atingido": ["Limite de caixas atingido."]
       });
       _scaffoldKey.currentState.showSnackBar(
         _snack,
       );
+      _lockCart(false);
       return;
+    }
+    if (widget.type == "C") {
+      if (currentProduct.product.boxes < _qtd + cartTotal) {
+        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+          "Limite Atingido": ["Limite de caixas atingido."]
+        });
+        _scaffoldKey.currentState.showSnackBar(
+          _snack,
+        );
+        _lockCart(false);
+        return;
+      } else if (_hasTests == 'Sim' &&
+          (_qtd + _cartProductTest > currentProduct.product.tests)) {
+        _showDialog("Operação invalida",
+            "Voce possui menos que a quantidade selecionada de testes para este pedido, por isso nao podemos realizar a operação.");
+        _lockCart(false);
+        return;
+      }
     }
     var invalidBoxes = SnackBar(
         content: Text("Quantidade de caixas tem que ser maior que 0."));
@@ -523,18 +565,21 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     if (_checkTypeLens['current'] == "Graus diferentes em cada olho") {
       if (_lensDireitoController.text == "" ||
           int.parse(_lensDireitoController.text) <= 0) {
+        _lockCart(false);
         return _scaffoldKey.currentState.showSnackBar(
           invalidBoxes,
         );
       }
       if (_lensEsquerdoController.text == "" ||
           int.parse(_lensEsquerdoController.text) <= 0) {
+        _lockCart(false);
         return _scaffoldKey.currentState.showSnackBar(
           invalidBoxes,
         );
       }
     } else {
       if (_lensController.text == "" || int.parse(_lensController.text) <= 0) {
+        _lockCart(false);
         return _scaffoldKey.currentState.showSnackBar(
           invalidBoxes,
         );
@@ -549,125 +594,128 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       _scaffoldKey.currentState.showSnackBar(
         _snack,
       );
+      _lockCart(false);
       return;
     }
 
     if (isValidDate(_birthdayController.text, context)) {
+      _lockCart(false);
       return;
     }
     if (int.parse(_lensDireitoController.text) +
             int.parse(_lensEsquerdoController.text) +
             int.parse(_lensController.text) ==
         0) {
+      _lockCart(false);
       return;
     }
-    if (currentProduct.product.boxes <
-            int.parse(_lensController.text) + cartTotal &&
-        widget.type == "C") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Limite de caixas atingido."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    } else if (currentProduct.product.tests <
-            int.parse(_lensController.text) + _cartTotalTest &&
-        widget.type == "T") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Limite de caixas atingido."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    } else if (_authBloc.getAuthCurrentUser.data.money <
-            (int.parse(_lensController.text) *
-                    currentProduct.product.valueFinan) +
-                _cartTotalFinancial &&
-        widget.type == "CF") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    }
+    // if (currentProduct.product.boxes <
+    //         int.parse(_lensController.text) + cartTotal &&
+    //     widget.type == "C") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Limite de caixas atingido."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // } else if (currentProduct.product.tests <
+    //         int.parse(_lensController.text) + _cartTotalTest &&
+    //     widget.type == "T") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Limite de caixas atingido."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // } else if (_authBloc.getAuthCurrentUser.data.money <
+    //         (int.parse(_lensController.text) *
+    //                 currentProduct.product.valueFinan) +
+    //             _cartTotalFinancial &&
+    //     widget.type == "CF") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // }
 
-    if (currentProduct.product.boxes < _qtd + cartTotal && widget.type == "C") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Limite de caixas atingido."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    } else if (currentProduct.product.tests <
-            int.parse(_lensEsquerdoController.text) +
-                _cartTotalTest +
-                int.parse(_lensDireitoController.text) &&
-        widget.type == "T") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Limite de caixas atingido."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    } else if (_authBloc.getAuthCurrentUser.data.money <
-            ((int.parse(_lensEsquerdoController.text) +
-                        int.parse(_lensDireitoController.text)) *
-                    currentProduct.product.valueFinan) +
-                _cartTotalFinancial &&
-        widget.type == "CF") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    }
+    // if (currentProduct.product.boxes < _qtd + cartTotal && widget.type == "C") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Limite de caixas atingido."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // } else if (currentProduct.product.tests <
+    //         int.parse(_lensEsquerdoController.text) +
+    //             _cartTotalTest +
+    //             int.parse(_lensDireitoController.text) &&
+    //     widget.type == "T") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Limite de caixas atingido."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // } else if (_authBloc.getAuthCurrentUser.data.money <
+    //         ((int.parse(_lensEsquerdoController.text) +
+    //                     int.parse(_lensDireitoController.text)) *
+    //                 currentProduct.product.valueFinan) +
+    //             _cartTotalFinancial &&
+    //     widget.type == "CF") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // }
 
-    if (currentProduct.product.boxes <
-            int.parse(_lensDireitoController.text) +
-                cartTotal +
-                int.parse(_lensEsquerdoController.text) &&
-        widget.type == "C") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Limite de caixas atingido."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    } else if (currentProduct.product.tests <
-            int.parse(_lensDireitoController.text) +
-                _cartTotalTest +
-                int.parse(_lensEsquerdoController.text) &&
-        widget.type == "T") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Limite de caixas atingido."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    } else if (_authBloc.getAuthCurrentUser.data.money <
-            ((int.parse(_lensEsquerdoController.text) +
-                        int.parse(_lensDireitoController.text)) *
-                    currentProduct.product.valueFinan) +
-                _cartTotalFinancial &&
-        widget.type == "CF") {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-        "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
-      });
-      _scaffoldKey.currentState.showSnackBar(
-        _snack,
-      );
-      return;
-    }
+    // if (currentProduct.product.boxes <
+    //         int.parse(_lensDireitoController.text) +
+    //             cartTotal +
+    //             int.parse(_lensEsquerdoController.text) &&
+    //     widget.type == "C") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Limite de caixas atingido."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // } else if (currentProduct.product.tests <
+    //         int.parse(_lensDireitoController.text) +
+    //             _cartTotalTest +
+    //             int.parse(_lensEsquerdoController.text) &&
+    //     widget.type == "T") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Limite de caixas atingido."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // } else if (_authBloc.getAuthCurrentUser.data.money <
+    //         ((int.parse(_lensEsquerdoController.text) +
+    //                     int.parse(_lensDireitoController.text)) *
+    //                 currentProduct.product.valueFinan) +
+    //             _cartTotalFinancial &&
+    //     widget.type == "CF") {
+    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
+    //     "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
+    //   });
+    //   _scaffoldKey.currentState.showSnackBar(
+    //     _snack,
+    //   );
+    //   return;
+    // }
 
     final errors = await _checkParameters(
         new Map<String, dynamic>.from(_first[_first['current']]),
@@ -733,10 +781,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
       _requestsBloc.addProductToCart(_data);
       if (typeButton == "onPurchase") {
+        _lockCart(false);
         Modular.to.pushNamed(
             '/products/${currentProduct.product.id}/requestDetails',
             arguments: widget.type);
       } else {
+        _lockCart(false);
         Modular.to.pushNamed("/cart/product");
       }
     } else {
@@ -745,6 +795,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         _snack,
       );
     }
+    _lockCart(false);
   }
 
   _onBackToPurchase() {
@@ -1101,6 +1152,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _lensEsquerdoController.addListener(() {
       validateLensQuantity("esquerdo");
     });
+
+    _isProcessing = false;
   }
 
   void validateLensQuantity(String type) async {
@@ -1122,11 +1175,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _qtd = _first['current'] == "Mesmo grau em ambos"
         ? int.parse(_lensController.text == '' ? '0' : _lensController.text) * 2
         : _quantity;
-
+    print("1125");
+    print(_authBloc.getAuthCurrentUser.data.money);
+    print(_qtd * currentProduct.product.valueFinan);
+    print(_cartTotalFinancial);
+    print(_authBloc.getAuthCurrentUser.data.money <
+        ((_qtd * currentProduct.product.valueFinan) + _cartTotalFinancial));
     if (_authBloc.getAuthCurrentUser.data.money <
             ((_qtd * currentProduct.product.valueFinan) +
                 _cartTotalFinancial) &&
         widget.type == "CF") {
+      print("1136");
       _showDialog("Limite atingido.",
           "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
       setState(() {
@@ -1136,6 +1195,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       });
     } else if (widget.type == "C") {
       if (currentProduct.product.boxes < _qtd + cartTotal) {
+        print("1146");
         _showDialog("Limite atingido.",
             "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         setState(() {
@@ -1146,6 +1206,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       }
     } else if (currentProduct.product.tests < _qtd + _cartTotalTest &&
         widget.type == "T") {
+      print("1157");
       _showDialog("Limite atingido.",
           "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
       setState(() {
@@ -1978,15 +2039,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         MaterialCommunityIcons.plus,
                         color: Colors.white,
                       ),
-                      onPressed: () async {
-                        setState(() {
-                          _isLoadingPrimaryButton = true;
-                        });
-                        await _onPurchase(context);
-                        setState(() {
-                          _isLoadingPrimaryButton = false;
-                        });
-                      },
+                      onPressed: !_isProcessing
+                          ? () async {
+                              setState(() {
+                                _isLoadingPrimaryButton = true;
+                                _isProcessing = true;
+                              });
+                              await _onPurchase(context);
+                              setState(() {
+                                _isProcessing = false;
+                                _isLoadingPrimaryButton = false;
+                              });
+                            }
+                          : null,
                       label: FittedBox(
                         fit: BoxFit.contain,
                         child: AutoSizeText(
@@ -2040,19 +2105,23 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         height: 20,
                         color: Colors.white,
                       ),
-                      onPressed: () async {
-                        setState(() {
-                          _isLoadingSecondButton = true;
-                        });
-                        log("${currentProduct.product.value}");
+                      onPressed: !_isProcessing
+                          ? () async {
+                              setState(() {
+                                _isLoadingSecondButton = true;
+                                _isProcessing = true;
+                              });
+                              log("${currentProduct.product.value}");
 
-                        await _onAddToCart({
-                          'product': currentProduct.product,
-                        }, 'Normal');
-                        setState(() {
-                          _isLoadingSecondButton = false;
-                        });
-                      },
+                              await _onAddToCart({
+                                'product': currentProduct.product,
+                              }, 'Normal');
+                              setState(() {
+                                _isProcessing = false;
+                                _isLoadingSecondButton = false;
+                              });
+                            }
+                          : null,
                       label: FittedBox(
                         fit: BoxFit.contain,
                         child: Text(

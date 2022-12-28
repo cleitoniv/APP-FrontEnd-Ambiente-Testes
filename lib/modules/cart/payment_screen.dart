@@ -54,6 +54,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     int _total = data.fold(0, (previousValue, element) {
       if (element["operation"] == "07" ||
           element["operation"] == "03" ||
+          element["operation"] == "13" ||
           element["tests"] == "Sim") {
         return previousValue;
       }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
@@ -95,8 +96,11 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
+    print("98");
+    print(data);
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07" ||
+      if (element["operation"] == "13" ||
+          element["operation"] == "07" ||
           element["operation"] == "03" ||
           element["operation"] == "04") {
         return previousValue;
@@ -110,10 +114,16 @@ class _CartScreenState extends State<CartScreen> {
   bool hasPrice(Map<String, dynamic> item) {
     return item["operation"] != "07" &&
         item["operation"] != "03" &&
-        item["operation"] != "04";
+        item["operation"] != "04" &&
+        item["operation"] != "13";
   }
 
   String selectPrice(Map<String, dynamic> item) {
+    if (item["operation"] != "03" && item["tests"] == "Sim") return 'Grátis';
+    if (item["operation"] == "13")
+      return 'R\$ ${Helper.intToMoney(item['product'].valueFinan)}';
+    if (item["operation"] == "07")
+      return 'R\$ ${Helper.intToMoney(item['product'].valueProduto)}';
     return 'R\$ ${Helper.intToMoney(item['product'].value)}';
   }
 
@@ -183,16 +193,29 @@ class _CartScreenState extends State<CartScreen> {
                       color: Colors.black12,
                     ),
                     itemBuilder: (context, index) {
+                      print("195");
+                      print(_data[index]['product'].imageUrl);
                       return ListTileMoreCustomizable(
                         contentPadding: const EdgeInsets.all(0),
                         horizontalTitleGap: 10,
                         leading: _data[index]["tests"] != "Sim" &&
                                 _data[index]["type"] != "T"
-                            ? Image.network(
-                                _data[index]['product'].imageUrl,
-                                errorBuilder: (context, url, error) =>
+                            ?
+                            // ? Image.network(_data[index]['product'].imageUrl,
+                            //     errorBuilder: (context, url, error) {
+                            //     print("202");
+                            //     print(error);
+                            //     return Image.asset(
+                            //         'assets/images/no_image_product.jpeg');
+                            //   })
+                            CachedNetworkImage(
+                                errorWidget: (context, url, error) =>
                                     Image.asset(
                                         'assets/images/no_image_product.jpeg'),
+                                imageUrl: _data[index]['product'].imageUrl,
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.fill,
                               )
                             : Image.network(
                                 _data[index]['product'].imageUrlTest,

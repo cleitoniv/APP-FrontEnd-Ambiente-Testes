@@ -56,6 +56,7 @@ class RequestsRepository {
   }
 
   Map<String, dynamic> generateParams(Map data) {
+    print("GOT HERE");
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01" || e["operation"] == "13") {
         return {
@@ -151,6 +152,8 @@ class RequestsRepository {
           'olho_ambos': e['Mesmo grau em ambos'] ?? null
         };
       } else {
+        print("155");
+        print(e);
         return {
           'operation': e['operation'],
           'type': e['type'],
@@ -176,6 +179,8 @@ class RequestsRepository {
   Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
+    print("179");
+    print(_data);
     try {
       Response response = await dio.post('/api/cliente/pedido_produto',
           data: jsonEncode(generateParams({'cart': _data})),
