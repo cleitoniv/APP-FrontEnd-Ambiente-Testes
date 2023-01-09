@@ -167,9 +167,7 @@ class PaymentRepository {
               'produto': e['product'].title,
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
-              'grupo': e['tests'] == "Não"
-                  ? e['product'].group
-                  : e['product'].groupTest,
+              'grupo': e['product'].groupTest,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
               'duracao': e['product'].duracao,

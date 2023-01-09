@@ -1088,6 +1088,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    print('linha 1091');
+    print(currentProduct);
     _nameController = TextEditingController();
     _numberController = MaskedTextController(
       mask: '000.000.000-00',
@@ -1105,6 +1107,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _lensDireitoController = TextEditingController(
       text: '0',
     );
+
     _birthdayController = MaskedTextController(
       mask: '00/00/0000',
     );
