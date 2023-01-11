@@ -438,20 +438,15 @@ class _TabsScreenState extends State<TabsScreen>
       );
     });
 
-    print("6");
-
     int filter = _requestsBloc.currentFilter;
 
     _requestsBloc.getPedidosList(filter);
 
-    print("7");
     _homeWidgetBloc.currentTabIndexOut.listen((int event) {
       if (event != null && event != _tabController.index) {
         _tabController.index = event;
       }
     });
-
-    print("8");
   }
 
   _getCurrentStatus() async {

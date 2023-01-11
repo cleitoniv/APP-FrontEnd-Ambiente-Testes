@@ -136,7 +136,7 @@ class ProductModel {
     hasAdicao = json['has_adicao'];
     valid = json['success'];
     message = json['mensagem'];
-    groupTest = json["BM_YGRPTES"];
+    groupTest = json["group_test"];
     valueTest = json["VALORT"];
     imageUrlTest = json["image_url_test"];
   }

@@ -1088,8 +1088,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    print('linha 1091');
-    print(currentProduct);
     _nameController = TextEditingController();
     _numberController = MaskedTextController(
       mask: '000.000.000-00',
@@ -1178,7 +1176,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _qtd = _first['current'] == "Mesmo grau em ambos"
         ? int.parse(_lensController.text == '' ? '0' : _lensController.text) * 2
         : _quantity;
-    print("1125");
     print(_authBloc.getAuthCurrentUser.data.money);
     print(_qtd * currentProduct.product.valueFinan);
     print(_cartTotalFinancial);
@@ -1188,7 +1185,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             ((_qtd * currentProduct.product.valueFinan) +
                 _cartTotalFinancial) &&
         widget.type == "CF") {
-      print("1136");
       _showDialog("Limite atingido.",
           "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
       setState(() {
@@ -1198,7 +1194,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       });
     } else if (widget.type == "C") {
       if (currentProduct.product.boxes < _qtd + cartTotal) {
-        print("1146");
         _showDialog("Limite atingido.",
             "Você possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
         setState(() {
@@ -1209,7 +1204,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       }
     } else if (currentProduct.product.tests < _qtd + _cartTotalTest &&
         widget.type == "T") {
-      print("1157");
       _showDialog("Limite atingido.",
           "Voce possui menos que a quantidade selecionada, verifique se contém produtos com caixas a mais no carrinho.");
       setState(() {

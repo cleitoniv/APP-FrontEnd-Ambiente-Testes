@@ -56,7 +56,6 @@ class RequestsRepository {
   }
 
   Map<String, dynamic> generateParams(Map data) {
-    print("GOT HERE");
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01" || e["operation"] == "13") {
         return {
@@ -151,9 +150,36 @@ class RequestsRepository {
           'olho_esquerdo': e['Olho esquerdo'] ?? null,
           'olho_ambos': e['Mesmo grau em ambos'] ?? null
         };
+      } else if (e["operation"] == "04") {
+        return {
+          'type': e['type'],
+          'operation': e['operation'],
+          'paciente': {
+            'nome': e['pacient']['name'],
+            'numero': e['pacient']['number'],
+            'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
+          },
+          'items': [
+            {
+              'produto_teste': e['product'].produtoTeste,
+              'produto': e['product'].title,
+              'quantidade': e['quantity'],
+              'quantity_for_eye': e['quantity_for_eye'],
+              'grupo': e['product'].groupTest,
+              'duracao': e['product'].duracao,
+              'prc_unitario': e['product'].value,
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              "valor_test": e['product'].valueTest * 100,
+              'tests': 'Sim',
+            }
+          ],
+          'olho_diferentes': e['Graus diferentes em cada olho'] ?? null,
+          'olho_direito': e['Olho direito'] ?? null,
+          'olho_esquerdo': e['Olho esquerdo'] ?? null,
+          'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
       } else {
-        print("155");
-        print(e);
         return {
           'operation': e['operation'],
           'type': e['type'],
@@ -179,8 +205,6 @@ class RequestsRepository {
   Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
-    print("179");
-    print(_data);
     try {
       Response response = await dio.post('/api/cliente/pedido_produto',
           data: jsonEncode(generateParams({'cart': _data})),

@@ -328,7 +328,6 @@ class Helper {
 
   static Map<String, dynamic> buyTypeBuild(
       BuildContext context, String operation, String tests) {
-    print("331");
     print(operation);
     switch (operation) {
       case '13':

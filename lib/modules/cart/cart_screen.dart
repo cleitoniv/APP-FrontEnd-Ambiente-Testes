@@ -96,8 +96,6 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   String _totalToPay(List<Map<String, dynamic>> data) {
-    print("98");
-    print(data);
     int _total = data.fold(0, (previousValue, element) {
       if (element["operation"] == "13" ||
           element["operation"] == "07" ||
@@ -193,8 +191,6 @@ class _CartScreenState extends State<CartScreen> {
                       color: Colors.black12,
                     ),
                     itemBuilder: (context, index) {
-                      print("195");
-                      print(_data[index]['product'].imageUrl);
                       return ListTileMoreCustomizable(
                         contentPadding: const EdgeInsets.all(0),
                         horizontalTitleGap: 10,
@@ -208,6 +204,7 @@ class _CartScreenState extends State<CartScreen> {
                             //     return Image.asset(
                             //         'assets/images/no_image_product.jpeg');
                             //   })
+
                             CachedNetworkImage(
                                 errorWidget: (context, url, error) =>
                                     Image.asset(
@@ -217,12 +214,19 @@ class _CartScreenState extends State<CartScreen> {
                                 height: 80,
                                 fit: BoxFit.fill,
                               )
-                            : Image.network(
-                                _data[index]['product'].imageUrlTest,
-                                errorBuilder: (context, url, error) =>
-                                    Image.asset(
-                                        'assets/images/no_image_product.jpeg'),
-                              ),
+                            : _data[index]['product'].imageUrlTest == null
+                                ? Image.asset(
+                                    'assets/images/no_image_product.jpeg')
+                                : CachedNetworkImage(
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                            'assets/images/no_image_product.jpeg'),
+                                    imageUrl:
+                                        _data[index]['product'].imageUrlTest,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.fill,
+                                  ),
                         title: Text(
                           '${_data[index]['product'].title}',
                           style: Theme.of(context).textTheme.subtitle1.copyWith(

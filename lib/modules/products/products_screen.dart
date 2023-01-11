@@ -75,7 +75,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
               List<ProductModel> _products = snapshot.data.list;
 
               _products = _products.map((e) {
-                print("${e.boxes}");
                 if (favoriteSnapshot.data.any((e1) => e1['group'] == e.group)) {
                   e.factor = 100;
                 }

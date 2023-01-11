@@ -190,7 +190,6 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                         ),
                       );
                     }
-
                     List<Map<String, dynamic>> _data = snapshot.data;
                     return ListView.separated(
                       primary: false,
@@ -223,12 +222,19 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                       height: 80,
                                       fit: BoxFit.fill,
                                     )
-                                  : Image.network(
-                                      _data[index]['product'].imageUrlTest,
-                                      errorBuilder: (context, url, error) =>
-                                          Image.asset(
-                                              'assets/images/no_image_product.jpeg'),
-                                    ),
+                                  : _data[index]['product'].imageUrlTest == null
+                                      ? Image.asset(
+                                          'assets/images/no_image_product.jpeg')
+                                      : CachedNetworkImage(
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                                  'assets/images/no_image_product.jpeg'),
+                                          imageUrl: _data[index]['product']
+                                              .imageUrlTest,
+                                          width: 80,
+                                          height: 80,
+                                          fit: BoxFit.fill,
+                                        ),
                               title: _data[index]["type"] != "T" &&
                                       _data[index]['tests'] == "Não"
                                   ? Text(

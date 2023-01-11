@@ -57,8 +57,6 @@ class RequestsBloc extends Disposable {
   Sink get pedidoReposicaoSink => _pedidoReposicaoController.sink;
   Stream get pedidoReposicaoStream => _pedidoReposicaoController.stream;
 
-
-
   BehaviorSubject _taxaEntregaController = BehaviorSubject();
   Sink get taxaEntregaSink => _taxaEntregaController.sink;
   Stream get taxaEntregaStream => _taxaEntregaController.stream;

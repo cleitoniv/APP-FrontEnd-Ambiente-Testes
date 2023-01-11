@@ -228,8 +228,6 @@ class RequestsScreen extends StatelessWidget {
               height: 20,
             ),
             itemBuilder: (context, index) {
-              print('231');
-              print(_requests[index].items);
               // String currentType = _homeWidgetBloc.currentRequestType;
               // print(currentType);
               // if (currentType == "Reposição") {
