@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ValidationScreen extends StatefulWidget {
+class LoginProcessScreen extends StatefulWidget {
   final AuthEvent login;
 
-  ValidationScreen({this.login});
+  LoginProcessScreen({this.login});
 
   @override
-  _ValidationScreenState createState() => _ValidationScreenState();
+  _LoginProcessScreenState createState() => _LoginProcessScreenState();
 }
 
-class _ValidationScreenState extends State<ValidationScreen> {
+class _LoginProcessScreenState extends State<LoginProcessScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
 
@@ -35,21 +35,21 @@ class _ValidationScreenState extends State<ValidationScreen> {
   Widget waitingScreen() {
     return Container(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: SizedBox(
-              height: 300,
-              child: Text(
-                "Faça o seu primeiro login para completar o processo de autenticação.",
-                style: GoogleFonts.poppins(
-                    fontSize: 30,
-                    color: Theme.of(context).accentColor,
-                    fontWeight:
-                        FontWeight.lerp(FontWeight.w400, FontWeight.w800, 0.3)),
-                textAlign: TextAlign.center,
-              ),
+            child: Text(
+              "Aguarde, estamos validando seu cadastro na Central Oftalmica.",
+              style: GoogleFonts.poppins(
+                  fontSize: 30,
+                  color: Theme.of(context).accentColor,
+                  fontWeight:
+                      FontWeight.lerp(FontWeight.w400, FontWeight.w800, 0.3)),
+              textAlign: TextAlign.center,
             ),
+          ),
+          SizedBox(
+            height: 150,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

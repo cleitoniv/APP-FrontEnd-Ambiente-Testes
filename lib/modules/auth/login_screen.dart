@@ -149,11 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
               (route) => route.isFirst, //(Route<dynamic> route) => false
             );
           } else {
-            Modular.to.pushNamed('/auth/validate');
+            Modular.to.pushNamed('/auth/loginprocess');
           }
         } else {
           if (_cliente.integrated) {
-            Modular.to.pushNamed('/auth/validate');
+            Modular.to.pushNamed('/auth/loginprocess');
           }
           _showErrors(_cliente.errorData);
 

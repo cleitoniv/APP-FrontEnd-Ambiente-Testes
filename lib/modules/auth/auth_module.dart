@@ -10,6 +10,7 @@ import 'package:central_oftalmica_app_cliente/modules/auth/terms_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/validation_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/auth/delivery_address_screen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'login_process.dart';
 
 class AuthModule extends Module {
   @override
@@ -21,6 +22,7 @@ class AuthModule extends Module {
   @override
   final List<ModularRoute> routes = [
     ChildRoute('/validate', child: (_, args) => ValidationScreen()),
+    ChildRoute('/loginprocess', child: (_, args) => LoginProcessScreen()),
     ChildRoute(
       '/login',
       child: (_, args) => LoginScreen(),

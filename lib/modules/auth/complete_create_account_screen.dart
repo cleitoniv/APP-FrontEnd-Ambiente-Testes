@@ -113,7 +113,7 @@ class _CompleteCreateAccountScreenState
             arguments: _cliente,
           );
         } else {
-          Modular.to.pushNamed('/auth/validate');
+          Modular.to.pushNamed('/auth/loginprocess');
         }
       } else {
         SnackBar _snackBar = SnackBar(

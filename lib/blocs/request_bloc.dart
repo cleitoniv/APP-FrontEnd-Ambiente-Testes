@@ -104,6 +104,10 @@ class RequestsBloc extends Disposable {
     cartIn.add(novosItens);
   }
 
+  Future<Map> checkStock(Map params) {
+    return repository.checkStock(params);
+  }
+
   addProductToCart(Map<String, dynamic> data) async {
     List<Map<String, dynamic>> _first = await cartOut.first;
     Map<String, dynamic> _newData = {...data};

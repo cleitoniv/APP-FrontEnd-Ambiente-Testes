@@ -235,15 +235,29 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         subtitle: Row(
                           children: <Widget>[
-                            Text(
-                              'Qnt. ${_data[index]['quantity']}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .copyWith(
-                                    color: Colors.black38,
-                                    fontSize: 14,
-                                  ),
+                            Column(
+                              children: [
+                                Text(
+                                  'Qnt. ${_data[index]['quantity']}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      .copyWith(
+                                        color: Colors.black38,
+                                        fontSize: 14,
+                                      ),
+                                ),
+                                Text(
+                                  'grau: ${_data[index]['Olho direito']['degree']}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      .copyWith(
+                                        color: Colors.black38,
+                                        fontSize: 14,
+                                      ),
+                                ),
+                              ],
                             ),
                             SizedBox(width: 20),
                             CircleAvatar(

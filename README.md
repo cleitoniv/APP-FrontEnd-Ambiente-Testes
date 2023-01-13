@@ -11,7 +11,7 @@ For help getting started with Flutter, view our
 front_end -
 
 + alterar os textos que estão sendo enviados na tela pos-cadastro e no primeiro login
-e fazer o redirecionamento do usuario para a tela de login apos o cadastro. [NF]
+e fazer o redirecionamento do usuario para a tela de login apos o cadastro. [F]
  
 back_end - 
 + dar um trim no nome, antes de inserir no banco [F]

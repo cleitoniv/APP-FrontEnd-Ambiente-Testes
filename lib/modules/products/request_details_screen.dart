@@ -802,12 +802,31 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Modular.to.pushNamed("/home/0");
   }
 
-  _onPurchase(BuildContext context) async {
+  _onPurchase(BuildContext context, ProductModel product) async {
     if (isValidDate(_birthdayController.text, context)) {
       return;
     }
 
-    await _onAddToCart({'product': currentProduct.product}, 'onPurchase');
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
+    print('linha 812');
+    print(_first[_first['current']]);
+
+    setState(() {
+      _isProcessing = false;
+      _isLoadingPrimaryButton = false;
+    });
+
+    await _requestsBloc.checkStock({
+      "grupo": currentProduct.product.group,
+      "grau": _first[_first['current']]['degree'],
+      "eixo": _first[_first['current']]['axis'],
+      "cilindro": _first[_first['current']]['cylinder'],
+      "adicao": _first[_first['current']]['adicao'],
+      "cor": _first[_first['current']]['cor']
+    });
+
+    // await _onAddToCart({'product': currentProduct.product}, 'onPurchase');
   }
 
   List<Map> _renderButtonData(ProductModel product) {
@@ -1370,6 +1389,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('--- linha 1373 ---');
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(
@@ -2042,7 +2062,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 _isLoadingPrimaryButton = true;
                                 _isProcessing = true;
                               });
-                              await _onPurchase(context);
+                              await _onPurchase(context, widget.product);
                               setState(() {
                                 _isProcessing = false;
                                 _isLoadingPrimaryButton = false;

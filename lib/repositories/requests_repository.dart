@@ -202,6 +202,25 @@ class RequestsRepository {
     return {'items': items, 'valor': 0};
   }
 
+  Future<Map> checkStock(Map params) async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
+    print('linha 208');
+    try {
+      Response response = await dio.post('/api/cliente/check_stock_found',
+          data: jsonEncode(params),
+          options: Options(headers: {
+            "Authorization": "Bearer $idToken",
+            "Content-Type": "application/json"
+          }));
+      print(response.data);
+      return response.data;
+    } catch (e) {
+      print(e);
+      return {"success": false};
+    }
+  }
+
   Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
