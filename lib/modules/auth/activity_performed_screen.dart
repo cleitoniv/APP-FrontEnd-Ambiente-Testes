@@ -97,7 +97,7 @@ class _ActivityPerformedScreenState extends State<ActivityPerformedScreen> {
                     opacity: snapshot.hasData ? 1 : 0.5,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          disabledBackgroundColor:
+                          onSurface:
                               Theme.of(context).accentColor),
                       onPressed: snapshot.hasData ? _handleSubmit : null,
                       child: Text(

@@ -495,7 +495,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
+                          primary: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),

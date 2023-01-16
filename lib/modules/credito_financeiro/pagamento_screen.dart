@@ -404,7 +404,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                 onPressed: _onAddCreditCard,
                 style: ElevatedButton.styleFrom(
                     elevation: 0,
-                    backgroundColor: Colors.white,
+                    primary: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                       side: BorderSide(

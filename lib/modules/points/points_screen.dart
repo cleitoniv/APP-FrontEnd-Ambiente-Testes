@@ -233,7 +233,7 @@ class _PointsScreenState extends State<PointsScreen> {
                   margin: const EdgeInsets.only(top: 20),
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: item['color'],
+                        primary: item['color'],
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),

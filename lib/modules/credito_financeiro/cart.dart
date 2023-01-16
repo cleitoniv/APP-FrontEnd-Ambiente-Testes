@@ -260,7 +260,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
               SizedBox(height: 30),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    disabledBackgroundColor: Color(0xffF1F1F1), elevation: 0),
+                    onSurface: Color(0xffF1F1F1), elevation: 0),
                 child: FittedBox(
                   fit: BoxFit.contain,
                   child: Text(
@@ -284,7 +284,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          disabledBackgroundColor:
+                          onSurface:
                               Theme.of(context).accentColor),
                       child: Text(
                         'Finalizar Pedido',

@@ -548,9 +548,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                             },
                             style: ElevatedButton.styleFrom(
                                 elevation: 0,
-                                disabledBackgroundColor:
+                                onSurface:
                                     Theme.of(context).primaryColor,
-                                backgroundColor:
+                                primary:
                                     Theme.of(context).primaryColor),
                             icon: Image.asset(
                               'assets/icons/cart.png',

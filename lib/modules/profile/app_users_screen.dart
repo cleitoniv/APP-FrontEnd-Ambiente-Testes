@@ -138,7 +138,7 @@ class _AppUsersScreenState extends State<AppUsersScreen> {
               ? ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                       elevation: 0,
-                      backgroundColor: Theme.of(context).primaryColor),
+                      primary: Theme.of(context).primaryColor),
                   onPressed: _onAddUser,
                   icon: Icon(
                     MaterialCommunityIcons.plus,

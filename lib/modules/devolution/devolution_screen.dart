@@ -333,8 +333,8 @@ class _DevolutionScreenState extends State<DevolutionScreen> {
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
                 elevation: 0,
-                disabledBackgroundColor: Colors.white,
-                backgroundColor: Colors.white,
+                onSurface: Colors.white,
+                primary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                   side: BorderSide(

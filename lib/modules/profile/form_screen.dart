@@ -122,7 +122,7 @@ class _FormScreenState extends State<FormScreen> {
           content: Text("Essa ação não pode ser desfeita! Continuar?"),
           actions: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              style: ElevatedButton.styleFrom(primary: Colors.red),
               child: Text(
                 "Sim",
                 style: TextStyle(color: Colors.white),
@@ -375,7 +375,7 @@ class _FormScreenState extends State<FormScreen> {
                 ? widget.formType == 'edit'
                     ? ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red, elevation: 0),
+                            primary: Colors.red, elevation: 0),
                         onPressed: _showDialog,
                         child: Text(
                           'Excluir Usuário',

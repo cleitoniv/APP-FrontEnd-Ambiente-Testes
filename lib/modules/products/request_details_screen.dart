@@ -497,6 +497,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     });
   }
 
+  int _productQuantity(bool isSameDegree) {
+    int _quantity = int.parse(_lensDireitoController.text) +
+        int.parse(_lensEsquerdoController.text) +
+        int.parse(_lensController.text);
+
+    int _qtd = isSameDegree
+        ? int.parse(_lensController.text) * 2
+        : _quantity;
+
+    return _qtd;
+  }
+
   _onAddToCart(Map data, String typeButton) async {
     _lockCart(true);
     Map<dynamic, dynamic> _first =
@@ -802,7 +814,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Modular.to.pushNamed("/home/0");
   }
 
-  _onPurchase(BuildContext context, ProductModel product) async {
+  _onPurchase(BuildContext context, ProductModel product, String mode) async {
     if (isValidDate(_birthdayController.text, context)) {
       return;
     }
@@ -812,12 +824,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     print('linha 812');
     print(_first[_first['current']]);
 
-    setState(() {
-      _isProcessing = false;
-      _isLoadingPrimaryButton = false;
-    });
+    int itemQuantity = _productQuantity(_first['current'] == "Mesmo grau em ambos");
 
-    await _requestsBloc.checkStock({
+    Map resp = await _requestsBloc.checkStock({
       "grupo": currentProduct.product.group,
       "grau": _first[_first['current']]['degree'],
       "eixo": _first[_first['current']]['axis'],
@@ -826,6 +835,66 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       "cor": _first[_first['current']]['cor']
     });
 
+    if(resp["success"]) {
+      if(resp["data"]["quantidade"] >= itemQuantity) {
+        await _onAddToCart({'product': currentProduct.product}, mode); 
+      } else {
+        Dialogs.confirmWithInfo(context, 
+          onCancel: () {
+            setState(() {
+              _isProcessing = false;
+              _isLoadingPrimaryButton = false;
+            });
+            Modular.to.pop();
+          },
+          onConfirm: () async {
+            await _onAddToCart({'product': currentProduct.product}, mode);
+          },
+          info: Container(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Quantidade solicitada: ${itemQuantity}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                      Text("Quantidade em estoque: ${resp["data"]["quantidade"]}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
+                    ]
+                  )
+                  ],
+                ),
+                SizedBox(height: 20,),
+                Material(
+                  elevation: 2,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white
+                    ),
+                    padding: EdgeInsets.only(top: 8, bottom: 8, left: 10, right: 10),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/truck.png',
+                          width: 25,
+                          height: 25,
+                        ),
+                        SizedBox(width: 5,),
+                        Text("Previsao de entrega 07/01/2023")
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 50,),
+            ]),
+          ),
+          title: "Pendencia",
+          subtitle: "[Texto]",
+          confirmText: "Continuar",
+          cancelText: "Cancelar"
+        );
+      }
+    }
     // await _onAddToCart({'product': currentProduct.product}, 'onPurchase');
   }
 
@@ -2050,7 +2119,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               child: !_isLoadingPrimaryButton
                   ? ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).accentColor,
+                          primary: Theme.of(context).accentColor,
                           elevation: 0),
                       icon: Icon(
                         MaterialCommunityIcons.plus,
@@ -2062,7 +2131,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 _isLoadingPrimaryButton = true;
                                 _isProcessing = true;
                               });
-                              await _onPurchase(context, widget.product);
+                              await _onPurchase(context, widget.product, 'onPurchase');
                               setState(() {
                                 _isProcessing = false;
                                 _isLoadingPrimaryButton = false;
@@ -2091,7 +2160,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     ),
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: e['color'], elevation: 0),
+                          primary: e['color'], elevation: 0),
                       icon: e['icon'],
                       onPressed: e['onTap'],
                       label: FittedBox(
@@ -2114,7 +2183,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               child: !_isLoadingSecondButton
                   ? ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
+                          primary: Theme.of(context).primaryColor,
                           elevation: 0),
                       icon: Image.asset(
                         'assets/icons/cart.png',
@@ -2130,9 +2199,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               });
                               log("${currentProduct.product.value}");
 
-                              await _onAddToCart({
-                                'product': currentProduct.product,
-                              }, 'Normal');
+                              await _onPurchase(context, widget.product, 'Normal');
                               setState(() {
                                 _isProcessing = false;
                                 _isLoadingSecondButton = false;

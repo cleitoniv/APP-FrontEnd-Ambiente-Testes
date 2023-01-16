@@ -266,6 +266,93 @@ class Dialogs {
     );
   }
 
+  static confirmWithInfo(
+    BuildContext context, {
+    Function onConfirm,
+    Function onCancel,
+    Widget info,
+    String confirmText = 'Confirmar Resgate',
+    String cancelText = 'Cancelar Resgate',
+    String title = 'Deseja confirmarresgate de pontos?',
+    String subtitle =
+        'Ao confirmar iremos converter seus Pontos em Crédito Financeiro, tem certeza que deseja resgatar?',
+    bool barrierDismissible = false,
+  }) {
+    List<Map> _renderButtonData(BuildContext context) {
+      return [
+        {
+          'title': confirmText,
+          'onTap': onConfirm,
+          'color': Theme.of(context).accentColor,
+          'textColor': Colors.white,
+        },
+        {
+          'title': cancelText,
+          'onTap': onCancel,
+          'color': Color(0xffF1F1F1),
+          'textColor': Theme.of(context).accentColor,
+        },
+      ];
+    }
+
+    showDialog(
+      barrierDismissible: barrierDismissible,
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        title: Column(
+          children: <Widget>[
+            FittedBox(
+              fit: BoxFit.contain,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headline5,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              subtitle,
+              style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [info] + _renderButtonData(context).map(
+            (e) {
+              return Container(
+                margin: const EdgeInsets.only(
+                  top: 1,
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: Size(200, 35),
+                      elevation: 0, primary: e['color']
+                  ),
+                  onPressed: e['onTap'],
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      e['title'],
+                      style: Theme.of(context).textTheme.button.copyWith(
+                            color: e['textColor'],
+                          ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).toList(),
+        ),
+      ),
+    );
+  }
+
   static confirm(
     BuildContext context, {
     Function onConfirm,
@@ -330,7 +417,7 @@ class Dialogs {
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      elevation: 0, backgroundColor: e['color']),
+                      elevation: 0, primary: e['color']),
                   onPressed: e['onTap'],
                   child: FittedBox(
                     fit: BoxFit.contain,
@@ -409,7 +496,7 @@ class Dialogs {
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      elevation: 0, backgroundColor: e['color']),
+                      elevation: 0, primary: e['color']),
                   onPressed: e['onTap'],
                   child: Text(
                     e['title'],

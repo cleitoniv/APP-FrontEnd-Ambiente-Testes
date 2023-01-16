@@ -395,7 +395,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 SizedBox(height: 30),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffF1F1F1), elevation: 0),
+                      primary: Color(0xffF1F1F1), elevation: 0),
                   child: FittedBox(
                     fit: BoxFit.contain,
                     child: Text(
@@ -418,7 +418,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                       opacity: snapshot.data.isEmpty ? 0.5 : 1,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            disabledBackgroundColor:
+                            onSurface:
                                 Theme.of(context).accentColor,
                             elevation: 0),
                         child: Text(
