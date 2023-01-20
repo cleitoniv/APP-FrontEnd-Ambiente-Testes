@@ -27,3 +27,6 @@ back_end -
 + fazer uma certificação de que a grid esta recebendo o campo YGRP (campo de grupo de teste) [F]
 
 
+20/01/23 -
++ em request_details na função addOncart fazer uma função para a verificar os itens do carrinho e fazer uma soma com os itens que estão sendo adicionados caso os itens tenham o mesmo codigo de produto de acordo com o seus parametros [NF] 
+

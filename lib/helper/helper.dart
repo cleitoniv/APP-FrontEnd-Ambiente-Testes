@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cpfcnpj/cpfcnpj.dart';
@@ -101,6 +102,292 @@ class Helper {
   static moneyToInt(double value) {
     return int.parse(
       value.toString().replaceAll(',', '.').replaceAll('.', ''),
+    );
+  }
+
+  static keyList(_data, index) {
+    if (_data[index].containsKey('Olho direito')) {
+      list() => _data[index]['Olho direito'].entries.map((e) => e.key).toList();
+      var result = list();
+
+      List keyProduct = [];
+      for (var i = 0; i < result.length; i++) {
+        keyProduct.add(result[i]);
+      }
+      return keyProduct;
+    } else if (_data[index].containsKey('Oho esquerdo')) {
+      list() =>
+          _data[index]['Olho esquerdo'].entries.map((e) => e.key).toList();
+      var result = list();
+
+      List keyProduct = [];
+      for (var i = 0; i < result.length; i++) {
+        keyProduct.add(result[i]);
+      }
+      return keyProduct;
+    } else if (_data[index].containsKey('Mesmo grau em ambos')) {
+      list() => _data[index]['Mesmo grau em ambos']
+          .entries
+          .map((e) => e.key)
+          .toList();
+      var result = list();
+
+      List keyProduct = [];
+      for (var i = 0; i < result.length; i++) {
+        keyProduct.add(result[i]);
+      }
+
+      // return finalResult();
+      return keyProduct;
+    } else if (_data[index].containsKey('Graus diferentes em cada olho')) {
+      listRight() {
+        if (_data[index]['Graus diferentes em cada olho']
+            .containsKey('direito')) {
+          return _data[index]['Graus diferentes em cada olho']['direito']
+              .entries
+              .map((entry) {
+            return entry.key;
+          }).toList();
+        }
+      }
+
+      listLeft() {
+        if (_data[index]['Graus diferentes em cada olho']
+            .containsKey('esquerdo')) {
+          return _data[index]['Graus diferentes em cada olho']['esquerdo']
+              .entries
+              .map((e) => e.key)
+              .toList();
+        }
+      }
+
+      var resultRight = listRight();
+      var resultLeft = listLeft();
+      List keyProductRight = [];
+      for (var i = 0; i < resultRight.length; i++) {
+        keyProductRight.add(resultRight[i]);
+      }
+
+      List keyProductLeft = [];
+      for (var i = 0; i < resultLeft.length; i++) {
+        keyProductLeft.add(resultLeft[i]);
+      }
+      return [resultRight, resultLeft];
+    }
+  }
+
+  static dynamic productInfo(context, List info) {
+    List childs = info
+        .map((e) => Column(children: [
+              Text(
+                '${e}',
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      color: Colors.black38,
+                      fontSize: 14,
+                    ),
+              ),
+            ]))
+        .toList();
+    return childs;
+    // Iterable dataInfo = info.map((inf) {
+    //   return Column(
+    //     children: [
+    //       Container(
+    //         child: Text(
+    //           '${inf}',
+    //           style: Theme.of(context).textTheme.subtitle1.copyWith(
+    //                 color: Colors.black38,
+    //                 fontSize: 14,
+    //               ),
+    //         ),
+    //       ),
+    //     ],
+    //   );
+    // });
+    // return dataInfo;
+  }
+
+  static Widget CartList(List _data, Function hasPrice, Function removeItem,
+      Function selectPrice) {
+    return ListView.separated(
+      primary: false,
+      addSemanticIndexes: true,
+      shrinkWrap: true,
+      itemCount: _data.length,
+      separatorBuilder: (context, index) => Divider(
+        height: 25,
+        thickness: 1,
+        color: Colors.black12,
+      ),
+      itemBuilder: (context, index) {
+        // print(_data[index]['Mesmo grau em ambos']);
+        print(keyList(_data, index));
+        var keyListResult = keyList(_data, index);
+        print('linha 192 helper.dart');
+        return Row(
+          children: [
+            Expanded(
+              flex: 4,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        constraints:
+                            BoxConstraints(maxHeight: 100, maxWidth: 100),
+                        child: _data[index]["tests"] != "Sim" &&
+                                _data[index]["type"] != "T"
+                            ? CachedNetworkImage(
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                        'assets/images/no_image_product.jpeg'),
+                                imageUrl: _data[index]['product'].imageUrl,
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.fill,
+                              )
+                            : _data[index]['product'].imageUrlTest == null
+                                ? Image.asset(
+                                    'assets/images/no_image_product.jpeg')
+                                : CachedNetworkImage(
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                            'assets/images/no_image_product.jpeg'),
+                                    imageUrl:
+                                        _data[index]['product'].imageUrlTest,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.fill,
+                                  ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      hasPrice(_data[index])
+                          ? Text(
+                              selectPrice(_data[index]),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 12,
+                                  ),
+                            )
+                          : Container()
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 8,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '${_data[index]['product'].title}',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 14,
+                              ),
+                          maxLines: 2,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _data[index]['meta']['pendencie']
+                              ? Container(
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Text(
+                                    "PENDENTE",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                )
+                              : Container(),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                  backgroundColor: Helper.buyTypeBuild(
+                                      context,
+                                      _data[index]['operation'],
+                                      _data[index]['tests'])['color'],
+                                  radius: 10,
+                                  child: Helper.buyTypeBuild(
+                                      context,
+                                      _data[index]['operation'],
+                                      _data[index]['tests'])['icon']),
+                              SizedBox(width: 5),
+                              FittedBox(
+                                fit: BoxFit.contain,
+                                child: Text(
+                                  '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      .copyWith(
+                                        fontSize: 12,
+                                      ),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      // productInfo(context, keyListResult),
+                      SizedBox(width: 20)
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      _data[index]['removeItem'] == 'Sim' ||
+                              _data[index]['removeItem'] == null
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                size: 30,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                removeItem(_data[index]);
+                              },
+                            )
+                          : Container()
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      },
     );
   }
 

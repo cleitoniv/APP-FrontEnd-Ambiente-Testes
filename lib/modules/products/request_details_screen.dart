@@ -439,7 +439,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       "cylinder": product.hasCilindrico ?? false,
       "degree": product.hasEsferico ?? false,
       "cor": product.hasCor ?? false,
-      "adicao": product.hasAdicao ?? false
+      "adicao": product.hasAdicao ?? false,
+      "codigo": true
     };
 
     if (first['current'] == "Graus diferentes em cada olho") {
@@ -502,17 +503,94 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         int.parse(_lensEsquerdoController.text) +
         int.parse(_lensController.text);
 
-    int _qtd = isSameDegree
-        ? int.parse(_lensController.text) * 2
-        : _quantity;
+    int _qtd = isSameDegree ? int.parse(_lensController.text) * 2 : _quantity;
 
     return _qtd;
   }
 
-  _onAddToCart(Map data, String typeButton) async {
+  var dataProductCode = [
+    {
+      "olho": "Olho direito",
+      "quantidade": 3,
+      "esferico": -8,
+      "grupo": "010C",
+      "cilindrico": -1.75,
+      "eixo": 80,
+      "adicao": 0
+    },
+    {
+      "olho": "Olho esquerdo",
+      "quantidade": 2,
+      "esferico": -8,
+      "grupo": "010C",
+      "cilindrico": -1.25,
+      "eixo": 80,
+      "adicao": 0
+    }
+  ];
+
+  List<Map> productCodeList(_first) {
+    String current = _first['current'];
+    print("533");
+    print(current);
+    if (current == 'Graus diferentes em cada olho') {
+      return _first[current].entries.map<Map<String, dynamic>>((entry) {
+        return {
+          "olho": entry.key,
+          "esferico": entry.value['degree'],
+          "grupo": currentProduct.product.group,
+          "cilindrico": entry.value['cylinder'],
+          "eixo": entry.value['axis'],
+          "adicao": entry.value['adicao']
+        };
+      }).toList();
+    } else {
+      return List<Map<String, dynamic>>.of([
+        Map<String, dynamic>.of({
+          "olho": current,
+          "esferico": _first[current]['degree'] ?? "",
+          "grupo": currentProduct.product.group,
+          "cilindrico": _first[current]['cylinder'] ?? "",
+          "eixo": _first[current]['axis'] ?? "",
+          "adicao": _first[current]['adicao'] ?? ""
+        })
+      ]);
+    }
+  }
+
+  Map _putProductCode(_first, result) {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+    print("572");
+    print(_cart);
+    print(result);
+    String current = _first['current'];
+    if (current == 'Graus diferentes em cada olho') {
+      print("576");
+      print(result['data']);
+      result['data'].forEach((item) {
+        print("577");
+        print(item);
+        _first[current][item['olho']]['codigo'] = item['codigo']['codigo'];
+      });
+      return _first;
+    } else {
+      _first[current]['codigo'] = result['data'][0]['codigo']['codigo'];
+      return _first;
+    }
+  }
+
+  _onAddToCart(Map data, String typeButton, Map meta) async {
     _lockCart(true);
+
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
+    print('534');
+    var result = await _productBloc.productCode(productCodeList(_first));
+    print('linha 812');
+    print(_putProductCode(_first, result));
+
+    int itemQuantity =
+        _productQuantity(_first['current'] == "Mesmo grau em ambos");
 
     int cartTotal = _calculateCreditProduct();
     int _cartTotalTest = _calculateCreditTest();
@@ -749,6 +827,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               : int.parse(_lensDireitoController.text)
         },
         'value': data['product'].value,
+        'meta': meta,
         'tests': _first['test'],
         'operation': _parseOperation(widget.type),
         'product': data['product'],
@@ -824,7 +903,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     print('linha 812');
     print(_first[_first['current']]);
 
-    int itemQuantity = _productQuantity(_first['current'] == "Mesmo grau em ambos");
+    int itemQuantity =
+        _productQuantity(_first['current'] == "Mesmo grau em ambos");
 
     Map resp = await _requestsBloc.checkStock({
       "grupo": currentProduct.product.group,
@@ -835,43 +915,47 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       "cor": _first[_first['current']]['cor']
     });
 
-    if(resp["success"]) {
-      if(resp["data"]["quantidade"] >= itemQuantity) {
-        await _onAddToCart({'product': currentProduct.product}, mode); 
+    if (resp["success"]) {
+      if (resp["data"]["quantidade"] >= itemQuantity) {
+        await _onAddToCart({'product': currentProduct.product}, mode,
+            {'pendencie': false, 'days': 0});
       } else {
-        Dialogs.confirmWithInfo(context, 
-          onCancel: () {
-            setState(() {
-              _isProcessing = false;
-              _isLoadingPrimaryButton = false;
-            });
-            Modular.to.pop();
-          },
-          onConfirm: () async {
-            await _onAddToCart({'product': currentProduct.product}, mode);
-          },
-          info: Container(
-            child: Column(
-              children: [
+        Dialogs.confirmWithInfo(context, onCancel: () {
+          setState(() {
+            _isProcessing = false;
+            _isLoadingPrimaryButton = false;
+          });
+          Modular.to.pop();
+        }, onConfirm: () async {
+          await _onAddToCart({'product': currentProduct.product}, mode,
+              {'pendencie': true, 'days': 30});
+        },
+            info: Container(
+              child: Column(children: [
                 Row(
                   children: [
                     Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Quantidade solicitada: ${itemQuantity}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                      Text("Quantidade em estoque: ${resp["data"]["quantidade"]}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
-                    ]
-                  )
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Quantidade solicitada: ${itemQuantity}",
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500)),
+                          Text(
+                              "Quantidade em estoque: ${resp["data"]["quantidade"]}",
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500))
+                        ])
                   ],
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Material(
                   elevation: 2,
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white
-                    ),
-                    padding: EdgeInsets.only(top: 8, bottom: 8, left: 10, right: 10),
+                    decoration: BoxDecoration(color: Colors.white),
+                    padding:
+                        EdgeInsets.only(top: 8, bottom: 8, left: 10, right: 10),
                     child: Row(
                       children: [
                         Image.asset(
@@ -879,20 +963,23 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           width: 25,
                           height: 25,
                         ),
-                        SizedBox(width: 5,),
+                        SizedBox(
+                          width: 5,
+                        ),
                         Text("Previsao de entrega 07/01/2023")
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 50,),
-            ]),
-          ),
-          title: "Pendencia",
-          subtitle: "[Texto]",
-          confirmText: "Continuar",
-          cancelText: "Cancelar"
-        );
+                SizedBox(
+                  height: 50,
+                ),
+              ]),
+            ),
+            title: "Pendencia",
+            subtitle: "[Texto]",
+            confirmText: "Continuar",
+            cancelText: "Cancelar");
       }
     }
     // await _onAddToCart({'product': currentProduct.product}, 'onPurchase');
@@ -2119,8 +2206,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               child: !_isLoadingPrimaryButton
                   ? ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                          primary: Theme.of(context).accentColor,
-                          elevation: 0),
+                          primary: Theme.of(context).accentColor, elevation: 0),
                       icon: Icon(
                         MaterialCommunityIcons.plus,
                         color: Colors.white,
@@ -2131,7 +2217,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 _isLoadingPrimaryButton = true;
                                 _isProcessing = true;
                               });
-                              await _onPurchase(context, widget.product, 'onPurchase');
+                              await _onPurchase(
+                                  context, widget.product, 'onPurchase');
                               setState(() {
                                 _isProcessing = false;
                                 _isLoadingPrimaryButton = false;
@@ -2152,30 +2239,35 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   : Center(child: CircularProgressIndicator()),
             ),
             Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: _renderButtonData(currentProduct.product).map(
-              (e) {
-                return Container(
-                    margin: const EdgeInsets.only(
-                      top: 20,
-                    ),
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                          primary: e['color'], elevation: 0),
-                      icon: e['icon'],
-                      onPressed: e['onTap'],
-                      label: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          e['text'] ?? "-",
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.button.copyWith(
-                              color: e['textColor'],
-                              fontSize: _verifyFontSize()),
+                  (e) {
+                    return Container(
+                        margin: const EdgeInsets.only(
+                          top: 20,
                         ),
-                      ),
-                    ));
-              },
-            ).toList()),
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                              primary: e['color'], elevation: 0),
+                          icon: e['icon'],
+                          onPressed: e['onTap'],
+                          label: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              e['text'] ?? "-",
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .button
+                                  .copyWith(
+                                      color: e['textColor'],
+                                      fontSize: _verifyFontSize()),
+                            ),
+                          ),
+                        ));
+                  },
+                ).toList()),
             Container(
               margin: const EdgeInsets.only(
                 top: 20,
@@ -2199,7 +2291,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               });
                               log("${currentProduct.product.value}");
 
-                              await _onPurchase(context, widget.product, 'Normal');
+                              await _onPurchase(
+                                  context, widget.product, 'Normal');
                               setState(() {
                                 _isProcessing = false;
                                 _isLoadingSecondButton = false;

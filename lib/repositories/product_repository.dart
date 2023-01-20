@@ -63,6 +63,7 @@ class ProductRepository {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
+    data.remove("codigo");
     try {
       Response response = await dio.get("/api/cliente/verify_graus",
           options: Options(headers: {
@@ -73,6 +74,23 @@ class ProductRepository {
       return response.data["success"];
     } catch (error) {
       return false;
+    }
+  }
+
+  Future<Map> productCode(List<Map<String, dynamic>> data) async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
+    try {
+      Response response = await dio.patch("/api/cliente/product_code",
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $idToken"
+          }),
+          data: jsonEncode({"lens": data}));
+      return response.data;
+    } catch (error) {
+      print(error);
+      return {'success': false};
     }
   }
 

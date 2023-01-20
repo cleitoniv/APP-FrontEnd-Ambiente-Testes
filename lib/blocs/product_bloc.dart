@@ -39,8 +39,9 @@ class ProductBloc extends Disposable {
   }
 
   bool validateProductTest(int qtd) {
-    if(this._currentProduct.product.tests - qtd > 0) {
-      this._currentProduct.product.productTests = this._currentProduct.product.tests - qtd;
+    if (this._currentProduct.product.tests - qtd > 0) {
+      this._currentProduct.product.productTests =
+          this._currentProduct.product.tests - qtd;
       productSink.add(this._currentProduct);
       return true;
     } else {
@@ -65,6 +66,10 @@ class ProductBloc extends Disposable {
     parametroListSink.add(Parametros(isLoading: true));
     Parametros parametros = await repository.getParametros(group);
     parametroListSink.add(parametros);
+  }
+
+  Future<Map> productCode(List<Map<String, dynamic>> params) {
+    return repository.productCode(params);
   }
 
   Future<bool> checkProduct(Map<String, dynamic> params) async {
@@ -103,7 +108,8 @@ class ProductBloc extends Disposable {
   }
 
   void fetchOffers() async {
-    _offersRedirected.add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
+    _offersRedirected
+        .add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
     Offers offers = await repository.getOffers();
     _offersRedirected.add(offers);
   }

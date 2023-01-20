@@ -180,145 +180,8 @@ class _CartScreenState extends State<CartScreen> {
                   }
 
                   List<Map<String, dynamic>> _data = snapshot.data;
-                  return ListView.separated(
-                    primary: false,
-                    addSemanticIndexes: true,
-                    shrinkWrap: true,
-                    itemCount: _data.length,
-                    separatorBuilder: (context, index) => Divider(
-                      height: 25,
-                      thickness: 1,
-                      color: Colors.black12,
-                    ),
-                    itemBuilder: (context, index) {
-                      return ListTileMoreCustomizable(
-                        contentPadding: const EdgeInsets.all(0),
-                        horizontalTitleGap: 10,
-                        leading: _data[index]["tests"] != "Sim" &&
-                                _data[index]["type"] != "T"
-                            ?
-                            // ? Image.network(_data[index]['product'].imageUrl,
-                            //     errorBuilder: (context, url, error) {
-                            //     print("202");
-                            //     print(error);
-                            //     return Image.asset(
-                            //         'assets/images/no_image_product.jpeg');
-                            //   })
-
-                            CachedNetworkImage(
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(
-                                        'assets/images/no_image_product.jpeg'),
-                                imageUrl: _data[index]['product'].imageUrl,
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.fill,
-                              )
-                            : _data[index]['product'].imageUrlTest == null
-                                ? Image.asset(
-                                    'assets/images/no_image_product.jpeg')
-                                : CachedNetworkImage(
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset(
-                                            'assets/images/no_image_product.jpeg'),
-                                    imageUrl:
-                                        _data[index]['product'].imageUrlTest,
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.fill,
-                                  ),
-                        title: Text(
-                          '${_data[index]['product'].title}',
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 14,
-                              ),
-                        ),
-                        subtitle: Row(
-                          children: <Widget>[
-                            Column(
-                              children: [
-                                Text(
-                                  'Qnt. ${_data[index]['quantity']}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1
-                                      .copyWith(
-                                        color: Colors.black38,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                                Text(
-                                  'grau: ${_data[index]['Olho direito']['degree']}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1
-                                      .copyWith(
-                                        color: Colors.black38,
-                                        fontSize: 14,
-                                      ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: 20),
-                            CircleAvatar(
-                                backgroundColor: Helper.buyTypeBuild(
-                                    context,
-                                    _data[index]['operation'],
-                                    _data[index]['tests'])['color'],
-                                radius: 10,
-                                child: Helper.buyTypeBuild(
-                                    context,
-                                    _data[index]['operation'],
-                                    _data[index]['tests'])['icon']),
-                            SizedBox(width: 5),
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1
-                                    .copyWith(
-                                      fontSize: 12,
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            hasPrice(_data[index])
-                                ? Text(
-                                    selectPrice(_data[index]),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5
-                                        .copyWith(
-                                          fontSize: 12,
-                                        ),
-                                  )
-                                : Container(),
-                            Align(
-                                alignment: Alignment.center,
-                                child: _data[index]['removeItem'] == 'Sim' ||
-                                        _data[index]['removeItem'] == null
-                                    ? IconButton(
-                                        icon: Icon(
-                                          Icons.close,
-                                          size: 30,
-                                          color: Colors.red,
-                                        ),
-                                        onPressed: () {
-                                          _removeItem(_data[index]);
-                                        },
-                                      )
-                                    : Container())
-                          ],
-                        ),
-                      );
-                    },
-                  );
+                  return Helper.CartList(
+                      _data, hasPrice, _removeItem, selectPrice);
                 },
               ),
               Divider(
@@ -330,24 +193,66 @@ class _CartScreenState extends State<CartScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    'Total',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 18,
-                        ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Total',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 18,
+                            ),
+                      ),
+                      Text(
+                        'Previsão de entrega',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 18,
+                            ),
+                      )
+                    ],
                   ),
-                  StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _requestsBloc.cartOut,
-                      builder: (context, snapshot) {
-                        return Text(
-                          snapshot.hasData
-                              ? 'R\$ ${_totalToPay(snapshot.data)}'
-                              : '',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                                fontSize: 18,
-                              ),
-                        );
-                      }),
+                  Column(
+                    children: [
+                      StreamBuilder<List<Map<String, dynamic>>>(
+                          stream: _requestsBloc.cartOut,
+                          builder: (context, snapshot) {
+                            return Text(
+                              snapshot.hasData
+                                  ? 'R\$ ${_totalToPay(snapshot.data)}'
+                                  : '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 18,
+                                  ),
+                            );
+                          }),
+                      StreamBuilder<List<Map<String, dynamic>>>(
+                          stream: _requestsBloc.cartOut,
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Container();
+                            }
+                            List<Map<String, dynamic>> _data = snapshot.data;
+                            List days = [];
+                            for (var i = 0; i < _data.length; i++) {
+                              days.add(_data[i]['meta']['days']);
+                            }
+                            days.sort(((a, b) => -a.compareTo(b)));
+                            return Text(
+                              !snapshot.hasData
+                                  ? '${days.elementAt(0)} dias úteis.'
+                                  : '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(
+                                    fontSize: 18,
+                                  ),
+                            );
+                          })
+                    ],
+                  ),
                 ],
               ),
               SizedBox(height: 30),
@@ -376,8 +281,7 @@ class _CartScreenState extends State<CartScreen> {
                     opacity: snapshot.data.isEmpty ? 0.5 : 1,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          onSurface:
-                              Theme.of(context).accentColor,
+                          onSurface: Theme.of(context).accentColor,
                           elevation: 0),
                       child: FittedBox(
                         fit: BoxFit.contain,

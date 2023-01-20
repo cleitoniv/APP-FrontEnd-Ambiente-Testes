@@ -612,6 +612,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                         SizedBox(height: 20),
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             {
                               'title':
@@ -655,8 +657,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                 margin: const EdgeInsets.only(top: 20),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      primary: item['color'],
-                                      elevation: 0),
+                                      primary: item['color'], elevation: 0),
                                   onPressed: item['onTap'],
                                   child: FittedBox(
                                     fit: BoxFit.contain,
