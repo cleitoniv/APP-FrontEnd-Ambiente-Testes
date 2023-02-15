@@ -1,87 +1,46 @@
 import 'package:central_oftalmica_app_cliente/blocs/bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
+import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/vindi_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
+
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
 class CreditCardBloc extends Bloc<CreditCardModel> {
+  VindiRepository vindiRepository;
+
   CreditCardRepository repository;
 
-  CreditCardBloc(this.repository);
+  CreditCardBloc(this.repository, this.vindiRepository);
 
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   Future<void> fetchPaymentMethods() async {
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
-    try {
-      PaymentMethod crPaymentForm = currentPaymentValue;
-      if(crPaymentForm == null) {
-        CreditCardModel currentCard = list.list.firstWhere((element) => element.status == 1);
-        _cartWidgetBloc.setPaymentMethodCartao(currentCard);
-      }
-      this.cartaoCreditoSink.add(list);
-    } catch (e) {
-      if (list.list.length > 0) {
-        currentPaymentFormIn.add(list.list[0]);
-        _cartWidgetBloc.setPaymentMethodCartao(list.list[0]);
-        this.cartaoCreditoSink.add(list);
-      } else {
-        this
-            .cartaoCreditoSink
-            .add(CreditCardList(isEmpty: true, isLoading: false));
-      }
-    }
+    this.cartaoCreditoSink.add(list);
   }
 
   Future<void> fetchPaymentMethodsFinan() async {
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
-    try {
-      PaymentMethod crPaymentForm = currentPaymentValue;
-      if(crPaymentForm == null || crPaymentForm.isBoleto) {
-        CreditCardModel currentCard = list.list.firstWhere((element) => element.status == 1);
-        _cartWidgetBloc.setPaymentMethodCartao(currentCard);
-      }
-      this.cartaoCreditoSink.add(list);
-    } catch (e) {
-      if (list.list.length > 0) {
-        currentPaymentFormIn.add(list.list[0]);
-        _cartWidgetBloc.setPaymentMethodCartao(list.list[0]);
-        this.cartaoCreditoSink.add(list);
-      } else {
-        this
-            .cartaoCreditoSink
-            .add(CreditCardList(isEmpty: true, isLoading: false));
-      }
-    }
+    this.cartaoCreditoSink.add(list);
   }
 
   Future<void> fetchPaymentMethodsChange() async {
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
-    try {
-      CreditCardModel currentCard = list.list.firstWhere((element) => element.status == 1);
-      currentPaymentFormIn.add(currentCard);
-      _cartWidgetBloc.setPaymentMethodCartao(currentCard);
-      // _cartWidgetBloc.setPaymentMethodCartao("13", currentCard);
-      this.cartaoCreditoSink.add(list);
-    } catch (e) {
-      if (list.list.length > 0) {
-        currentPaymentFormIn.add(list.list[0]);
-        _cartWidgetBloc.setPaymentMethodCartao(list.list[0]);
-        this.cartaoCreditoSink.add(list);
-      } else {
-        this
-            .cartaoCreditoSink
-            .add(CreditCardList(isEmpty: true, isLoading: false));
-      }
-    }
+    this.cartaoCreditoSink.add(list);
   }
 
   Future<List> fetchInstallments(int valor, bool isBoleto) async {
     return repository.fetchInstallments(valor, isBoleto);
+  }
+
+  Future<VindiCreditCard> addVindiCreditCard(CreditCardModel creditCard) {
+    return vindiRepository.addVindiCreditCard(creditCard);
   }
 
   Future<CreditCard> addCreditCard(CreditCardModel creditCard) {

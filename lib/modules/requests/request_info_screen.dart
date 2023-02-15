@@ -230,12 +230,9 @@ class RequestInfoScreen extends StatelessWidget {
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index2) {
                                     bool isTest = items[index].items[index2]
-                                    [
-                                    'produto_teste'] !=
-                                        null &&
-                                        items[index].items[
-                                        index2]
-                                        ['tests'] ==
+                                                ['produto_teste'] !=
+                                            null &&
+                                        items[index].items[index2]['tests'] ==
                                             "S";
                                     return Column(
                                       children: [
@@ -717,43 +714,43 @@ class RequestInfoScreen extends StatelessWidget {
                                                       ]),
                                                   Row(
                                                       mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         Align(
                                                             alignment: Alignment
                                                                 .centerLeft,
                                                             child: Text('Qtd.',
                                                                 textScaleFactor:
-                                                                1.25,
+                                                                    1.25,
                                                                 style: Theme.of(
-                                                                    context)
+                                                                        context)
                                                                     .textTheme
                                                                     .subtitle1
                                                                     .copyWith(
-                                                                  fontSize:
-                                                                  14,
-                                                                  color: Colors
-                                                                      .black38,
-                                                                ))),
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
                                                         Align(
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["qtdE"] ?? "-"}',
                                                               textScaleFactor:
-                                                              1.25,
+                                                                  1.25,
                                                               style: Theme.of(
-                                                                  context)
+                                                                      context)
                                                                   .textTheme
                                                                   .headline5
                                                                   .copyWith(
-                                                                fontSize:
-                                                                14,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                              ),
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
                                                             ))
                                                       ])
                                                 ],
@@ -973,43 +970,43 @@ class RequestInfoScreen extends StatelessWidget {
                                                       ]),
                                                   Row(
                                                       mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         Align(
                                                             alignment: Alignment
                                                                 .centerLeft,
                                                             child: Text('Qtd.',
                                                                 textScaleFactor:
-                                                                1.25,
+                                                                    1.25,
                                                                 style: Theme.of(
-                                                                    context)
+                                                                        context)
                                                                     .textTheme
                                                                     .subtitle1
                                                                     .copyWith(
-                                                                  fontSize:
-                                                                  14,
-                                                                  color: Colors
-                                                                      .black38,
-                                                                ))),
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black38,
+                                                                    ))),
                                                         Align(
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
                                                               '${items[index].items[index2]["qtdD"] ?? "-"}',
                                                               textScaleFactor:
-                                                              1.25,
+                                                                  1.25,
                                                               style: Theme.of(
-                                                                  context)
+                                                                      context)
                                                                   .textTheme
                                                                   .headline5
                                                                   .copyWith(
-                                                                fontSize:
-                                                                14,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                              ),
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
                                                             ))
                                                       ])
                                                 ],

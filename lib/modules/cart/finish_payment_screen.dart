@@ -97,7 +97,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _getPaymentMethod() async {
-    final paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    final paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
     setState(() {
       _paymentMethod = paymentMethod.isBoleto;
     });
@@ -133,22 +133,9 @@ class _FinishPaymentState extends State<FinishPayment> {
     }
 
     final _taxaEntrega = 0; //_requestBloc.taxaEntregaValue;
-    final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
-    if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
-      setState(() {
-        _lock = false;
-      });
+    final _paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
 
-      Dialogs.errorWithWillPopScope(context,
-          barrierDismissible: false,
-          title: "CCV",
-          subtitle: "Voce precisa fornecer o CCV para completar a compra.",
-          buttonText: "OK", onTap: () {
-        Modular.to.pop();
-      });
-
-      return;
-    }
+    // return;
 
     if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       setState(() {
@@ -198,7 +185,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _calcPaymentInstallment() async {
-    final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    final _paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
 
     final _cart = await _requestBloc.cartOut.first;
 
@@ -210,6 +197,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     var _installmentsList = await _creditCardBloc.fetchInstallments(
         _totalToPayNumeric(_cart), _paymentMethod.isBoleto);
+
     var seen = Set();
     _installmentsList =
         _installmentsList.where((item) => seen.add(item['parcela'])).toList();
@@ -383,36 +371,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Código CCV do Cartão",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5
-                                          .copyWith(fontSize: 18),
-                                    ),
                                     Container(height: 20),
-                                    Container(
-                                      decoration: ShapeDecoration(
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                              width: 1.0,
-                                              style: BorderStyle.solid,
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5.0)),
-                                        ),
-                                      ),
-                                      child: TextFieldWidget(
-                                        controller: _ccvController,
-                                        prefixIcon: Icon(
-                                          Icons.lock,
-                                          color: Color(0xffA1A1A1),
-                                        ),
-                                        width: 120,
-                                        keyboardType: TextInputType.number,
-                                      ),
-                                    )
                                   ],
                                 )
                               : Container(height: 20),

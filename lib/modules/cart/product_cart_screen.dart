@@ -146,6 +146,14 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     return Helper.intToMoney(_total + _taxaEntrega);
   }
 
+  _getMaxDaysCart(data) {
+    var ver = data.map((e) {
+      return e['meta']['days'];
+    }).toList();
+
+    return ver.reduce((curr, next) => curr > next ? curr : next);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_lock) {
@@ -241,7 +249,10 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                         StreamBuilder<List<Map<String, dynamic>>>(
                             stream: _requestsBloc.cartOut,
                             builder: (context, snapshot) {
-                              if (snapshot.data == []) {
+                              if (!snapshot.hasData) {
+                                return Container();
+                              }
+                              if (snapshot.data.isEmpty) {
                                 return Container();
                               }
                               List<Map<String, dynamic>> _data = snapshot.data;
@@ -249,12 +260,12 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                               for (var i = 0; i < _data.length; i++) {
                                 days.add(_data[i]['meta']['days']);
                               }
-                              print(_data);
                               days.sort(((a, b) => -a.compareTo(b)));
                               return Text(
-                                !snapshot.hasData
-                                    ? '${days.elementAt(0)} dias úteis'
-                                    : '',
+                                snapshot.hasData == true &&
+                                        _getMaxDaysCart(_data) > 0
+                                    ? '${_getMaxDaysCart(_data)} dias úteis.'
+                                    : '7 dias úteis.',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline5

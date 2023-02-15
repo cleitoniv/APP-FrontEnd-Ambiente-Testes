@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-
+import '../../repositories/vindi_repository.dart';
 import '../../repositories/credit_card_repository.dart';
 
 class AddCreditCardScreen extends StatefulWidget {
@@ -62,7 +62,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
       setState(() {
         isLoading = true;
       });
-      CreditCard _storeResult = await _creditCardBloc.addCreditCard(
+      VindiCreditCard _storeResult = await _creditCardBloc.addVindiCreditCard(
         CreditCardModel(
           cartaoNumber: parseCartaoNumber(_creditCardNumberController.text),
           anoValidade: _anoValidadeController.text,
@@ -87,7 +87,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
         // Modular.to.pushReplacementNamed("/cart/payment");
         Modular.to
             .pushReplacementNamed(widget.screen['route'] ?? '/cart/payment');
-        return;
+        return _storeResult;
       }
     }
   }

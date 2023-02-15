@@ -12,6 +12,8 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
+import '../../models/vindi_model.dart';
+
 class CreditoPagamentoScreen extends StatefulWidget {
   @override
   _CreditoPagamentoScreenState createState() => _CreditoPagamentoScreenState();
@@ -34,7 +36,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
         arguments: {'route': '/credito_financeiro/pagamento'});
   }
 
-  _onChangePaymentForm(CreditCardModel creditCard) async {
+  _onChangePaymentForm(VindiCardModel creditCard) async {
     setState(() {
       billing = false;
       _lock = true;
@@ -228,7 +230,6 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                             );
                           }
                           final _creditCards = snapshot.data.list;
-
                           return ListView.separated(
                             shrinkWrap: true,
                             primary: false,
@@ -238,14 +239,15 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                             ),
                             itemBuilder: (context, index) {
                               return StreamBuilder(
-                                stream: _creditCardBloc.currentPaymentFormOut,
+                                stream: _cartWidgetBloc.currentPaymentFormOut,
                                 builder: (context, snapshot) {
+                                  PaymentMethod _currentPaymentForm;
                                   if (!snapshot.hasData) {
-                                    return Container();
+                                    _currentPaymentForm =
+                                        PaymentMethod(isEmpty: true);
+                                  } else {
+                                    _currentPaymentForm = snapshot.data;
                                   }
-
-                                  final _currentPaymentForm = snapshot.data;
-
                                   _creditCardNumberController.updateText(
                                       _creditCards[index].cartaoNumber);
 
@@ -259,9 +261,11 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                       horizontal: 20,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: _colorizeCredCardList(
-                                              _currentPaymentForm.id,
-                                              _creditCards[index].id)
+                                      color: !_currentPaymentForm.isEmpty &&
+                                              _colorizeCredCardList(
+                                                  _currentPaymentForm
+                                                      .creditCard.token,
+                                                  _creditCards[index].token)
                                           ? Theme.of(context).accentColor
                                           : Color(0xffF1F1F1),
                                       borderRadius: BorderRadius.circular(5),
@@ -292,9 +296,14 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                               .copyWith(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
-                                                color: _colorizeCredCardList(
-                                                        _currentPaymentForm.id,
-                                                        _creditCards[index].id)
+                                                color: !_currentPaymentForm
+                                                            .isEmpty &&
+                                                        _colorizeCredCardList(
+                                                            _currentPaymentForm
+                                                                .creditCard
+                                                                .token,
+                                                            _creditCards[index]
+                                                                .token)
                                                     ? Colors.white
                                                     : null,
                                               ),
@@ -307,8 +316,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
-                                            _currentPaymentForm.id ==
-                                                    _creditCards[index].id
+                                            _creditCards[index].token != null
                                                 ? Icon(
                                                     Icons.check,
                                                     color: Colors.white,
@@ -325,7 +333,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                               ),
                                               onPressed: () {
                                                 _onDelete(
-                                                    _creditCards[index].id);
+                                                    _creditCards[index].token);
                                               },
                                             )
                                           ],
@@ -428,6 +436,9 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
             Padding(
               padding: EdgeInsets.all(20.0),
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(245, 35),
+                ),
                 onPressed: _lock ? null : _finishPayment,
                 child: Text(
                   'Finalizar Pedido',

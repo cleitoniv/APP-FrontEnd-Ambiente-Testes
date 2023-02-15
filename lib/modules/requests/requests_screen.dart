@@ -229,7 +229,6 @@ class RequestsScreen extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               // String currentType = _homeWidgetBloc.currentRequestType;
-              // print(currentType);
               // if (currentType == "Reposição") {
               //   return _showPedidoReposicao(context, _requests, index);
               // }

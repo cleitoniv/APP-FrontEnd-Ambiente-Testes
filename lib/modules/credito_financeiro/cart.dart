@@ -266,7 +266,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                   child: Text(
                     'Continue Comprando',
                     style: Theme.of(context).textTheme.button.copyWith(
-                          color: Theme.of(context).accentColor,
+                          color: Colors.white,
                         ),
                   ),
                 ),
@@ -284,8 +284,7 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          onSurface:
-                              Theme.of(context).accentColor),
+                          onSurface: Theme.of(context).accentColor),
                       child: Text(
                         'Finalizar Pedido',
                         style: Theme.of(context).textTheme.button,

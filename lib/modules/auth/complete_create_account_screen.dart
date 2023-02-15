@@ -239,7 +239,6 @@ class _CompleteCreateAccountScreenState
       _authBloc.createAccountIn.add(
         {...completeFormdata, ...preFormData},
       );
-
       clienteExiste(_cpfController.text);
     }
   }

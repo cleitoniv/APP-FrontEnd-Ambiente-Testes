@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,6 +13,7 @@ import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
@@ -125,6 +127,56 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     } else {
       return 12.0;
     }
+  }
+
+  _updateQtdCart(Map _data) {
+    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
+
+    List _cartCopy = new List.from(_cart);
+
+    _cartCopy.add(_data);
+
+    Map totals = _cartCopy.fold({}, (acc, element) {
+      String current = element['current'];
+      if (current == 'Graus diferentes em cada olho') {
+        String codigoDireito = element[current]['direito']['codigo'];
+        String codigoEsquerdo = element[current]['esquerdo']['codigo'];
+        acc[codigoDireito] =
+            (acc[codigoDireito] ?? 0) + element['quantity_for_eye']['direito'];
+        acc[codigoEsquerdo] = (acc[codigoEsquerdo] ?? 0) +
+            element['quantity_for_eye']['esquerdo'];
+      } else {
+        String codigo = element[current]['codigo'];
+        if (current == 'Olho direito') {
+          acc[codigo] =
+              (acc[codigo] ?? 0) + element['quantity_for_eye']['direito'];
+        } else {
+          acc[codigo] =
+              (acc[codigo] ?? 0) + element['quantity_for_eye']['esquerdo'];
+        }
+      }
+      return acc;
+    });
+    Map result = {};
+    String current = _data['current'];
+    totals.entries.forEach((codigo) {
+      if (current == 'Graus diferentes em cada olho') {
+        if (codigo.key == _data[current]['esquerdo']['codigo']) {
+          result[codigo.key] = {
+            'qtd': codigo.value,
+            'params': _data[current]['esquerdo']
+          };
+        } else if (codigo.key == _data[current]['direito']['codigo']) {
+          result[codigo.key] = {
+            'qtd': codigo.value,
+            'params': _data[current]['direito']
+          };
+        }
+      } else if (codigo.key == _data[current]['codigo']) {
+        result[codigo.key] = {'qtd': codigo.value, 'params': _data[current]};
+      }
+    });
+    return result;
   }
 
   _verifyFontSize2() {
@@ -429,6 +481,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   Future<Map<String, dynamic>> _checkParameters(
       Map data, ProductModel product, Map<String, dynamic> first) async {
+    print(data);
+    print(product);
+    print(first);
+    print('linha 487');
     Map<String, dynamic> params = {};
     Map<String, dynamic> errors = {};
 
@@ -445,6 +501,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
     if (first['current'] == "Graus diferentes em cada olho") {
       data["group"] = product.group;
+
       return _checkParametersGrausDiferentes(
           new Map<String, dynamic>.from(data), allowedParams);
     }
@@ -461,7 +518,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     if (!productAvailable) {
       errors["Produto"] = ["Produto indisponivel no momento."];
     }
-
     if (params.keys.any((element) => params[element] == "")) {
       params.keys.forEach((element) {
         if (params[element] == "") {
@@ -474,7 +530,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               key = "Cilindro";
               break;
             case "degree":
-              key = "Esferico";
+              key = "Grau";
               break;
             case "cor":
               key = "Cor";
@@ -531,8 +587,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   List<Map> productCodeList(_first) {
     String current = _first['current'];
-    print("533");
-    print(current);
     if (current == 'Graus diferentes em cada olho') {
       return _first[current].entries.map<Map<String, dynamic>>((entry) {
         return {
@@ -560,35 +614,33 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   Map _putProductCode(_first, result) {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
-    print("572");
-    print(_cart);
-    print(result);
     String current = _first['current'];
+    print('linha 619');
+    print(current);
     if (current == 'Graus diferentes em cada olho') {
-      print("576");
-      print(result['data']);
       result['data'].forEach((item) {
-        print("577");
-        print(item);
         _first[current][item['olho']]['codigo'] = item['codigo']['codigo'];
       });
       return _first;
     } else {
-      _first[current]['codigo'] = result['data'][0]['codigo']['codigo'];
+      print(_first[current]);
+      print(result);
+      _first[current]['codigo'] =
+          result['data'] != null ? result['data'][0]['codigo']['codigo'] : [];
+      print(_first);
       return _first;
     }
   }
 
   _onAddToCart(Map data, String typeButton, Map meta) async {
     _lockCart(true);
+    print('linha 639');
 
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
-    print('534');
     var result = await _productBloc.productCode(productCodeList(_first));
-    print('linha 812');
-    print(_putProductCode(_first, result));
-
+    _first = _putProductCode(_first, result);
+    // return;
     int itemQuantity =
         _productQuantity(_first['current'] == "Mesmo grau em ambos");
 
@@ -807,24 +859,37 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     //   return;
     // }
 
+    print('linha 863');
     final errors = await _checkParameters(
         new Map<String, dynamic>.from(_first[_first['current']]),
         data['product'],
         new Map<String, dynamic>.from(_first));
 
     if (errors.keys.length <= 0) {
+      int olhoDireito = int.parse(_lensDireitoController.text == ''
+          ? '0'
+          : _lensDireitoController.text);
+
+      int olhoEsquerdo = int.parse(_lensEsquerdoController.text == ''
+          ? '0'
+          : _lensEsquerdoController.text);
+
+      bool isSameEyes = _first['current'] == "Mesmo grau em ambos";
+
+      int isSameQtd = int.parse(_lensController.text);
+
       Map<String, dynamic> _data = {
         '_cart_item': randomString(15),
         'quantity': _first['current'] == "Mesmo grau em ambos"
             ? int.parse(_lensController.text) * 2
             : _quantity,
         'quantity_for_eye': {
-          'esquerdo': _first['current'] == "Mesmo grau em ambos"
-              ? int.parse(_lensController.text)
-              : int.parse(_lensEsquerdoController.text),
-          'direito': _first['current'] == "Mesmo grau em ambos"
-              ? int.parse(_lensController.text)
-              : int.parse(_lensDireitoController.text)
+          'esquerdo': (isSameEyes || _first['current'] == 'Olho esquerdo')
+              ? isSameQtd
+              : olhoEsquerdo,
+          'direito': (isSameEyes || _first['current'] == 'Olho direito')
+              ? isSameQtd
+              : olhoDireito,
         },
         'value': data['product'].value,
         'meta': meta,
@@ -832,6 +897,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'operation': _parseOperation(widget.type),
         'product': data['product'],
         'type': _parseType(widget.type),
+        'current': _first['current'],
         'pacient': {
           'name': _nameController.text,
           'number': _numberController.text,
@@ -839,6 +905,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
+      // return;
 //      if (widget.type != "A" &&
 //              _data["tests"] == "Sim" &&
 //              currentProduct.product.tests <= 0 ||
@@ -893,30 +960,76 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Modular.to.pushNamed("/home/0");
   }
 
+  _cartParams(
+    _first,
+    meta,
+  ) {
+    var data = {'product': currentProduct.product};
+    int olhoDireito = int.parse(
+        _lensDireitoController.text == '' ? '0' : _lensDireitoController.text);
+
+    int olhoEsquerdo = int.parse(_lensEsquerdoController.text == ''
+        ? '0'
+        : _lensEsquerdoController.text);
+
+    int _quantity = int.parse(_lensDireitoController.text) +
+        int.parse(_lensEsquerdoController.text) +
+        int.parse(_lensController.text);
+
+    bool isSameEyes = _first['current'] == "Mesmo grau em ambos";
+
+    int isSameQtd = int.parse(_lensController.text);
+
+    Map<String, dynamic> _data = {
+      '_cart_item': randomString(15),
+      'quantity': _first['current'] == "Mesmo grau em ambos"
+          ? int.parse(_lensController.text) * 2
+          : _quantity,
+      'quantity_for_eye': {
+        'esquerdo': (isSameEyes || _first['current'] == 'Olho esquerdo')
+            ? isSameQtd
+            : olhoEsquerdo,
+        'direito': (isSameEyes || _first['current'] == 'Olho direito')
+            ? isSameQtd
+            : olhoDireito,
+      },
+      'value': data['product'].value,
+      'meta': meta,
+      'tests': _first['test'],
+      'operation': _parseOperation(widget.type),
+      'product': data['product'],
+      'type': _parseType(widget.type),
+      'current': _first['current'],
+      'pacient': {
+        'name': _nameController.text,
+        'number': _numberController.text,
+        'birthday': _birthdayController.text,
+      },
+      _first['current']: _first[_first['current']],
+    };
+    return _data;
+  }
+
   _onPurchase(BuildContext context, ProductModel product, String mode) async {
     if (isValidDate(_birthdayController.text, context)) {
       return;
     }
-
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
-    print('linha 812');
-    print(_first[_first['current']]);
 
+    var result = await _productBloc.productCode(productCodeList(_first));
+    _first = _putProductCode(_first, result);
     int itemQuantity =
         _productQuantity(_first['current'] == "Mesmo grau em ambos");
 
-    Map resp = await _requestsBloc.checkStock({
-      "grupo": currentProduct.product.group,
-      "grau": _first[_first['current']]['degree'],
-      "eixo": _first[_first['current']]['axis'],
-      "cilindro": _first[_first['current']]['cylinder'],
-      "adicao": _first[_first['current']]['adicao'],
-      "cor": _first[_first['current']]['cor']
-    });
-
+    var cartObject = _cartParams(_first, {});
+    // return;
+    Map resp =
+        await _requestsBloc.checkStock({"itens": _updateQtdCart(cartObject)});
+    print('linha 1032');
+    print(resp);
     if (resp["success"]) {
-      if (resp["data"]["quantidade"] >= itemQuantity) {
+      if (resp["data"]["pendencia"] == false) {
         await _onAddToCart({'product': currentProduct.product}, mode,
             {'pendencie': false, 'days': 0});
       } else {
@@ -928,7 +1041,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           Modular.to.pop();
         }, onConfirm: () async {
           await _onAddToCart({'product': currentProduct.product}, mode,
-              {'pendencie': true, 'days': 30});
+              {'pendencie': true, 'days': resp["data"]["prazo"]});
         },
             info: Container(
               child: Column(children: [
@@ -936,15 +1049,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   children: [
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Quantidade solicitada: ${itemQuantity}",
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w500)),
-                          Text(
-                              "Quantidade em estoque: ${resp["data"]["quantidade"]}",
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w500))
-                        ])
+                        children: resp['data']['index'].map<Widget>((e) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${resp['data']['itens'][e - 1]['descricao']}",
+                                    style: TextStyle(fontSize: 11),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  )
+                                ],
+                              )
+                            ],
+                          );
+                        }).toList())
                   ],
                 ),
                 SizedBox(
@@ -966,7 +1089,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         SizedBox(
                           width: 5,
                         ),
-                        Text("Previsao de entrega 07/01/2023")
+                        Text(
+                            "Previsao de entrega ${resp['data']['prazo']} dias uteis")
                       ],
                     ),
                   ),
@@ -977,7 +1101,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               ]),
             ),
             title: "Pendencia",
-            subtitle: "[Texto]",
+            subtitle: "Falta de produto em estoque",
             confirmText: "Continuar",
             cancelText: "Cancelar");
       }
@@ -1351,11 +1475,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     int _qtd = _first['current'] == "Mesmo grau em ambos"
         ? int.parse(_lensController.text == '' ? '0' : _lensController.text) * 2
         : _quantity;
-    print(_authBloc.getAuthCurrentUser.data.money);
-    print(_qtd * currentProduct.product.valueFinan);
-    print(_cartTotalFinancial);
-    print(_authBloc.getAuthCurrentUser.data.money <
-        ((_qtd * currentProduct.product.valueFinan) + _cartTotalFinancial));
     if (_authBloc.getAuthCurrentUser.data.money <
             ((_qtd * currentProduct.product.valueFinan) +
                 _cartTotalFinancial) &&
@@ -1545,7 +1664,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('--- linha 1373 ---');
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(

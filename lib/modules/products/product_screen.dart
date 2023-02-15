@@ -4,7 +4,9 @@ import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
@@ -16,6 +18,7 @@ import 'package:central_oftalmica_app_cliente/repositories/product_repository.da
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+import 'package:rxdart/subjects.dart';
 
 class ProductScreen extends StatefulWidget {
   final int id;
@@ -28,8 +31,10 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
+  RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   AuthEvent currentUser;
@@ -620,36 +625,51 @@ class _ProductScreenState extends State<ProductScreen> {
                                   'Pedido Avulso R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
                               'color': Color(0xff707070),
                               'onTap': () {
-                                _handleSingleOrder(
-                                  productSnapshot.data.product,
-                                );
+                                Helper.whenDifferentOperation('01', () {
+                                  _handleSingleOrder(
+                                    productSnapshot.data.product,
+                                  );
+                                }, context, _requestBloc.cartItems,
+                                    _requestBloc, _cartWidgetBloc);
                               },
                             },
                             {
                               'title':
                                   'Crédito de Produto R\$ ${Helper.intToMoney(productSnapshot.data.product.valueProduto)}',
                               'color': Theme.of(context).accentColor,
-                              'onTap': () => _onConfirmPurchase(
-                                  productSnapshot.data.product,
-                                  'C',
-                                  productSnapshot.data.product.boxes),
+                              'onTap': () => Helper.whenDifferentOperation('07',
+                                      () {
+                                    _onConfirmPurchase(
+                                        productSnapshot.data.product,
+                                        'C',
+                                        productSnapshot.data.product.boxes);
+                                  }, context, _requestBloc.cartItems,
+                                      _requestBloc, _cartWidgetBloc)
                             },
                             {
                               'title':
                                   'Crédito Financeiro R\$ ${Helper.intToMoney(productSnapshot.data.product.valueFinan)}',
                               'color': Theme.of(context).primaryColor,
-                              'onTap': () => _onConfirmPurchase(
-                                  productSnapshot.data.product,
-                                  'CF',
-                                  this.currentUser.data.money),
+                              'onTap': () => Helper.whenDifferentOperation('13',
+                                      () {
+                                    _onConfirmPurchase(
+                                        productSnapshot.data.product,
+                                        'CF',
+                                        this.currentUser.data.money);
+                                  }, context, _requestBloc.cartItems,
+                                      _requestBloc, _cartWidgetBloc)
                             },
                             {
                               'title': 'Solicitar Teste',
                               'color': Color(0xff707070),
-                              'onTap': () => _onConfirmPurchase(
-                                  productSnapshot.data.product,
-                                  'T',
-                                  productSnapshot.data.product.tests),
+                              'onTap': () => Helper.whenDifferentOperation('03',
+                                      () {
+                                    _onConfirmPurchase(
+                                        productSnapshot.data.product,
+                                        'T',
+                                        productSnapshot.data.product.tests);
+                                  }, context, _requestBloc.cartItems,
+                                      _requestBloc, _cartWidgetBloc)
                             },
                           ].map(
                             (item) {

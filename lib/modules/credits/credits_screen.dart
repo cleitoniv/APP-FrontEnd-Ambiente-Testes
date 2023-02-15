@@ -392,8 +392,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                 ),
                               );
                             }
-                            log("snapshot");
-                            log("${snapshot.data}");
                             ProductList _productCredits = snapshot.data;
                             return Column(
                               children: [
@@ -546,10 +544,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
                     ),
                     child: StreamBuilder<String>(
                       stream: _homeBloc.currentCreditTypeOut,
@@ -727,7 +721,11 @@ class _CreditsScreenState extends State<CreditsScreen> {
 //                                                                            !_lock) {
 //
 //                                                                        }
-                                                                                _addCreditoProduct(productSnapshot.data ?? this._currentProduct["product"], _financialCredits[index]);
+                                                                                inspect(_currentProduct);
+
+                                                                                Helper.whenDifferentOperation('06', () {
+                                                                                  _addCreditoProduct(productSnapshot.data ?? this._currentProduct["product"], _financialCredits[index]);
+                                                                                }, context, _requestsBloc.cartItems, _requestsBloc, _cartWidgetBloc);
                                                                               },
                                                                               child: CreditProductCardWidget(precoUnitario: _financialCredits[index].price, caixas: _financialCredits[index].quantity, value: _financialCredits[index].total, percentageTest: _financialCredits[index].percentageTest));
                                                                         },

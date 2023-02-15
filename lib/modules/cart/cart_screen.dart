@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
@@ -142,6 +144,18 @@ class _CartScreenState extends State<CartScreen> {
 //    return "";
 //  }
 
+  _getMaxDaysCart(data) {
+    var ver = data.map((e) {
+      if (e['operation'] == '06') {
+        return 0;
+      } else {
+        return e['meta']['days'];
+      }
+    }).toList();
+
+    return ver.reduce((curr, next) => curr > next ? curr : next);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_lock) {
@@ -162,6 +176,8 @@ class _CartScreenState extends State<CartScreen> {
                 stream: _requestsBloc.cartOut,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
+                    print('linha 175');
+                    inspect(_requestsBloc.cartOut);
                     return Center(
                       heightFactor: 3,
                       child: CircularProgressIndicator(),
@@ -233,16 +249,26 @@ class _CartScreenState extends State<CartScreen> {
                             if (!snapshot.hasData) {
                               return Container();
                             }
+                            if (snapshot.data.isEmpty) {
+                              return Container();
+                            }
                             List<Map<String, dynamic>> _data = snapshot.data;
                             List days = [];
                             for (var i = 0; i < _data.length; i++) {
-                              days.add(_data[i]['meta']['days']);
+                              if (_data[i]['operation'] == '06') {
+                                days.add(0);
+                              } else {
+                                print('kkkkkkk');
+                                print(_data[i]['meta']);
+                                days.add(_data[i]['meta']['days']);
+                              }
                             }
                             days.sort(((a, b) => -a.compareTo(b)));
                             return Text(
-                              !snapshot.hasData
-                                  ? '${days.elementAt(0)} dias úteis.'
-                                  : '',
+                              snapshot.hasData == true &&
+                                      _getMaxDaysCart(_data) > 0
+                                  ? '${_getMaxDaysCart(_data)} dias úteis.'
+                                  : '7 dias úteis.',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5

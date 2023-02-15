@@ -4,6 +4,7 @@ import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
+import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar_success.dart';
@@ -89,20 +90,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
-  _onChangePaymentForm(CreditCardModel creditCard) async {
+  _onChangePaymentForm(VindiCardModel creditCard) async {
     setState(() {
       billing = false;
       _lock = true;
     });
 
-    bool selectedCard =
-        await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
-
-    _cartWidgetBloc.setPaymentMethodBoleto(billing);
-
-    if (selectedCard) {
-      _creditCardBloc.fetchPaymentMethodsChange();
-    }
+    _cartWidgetBloc.currentPaymentFormIn
+        .add(PaymentMethod(isBoleto: false, creditCard: creditCard));
 
     Future.delayed(const Duration(milliseconds: 500), () {
 // Here you can write your code
@@ -132,7 +127,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _colorizeCredCardList(index, idSelected) {
-    if (index == idSelected && !billing) {
+    if (idSelected != null && !billing) {
       return true;
     }
     return false;
@@ -184,15 +179,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     if (_lock) {
-      return Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(child: CircularProgressIndicator()));
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(130),
+            preferredSize: Size.fromHeight(145),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -256,11 +249,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
           body: StreamBuilder(
             stream: _creditCardBloc.cartaoCreditoStream,
             builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data.isLoading) {
+              if (!snapshot.hasData ||
+                  (snapshot.hasData && snapshot.data.isLoading)) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
               }
+              final _creditCards = snapshot.data.list;
               return Column(
                 children: [
                   Expanded(
@@ -301,7 +296,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   );
                                 }
                                 final _creditCards = snapshot.data.list;
-
                                 return ListView.separated(
                                   shrinkWrap: true,
                                   primary: false,
@@ -313,15 +307,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   itemBuilder: (context, index) {
                                     return StreamBuilder(
                                       stream:
-                                          _creditCardBloc.currentPaymentFormOut,
+                                          _cartWidgetBloc.currentPaymentFormOut,
                                       builder: (context, snapshot) {
+                                        PaymentMethod _currentPaymentForm;
                                         if (!snapshot.hasData) {
-                                          return Container();
+                                          _currentPaymentForm =
+                                              PaymentMethod(isEmpty: true);
+                                        } else {
+                                          _currentPaymentForm = snapshot.data;
                                         }
-
-                                        final _currentPaymentForm =
-                                            snapshot.data;
-
                                         _creditCardNumberController.updateText(
                                             _creditCards[index].cartaoNumber);
                                         return AnimatedContainer(
@@ -335,9 +329,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                             horizontal: 20,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: _colorizeCredCardList(
-                                                    _currentPaymentForm.id,
-                                                    _creditCards[index].id)
+                                            color: !_currentPaymentForm
+                                                        .isEmpty &&
+                                                    _colorizeCredCardList(
+                                                        _currentPaymentForm
+                                                            .creditCard.token,
+                                                        _creditCards[index]
+                                                            .token)
                                                 ? Theme.of(context).accentColor
                                                 : Color(0xffF1F1F1),
                                             borderRadius:
@@ -376,12 +374,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.w600,
-                                                      color: _colorizeCredCardList(
-                                                              _currentPaymentForm
-                                                                  .id,
-                                                              _creditCards[
-                                                                      index]
-                                                                  .id)
+                                                      color: !_currentPaymentForm
+                                                                  .isEmpty &&
+                                                              _colorizeCredCardList(
+                                                                  _currentPaymentForm
+                                                                      .creditCard
+                                                                      .token,
+                                                                  _creditCards[
+                                                                          index]
+                                                                      .token)
                                                           ? Colors.white
                                                           : null,
                                                     ),
@@ -394,8 +395,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  _currentPaymentForm.id ==
-                                                          _creditCards[index].id
+                                                  _creditCards[index].token !=
+                                                          null
                                                       ? Icon(
                                                           Icons.check,
                                                           color: Colors.white,
@@ -413,7 +414,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                     onPressed: () {
                                                       _onDelete(
                                                           _creditCards[index]
-                                                              .id);
+                                                              .token);
                                                     },
                                                   )
                                                 ],
@@ -462,7 +463,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ],
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 25.0),
@@ -523,6 +524,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       stream: _requestBloc.cartOut,
                       builder: (context, cartSnapshot) {
                         return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(245, 35),
+                          ),
                           onPressed: _lock
                               ? null
                               : () {
@@ -531,6 +535,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           child: Text(
                             'Finalizar Pedido',
                             style: Theme.of(context).textTheme.button,
+                            //
                           ),
                         );
                       },

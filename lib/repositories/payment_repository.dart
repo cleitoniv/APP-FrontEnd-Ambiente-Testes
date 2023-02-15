@@ -204,8 +204,7 @@ class PaymentRepository {
     return {
       'items': items,
       'id_cartao':
-          paymentMethod.creditCard != null ? paymentMethod.creditCard.id : 0,
-      'ccv': data['ccv'],
+          paymentMethod.creditCard != null ? paymentMethod.creditCard.token : 0,
       'installment': data['installment'],
       'taxa_entrega': data['taxa_entrega']
     };
@@ -216,6 +215,7 @@ class PaymentRepository {
     Map<String, dynamic> params = generateParams(data, paymentMethod);
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
+
     try {
       if (!isBoleto) {
         await dio.post('/api/cliente/pedidos',
@@ -224,10 +224,8 @@ class PaymentRepository {
               "Content-Type": "application/json",
               "Authorization": "Bearer $idToken"
             }));
-
         return true;
       }
-
       await dio.post('/api/cliente/pedido_boleto',
           data: jsonEncode(params),
           options: Options(headers: {

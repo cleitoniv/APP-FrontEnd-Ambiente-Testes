@@ -517,7 +517,7 @@ class _TabsScreenState extends State<TabsScreen>
                   key: _scaffoldKey,
                   backgroundColor: snapshot2.data == 1
                       ? snapshot.data == 'Financeiro'
-                          ? Theme.of(context).primaryColor
+                          ? Colors.white
                           : Colors.white
                       : Theme.of(context).scaffoldBackgroundColor,
                   drawer: DrawerWidget(

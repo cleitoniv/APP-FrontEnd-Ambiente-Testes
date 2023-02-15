@@ -43,6 +43,7 @@ import 'package:central_oftalmica_app_cliente/repositories/notifications_reposit
 import 'package:central_oftalmica_app_cliente/repositories/payment_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/requests_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/vindi_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -52,6 +53,10 @@ class AppModule extends Module {
   final List<Bind> binds = [
     Bind(
       (i) => ClientHttp(),
+      isSingleton: true,
+    ),
+    Bind(
+      (i) => VindiHttp(),
       isSingleton: true,
     ),
     Bind(
@@ -80,8 +85,14 @@ class AppModule extends Module {
       ),
     ),
     Bind(
+      (i) => VindiRepository(
+        i.get<VindiHttp>().getClient(),
+      ),
+    ),
+    Bind(
       (i) => CreditCardBloc(
         i.get<CreditCardRepository>(),
+        i.get<VindiRepository>(),
       ),
     ),
     Bind(
@@ -107,6 +118,11 @@ class AppModule extends Module {
     Bind(
       (i) => CreditsRepository(
         i.get<ClientHttp>().getClient(),
+      ),
+    ),
+    Bind(
+      (i) => VindiRepository(
+        i.get<VindiHttp>().getClient(),
       ),
     ),
     Bind(

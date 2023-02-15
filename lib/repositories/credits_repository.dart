@@ -118,7 +118,7 @@ class CreditsRepository {
   }
 
   Future<bool> creditoFinanceiroPagamento(
-      CreditoFinanceiro credito, int cartaoId, bool isBoleto) async {
+      CreditoFinanceiro credito, String token, bool isBoleto) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
@@ -134,7 +134,7 @@ class CreditsRepository {
                 "prestacoes": credito.installmentCount
               }
             ],
-            "id_cartao": cartaoId
+            "id_cartao": token
           },
         ),
         options: Options(

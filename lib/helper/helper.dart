@@ -1,5 +1,12 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
+import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
+import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:intl/intl.dart';
 import 'package:cpfcnpj/cpfcnpj.dart';
 
@@ -105,8 +112,57 @@ class Helper {
     );
   }
 
+  static whenDifferentOperation(
+      operation, function, context, cartItems, requestsBloc, cartWidgetBloc) {
+    var lookingCartOperations = cartItems.map((e) {
+      return e['operation'];
+    }).toList();
+
+    if (!lookingCartOperations.isEmpty &&
+        operation != lookingCartOperations[0]) {
+      return Dialogs.confirm(
+        context,
+        title: 'Deseja limpar o carrinho?',
+        subtitle:
+            'Identificamos que está tentando inserir no carrinho produtos de operações diferentes!',
+        confirmText: 'Sim',
+        cancelText: 'Não',
+        onCancel: () {
+          Modular.to.pop();
+        },
+        onConfirm: () {
+          requestsBloc.resetCart();
+          cartWidgetBloc.cartTotalItemsSink.add(0);
+          function();
+        },
+      );
+    } else {
+      function();
+    }
+  }
+
   static keyList(_data, index) {
+    inspect(_data);
     if (_data[index].containsKey('Olho direito')) {
+      _data[index]['Olho direito']['quantidade'] = _data[index]['quantity'];
+      var params = _data[index]['Olho direito'];
+
+      if (params['cylinder'] == '') {
+        _data[index]['Olho direito'].remove('cylinder');
+      }
+      if (params['axis'] == '') {
+        _data[index]['Olho direito'].remove('axis');
+      }
+      if (params['lenses'] == '') {
+        _data[index]['Olho direito'].remove('lenses');
+      }
+      if (params['cor'] == '') {
+        _data[index]['Olho direito'].remove('cor');
+      }
+      if (params['adicao'] == '') {
+        _data[index]['Olho direito'].remove('adicao');
+      }
+
       list() => _data[index]['Olho direito'].entries.map((e) => e.key).toList();
       var result = list();
 
@@ -115,7 +171,28 @@ class Helper {
         keyProduct.add(result[i]);
       }
       return keyProduct;
-    } else if (_data[index].containsKey('Oho esquerdo')) {
+    } else if (_data[index]['operation'] == '06') {
+      return ['quantidade'];
+    } else if (_data[index].containsKey('Olho esquerdo')) {
+      _data[index]['Olho esquerdo']['quantidade'] = _data[index]['quantity'];
+      var params = _data[index]['Olho esquerdo'];
+
+      if (params['cylinder'] == '') {
+        _data[index]['Olho esquerdo'].remove('cylinder');
+      }
+      if (params['axis'] == '') {
+        _data[index]['Olho esquerdo'].remove('axis');
+      }
+      if (params['lenses'] == '') {
+        _data[index]['Olho esquerdo'].remove('lenses');
+      }
+      if (params['cor'] == '') {
+        _data[index]['Olho esquerdo'].remove('cor');
+      }
+      if (params['adicao'] == '') {
+        _data[index]['Olho esquerdo'].remove('adicao');
+      }
+
       list() =>
           _data[index]['Olho esquerdo'].entries.map((e) => e.key).toList();
       var result = list();
@@ -124,8 +201,28 @@ class Helper {
       for (var i = 0; i < result.length; i++) {
         keyProduct.add(result[i]);
       }
+
       return keyProduct;
     } else if (_data[index].containsKey('Mesmo grau em ambos')) {
+      _data[index]['Mesmo grau em ambos']['quantidade'] =
+          _data[index]['quantity'];
+      var params = _data[index]['Mesmo grau em ambos'];
+
+      if (params['cylinder'] == '') {
+        _data[index]['Mesmo grau em ambos'].remove('cylinder');
+      }
+      if (params['axis'] == '') {
+        _data[index]['Mesmo grau em ambos'].remove('axis');
+      }
+      if (params['lenses'] == '') {
+        _data[index]['Mesmo grau em ambos'].remove('lenses');
+      }
+      if (params['cor'] == '') {
+        _data[index]['Mesmo grau em ambos'].remove('cor');
+      }
+      if (params['adicao'] == '') {
+        _data[index]['Mesmo grau em ambos'].remove('adicao');
+      }
       list() => _data[index]['Mesmo grau em ambos']
           .entries
           .map((e) => e.key)
@@ -143,6 +240,31 @@ class Helper {
       listRight() {
         if (_data[index]['Graus diferentes em cada olho']
             .containsKey('direito')) {
+          _data[index]['Graus diferentes em cada olho']['direito']
+              ['quantidade'] = _data[index]['quantity_for_eye']['direito'];
+
+          var params = _data[index]['Graus diferentes em cada olho']['direito'];
+
+          if (params['cylinder'] == '') {
+            _data[index]['Graus diferentes em cada olho']['direito']
+                .remove('cylinder');
+          }
+          if (params['axis'] == '') {
+            _data[index]['Graus diferentes em cada olho']['direito']
+                .remove('axis');
+          }
+          if (params['lenses'] == '') {
+            _data[index]['Graus diferentes em cada olho']['direito']
+                .remove('lenses');
+          }
+          if (params['cor'] == '') {
+            _data[index]['Graus diferentes em cada olho']['direito']
+                .remove('cor');
+          }
+          if (params['adicao'] == '') {
+            _data[index]['Graus diferentes em cada olho']['direito']
+                .remove('adicao');
+          }
           return _data[index]['Graus diferentes em cada olho']['direito']
               .entries
               .map((entry) {
@@ -154,6 +276,31 @@ class Helper {
       listLeft() {
         if (_data[index]['Graus diferentes em cada olho']
             .containsKey('esquerdo')) {
+          _data[index]['Graus diferentes em cada olho']['esquerdo']
+              ['quantidade'] = _data[index]['quantity_for_eye']['esquerdo'];
+          var params =
+              _data[index]['Graus diferentes em cada olho']['esquerdo'];
+
+          if (params['cylinder'] == '') {
+            _data[index]['Graus diferentes em cada olho']['esquerdo']
+                .remove('cylinder');
+          }
+          if (params['axis'] == '') {
+            _data[index]['Graus diferentes em cada olho']['esquerdo']
+                .remove('axis');
+          }
+          if (params['lenses'] == '') {
+            _data[index]['Graus diferentes em cada olho']['esquerdo']
+                .remove('lenses');
+          }
+          if (params['cor'] == '') {
+            _data[index]['Graus diferentes em cada olho']['esquerdo']
+                .remove('cor');
+          }
+          if (params['adicao'] == '') {
+            _data[index]['Graus diferentes em cada olho']['esquerdo']
+                .remove('adicao');
+          }
           return _data[index]['Graus diferentes em cada olho']['esquerdo']
               .entries
               .map((e) => e.key)
@@ -172,7 +319,94 @@ class Helper {
       for (var i = 0; i < resultLeft.length; i++) {
         keyProductLeft.add(resultLeft[i]);
       }
-      return [resultRight, resultLeft];
+      resultRight.insert(0, "Olho");
+      resultLeft.insert(0, "Olho");
+      return {'direito': resultRight, 'esquerdo': resultLeft};
+    }
+  }
+
+  static paramsList(_data, index) {
+    if (_data[index].containsKey('Olho direito')) {
+      list() =>
+          _data[index]['Olho direito'].entries.map((e) => e.value).toList();
+      var result = list();
+
+      List keyProduct = [];
+      for (var i = 0; i < result.length; i++) {
+        keyProduct.add(result[i]);
+      }
+      return keyProduct;
+    } else if (_data[index]['operation'] == '06') {
+      var newlist = _data[index];
+      list2() => [newlist].map((e) => e['quantity']).toList();
+      var result = list2();
+
+      List keyProduct = [];
+      for (var i = 0; i < result.length; i++) {
+        keyProduct.add(result[i]);
+      }
+      return keyProduct;
+    } else if (_data[index].containsKey('Olho esquerdo')) {
+      list() =>
+          _data[index]['Olho esquerdo'].entries.map((e) => e.value).toList();
+      var result = list();
+
+      List keyProduct = [];
+      for (var i = 0; i < result.length; i++) {
+        keyProduct.add(result[i]);
+      }
+      return keyProduct;
+    } else if (_data[index].containsKey('Mesmo grau em ambos')) {
+      list() => _data[index]['Mesmo grau em ambos']
+          .entries
+          .map((e) => e.value)
+          .toList();
+      var result = list();
+
+      List keyProduct = [];
+      for (var i = 0; i < result.length; i++) {
+        keyProduct.add(result[i]);
+      }
+
+      // return finalResult();
+      return keyProduct;
+    } else if (_data[index].containsKey('Graus diferentes em cada olho')) {
+      listRight() {
+        if (_data[index]['Graus diferentes em cada olho']
+            .containsKey('direito')) {
+          return _data[index]['Graus diferentes em cada olho']['direito']
+              .entries
+              .map((entry) {
+            return entry.value;
+          }).toList();
+        }
+      }
+
+      listLeft() {
+        if (_data[index]['Graus diferentes em cada olho']
+            .containsKey('esquerdo')) {
+          return _data[index]['Graus diferentes em cada olho']['esquerdo']
+              .entries
+              .map((e) => e.value)
+              .toList();
+        }
+      }
+
+      var resultRight = listRight();
+      var resultLeft = listLeft();
+      List keyProductRight = [];
+      for (var i = 0; i < resultRight.length; i++) {
+        keyProductRight.add(resultRight[i]);
+      }
+
+      List keyProductLeft = [];
+      for (var i = 0; i < resultLeft.length; i++) {
+        keyProductLeft.add(resultLeft[i]);
+      }
+      resultRight.insert(0, "Direito");
+      resultLeft.insert(0, "Esquerdo");
+
+      return {'direito': resultRight, 'esquerdo': resultLeft};
     }
   }
 
@@ -209,6 +443,17 @@ class Helper {
 
   static Widget CartList(List _data, Function hasPrice, Function removeItem,
       Function selectPrice) {
+    var translatedKeys = {
+      'Olho': 'Olho',
+      'cylinder': 'Cilindro',
+      'axis': 'Eixo',
+      'lenses': 'Lente',
+      'degree': 'Grau',
+      'codigo': 'Codigo',
+      'adicao': 'Adição',
+      'quantidade': 'Qtd.',
+      'valor': 'Valor'
+    };
     return ListView.separated(
       primary: false,
       addSemanticIndexes: true,
@@ -220,16 +465,29 @@ class Helper {
         color: Colors.black12,
       ),
       itemBuilder: (context, index) {
-        // print(_data[index]['Mesmo grau em ambos']);
-        print(keyList(_data, index));
         var keyListResult = keyList(_data, index);
-        print('linha 192 helper.dart');
+        var paramsListResult = paramsList(_data, index);
         return Row(
           children: [
             Expanded(
-              flex: 4,
+              flex: 5,
               child: Column(
                 children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '${_data[index]['product'].title}',
+                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                fontSize: 12,
+                              ),
+                          maxLines: 2,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ],
+                  ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -246,7 +504,6 @@ class Helper {
                                 imageUrl: _data[index]['product'].imageUrl,
                                 width: 80,
                                 height: 80,
-                                fit: BoxFit.fill,
                               )
                             : _data[index]['product'].imageUrlTest == null
                                 ? Image.asset(
@@ -259,7 +516,6 @@ class Helper {
                                         _data[index]['product'].imageUrlTest,
                                     width: 80,
                                     height: 80,
-                                    fit: BoxFit.fill,
                                   ),
                       )
                     ],
@@ -284,47 +540,210 @@ class Helper {
               ),
             ),
             Expanded(
-              flex: 8,
+              flex: 7,
               child: Column(
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Flexible(
-                        child: Text(
-                          '${_data[index]['product'].title}',
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 14,
-                              ),
-                          maxLines: 2,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
+                      Material(
+                        elevation: 1,
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.white),
+                          padding: EdgeInsets.only(
+                              top: 8, bottom: 8, left: 10, right: 10),
+                          child: _data[index]['current'] !=
+                                  'Graus diferentes em cada olho'
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: keyListResult.map<Widget>((e) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "${translatedKeys[e]}",
+                                              style: TextStyle(fontSize: 11),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    );
+                                  }).toList(),
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: keyListResult['direito']
+                                          .map<Widget>((e) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "${translatedKeys[e]}",
+                                                  style:
+                                                      TextStyle(fontSize: 11),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      }).toList() +
+                                      [
+                                        SizedBox(
+                                          height: 10,
+                                        )
+                                      ] +
+                                      keyListResult['esquerdo']
+                                          .map<Widget>((e) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "${translatedKeys[e]}",
+                                                  style:
+                                                      TextStyle(fontSize: 11),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      }).toList(),
+                                ),
+                        ),
+                      ),
+                      Material(
+                        elevation: 1,
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.white),
+                          padding: EdgeInsets.only(
+                              top: 8, bottom: 8, left: 10, right: 10),
+                          child: _data[index]['current'] !=
+                                  'Graus diferentes em cada olho'
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: paramsListResult.map<Widget>((e) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "${e}",
+                                              style: TextStyle(fontSize: 11),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    );
+                                  }).toList(),
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: paramsListResult['direito']
+                                          .map<Widget>((e) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "${e}",
+                                                  style:
+                                                      TextStyle(fontSize: 11),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      }).toList() +
+                                      [
+                                        SizedBox(
+                                          height: 10,
+                                        )
+                                      ] +
+                                      paramsListResult['esquerdo']
+                                          .map<Widget>((e) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "${e}",
+                                                  style:
+                                                      TextStyle(fontSize: 11),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      }).toList(),
+                                ),
                         ),
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: 7,
+                  ),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          _data[index]['meta']['pendencie']
-                              ? Container(
-                                  padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Text(
-                                    "PENDENTE",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                )
+                          _data[index]['meta'] != null
+                              ? _data[index]['meta']['pendencie']
+                                  ? Container(
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Text(
+                                        "PENDENTE",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    )
+                                  : Container()
                               : Container(),
                           SizedBox(
                             height: 5,
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               CircleAvatar(
                                   backgroundColor: Helper.buyTypeBuild(
@@ -336,24 +755,20 @@ class Helper {
                                       context,
                                       _data[index]['operation'],
                                       _data[index]['tests'])['icon']),
-                              SizedBox(width: 5),
-                              FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                  '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1
-                                      .copyWith(
-                                        fontSize: 12,
-                                      ),
-                                ),
-                              )
+                              SizedBox(width: 20),
+                              Text(
+                                '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1
+                                    .copyWith(
+                                      fontSize: 12,
+                                    ),
+                              ),
                             ],
                           )
                         ],
                       ),
-                      // productInfo(context, keyListResult),
                       SizedBox(width: 20)
                     ],
                   )
@@ -615,7 +1030,6 @@ class Helper {
 
   static Map<String, dynamic> buyTypeBuild(
       BuildContext context, String operation, String tests) {
-    print(operation);
     switch (operation) {
       case '13':
         return {

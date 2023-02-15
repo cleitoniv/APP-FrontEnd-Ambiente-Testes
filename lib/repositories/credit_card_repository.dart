@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
+import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -20,7 +21,7 @@ class CreditCard implements CreditCardEvent {
 class CreditCardList implements CreditCardEvent {
   bool isLoading;
   bool isEmpty;
-  List<CreditCardModel> list;
+  List<VindiCardModel> list;
   CreditCardList({this.isEmpty, this.isLoading, this.list});
 }
 
@@ -113,12 +114,11 @@ class CreditCardRepository {
             "Content-Type": "application/json",
             "Authorization": "Bearer $idToken"
           }));
-      List<CreditCardModel> cards = (response.data as List)
-          .map(
-            (e) => CreditCardModel.fromJson(e),
+      List<VindiCardModel> cards = response.data['data']
+          .map<VindiCardModel>(
+            (e) => VindiCardModel.fromJson(e),
           )
           .toList();
-      cards.sort((a, b) => -a.id.compareTo(b.id));
       return CreditCardList(
           isEmpty: cards.length == 0, isLoading: false, list: cards);
     } catch (error) {

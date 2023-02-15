@@ -10,7 +10,7 @@ class PaymentBloc extends Disposable {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   Future<bool> payment(Map<String, dynamic> data, bool isBoleto) async {
-    PaymentMethod _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    PaymentMethod _paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
     return await repository.payment(data, _paymentMethod, isBoleto);
   }
 

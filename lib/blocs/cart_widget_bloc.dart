@@ -1,12 +1,14 @@
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
+import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
 class PaymentMethod {
   bool isBoleto;
-  CreditCardModel creditCard;
-  PaymentMethod({this.creditCard, this.isBoleto});
+  VindiCardModel creditCard;
+  bool isEmpty;
+  PaymentMethod({this.creditCard, this.isBoleto, this.isEmpty = false});
 }
 
 class CartWidgetBloc extends Disposable {
@@ -16,20 +18,13 @@ class CartWidgetBloc extends Disposable {
 
   CartWidgetBloc({this.repository});
 
-  Future<bool> setPaymentMethodCartao(CreditCardModel card) async {
-    bool selectedCard = await repository.selectCreditCard(card.id);
-    if (selectedCard) {
-      this._paymentMethod = PaymentMethod(isBoleto: false, creditCard: card);
-      currentPaymentFormIn.add(this._paymentMethod);
-      return true;
-    } else {
-      return false;
-    }
+  Future<bool> setPaymentMethodCartao(VindiCardModel card) async {
+    currentPaymentFormIn.add(PaymentMethod(isBoleto: false, creditCard: card));
+    return true;
   }
 
   void setPaymentMethodBoleto(bool billing) {
-    this._paymentMethod = PaymentMethod(isBoleto: true);
-    currentPaymentFormIn.add(this._paymentMethod);
+    currentPaymentFormIn.add(PaymentMethod(isBoleto: true));
   }
 
   PaymentMethod get currentPaymentMethod => this._paymentMethod;
@@ -42,6 +37,7 @@ class CartWidgetBloc extends Disposable {
   BehaviorSubject _currentPaymentFormController = BehaviorSubject.seeded(null);
   Sink get currentPaymentFormIn => _currentPaymentFormController.sink;
   Stream get currentPaymentFormOut => _currentPaymentFormController.stream;
+  get currentPaymentFormValue => _currentPaymentFormController.value;
 
   @override
   void dispose() {

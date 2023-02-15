@@ -173,7 +173,7 @@ class DeliveryAddressRegisterScreenState
         'labelText': 'Endereço',
         'controller': _addressDeliveryController,
         'validator': Helper.lengthValidator,
-        'keyboardType': TextInputType.number,
+        'keyboardType': TextInputType.text,
         'enabled': this.enabled
       },
       {
@@ -266,6 +266,14 @@ class DeliveryAddressRegisterScreenState
                     'Endereço de Entrega',
                     style: Theme.of(context).textTheme.headline5,
                     textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Text(
+                    'Precisamos que sejam fornecidas informações para o cadastro de um endereço de entrega.',
+                    style: TextStyle(fontSize: 20),
+                    textAlign: TextAlign.start,
                   ),
                   Column(
                     children: _fieldAddressDelivery.map(

@@ -68,7 +68,26 @@ class ProductBloc extends Disposable {
     parametroListSink.add(parametros);
   }
 
-  Future<Map> productCode(List<Map<String, dynamic>> params) {
+  Object productCode(List<Map<String, dynamic>> params) {
+    print('linha 72');
+    print(params[0]['esferico']);
+    if (params[0]['esferico'] == '') {
+      print('entrou aqui');
+      return {
+        'data': [
+          {
+            'codigo': {
+              'codigo': params[0]['grupo'] + '000000',
+              'cilindrico': null,
+              'grau': null,
+              'adicao': null
+            },
+            'olho': params[0]['olho']
+          }
+        ],
+        'success': true
+      };
+    }
     return repository.productCode(params);
   }
 

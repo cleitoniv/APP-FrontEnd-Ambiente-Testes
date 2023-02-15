@@ -107,9 +107,7 @@ class AuthBloc extends Disposable {
       this.clienteDataSink.add(AuthEvent(loading: true));
       this._currentUser = await repository.currentUser(this.login);
       this.clienteDataSink.add(this._currentUser);
-    } catch (error) {
-      print(error);
-    }
+    } catch (error) {}
   }
 
   Stream<LoginEvent> get loginOut =>

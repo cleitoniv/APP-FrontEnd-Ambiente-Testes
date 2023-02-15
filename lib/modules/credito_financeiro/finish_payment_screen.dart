@@ -70,7 +70,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _getPaymentMethod() async {
-    final paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    final paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
     setState(() {
       _paymentMethod = paymentMethod.isBoleto;
     });
@@ -100,26 +100,28 @@ class _FinishPaymentState extends State<FinishPayment> {
       return;
     }
 
-    final _paymentMethod = _cartWidgetBloc.currentPaymentMethod;
+    // if (_ccvController.text.trim().length == 0) {
+    //   setState(() {
+    //     _lock = false;
+    //     _isButtonDisabled = false;
+    //   });
 
-    if (_ccvController.text.trim().length == 0 && !_paymentMethod.isBoleto) {
+    //   _scaffoldKey.currentState.hideCurrentSnackBar();
+
+    //   SnackBar _snackBar = SnackBar(
+    //     content: Text(
+    //       'Preencha o Código de Segurança do Cartão',
+    //     ),
+    //   );
+
+    //   _scaffoldKey.currentState.showSnackBar(_snackBar);
+    //   return;
+    // }
+    final _paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
+    if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       setState(() {
         _lock = false;
-        _isButtonDisabled = false;
       });
-
-      _scaffoldKey.currentState.hideCurrentSnackBar();
-
-      SnackBar _snackBar = SnackBar(
-        content: Text(
-          'Preencha o Código de Segurança do Cartão',
-        ),
-      );
-
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
-      return;
-    }
-    if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       return;
     }
 
@@ -129,13 +131,12 @@ class _FinishPaymentState extends State<FinishPayment> {
     if (mounted) {
       creditoFinan.installment = _installmentsSelected;
 
-      bool statusPayment = await _creditoFinanceiroBloc.pagamento(
-          creditoFinan, _paymentMethod.creditCard.id, _paymentMethod.isBoleto);
-
+      bool statusPayment = await _creditoFinanceiroBloc.pagamento(creditoFinan,
+          _paymentMethod.creditCard.token, _paymentMethod.isBoleto);
       setState(() {
         _lock = false;
       });
-      if (statusPayment != null && statusPayment) {
+      if (statusPayment != null && statusPayment == true) {
         _cartWidgetBloc.cartTotalItemsSink.add(0);
         _requestBloc.resetCart();
         Dialogs.successWithWillPopScope(
@@ -350,38 +351,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                       !_paymentMethod
                           ? Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Código CCV do Cartão",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      .copyWith(fontSize: 18),
-                                ),
-                                Container(height: 20),
-                                Container(
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(5.0)),
-                                    ),
-                                  ),
-                                  child: TextFieldWidget(
-                                    controller: _ccvController,
-                                    prefixIcon: Icon(
-                                      Icons.lock,
-                                      color: Color(0xffA1A1A1),
-                                    ),
-                                    width: 120,
-                                    keyboardType: TextInputType.number,
-                                  ),
-                                )
-                              ],
+                              children: [Container(height: 20)],
                             )
                           : Container(height: 20),
                     ],

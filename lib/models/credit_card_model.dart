@@ -6,6 +6,7 @@ class CreditCardModel {
   String anoValidade;
   String ccv;
   int status;
+  String token;
 
   CreditCardModel({
     this.id,
@@ -14,6 +15,7 @@ class CreditCardModel {
     this.mesValidade,
     this.anoValidade,
     this.status,
+    this.token,
   });
 
   CreditCardModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class CreditCardModel {
     cartaoNumber = json['cartao_number'];
     anoValidade = json['ano_validade'];
     mesValidade = json['mes_validade'];
+    token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +35,7 @@ class CreditCardModel {
     data['cartao_number'] = this.cartaoNumber;
     data['ano_validade'] = this.anoValidade;
     data['mes_validade'] = this.mesValidade;
+    data['token'] = this.token;
     return data;
   }
 }

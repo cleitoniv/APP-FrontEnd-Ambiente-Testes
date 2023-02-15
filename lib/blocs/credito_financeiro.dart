@@ -11,7 +11,6 @@ class CreditoFinanceiro {
   void set installment(int installment) {
     installmentCount = installment;
   }
-
 }
 
 class CreditoFinanceiroBloc extends Disposable {
@@ -22,12 +21,11 @@ class CreditoFinanceiroBloc extends Disposable {
   BehaviorSubject _creditoFinanceiroController = BehaviorSubject();
   Sink get creditoFinaceiroSink => _creditoFinanceiroController.sink;
   Stream get creditoFinaceiroStream => _creditoFinanceiroController.stream;
-
   get creditoFinanceiroValue => _creditoFinanceiroController.value;
 
   Future<bool> pagamento(
-      CreditoFinanceiro credit, int cartaoId, bool isBoleto) {
-    return repository.creditoFinanceiroPagamento(credit, cartaoId, isBoleto);
+      CreditoFinanceiro credit, String token, bool isBoleto) {
+    return repository.creditoFinanceiroPagamento(credit, token, isBoleto);
   }
 
   @override

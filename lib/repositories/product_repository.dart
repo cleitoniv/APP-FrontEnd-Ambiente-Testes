@@ -89,7 +89,6 @@ class ProductRepository {
           data: jsonEncode({"lens": data}));
       return response.data;
     } catch (error) {
-      print(error);
       return {'success': false};
     }
   }

@@ -104,8 +104,35 @@ class RequestsBloc extends Disposable {
     cartIn.add(novosItens);
   }
 
-  Future<Map> checkStock(Map params) {
-    return repository.checkStock(params);
+  Object checkStock(Map<dynamic, dynamic> params) {
+    print('linha 108');
+    print(params['itens']);
+    var codigo = params['itens'].keys.elementAt(0);
+    var corte = codigo.substring(4, 10);
+    if (corte == '000000') {
+      return {
+        'data': {
+          'index': [1],
+          'itens': [
+            {
+              'adicao': '',
+              'cilindro': '',
+              'codigo': codigo,
+              'cor': '',
+              'descricao': 'Este produto não existe',
+              'eixo': '',
+              'grau': '',
+              'prazo': '',
+              'saldo': 0
+            }
+          ],
+          'pendencia': false,
+          'prazo': 0
+        },
+        'success': true
+      };
+    } else
+      return repository.checkStock(params);
   }
 
   addProductToCart(Map<String, dynamic> data) async {
