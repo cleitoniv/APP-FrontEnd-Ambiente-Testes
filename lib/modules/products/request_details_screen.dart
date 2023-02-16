@@ -481,10 +481,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   Future<Map<String, dynamic>> _checkParameters(
       Map data, ProductModel product, Map<String, dynamic> first) async {
-    print(data);
-    print(product);
-    print(first);
-    print('linha 487');
     Map<String, dynamic> params = {};
     Map<String, dynamic> errors = {};
 
@@ -615,26 +611,20 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   Map _putProductCode(_first, result) {
     List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
     String current = _first['current'];
-    print('linha 619');
-    print(current);
     if (current == 'Graus diferentes em cada olho') {
       result['data'].forEach((item) {
         _first[current][item['olho']]['codigo'] = item['codigo']['codigo'];
       });
       return _first;
     } else {
-      print(_first[current]);
-      print(result);
       _first[current]['codigo'] =
           result['data'] != null ? result['data'][0]['codigo']['codigo'] : [];
-      print(_first);
       return _first;
     }
   }
 
   _onAddToCart(Map data, String typeButton, Map meta) async {
     _lockCart(true);
-    print('linha 639');
 
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
@@ -859,7 +849,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     //   return;
     // }
 
-    print('linha 863');
     final errors = await _checkParameters(
         new Map<String, dynamic>.from(_first[_first['current']]),
         data['product'],
@@ -1025,9 +1014,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     var cartObject = _cartParams(_first, {});
     // return;
     Map resp =
+        // ignore: await_only_futures
         await _requestsBloc.checkStock({"itens": _updateQtdCart(cartObject)});
-    print('linha 1032');
-    print(resp);
     if (resp["success"]) {
       if (resp["data"]["pendencia"] == false) {
         await _onAddToCart({'product': currentProduct.product}, mode,

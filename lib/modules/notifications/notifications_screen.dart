@@ -33,7 +33,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       GlobalKey<ScaffoldMessengerState>();
 
   _onTap(NotificationModel notification) async {
-    print('linha 34');
     inspect(notification);
     await _notificationBloc.readNotification(notification.id);
     _notificationBloc.notificationsSink.add(-1);

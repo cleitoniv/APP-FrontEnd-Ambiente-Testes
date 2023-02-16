@@ -105,8 +105,6 @@ class RequestsBloc extends Disposable {
   }
 
   Object checkStock(Map<dynamic, dynamic> params) {
-    print('linha 108');
-    // print(params['itens']);
     var codigo = params['itens'].keys.elementAt(0);
     var corte = codigo.substring(4, 10);
     if (corte == '000000') {

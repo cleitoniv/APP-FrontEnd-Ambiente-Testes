@@ -69,10 +69,7 @@ class ProductBloc extends Disposable {
   }
 
   Object productCode(List<Map<String, dynamic>> params) {
-    print('linha 72');
-    print(params[0]['esferico']);
     if (params[0]['esferico'] == '') {
-      print('entrou aqui');
       return {
         'data': [
           {

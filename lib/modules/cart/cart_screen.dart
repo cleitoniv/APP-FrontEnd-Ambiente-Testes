@@ -176,7 +176,6 @@ class _CartScreenState extends State<CartScreen> {
                 stream: _requestsBloc.cartOut,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    print('linha 175');
                     inspect(_requestsBloc.cartOut);
                     return Center(
                       heightFactor: 3,
@@ -258,8 +257,6 @@ class _CartScreenState extends State<CartScreen> {
                               if (_data[i]['operation'] == '06') {
                                 days.add(0);
                               } else {
-                                print('kkkkkkk');
-                                print(_data[i]['meta']);
                                 days.add(_data[i]['meta']['days']);
                               }
                             }
