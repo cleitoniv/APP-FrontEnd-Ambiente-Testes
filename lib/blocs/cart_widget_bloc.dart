@@ -1,4 +1,4 @@
-import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
+// import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
 import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -38,6 +38,11 @@ class CartWidgetBloc extends Disposable {
   Sink get currentPaymentFormIn => _currentPaymentFormController.sink;
   Stream get currentPaymentFormOut => _currentPaymentFormController.stream;
   get currentPaymentFormValue => _currentPaymentFormController.value;
+
+  // BehaviorSubject _currentPaymentForm2Controller = BehaviorSubject.seeded(null);
+  // Sink get currentPaymentForm2In => _currentPaymentForm2Controller.sink;
+  // Stream get currentPaymentForm2Out => _currentPaymentForm2Controller.stream;
+  // get currentPaymentForm2Value => _currentPaymentForm2Controller.value;
 
   @override
   void dispose() {

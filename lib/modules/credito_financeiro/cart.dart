@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
@@ -27,7 +27,8 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
 
   _onBackToPurchase() {
     _homeWidgetBloc.currentTabIndexIn.add(1);
-    _homeWidgetBloc.currentRequestTypeIn.add("Produto");
+    _homeWidgetBloc.currentCreditTypeIn.add('Financeiro');
+    _homeWidgetBloc.currentRequestTypeIn.add('Financeiro');
     Modular.to.pushNamed("/home/1");
   }
 
@@ -246,6 +247,8 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                   StreamBuilder<List<Map<String, dynamic>>>(
                       stream: _requestsBloc.cartOut,
                       builder: (context, snapshot) {
+                        print('linha 250');
+                        print(snapshot.data);
                         return Text(
                           snapshot.hasData
                               ? 'R\$ ${_totalToPay(snapshot.data)}'

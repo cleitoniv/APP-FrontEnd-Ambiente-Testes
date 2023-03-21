@@ -11,6 +11,7 @@ class ClienteModel {
   String email;
   String phone;
   String diaRemessa;
+  String tokenVindi;
   int confirmationSms;
   int money;
   int status;
@@ -31,8 +32,11 @@ class ClienteModel {
       this.sitApp});
 
   ClienteModel.fromJson(Map<String, dynamic> json) {
+    print('linha 35');
+    print(json['token_vindi']);
     id = json['id'];
     nome = json['nome'];
+    tokenVindi = json['token_vindi'];
     codigo = json['codigo'];
     apelido = json['apelido'];
     ddd = json['ddd'];

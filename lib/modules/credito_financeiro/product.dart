@@ -473,8 +473,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 margin: const EdgeInsets.only(top: 20),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      primary: item['color'],
-                                      elevation: 0),
+                                      primary: item['color'], elevation: 0),
                                   onPressed: item['onTap'],
                                   child: Text(
                                     item['title'],

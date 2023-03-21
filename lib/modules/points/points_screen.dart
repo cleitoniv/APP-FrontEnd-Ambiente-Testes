@@ -2,7 +2,7 @@ import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
+// import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/models/points_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -233,15 +233,16 @@ class _PointsScreenState extends State<PointsScreen> {
                   margin: const EdgeInsets.only(top: 20),
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                        primary: item['color'],
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          side: BorderSide(
-                            width: item['border'],
-                            color: item['textColor'],
-                          ),
-                        )),
+                      primary: item['color'],
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        side: BorderSide(
+                          width: item['border'],
+                          color: item['textColor'],
+                        ),
+                      ),
+                    ),
                     icon: item['icon'],
                     onPressed: () => _checkBlockedUser(context, item["onTap"]),
                     label: Text(

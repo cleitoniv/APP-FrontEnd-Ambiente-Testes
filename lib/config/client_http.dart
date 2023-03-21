@@ -1,6 +1,11 @@
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/config/constants.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+
+AuthBloc _authBloc = Modular.get<AuthBloc>();
 
 class ClientHttp {
   Dio dio = Dio();
@@ -26,6 +31,8 @@ class ClientHttp {
             handler.resolve(response),
         onError: (DioError error, ErrorInterceptorHandler handler) async {
           if (error.response?.statusCode == 401) {
+            print('entrou no erro');
+            print(error.response);
             dio.interceptors.requestLock.lock();
             dio.interceptors.responseLock.lock();
 
@@ -37,12 +44,15 @@ class ClientHttp {
 
             dio.interceptors.requestLock.unlock();
             dio.interceptors.responseLock.unlock();
-
+            print('linha 45');
+            print(options.data);
             return dio.request(
               options.path,
               options: options.data,
             );
           }
+          print('linha 52');
+          print(error.response);
           handler.reject(error);
         },
       ),
@@ -53,12 +63,13 @@ class ClientHttp {
 }
 
 class VindiHttp {
+  AuthEvent currentUser;
   Dio dio = Dio();
+
   FirebaseAuth _auth = FirebaseAuth.instance;
-  String _currentToken =
-      'SXdZYlhtdkhqSm1rdHBkVGNmT0Nfa29qb25ReG5wY2dQaVUzOUtReDdyWTo=';
 
   VindiHttp() {
+    this.currentUser = _authBloc.getAuthCurrentUser;
     dio.interceptors.clear();
     dio.options.baseUrl = VindiAPI;
     dio.options.connectTimeout = 30000;
@@ -66,9 +77,9 @@ class VindiHttp {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
-          if (_currentToken.isNotEmpty) {
+          if (this.currentUser.data.tokenVindi.isNotEmpty) {
             options.headers['Authorization'] =
-                'Basic SXdZYlhtdkhqSm1rdHBkVGNmT0Nfa29qb25ReG5wY2dQaVUzOUtReDdyWTo=';
+                'Basic ${this.currentUser.data.tokenVindi}';
             options.headers['Content-Type'] = 'application/json';
           }
           handler.next(options);

@@ -1,5 +1,5 @@
-import 'dart:convert';
-import 'dart:developer';
+// import 'dart:convert';
+// import 'dart:developer';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,12 +13,13 @@ import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
+import 'package:central_oftalmica_app_cliente/modules/credits/credits_products_screen.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
-import 'package:rxdart/subjects.dart';
+// import 'package:rxdart/subjects.dart';
 
 class ProductScreen extends StatefulWidget {
   final int id;
@@ -35,6 +36,7 @@ class _ProductScreenState extends State<ProductScreen> {
   ProductBloc _productBloc = Modular.get<ProductBloc>();
   CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
+  HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   ProductWidgetBloc _productWidgetBloc = Modular.get<ProductWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   AuthEvent currentUser;
@@ -49,6 +51,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Function(int) onNavigate;
 
   _showDialogType(String type) {
+    print(type);
     if (type == "T") {
       Modular.to.pop();
     } else if (type == 'CF') {
@@ -56,10 +59,15 @@ class _ProductScreenState extends State<ProductScreen> {
       _productBloc.fetchOffers();
       Modular.to.pushNamed('/home/1');
     } else {
-      _homeBloc.currentCreditTypeIn.add('Produto');
-      _productBloc.productRedirectedSink.add(widget.product);
-      _productBloc.setOffers(widget.product);
-      Modular.to.pushNamed('/home/1');
+      _productBloc.offersRedirectedSink.add(null);
+      _productBloc.productRedirectedSink.add(null);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => CreditsProductScreen(),
+        ),
+      );
+      _homeWidgetBloc.currentCreditTypeIn.add("Produto");
     }
   }
 

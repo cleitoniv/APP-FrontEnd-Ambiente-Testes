@@ -1,4 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:async';
+
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
@@ -8,7 +10,7 @@ import 'package:central_oftalmica_app_cliente/repositories/requests_repository.d
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+// import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class ProductCartScreen extends StatefulWidget {
   @override
@@ -23,6 +25,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   int _taxaEntrega = 0;
   bool _lock = false;
+  StreamSubscription _productCartReset;
 
   _onBackToPurchase() {
     Modular.to.pushNamed("/home/0");
@@ -69,10 +72,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   }
 
   bool hasPrice(Map<String, dynamic> item) {
-    return item["operation"] != "07" &&
-        item["operation"] != "03" &&
-        item["operation"] != "04" &&
-        item["operation"] != "13";
+    return item["operation"] != "03" && item["operation"] != "04";
   }
 
   _orderFinish(List<Map<String, dynamic>> _data) async {
@@ -133,12 +133,14 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07" ||
-          element["type"] == "T" ||
-          element["tests"] == "Sim") {
+      if (element["type"] == "T" || element["tests"] == "Sim") {
         return previousValue;
       } else if (element["operation"] == "13") {
-        return previousValue;
+        return previousValue +
+            (element['product'].valueFinan * element['quantity']);
+      } else if (element["operation"] == "07") {
+        return previousValue +
+            (element['product'].valueProduto * element['quantity']);
       }
       return previousValue + (element['product'].value * element['quantity']);
     });
@@ -146,9 +148,20 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     return Helper.intToMoney(_total + _taxaEntrega);
   }
 
+  @override
+  void dispose() {
+    this._lock = null;
+    // _productCartReset.cancel();
+    super.dispose();
+  }
+
   _getMaxDaysCart(data) {
     var ver = data.map((e) {
-      return e['meta']['days'];
+      if (e['operation'] == '06') {
+        return 0;
+      } else {
+        return e['meta']['days'];
+      }
     }).toList();
 
     return ver.reduce((curr, next) => curr > next ? curr : next);
@@ -252,13 +265,21 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                               if (!snapshot.hasData) {
                                 return Container();
                               }
-                              if (snapshot.data.isEmpty) {
+                              if (snapshot.data.isEmpty &&
+                                  snapshot.data == null) {
+                                return Container();
+                              }
+                              if (snapshot.data.isEmpty == true) {
                                 return Container();
                               }
                               List<Map<String, dynamic>> _data = snapshot.data;
                               List days = [];
                               for (var i = 0; i < _data.length; i++) {
-                                days.add(_data[i]['meta']['days']);
+                                if (_data[i]['operation'] == '06') {
+                                  days.add(0);
+                                } else {
+                                  days.add(_data[i]['meta']['days']);
+                                }
                               }
                               days.sort(((a, b) => -a.compareTo(b)));
                               return Text(

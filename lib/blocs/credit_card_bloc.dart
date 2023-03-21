@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
+// import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
-import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
+// import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/vindi_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
 
-import 'package:flutter_modular/flutter_modular.dart';
+// import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rxdart/subjects.dart';
 
 class CreditCardBloc extends Bloc<CreditCardModel> {
@@ -15,31 +17,37 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
 
   CreditCardBloc(this.repository, this.vindiRepository);
 
-  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
+  // CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   Future<void> fetchPaymentMethods() async {
+    print('linha 23');
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
     this.cartaoCreditoSink.add(list);
   }
 
   Future<void> fetchPaymentMethodsFinan() async {
+    print('linha 30');
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
     this.cartaoCreditoSink.add(list);
   }
 
   Future<void> fetchPaymentMethodsChange() async {
+    print('linha 37');
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
     this.cartaoCreditoSink.add(list);
   }
 
   Future<List> fetchInstallments(int valor, bool isBoleto) async {
+    print('linha 41');
     return repository.fetchInstallments(valor, isBoleto);
   }
 
   Future<VindiCreditCard> addVindiCreditCard(CreditCardModel creditCard) {
+    print('linha 45');
+    inspect(creditCard);
     return vindiRepository.addVindiCreditCard(creditCard);
   }
 

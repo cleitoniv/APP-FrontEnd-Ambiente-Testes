@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/credit_card_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
@@ -7,7 +9,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../repositories/vindi_repository.dart';
-import '../../repositories/credit_card_repository.dart';
+// import '../../repositories/credit_card_repository.dart';
 
 class AddCreditCardScreen extends StatefulWidget {
   final Map<String, dynamic> screen;
@@ -25,6 +27,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
   TextEditingController _ownerController;
   MaskedTextController _creditCardNumberController;
+  MaskedTextController _ccvController;
   MaskedTextController _mesValidadeController;
   MaskedTextController _anoValidadeController;
   List<Map> _data;
@@ -36,7 +39,6 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
   _onSubmit() async {
     SnackBar _snackBar;
-
     DateTime now = new DateTime.now();
     if (int.parse(_mesValidadeController.text) < 1 ||
         int.parse(_mesValidadeController.text) > 12) {
@@ -68,13 +70,24 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
           anoValidade: _anoValidadeController.text,
           mesValidade: _mesValidadeController.text,
           nomeTitular: _ownerController.text,
+          ccv: _ccvController.text,
         ),
       );
-      // create unique_index(:cartao_credito_cliente, [:cartao_number, :cliente_id])
+      if (_storeResult.errorData != null) {
+        SnackBar _snackBar = SnackBar(
+          content: Text(
+            'Cartão inválido',
+          ),
+        );
 
-      setState(() {
-        isLoading = false;
-      });
+        _scaffoldKey.currentState.showSnackBar(_snackBar);
+      } else
+        await _creditCardBloc.addCreditCard(
+          CreditCardModel(
+            token: _storeResult.cartao.token,
+          ),
+        );
+
       if (_storeResult.errorData != null) {
         SnackBar _snackBar = SnackBar(
           content: Text(
@@ -84,10 +97,11 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {
-        // Modular.to.pushReplacementNamed("/cart/payment");
-        Modular.to
-            .pushReplacementNamed(widget.screen['route'] ?? '/cart/payment');
-        return _storeResult;
+        await _creditCardBloc.fetchPaymentMethodsFinan();
+        await _creditCardBloc.fetchPaymentMethods();
+        Modular.to.pop();
+        // Modular.to
+        //     .pushReplacementNamed(widget.screen['route'] ?? '/cart/payment');
       }
     }
   }
@@ -95,6 +109,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
   @override
   void initState() {
     super.initState();
+    _creditCardBloc.fetchPaymentMethods();
     _ownerController = TextEditingController();
     _creditCardNumberController = MaskedTextController(
       mask: '0000 0000 0000 0000',
@@ -105,13 +120,18 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
     _anoValidadeController = MaskedTextController(
       mask: '0000',
     );
+    _ccvController = MaskedTextController(
+      mask: '000',
+    );
     _data = [
       {
         'labelText': 'Nome impresso no cartão',
         'capitalization': TextCapitalization.words,
         'icon': Icons.person,
         'controller': _ownerController,
-        'validator': Helper.lengthValidator,
+        'validator': (text) => Helper.lengthValidatorContainsNumber(
+              text,
+            ),
       },
       {
         'labelText': 'Número do cartão',
@@ -121,6 +141,17 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
               text,
               length: 14,
               message: 'Número de cartão inválido',
+            ),
+        'keyboard_type': TextInputType.number
+      },
+      {
+        'labelText': 'CCV',
+        'icon': MaterialCommunityIcons.key,
+        'controller': _ccvController,
+        'validator': (text) => Helper.lengthValidator(
+              text,
+              length: 3,
+              message: 'CCV inválido',
             ),
         'keyboard_type': TextInputType.number
       },
@@ -152,6 +183,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
   @override
   void dispose() {
     _ownerController.dispose();
+    _ccvController.dispose();
     _creditCardNumberController.dispose();
     _anoValidadeController.dispose();
     _mesValidadeController.dispose();
@@ -160,6 +192,9 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // if (isLoading) {
+    //   return Scaffold(body: Center(child: CircularProgressIndicator()));
+    // }
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(
@@ -202,7 +237,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: _data.skip(2).map(
+                children: _data.skip(3).map(
                   (e) {
                     return TextFieldWidget(
                       validator: e['validator'],
@@ -220,6 +255,23 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
                   },
                 ).toList(),
               ),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  TextFieldWidget(
+                    maxLength: 3,
+                    width: 122,
+                    labelText: _data[2]['labelText'],
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Color(0xffA1A1A1),
+                    ),
+                    validator: _data[2]['validator'],
+                    controller: _data[2]['controller'],
+                    keyboardType: _data[2]['keyboard_type'],
+                  )
+                ],
+              ),
               SizedBox(height: 30),
               isLoading
                   ? Center(child: CircularProgressIndicator())
@@ -234,7 +286,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
                         }
                       },
                       child: Text(
-                        'Adicionar cartão',
+                        'Adicionar Cartão',
                         style: Theme.of(context).textTheme.button,
                       ),
                     )

@@ -276,7 +276,7 @@ class RequestInfoScreen extends StatelessWidget {
                                         ListTileMoreCustomizable(
                                             contentPadding:
                                                 const EdgeInsets.all(0),
-                                            horizontalTitleGap: 10,
+                                            horizontalTitleGap: 8,
                                             leading: CachedNetworkImage(
                                               errorWidget: (context, url,
                                                       error) =>
@@ -297,21 +297,22 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     index2]
                                                                 ['tests'] ==
                                                             "N"
-                                                    ? FittedBox(
-                                                        fit: BoxFit.contain,
-                                                        child: Text(
-                                                          "${items[index].items[index2]['produto']}",
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .subtitle1
-                                                                  .copyWith(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
+                                                    ? Expanded(
+                                                        child: FittedBox(
+                                                          fit: BoxFit.contain,
+                                                          child: Text(
+                                                            "${items[index].items[index2]['produto']}",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .subtitle1
+                                                                .copyWith(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                          ),
                                                         ),
                                                       )
                                                     : items[index].items[index2]
@@ -322,38 +323,44 @@ class RequestInfoScreen extends StatelessWidget {
                                                                         index2]
                                                                     ['tests'] ==
                                                                 "S"
-                                                        ? FittedBox(
-                                                            fit: BoxFit.contain,
-                                                            child: Text(
-                                                              "${items[index].items[index2]['produto_teste']}",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .subtitle1
-                                                                  .copyWith(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
+                                                        ? Expanded(
+                                                            child: FittedBox(
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                              child: Text(
+                                                                "${items[index].items[index2]['produto_teste']}",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                    ),
+                                                              ),
                                                             ),
                                                           )
-                                                        : FittedBox(
-                                                            fit: BoxFit.contain,
-                                                            child: Text(
-                                                              "${items[index].items[index2]['produto']}",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .subtitle1
-                                                                  .copyWith(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
+                                                        : Expanded(
+                                                            child: FittedBox(
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                              child: Text(
+                                                                "${items[index].items[index2]['produto']}",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                    ),
+                                                              ),
                                                             ),
                                                           ),
                                                 SizedBox(width: 20),
@@ -406,6 +413,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                         color: Colors.black54,
                                                       ),
                                                 ),
+                                                SizedBox(height: 34),
                                               ],
                                             ),
                                             trailing: FittedBox(

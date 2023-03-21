@@ -6,7 +6,7 @@ import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';

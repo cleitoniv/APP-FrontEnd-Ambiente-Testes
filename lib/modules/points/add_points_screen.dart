@@ -1,6 +1,6 @@
-import 'package:barcode_scan2/barcode_scan2.dart';
+// import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
-import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
+// import 'package:central_oftalmica_app_cliente/blocs/devolution_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';

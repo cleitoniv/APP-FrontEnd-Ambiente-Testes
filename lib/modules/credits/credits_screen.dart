@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
+// import 'dart:convert';
+// import 'dart:developer';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_bloc.dart';
@@ -105,7 +106,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
     setState(() {
       this._currentProduct["selected"] = false;
     });
-
     Modular.to.pushNamed("/credito_financeiro/cart");
 
     Future.delayed(Duration(seconds: 2), () {
@@ -131,7 +131,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
     });
 
     Offers _offers = await _creditsBloc.fetchCreditOfferSync(product.group);
-
     setState(() {
       this._loadingOffers = false;
       this._offers = _offers;
@@ -205,6 +204,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                 // );
                 return InkWell(
                   onTap: () {
+                    print('linha 207');
                     _onTapPersonalizedValue(snapshot.data);
                   },
                   child: CardWidgetOtherValue(),
@@ -227,18 +227,23 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
   @override
   void initState() {
+    super.initState();
+    _productsBloc.fetchOffers();
     _isLoadingPackage = false;
     _currentProduct = {"selected": false};
     if (widget.product != null) {
       _currentProduct['product'] = widget.product;
       _currentProduct['selected'] = true;
     }
+    print('linha 235');
+    _productsBloc.fetchOffers();
     _productsBloc.fetchCreditProducts("Todos");
     _currentUser = _authBloc.getAuthCurrentUser;
     _creditsBloc.indexFinancialIn.add(_currentUser);
     _productReset = _creditsBloc.creditProductSelectedStream.listen((event) {
       if (!event) {
         _currentProduct = {"selected": false};
+        _productsBloc.fetchOffers();
       }
     });
 
@@ -246,24 +251,25 @@ class _CreditsScreenState extends State<CreditsScreen> {
       if (event == "Produto") {
         _creditsBloc.offersSink
             .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
-//        _productsBloc.offersRedirectedSink.add(null);
-//        _productsBloc.productRedirectedSink.add(null);
         _currentProduct = {"selected": false};
       } else {
         _currentProduct = {"selected": true};
-        setState(() {
-          this._loadingOffers = true;
-        });
+
+        Offers of = await _creditsBloc.fetchOffersSync();
+        this._offers = of;
+        // setState(() {
+        this._loadingOffers = false;
+        // });
 
         _productsBloc.offersRedirectedSink.add(null);
         _productsBloc.productRedirectedSink.add(null);
 
-        Offers of = await _creditsBloc.fetchOffersSync();
+        // Offers of = await _creditsBloc.fetchOffersSync();
 
-        setState(() {
-          this._offers = of;
-          this._loadingOffers = false;
-        });
+        // setState(() {
+        // this._offers = of;
+        // this._loadingOffers = false;
+        // });
       }
     });
 
@@ -352,16 +358,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                 flex: 2,
                                                 child: InkWell(
                                                   onTap: () {
-                                                    setState(() {
-                                                      _productsBloc
-                                                          .productRedirectedSink
-                                                          .add(null);
-                                                      _productsBloc
-                                                          .offersRedirectedSink
-                                                          .add(null);
-                                                      this._currentProduct[
-                                                          "selected"] = false;
-                                                    });
+                                                    // setState(() {
+                                                    //   _productsBloc
+                                                    //       .productRedirectedSink
+                                                    //       .add(null);
+                                                    //   _productsBloc
+                                                    //       .offersRedirectedSink
+                                                    //       .add(null);
+                                                    //   this._currentProduct[
+                                                    //       "selected"] = false;
+                                                    // });
                                                     _creditsBloc.offersSink.add(
                                                         Offers(
                                                             isEmpty: true,
@@ -395,48 +401,49 @@ class _CreditsScreenState extends State<CreditsScreen> {
                             ProductList _productCredits = snapshot.data;
                             return Column(
                               children: [
-                                Container(
-                                  margin: EdgeInsets.only(top: 30, bottom: 30),
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      "Selecione o Produto",
-                                      // textScaleFactor: 1.25,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                    width: double.infinity,
-                                    height: 300,
-                                    child: ListView.separated(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: _productCredits.list.length,
-                                      separatorBuilder: (context, index) =>
-                                          SizedBox(
-                                        width: 20,
-                                      ),
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                            onTap: () async {
-                                              _onTapSelectCreditProduct(
-                                                  _productCredits.list[index]);
-                                            },
-                                            child: ProductWidget(
-                                              credits: _productCredits
-                                                  .list[index].boxes,
-                                              tests: _productCredits
-                                                  .list[index].tests,
-                                              imageUrl: _productCredits
-                                                  .list[index].imageUrl,
-                                              title: _productCredits
-                                                  .list[index].title,
-                                            ));
-                                      },
-                                    ))
+                                // Container(
+                                //   margin: EdgeInsets.only(top: 30, bottom: 30),
+                                //   child: FittedBox(
+                                //     fit: BoxFit.contain,
+                                //     child: Text(
+                                //       "Selecione o Produto",
+                                //       // textScaleFactor: 1.25,
+                                //       overflow: TextOverflow.ellipsis,
+                                //       maxLines: 1,
+                                //       style:
+                                //           Theme.of(context).textTheme.headline5,
+                                //     ),
+                                //   ),
+                                // ),
+                                // Container(
+                                //     width: double.infinity,
+                                //     height: 300,
+                                //     child: ListView.separated(
+                                //       scrollDirection: Axis.horizontal,
+                                //       itemCount: _productCredits.list.length,
+                                //       separatorBuilder: (context, index) =>
+                                //           SizedBox(
+                                //         width: 20,
+                                //       ),
+                                //       itemBuilder: (context, index) {
+                                //         return GestureDetector(
+                                //             onTap: () async {
+                                //               print('linha 426');
+                                //               _onTapSelectCreditProduct(
+                                //                   _productCredits.list[index]);
+                                //             },
+                                //             child: ProductWidget(
+                                //               credits: _productCredits
+                                //                   .list[index].boxes,
+                                //               tests: _productCredits
+                                //                   .list[index].tests,
+                                //               imageUrl: _productCredits
+                                //                   .list[index].imageUrl,
+                                //               title: _productCredits
+                                //                   .list[index].title,
+                                //             ));
+                                //       },
+                                //     ))
                               ],
                             );
                           });
@@ -524,9 +531,26 @@ class _CreditsScreenState extends State<CreditsScreen> {
               stream: _homeBloc.currentCreditTypeOut,
               builder: (context, headerSnapshot) {
                 if (!headerSnapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(child: CircularProgressIndicator()),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Carregando aguarde...",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      .copyWith(fontSize: 16))
+                            ])
+                      ]);
                 }
                 String _headerCurrentType = headerSnapshot.data;
                 return Positioned(
@@ -565,6 +589,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                               return StreamBuilder(
                                 stream: _productsBloc.offersRedirectedStream,
                                 builder: (context, offerSnapshot) {
+                                  List<OfferModel> _financialCredits;
                                   if (this._loadingOffers) {
                                     return Center(
                                       child: CircularProgressIndicator(),
@@ -574,19 +599,26 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                     return Center(
                                         child: FittedBox(
                                       fit: BoxFit.contain,
-                                      child: Text(
-                                          "Selecione um produto para ver as ofertas."),
+                                      child: Text(" "),
                                     ));
                                   }
-                                  List<OfferModel> _financialCredits;
-
+                                  if (offerSnapshot.data == null) {
+                                    _productsBloc.fetchOffers();
+                                  }
+                                  print('linha 601');
+                                  print(offerSnapshot.data);
                                   if (offerSnapshot.hasData) {
+                                    print('entrada 1');
                                     _financialCredits =
                                         offerSnapshot.data.offers;
                                   } else if (this._offers != null) {
+                                    print('entrada 2');
                                     _financialCredits =
                                         this._offers?.offers ?? [];
+                                    print(_financialCredits);
+                                    print('result entrada 2');
                                   } else {
+                                    print('entrada 3');
                                     _financialCredits =
                                         this._offersFinan.offers;
                                   }
@@ -690,11 +722,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                           });
                                                                           _addCreditoFinanceiro(
                                                                               _financialCredits[index]);
-                                                                          setState(
-                                                                              () {
-                                                                            _isLoadingPackage =
-                                                                                false;
-                                                                          });
                                                                         },
                                                                         child:
                                                                             CardWidget(
@@ -721,8 +748,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
 //                                                                            !_lock) {
 //
 //                                                                        }
-                                                                                inspect(_currentProduct);
-
                                                                                 Helper.whenDifferentOperation('06', () {
                                                                                   _addCreditoProduct(productSnapshot.data ?? this._currentProduct["product"], _financialCredits[index]);
                                                                                 }, context, _requestsBloc.cartItems, _requestsBloc, _cartWidgetBloc);
@@ -747,9 +772,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                               child: Container(
                                                   height: 200,
                                                   child: !_isLoadingPackage
-                                                      ? _financialCredits
-                                                                  .length >
-                                                              0
+                                                      ? _financialCredits !=
+                                                              null
                                                           ? Column(
                                                               children: [
                                                                 FittedBox(
@@ -802,9 +826,12 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                         ? InkWell(
                                                                             onTap:
                                                                                 () async {
+                                                                              print('@@@@@@@@@@@');
+                                                                              print(index);
                                                                               setState(() {
                                                                                 _isLoadingPackage = true;
                                                                               });
+
                                                                               _addCreditoFinanceiro(_financialCredits[index]);
                                                                               setState(() {
                                                                                 _isLoadingPackage = false;

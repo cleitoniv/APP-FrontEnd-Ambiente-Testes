@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/models/pedido_model.dart';
 import 'package:central_oftalmica_app_cliente/models/points_model.dart';
@@ -228,6 +229,8 @@ class RequestsRepository {
             "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
+      print('linha 231');
+      print(response.data);
       return OrderPayment(isValid: response.data["success"], isLoading: false);
     } catch (e) {
       final error400 = e as DioError;
@@ -260,6 +263,8 @@ class RequestsRepository {
 
   Future<Pedido> getPedido(int id, PedidoModel pedidoData,
       {bool reposicao = false}) async {
+    print('linha 265');
+    inspect(pedidoData);
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 

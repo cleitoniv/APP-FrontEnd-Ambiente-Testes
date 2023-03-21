@@ -78,6 +78,8 @@ class ProductRepository {
   }
 
   Future<Map> productCode(List<Map<String, dynamic>> data) async {
+    print('linha 81');
+    print(data);
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
     try {

@@ -1,6 +1,8 @@
+// import 'dart:developer';
+
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:developer';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
@@ -11,7 +13,7 @@ import 'package:central_oftalmica_app_cliente/repositories/requests_repository.d
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+// import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -77,10 +79,11 @@ class _CartScreenState extends State<CartScreen> {
     List<Map<String, dynamic>> _data = _requestsBloc.cartItems;
 
     int _total = _data.fold(0, (previousValue, element) {
-      if (element["operation"] == "07" ||
-          element["operation"] == "13" ||
-          element["type"] == "T") {
+      if (element["operation"] == "07" || element["operation"] == "13") {
         return previousValue;
+      } else if (element["type"] == "T") {
+        return previousValue +
+            (element['product'].valueTest * element['quantity']);
       }
       return previousValue + (element['product'].value * element['quantity']);
     });
@@ -119,7 +122,11 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   String selectPrice(Map<String, dynamic> item) {
-    if (item["operation"] != "03" && item["tests"] == "Sim") return 'Grátis';
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    inspect(item);
+    // if (item["operation"] == "01" && item["tests"] == "Sim")
+    if (item["operation"] != "03" && item["tests"] == "Sim")
+      return 'R\$ ${Helper.intToMoney(item['product'].valueTest)}';
     if (item["operation"] == "13")
       return 'R\$ ${Helper.intToMoney(item['product'].valueFinan)}';
     if (item["operation"] == "07")
@@ -176,7 +183,6 @@ class _CartScreenState extends State<CartScreen> {
                 stream: _requestsBloc.cartOut,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    inspect(_requestsBloc.cartOut);
                     return Center(
                       heightFactor: 3,
                       child: CircularProgressIndicator(),
@@ -195,6 +201,8 @@ class _CartScreenState extends State<CartScreen> {
                   }
 
                   List<Map<String, dynamic>> _data = snapshot.data;
+                  print('linha 197');
+                  print(_data);
                   return Helper.CartList(
                       _data, hasPrice, _removeItem, selectPrice);
                 },

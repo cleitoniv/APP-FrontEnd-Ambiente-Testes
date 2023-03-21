@@ -1,4 +1,5 @@
 import 'dart:async';
+// import 'dart:developer';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
+import 'package:central_oftalmica_app_cliente/modules/credits/credits_products_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/credits/credits_screen.dart';
 import 'package:central_oftalmica_app_cliente/modules/home/drawer_widget.dart';
 import 'package:central_oftalmica_app_cliente/modules/products/products_screen.dart';
@@ -66,9 +68,18 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _onChangeCreditType(String type) {
+    print('esse botao');
     if (type == "Produto") {
       _productBloc.offersRedirectedSink.add(null);
       _productBloc.productRedirectedSink.add(null);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => CreditsProductScreen(),
+        ),
+      );
+      // CreditsProductScreen();
+
     }
     _homeWidgetBloc.currentCreditTypeIn.add(type);
   }
@@ -443,8 +454,10 @@ class _TabsScreenState extends State<TabsScreen>
     _requestsBloc.getPedidosList(filter);
 
     _homeWidgetBloc.currentTabIndexOut.listen((int event) {
-      if (event != null && event != _tabController.index) {
-        _tabController.index = event;
+      if (_tabController.animation != null) {
+        if (event != null && event != _tabController.index) {
+          _tabController.index = event;
+        }
       }
     });
   }

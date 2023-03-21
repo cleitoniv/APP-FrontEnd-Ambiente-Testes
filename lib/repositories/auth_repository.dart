@@ -1,4 +1,4 @@
-import 'dart:async';
+// import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 
@@ -32,6 +32,7 @@ class LoginEvent implements Authentication {
 
 class AuthEvent implements Authentication {
   ClienteModel data;
+
   Map<String, dynamic> errorData;
   bool isValid;
   bool isBlocked = false;

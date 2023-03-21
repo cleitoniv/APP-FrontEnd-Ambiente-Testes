@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
@@ -33,10 +33,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       GlobalKey<ScaffoldMessengerState>();
 
   _onTap(NotificationModel notification) async {
-    inspect(notification);
     await _notificationBloc.readNotification(notification.id);
-    _notificationBloc.notificationsSink.add(-1);
-    _notificationBloc.fetchNotifications();
+    await _notificationBloc.fetchNotifications();
     if (notification.type == "PEDIDO_CONFIRMADO") {
       Modular.to.pushNamed('/home/3');
     } else if (notification.type == "RESGATE_PONTOS") {

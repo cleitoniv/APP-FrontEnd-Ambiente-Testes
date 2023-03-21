@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'dart:ffi';
+// import 'dart:ffi';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_widget_bloc.dart';
@@ -13,7 +13,7 @@ import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/helper/modals.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
-import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
+// import 'package:central_oftalmica_app_cliente/repositories/user_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
@@ -585,16 +585,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     String current = _first['current'];
     if (current == 'Graus diferentes em cada olho') {
       return _first[current].entries.map<Map<String, dynamic>>((entry) {
+        print(entry);
         return {
           "olho": entry.key,
           "esferico": entry.value['degree'],
           "grupo": currentProduct.product.group,
           "cilindrico": entry.value['cylinder'],
           "eixo": entry.value['axis'],
-          "adicao": entry.value['adicao']
+          "adicao": entry.value['adicao'],
+          "cor": entry.value['cor']
         };
       }).toList();
     } else {
+      print(_first[current]);
       return List<Map<String, dynamic>>.of([
         Map<String, dynamic>.of({
           "olho": current,
@@ -602,7 +605,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           "grupo": currentProduct.product.group,
           "cilindrico": _first[current]['cylinder'] ?? "",
           "eixo": _first[current]['axis'] ?? "",
-          "adicao": _first[current]['adicao'] ?? ""
+          "adicao": _first[current]['adicao'] ?? "",
+          "cor": _first[current]['cor'].toLowerCase() ?? ""
         })
       ]);
     }
@@ -1044,9 +1048,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "${resp['data']['itens'][e - 1]['descricao']}",
-                                    style: TextStyle(fontSize: 11),
+                                  SizedBox(
+                                    width: 260,
+                                    child: Text(
+                                      "${resp['data']['itens'][e - 1]['descricao']}",
+                                      overflow: TextOverflow.clip,
+                                      maxLines: 1,
+                                      softWrap: false,
+                                      style: TextStyle(fontSize: 11),
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 20,
@@ -1078,7 +1088,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           width: 5,
                         ),
                         Text(
-                            "Previsao de entrega ${resp['data']['prazo']} dias uteis")
+                            "Previsão de entrega ${resp['data']['prazo']} dias uteis")
                       ],
                     ),
                   ),

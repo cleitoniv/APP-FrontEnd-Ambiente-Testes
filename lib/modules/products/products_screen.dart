@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
-import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+// import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -67,23 +67,42 @@ class _ProductsScreenState extends State<ProductsScreen> {
             stream: _productBloc.productListStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData || snapshot.data.isEmpty) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(child: CircularProgressIndicator()),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Carregando aguarde...",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .copyWith(fontSize: 16))
+                          ])
+                    ]);
               }
 
               List<ProductModel> _products = snapshot.data.list;
+              if (favoriteSnapshot.data != null) {
+                _products = _products.map((e) {
+                  if (favoriteSnapshot.data
+                      .any((e1) => e1['group'] == e.group)) {
+                    e.factor = 100;
+                  }
 
-              _products = _products.map((e) {
-                if (favoriteSnapshot.data.any((e1) => e1['group'] == e.group)) {
-                  e.factor = 100;
-                }
+                  return e;
+                }).toList();
+              }
 
-                return e;
-              }).toList();
-
-              _products.sort((a, b) => a.factor.compareTo(b.factor));
-              _products = _products.reversed.toList();
+              // _products.sort((a, b) => a.factor.compareTo(b.factor));
+              // _products = _products.reversed.toList();
               return !_isLoadingProduct
                   ? GridView.builder(
                       itemCount: _products.length,

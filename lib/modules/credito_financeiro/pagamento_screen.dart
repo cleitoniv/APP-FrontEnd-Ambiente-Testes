@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_card_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credito_financeiro.dart';
@@ -5,7 +7,7 @@ import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar_success.dart';
-import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
+// import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -31,6 +33,27 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   bool _lock = false;
   MaskedTextController _creditCardNumberController;
 
+  // PaymentMethod _currentPaymentForm;
+  // if ( _currentPaymentForm == null) {
+
+  // }
+
+  _lockbutton(info, card) {
+    print(card[0].token);
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (info == true && card.length > 0) {
+        setState(() {
+          billing = false;
+          _lock = false;
+        });
+      }
+    });
+    // else {
+    //   _lock = true;
+    // }
+  }
+
   _onAddCreditCard() {
     Modular.to.pushNamed('/cart/addCreditCard',
         arguments: {'route': '/credito_financeiro/pagamento'});
@@ -41,20 +64,27 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
       billing = false;
       _lock = true;
     });
-    bool selectedCard =
-        await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
-    if (selectedCard) {
-      _creditCardBloc.fetchPaymentMethodsChange();
-    }
 
-    setState(() {
-      billing = false;
-      _lock = false;
+    _cartWidgetBloc.currentPaymentFormIn
+        .add(PaymentMethod(isBoleto: false, creditCard: creditCard));
+    // bool selectedCard =
+    //     await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
+    // if (selectedCard) {
+    //   _creditCardBloc.fetchPaymentMethodsChange();
+    // } else {
+
+    // }
+    Future.delayed(const Duration(milliseconds: 0), () {
+      setState(() {
+        _lock = false;
+      });
     });
   }
 
   _onDelete(int id) async {
     RemoveCard _removeCard = await _creditCardBloc.removeCard(id);
+    print('linha 86');
+    inspect(_removeCard);
     if (_removeCard.success) {
       Map<String, dynamic> success = {
         "Cartao Removido": [_removeCard.message]
@@ -80,6 +110,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   }
 
   _finishPayment() {
+    print('entra aqui');
     CreditCardList cards =
         _creditCardBloc.cartaoCreditoValue ?? CreditCardList(list: []);
 
@@ -94,13 +125,13 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
     }
   }
 
-  _blockFinaliza() {
-    Future.delayed(
-        Duration.zero,
-        () => setState(() {
-              _lock = true;
-            }));
-  }
+  // _blockFinaliza() {
+  //   Future.delayed(
+  //       Duration.zero,
+  //       () => setState(() {
+  //             _lock = true;
+  //           }));
+  // }
 
   @override
   void initState() {
@@ -127,6 +158,10 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var _card = _cartWidgetBloc.currentPaymentFormValue;
+    if (_card == null) {
+      _lock = true;
+    }
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(
@@ -250,7 +285,9 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                   }
                                   _creditCardNumberController.updateText(
                                       _creditCards[index].cartaoNumber);
-
+                                  print('linha 275');
+                                  // inspect(_currentPaymentForm);
+                                  // inspect(_creditCards[index]);
                                   return AnimatedContainer(
                                     duration: Duration(
                                       milliseconds: 100,
@@ -332,8 +369,10 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                                     Colors.red.withOpacity(0.7),
                                               ),
                                               onPressed: () {
+                                                print('linha 372');
+                                                // inspect(_creditCards[index]);
                                                 _onDelete(
-                                                    _creditCards[index].token);
+                                                    _creditCards[index].id);
                                               },
                                             )
                                           ],
@@ -411,6 +450,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
               child: ElevatedButton.icon(
                 onPressed: _onAddCreditCard,
                 style: ElevatedButton.styleFrom(
+                    fixedSize: Size(245, 35),
                     elevation: 0,
                     primary: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -425,7 +465,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                   color: Theme.of(context).primaryColor,
                 ),
                 label: Text(
-                  'Adicionar Outro Cartão',
+                  'Adicionar Cartão',
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.button.copyWith(
                         color: Theme.of(context).primaryColor,

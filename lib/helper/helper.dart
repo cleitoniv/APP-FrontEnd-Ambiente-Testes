@@ -1,10 +1,7 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
-import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
-import 'package:central_oftalmica_app_cliente/modules/cart/cart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +20,23 @@ class Helper {
     return null;
   }
 
+  static String lengthValidatorContainsNumber(String text,
+      {int length = 0,
+      String message = 'Campo Obrigatório',
+      String messageNumber =
+          "Nome impresso no cartão deve conter somentes letras"}) {
+    RegExp regExpNumber = RegExp(r'[0-9]');
+
+    if (text.isEmpty || text.length < length) {
+      return message;
+    }
+    if (regExpNumber.hasMatch(text) == true) {
+      return messageNumber;
+    }
+
+    return null;
+  }
+
   static String passwordValidator(String text, {int length = 0}) {
     String message =
         "Sua senha deve ser composta por no mínimo $length dígitos, incluindo letras e números";
@@ -35,6 +49,7 @@ class Helper {
         regExpString.hasMatch(text) == false) {
       return message;
     }
+    return null;
   }
 
   static String lengthValidatorHelpDesk(
@@ -133,6 +148,7 @@ class Helper {
         onConfirm: () {
           requestsBloc.resetCart();
           cartWidgetBloc.cartTotalItemsSink.add(0);
+          Modular.to.pop();
           function();
         },
       );
@@ -142,7 +158,6 @@ class Helper {
   }
 
   static keyList(_data, index) {
-    inspect(_data);
     if (_data[index].containsKey('Olho direito')) {
       _data[index]['Olho direito']['quantidade'] = _data[index]['quantity'];
       var params = _data[index]['Olho direito'];
@@ -452,7 +467,8 @@ class Helper {
       'codigo': 'Codigo',
       'adicao': 'Adição',
       'quantidade': 'Qtd.',
-      'valor': 'Valor'
+      'valor': 'Valor',
+      'cor': 'Cor'
     };
     return ListView.separated(
       primary: false,
@@ -467,339 +483,370 @@ class Helper {
       itemBuilder: (context, index) {
         var keyListResult = keyList(_data, index);
         var paramsListResult = paramsList(_data, index);
-        return Row(
+        return Column(
           children: [
-            Expanded(
-              flex: 5,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          '${_data[index]['product'].title}',
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 12,
-                              ),
-                          maxLines: 2,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
+            Row(
+              children: [
+                SizedBox(
+                  width: 142,
+                ),
+                Center(
+                    child: Container(
+                  // height: 50,
+                  child: Text(
+                    '${_data[index]['product'].title}',
+                    style: Theme.of(context).textTheme.headline5.copyWith(
+                          fontSize: 12,
                         ),
-                      )
-                    ],
+                    maxLines: 1,
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                )),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Column(
                     children: [
-                      Container(
-                        constraints:
-                            BoxConstraints(maxHeight: 100, maxWidth: 100),
-                        child: _data[index]["tests"] != "Sim" &&
-                                _data[index]["type"] != "T"
-                            ? CachedNetworkImage(
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(
-                                        'assets/images/no_image_product.jpeg'),
-                                imageUrl: _data[index]['product'].imageUrl,
-                                width: 80,
-                                height: 80,
-                              )
-                            : _data[index]['product'].imageUrlTest == null
-                                ? Image.asset(
-                                    'assets/images/no_image_product.jpeg')
-                                : CachedNetworkImage(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.topCenter,
+                            constraints:
+                                BoxConstraints(maxHeight: 100, maxWidth: 100),
+                            child: _data[index]["tests"] != "Sim" &&
+                                    _data[index]["type"] != "T"
+                                ? CachedNetworkImage(
                                     errorWidget: (context, url, error) =>
                                         Image.asset(
                                             'assets/images/no_image_product.jpeg'),
-                                    imageUrl:
-                                        _data[index]['product'].imageUrlTest,
-                                    width: 80,
+                                    imageUrl: _data[index]['product'].imageUrl,
+                                    width: 100,
                                     height: 80,
-                                  ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      hasPrice(_data[index])
-                          ? Text(
-                              selectPrice(_data[index]),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  .copyWith(
-                                    fontSize: 12,
-                                  ),
-                            )
-                          : Container()
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 7,
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Material(
-                        elevation: 1,
-                        child: Container(
-                          decoration: BoxDecoration(color: Colors.white),
-                          padding: EdgeInsets.only(
-                              top: 8, bottom: 8, left: 10, right: 10),
-                          child: _data[index]['current'] !=
-                                  'Graus diferentes em cada olho'
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: keyListResult.map<Widget>((e) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "${translatedKeys[e]}",
-                                              style: TextStyle(fontSize: 11),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    );
-                                  }).toList(),
-                                )
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: keyListResult['direito']
-                                          .map<Widget>((e) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "${translatedKeys[e]}",
-                                                  style:
-                                                      TextStyle(fontSize: 11),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        );
-                                      }).toList() +
-                                      [
-                                        SizedBox(
-                                          height: 10,
-                                        )
-                                      ] +
-                                      keyListResult['esquerdo']
-                                          .map<Widget>((e) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "${translatedKeys[e]}",
-                                                  style:
-                                                      TextStyle(fontSize: 11),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        );
-                                      }).toList(),
-                                ),
-                        ),
-                      ),
-                      Material(
-                        elevation: 1,
-                        child: Container(
-                          decoration: BoxDecoration(color: Colors.white),
-                          padding: EdgeInsets.only(
-                              top: 8, bottom: 8, left: 10, right: 10),
-                          child: _data[index]['current'] !=
-                                  'Graus diferentes em cada olho'
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: paramsListResult.map<Widget>((e) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "${e}",
-                                              style: TextStyle(fontSize: 11),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    );
-                                  }).toList(),
-                                )
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: paramsListResult['direito']
-                                          .map<Widget>((e) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "${e}",
-                                                  style:
-                                                      TextStyle(fontSize: 11),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        );
-                                      }).toList() +
-                                      [
-                                        SizedBox(
-                                          height: 10,
-                                        )
-                                      ] +
-                                      paramsListResult['esquerdo']
-                                          .map<Widget>((e) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "${e}",
-                                                  style:
-                                                      TextStyle(fontSize: 11),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        );
-                                      }).toList(),
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 7,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          _data[index]['meta'] != null
-                              ? _data[index]['meta']['pendencie']
-                                  ? Container(
-                                      padding: EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: Text(
-                                        "PENDENTE",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600),
+                                  )
+                                : _data[index]['product'].imageUrlTest == null
+                                    ? Image.asset(
+                                        'assets/images/no_image_product.jpeg')
+                                    : CachedNetworkImage(
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(
+                                                'assets/images/no_image_product.jpeg'),
+                                        imageUrl: _data[index]['product']
+                                            .imageUrlTest,
+                                        width: 80,
+                                        height: 80,
                                       ),
-                                    )
-                                  : Container()
-                              : Container(),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              CircleAvatar(
-                                  backgroundColor: Helper.buyTypeBuild(
-                                      context,
-                                      _data[index]['operation'],
-                                      _data[index]['tests'])['color'],
-                                  radius: 10,
-                                  child: Helper.buyTypeBuild(
-                                      context,
-                                      _data[index]['operation'],
-                                      _data[index]['tests'])['icon']),
-                              SizedBox(width: 20),
-                              Text(
-                                '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1
-                                    .copyWith(
-                                      fontSize: 12,
-                                    ),
-                              ),
-                            ],
                           )
                         ],
                       ),
-                      SizedBox(width: 20)
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      _data[index]['removeItem'] == 'Sim' ||
-                              _data[index]['removeItem'] == null
-                          ? IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                size: 30,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                removeItem(_data[index]);
-                              },
-                            )
-                          : Container()
+                      Container(
+                        alignment: Alignment.topCenter,
+                        child: hasPrice(_data[index])
+                            ? Text(
+                                selectPrice(_data[index]),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .copyWith(
+                                      fontSize: 12,
+                                    ),
+                              )
+                            : Container(),
+                      )
                     ],
                   ),
-                ],
-              ),
-            )
+                ),
+                Expanded(
+                  flex: 7,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Material(
+                                elevation: 2,
+                                child: Container(
+                                  width: 62,
+                                  decoration:
+                                      BoxDecoration(color: Colors.white),
+                                  // padding: EdgeInsets.only(
+                                  //     top: 8, bottom: 8, left: 10, right: 10),
+                                  child: _data[index]['current'] !=
+                                          'Graus diferentes em cada olho'
+                                      ? Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children:
+                                              keyListResult.map<Widget>((e) {
+                                            return Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "${translatedKeys[e]}",
+                                                      style: TextStyle(
+                                                          fontSize: 11),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            );
+                                          }).toList(),
+                                        )
+                                      : Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: keyListResult['direito']
+                                                  .map<Widget>((e) {
+                                                return Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          "${translatedKeys[e]}",
+                                                          style: TextStyle(
+                                                              fontSize: 11),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                );
+                                              }).toList() +
+                                              [
+                                                SizedBox(
+                                                  height: 10,
+                                                )
+                                              ] +
+                                              keyListResult['esquerdo']
+                                                  .map<Widget>((e) {
+                                                return Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Column(
+                                                      children: [
+                                                        Text(
+                                                          "${translatedKeys[e]}",
+                                                          style: TextStyle(
+                                                              fontSize: 11),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                );
+                                              }).toList(),
+                                        ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Material(
+                                  elevation: 2,
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    // padding: EdgeInsets.only(
+                                    //     top: 8, bottom: 8, left: 1, right: 8),
+                                    child: _data[index]['current'] !=
+                                            'Graus diferentes em cada olho'
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: paramsListResult
+                                                .map<Widget>((e) {
+                                              return Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Flexible(
+                                                      child: Column(
+                                                    children: [
+                                                      Text("${e}",
+                                                          style: TextStyle(
+                                                              fontSize: 11),
+                                                          maxLines: 1,
+                                                          softWrap: false,
+                                                          overflow: TextOverflow
+                                                              .ellipsis),
+                                                    ],
+                                                  ))
+                                                ],
+                                              );
+                                            }).toList(),
+                                          )
+                                        : Column(
+                                            children: paramsListResult[
+                                                        'direito']
+                                                    .map<Widget>((e) {
+                                                  return Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Flexible(
+                                                          child: Column(
+                                                        children: [
+                                                          Text("${e}",
+                                                              style: TextStyle(
+                                                                  fontSize: 11),
+                                                              maxLines: 1,
+                                                              softWrap: false,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        ],
+                                                      ))
+                                                    ],
+                                                  );
+                                                }).toList() +
+                                                [
+                                                  SizedBox(
+                                                    height: 10,
+                                                  )
+                                                ] +
+                                                paramsListResult['esquerdo']
+                                                    .map<Widget>((e) {
+                                                  return Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Flexible(
+                                                          child: Column(
+                                                        children: [
+                                                          Text("${e}",
+                                                              style: TextStyle(
+                                                                  fontSize: 11),
+                                                              maxLines: 1,
+                                                              softWrap: false,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        ],
+                                                      ))
+                                                    ],
+                                                  );
+                                                }).toList(),
+                                          ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 7,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Flexible(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _data[index]['meta'] != null
+                                      ? _data[index]['meta']['pendencie']
+                                          ? Container(
+                                              width: 80,
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.all(3),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Text(
+                                                "PENDENTE",
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            )
+                                          : Container()
+                                      : Container(),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                          backgroundColor: Helper.buyTypeBuild(
+                                              context,
+                                              _data[index]['operation'],
+                                              _data[index]['tests'])['color'],
+                                          radius: 10,
+                                          child: Helper.buyTypeBuild(
+                                              context,
+                                              _data[index]['operation'],
+                                              _data[index]['tests'])['icon']),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            .copyWith(
+                                              fontSize: 12,
+                                            ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ))
+                              // SizedBox(width: 20)
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          _data[index]['removeItem'] == 'Sim' ||
+                                  _data[index]['removeItem'] == null
+                              ? IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                    size: 30,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    removeItem(_data[index]);
+                                  },
+                                )
+                              : Container()
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ],
         );
       },

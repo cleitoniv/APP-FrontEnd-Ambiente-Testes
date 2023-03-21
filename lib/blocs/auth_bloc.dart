@@ -1,7 +1,8 @@
 import 'dart:async';
+// import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
-import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
+// import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';

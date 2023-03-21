@@ -1,9 +1,14 @@
 import 'dart:convert';
 
+import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+
+AuthBloc _authBloc = Modular.get<AuthBloc>();
 
 class CreditCardEvent {
   bool isLoading;
@@ -36,12 +41,14 @@ class RemoveCard {
 
 class CreditCardRepository {
   Dio dio;
-
+  AuthEvent currentUser;
   CreditCardRepository(this.dio);
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<RemoveCard> removeCard(int id) async {
+    print('linha 50');
+    print(id);
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
     try {
@@ -54,6 +61,8 @@ class CreditCardRepository {
           success: response.data["success"],
           message: "Cartão removido com sucesso!");
     } catch (e) {
+      print('linha 64');
+      print(e);
       return RemoveCard(success: false, message: "Falha ao remover cartão");
     }
   }
@@ -86,10 +95,7 @@ class CreditCardRepository {
         }),
         data: jsonEncode({
           'param': {
-            "cartao_number": model.cartaoNumber,
-            "nome_titular": model.nomeTitular,
-            "mes_validade": model.mesValidade,
-            "ano_validade": model.anoValidade
+            "gateway_token": model.token,
           }
         }),
       );
@@ -108,6 +114,10 @@ class CreditCardRepository {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
+    this.currentUser = _authBloc.getAuthCurrentUser;
+    // ignore: unused_local_variable
+    String code = this.currentUser.data.codigo + this.currentUser.data.loja;
+
     try {
       Response response = await dio.get('/api/cliente/cards',
           options: Options(headers: {
@@ -119,8 +129,12 @@ class CreditCardRepository {
             (e) => VindiCardModel.fromJson(e),
           )
           .toList();
+      print('linha 129');
+      print(response.data['data'].length);
+      // return Future.delayed(const Duration(seconds: 2), () {
       return CreditCardList(
           isEmpty: cards.length == 0, isLoading: false, list: cards);
+      // });
     } catch (error) {
       return CreditCardList(isEmpty: true, isLoading: false, list: []);
     }
@@ -153,6 +167,9 @@ class CreditCardRepository {
   }
 
   Future<List> fetchInstallments(int valor, bool isBoleto) async {
+    print('linha 169');
+    print(isBoleto);
+    print(valor);
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
     try {
@@ -174,9 +191,12 @@ class CreditCardRepository {
           "Authorization": "Bearer $idToken"
         }),
       );
-
+      print('linha 194');
+      print(response.data['data']);
       return response.data['data'];
     } catch (error) {
+      print('linha 196');
+      print(error);
       return null;
     }
   }

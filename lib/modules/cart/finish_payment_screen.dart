@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/credit_card_bloc.dart';
@@ -5,9 +7,9 @@ import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
-import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
+// import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -84,6 +86,8 @@ class _FinishPaymentState extends State<FinishPayment> {
     _creditCardNumberController = new MaskedTextController(
       mask: '0000 0000 0000 0000',
     );
+    print("87--");
+    inspect(_cartWidgetBloc.currentPaymentFormValue);
     _ccvController = TextEditingController();
     _calcPaymentInstallment();
     _getPaymentMethod();
@@ -98,6 +102,8 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   _getPaymentMethod() async {
     final paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
+    print('linha 105');
+
     setState(() {
       _paymentMethod = paymentMethod.isBoleto;
     });
@@ -119,7 +125,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     if (blocked) {
       setState(() {
-        _lock = false;
+        _lock = true;
       });
       Dialogs.errorWithWillPopScope(context,
           barrierDismissible: false,
@@ -139,7 +145,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     if (_paymentMethod.creditCard == null && !_paymentMethod.isBoleto) {
       setState(() {
-        _lock = false;
+        _lock = true;
       });
       return;
     }
@@ -220,7 +226,22 @@ class _FinishPaymentState extends State<FinishPayment> {
     if (_lock) {
       return Scaffold(
           backgroundColor: Colors.white,
-          body: Center(child: CircularProgressIndicator()));
+          body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Center(child: CircularProgressIndicator()),
+            SizedBox(
+              height: 10,
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              SizedBox(
+                width: 10,
+              ),
+              Text("Finalizando compra aguarde...",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5
+                      .copyWith(fontSize: 16))
+            ])
+          ]));
     }
     return Scaffold(
         key: _scaffoldKey,
@@ -288,8 +309,8 @@ class _FinishPaymentState extends State<FinishPayment> {
         ),
         body: StreamBuilder(
             stream: _cartWidgetBloc.currentPaymentFormOut,
-            builder: (context, paymentMethod) {
-              if (!paymentMethod.hasData) {
+            builder: (context, snapshot3) {
+              if (!snapshot3.hasData) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -367,7 +388,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                           Container(
                             height: 10,
                           ),
-                          !paymentMethod.data.isBoleto
+                          !snapshot3.data.isBoleto
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -380,6 +401,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                       StreamBuilder(
                         stream: _requestBloc.cartOut,
                         builder: (context, cartSnapshot) {
+                          print(_lock);
                           return ElevatedButton(
                             onPressed: _lock
                                 ? null
@@ -388,7 +410,7 @@ class _FinishPaymentState extends State<FinishPayment> {
                                       _lock = true;
                                     });
                                     _onSubmit(cartSnapshot.data ?? []);
-                                  }, // _onSubmit,
+                                  },
                             child: Text(
                               'Finalizar Pedido',
                               style: Theme.of(context).textTheme.button,

@@ -5,8 +5,8 @@ import 'package:central_oftalmica_app_cliente/blocs/extract_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
-import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
-import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
+// import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
+// import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -71,6 +71,24 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   _getPaymentMethod() async {
     final paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
+    print('linha 74');
+    print(_cartWidgetBloc.currentPaymentFormValue);
+
+    if (paymentMethod == null) {
+      setState(() {
+        _isButtonDisabled = false;
+      });
+      Dialogs.confirm(
+        context,
+        // title: 'Deseja limpar o carrinho?',
+        subtitle: 'Selecione uma forma de pagamento!',
+        cancelText: 'Ok',
+        onCancel: () {
+          Modular.to.pop();
+        },
+      );
+    }
+
     setState(() {
       _paymentMethod = paymentMethod.isBoleto;
     });
@@ -336,6 +354,8 @@ class _FinishPaymentState extends State<FinishPayment> {
                               items: _installments
                                   .map<DropdownMenuItem<String>>(
                                       (String value) {
+                                print('linha 357');
+                                print(_isButtonDisabled);
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),

@@ -218,6 +218,7 @@ class PaymentRepository {
 
     try {
       if (!isBoleto) {
+        print(params);
         await dio.post('/api/cliente/pedidos',
             data: jsonEncode(params),
             options: Options(headers: {

@@ -8,7 +8,7 @@ import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/dropdown_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_modular/flutter_modular.dart';
