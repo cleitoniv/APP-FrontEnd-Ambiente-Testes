@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1069429401976:android:bf3c84d65358b650b9808d",
         "android_client_info": {
-          "package_name": "br.com.centraloftalmica.cliente"
+          "package_name": "br.com.centraloftalmica"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "1069429401976-qif2htlrm26dmuqut4qs6f869hsurmta.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "br.com.centraloftalmica.cliente",
+                "bundle_id": "br.com.centraloftalmica",
                 "app_store_id": "1557956762"
               }
             }

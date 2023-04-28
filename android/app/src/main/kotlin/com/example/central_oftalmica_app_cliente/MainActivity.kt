@@ -1,4 +1,4 @@
-package br.com.centraloftalmica.cliente
+package br.com.centraloftalmica
 
 import io.flutter.embedding.android.FlutterActivity
 
