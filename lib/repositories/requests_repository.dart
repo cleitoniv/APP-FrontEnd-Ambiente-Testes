@@ -233,7 +233,7 @@ class RequestsRepository {
       print(response.data);
       return OrderPayment(isValid: response.data["success"], isLoading: false);
     } catch (e) {
-      final error400 = e as DioError;
+      final error400 = e as DioException;
       return OrderPayment(isValid: false, isLoading: false, error: {
         "Pedido": [error400.response.data["data"]]
       });

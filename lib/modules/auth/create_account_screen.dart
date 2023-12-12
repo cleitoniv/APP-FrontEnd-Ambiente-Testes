@@ -111,7 +111,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   _confirmSmsDialog() async {
     setState(() {
       _lock = false;
-      _requestCodeController = "Aguarde 30 seg...";
+      _requestCodeController = "Aguarde...";
       _confirmSms.text = '';
     });
 

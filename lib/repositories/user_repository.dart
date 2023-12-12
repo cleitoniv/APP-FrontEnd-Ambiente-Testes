@@ -88,7 +88,7 @@ class UserRepository {
           }));
       return Periodos(isLoading: false, isValid: true, list: resp.data['data']);
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       final message = error400.response.data["data"]['errors'];
       return Periodos(isLoading: false, isValid: true, errorData: message);
     }
@@ -159,7 +159,7 @@ class UserRepository {
             errorMessage: "Erro no cadastro. Talvez o email esteja duplicado");
       }
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       // final message = error400.response.data["data"]["errors"];
 
       return AddUsuarioCliente(

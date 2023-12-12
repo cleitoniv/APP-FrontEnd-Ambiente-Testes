@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
@@ -84,14 +86,14 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         this._isLoading = true;
       });
-
       _authBloc.loginIn.add({
         'email': _emailController.text,
         'password': _passwordController.text,
       });
 
       LoginEvent _login = await _authBloc.loginOut.first;
-
+      // print(_login.result);
+      // inspect(_login);
       if (!_login.isValid) {
         SnackBar _snackBar = SnackBar(
           content: Text(_login.message),
@@ -100,12 +102,13 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           this._isLoading = false;
         });
-
+          
         _scaffoldKey.currentState.showSnackBar(
           _snackBar,
         );
       } else if (_login.result.user.emailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
+        inspect(_cliente);
         if (_cliente.data != null && _cliente.data.status == 0) {
           await _auth.signOut();
 
@@ -120,11 +123,15 @@ class _LoginScreenState extends State<LoginScreen> {
           );
           return;
         }
-
+        print('entendendo a situação');
         setState(() {
           this._isLoading = false;
         });
-
+        if (_cliente.data.sitApp == "E") {
+          _authWidgetBloc.createAccountDataIn
+                .add({'email': _cliente.data.email, 'ddd': '27'});
+          Modular.to.pushNamed('/auth/activityPerformed');
+        } else
         if (_cliente.isValid && _checkSitapp(_cliente.data).isValid) {
           if (!_cliente.data.cadastrado) {
             setState(() {

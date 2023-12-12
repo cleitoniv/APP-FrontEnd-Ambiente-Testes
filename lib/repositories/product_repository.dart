@@ -184,7 +184,7 @@ class ProductRepository {
       );
       return {};
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       return error400.response.data['data']['errors'];
     }
   }
