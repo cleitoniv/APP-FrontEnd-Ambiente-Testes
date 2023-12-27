@@ -123,7 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
           );
           return;
         }
-        print('entendendo a situação');
         setState(() {
           this._isLoading = false;
         });

@@ -1662,6 +1662,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('testee');
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(
@@ -2183,7 +2184,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
                                 final _productParams = generateProductParams(
                                     parametroSnapshot.data);
-
+                                
                                 return ListView.separated(
                                   shrinkWrap: true,
                                   primary: false,
@@ -2193,6 +2194,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     height: 10,
                                   ),
                                   itemBuilder: (context, index) {
+                                    print(_productParams[index]['key']);
                                     return _productParams[index]['enabled']
                                         ? TextFieldWidget(
                                             readOnly: true,

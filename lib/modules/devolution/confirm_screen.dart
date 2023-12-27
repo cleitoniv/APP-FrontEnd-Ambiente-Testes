@@ -476,7 +476,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
 
                           final _productParamsGenerated =
                               generateProductParams(paramsSnapshot.data);
-
+                          print(_productParamsGenerated);
                           return Column(
                             children: [
                               DropdownWidget(
