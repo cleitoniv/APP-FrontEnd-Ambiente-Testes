@@ -151,9 +151,9 @@ class _CreditsScreenState extends State<CreditsScreen> {
     String _currentType = await _homeBloc.currentCreditType;
     if (_currentType == "Produto") {
       _creditsBloc.offersSink
-          .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
+          .add(Offers(isEmpty: true, type: "CREDIT", isLoading: true));
     } else {
-      _creditsBloc.fetchOffers();
+      _productsBloc.fetchOffers();
     }
   }
 
@@ -236,14 +236,14 @@ class _CreditsScreenState extends State<CreditsScreen> {
       _currentProduct['selected'] = true;
     }
     print('linha 235');
-    _productsBloc.fetchOffers();
+    // _productsBloc.fetchOffers();
     _productsBloc.fetchCreditProducts("Todos");
     _currentUser = _authBloc.getAuthCurrentUser;
     _creditsBloc.indexFinancialIn.add(_currentUser);
     _productReset = _creditsBloc.creditProductSelectedStream.listen((event) {
       if (!event) {
         _currentProduct = {"selected": false};
-        _productsBloc.fetchOffers();
+        // _productsBloc.fetchOffers();
       }
     });
 
@@ -255,14 +255,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
       } else {
         _currentProduct = {"selected": true};
 
-        Offers of = await _creditsBloc.fetchOffersSync();
-        this._offers = of;
+        print('passando linha 258');
+        // Offers of = await _creditsBloc.fetchOffersSync();
+        // this._offers = of;
         // setState(() {
-        this._loadingOffers = false;
+        // this._loadingOffers = false;
         // });
 
-        _productsBloc.offersRedirectedSink.add(null);
-        _productsBloc.productRedirectedSink.add(null);
+        // _productsBloc.offersRedirectedSink.add(null);
+        // _productsBloc.productRedirectedSink.add(null);
 
         // Offers of = await _creditsBloc.fetchOffersSync();
 
@@ -286,12 +287,13 @@ class _CreditsScreenState extends State<CreditsScreen> {
   void dispose() {
     _productReset.cancel();
     _creditValueController.dispose();
-    this._offers = null;
+    // this._offers = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('contagem 296');
     return SafeArea(
       child: Stack(
         clipBehavior: Clip.hardEdge,
@@ -450,6 +452,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     },
                   );
                 }
+                print('contagem 455');
                 return ListTileMoreCustomizable(
                   contentPadding: const EdgeInsets.all(0),
                   horizontalTitleGap: -5,
@@ -488,8 +491,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                               ),
                             );
                           }
+                          print('contagem 494');
                           return Row(
-                            // aqui
                             children: [
                               Text(
                                 snapshot.data == 'Financeiro'
@@ -590,7 +593,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                 stream: _productsBloc.offersRedirectedStream,
                                 builder: (context, offerSnapshot) {
                                   List<OfferModel> _financialCredits;
-                                  if (this._loadingOffers) {
+                                  // if (this._loadingOffers) {
+                                    if (_financialCredits != null) {
                                     return Center(
                                       child: CircularProgressIndicator(),
                                     );
@@ -602,22 +606,25 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                       child: Text(" "),
                                     ));
                                   }
-                                  if (offerSnapshot.data == null) {
-                                    _productsBloc.fetchOffers();
-                                  }
+                                  // if (offerSnapshot.data == null && _financialCredits == null) {
+                                  //   _productsBloc.fetchOffers();
+                                  // }
                                   print('linha 601');
                                   print(offerSnapshot.data);
-                                  if (offerSnapshot.hasData) {
+                                  // inspect(offerSnapshot.data);
+                                  if (offerSnapshot.hasData && _financialCredits == null) {
                                     print('entrada 1');
                                     _financialCredits =
-                                        offerSnapshot.data.offers;
-                                  } else if (this._offers != null) {
-                                    print('entrada 2');
-                                    _financialCredits =
-                                        this._offers?.offers ?? [];
-                                    print(_financialCredits);
-                                    print('result entrada 2');
-                                  } else {
+                                        offerSnapshot.data.offers ?? [];
+                                  } 
+                                  // else if (this._offers != null) {
+                                  //   print('entrada 2');
+                                  //   _financialCredits =
+                                  //       this._offers?.offers ?? [];
+                                  //   print(_financialCredits);
+                                  //   print('result entrada 2');
+                                  // } 
+                                  else {
                                     print('entrada 3');
                                     _financialCredits =
                                         this._offersFinan.offers;
@@ -724,14 +731,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                               _financialCredits[index]);
                                                                         },
                                                                         child:
-                                                                            CardWidget(
-                                                                          parcels:
-                                                                              _financialCredits[index].installmentCount,
-                                                                          value:
-                                                                              _financialCredits[index].value,
-                                                                          discount:
-                                                                              _financialCredits[index].discount,
-                                                                        ),
+                                                                        Container()
+                                                                        //     CardWidget(
+                                                                        //   parcels:
+                                                                        //       _financialCredits[index].installmentCount,
+                                                                        //   value:
+                                                                        //       _financialCredits[index].value,
+                                                                        //   discount:
+                                                                        //       _financialCredits[index].discount,
+                                                                        // ),
                                                                       )
                                                                     : StreamBuilder(
                                                                         stream:

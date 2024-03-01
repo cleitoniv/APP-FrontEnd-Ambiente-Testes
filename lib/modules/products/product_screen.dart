@@ -1,6 +1,8 @@
 // import 'dart:convert';
 // import 'dart:developer';
 
+import 'dart:developer';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
@@ -346,7 +348,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.all(0),
-                                primary: snapshot.data
+                                backgroundColor: snapshot.data
                                     ? Theme.of(context).accentColor
                                     : Color(0xffA5A5A5),
                                 elevation: 2,
@@ -463,6 +465,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
                     }
+                    inspect(productSnapshot.data);
                     return Container(
                       height: snapshot.data ? null : 0,
                       width: snapshot.data ? null : 0,

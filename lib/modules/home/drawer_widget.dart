@@ -18,14 +18,15 @@ class DrawerWidget extends StatelessWidget {
       'title': 'Notificações',
       'image': 'drawer_3.png',
     },
-    {
-      'title': 'Devolução para Crédito/Troca',
-      'image': 'drawer_4.png',
-    },
-    {
-      'title': 'Meus Pontos',
-      'image': 'drawer_5.png',
-    },
+    //app capado descometar as opções abaixo para retornar para aba de opções
+    // {
+    //   'title': 'Devolução para Crédito/Troca',
+    //   'image': 'drawer_4.png',
+    // },
+    // {
+    //   'title': 'Meus Pontos',
+    //   'image': 'drawer_5.png',
+    // },
     {
       'title': 'Pagamentos',
       'image': 'drawer_6.png',
@@ -34,12 +35,12 @@ class DrawerWidget extends StatelessWidget {
       'title': 'Meus Créditos',
       'image': 'drawer_7.png',
     },
-    {
-      'title': 'Meus Pacientes',
-      'image': 'drawer_2.png',
-      'is_icon': true,
-      'icon': Icons.group
-    },
+    // {
+    //   'title': 'Meus Pacientes',
+    //   'image': 'drawer_2.png',
+    //   'is_icon': true,
+    //   'icon': Icons.group
+    // },
     {
       'title': 'Ajuda',
       'image': 'drawer_8.png',
@@ -61,7 +62,7 @@ class DrawerWidget extends StatelessWidget {
   });
 
   _handleTap(int index) {
-    if (index <= 9) {
+    if (index <= 6) {
       onNavigate(index);
     } else {
       onExitApp();

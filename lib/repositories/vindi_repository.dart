@@ -54,11 +54,16 @@ class VindiRepository {
           "card_expiration": model.mesValidade + '/' + model.anoValidade,
           "holder_name": model.nomeTitular
         }),
+        
       );
+      print('linha 59');
+      print(response);
       VindiCardModel card =
           VindiCardModel.fromJson(response.data['payment_profile']);
       return VindiCreditCard(isEmpty: false, isLoading: false, cartao: card);
     } catch (error) {
+      print('linha 65');
+      print(error);
       return VindiCreditCard(isEmpty: true, isLoading: false, errorData: {
         "falha": ["Falha ao criar cartão"]
       });

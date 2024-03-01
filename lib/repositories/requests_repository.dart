@@ -57,6 +57,8 @@ class RequestsRepository {
   }
 
   Map<String, dynamic> generateParams(Map data) {
+    print('linha 60');
+    print(data['cart']);
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01" || e["operation"] == "13") {
         return {

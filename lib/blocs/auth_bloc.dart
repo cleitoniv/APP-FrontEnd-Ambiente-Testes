@@ -92,11 +92,11 @@ class AuthBloc extends Disposable {
   Sink get loginIn => _loginController.sink;
 
   Future<AuthEvent> getCurrentUser(LoginEvent login) async {
-    return repository.currentUser(login);
+    return await repository.currentUser(login);
   }
 
   Future<int> getCurrentStatus() async {
-    return repository.currentUserStatus();
+    return await repository.currentUserStatus();
   }
 
   AuthEvent get getAuthCurrentUser => this._currentUser;
@@ -157,7 +157,7 @@ class AuthBloc extends Disposable {
       );
 
   Future<LoginEvent> firstAccess(Map<String, dynamic> data) async {
-    return repository.firstAccess(data);
+    return await repository.firstAccess(data);
   }
 
   BehaviorSubject _clienteDataController = BehaviorSubject();

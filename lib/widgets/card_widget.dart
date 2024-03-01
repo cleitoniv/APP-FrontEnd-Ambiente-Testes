@@ -251,7 +251,7 @@ class CreditProductCardWidget extends StatelessWidget {
                           FittedBox(
                             fit: BoxFit.contain,
                             child: Text(
-                              "Até ${this.percentageTest}% de teste",
+                              "Até ${this.percentageTest ?? 0}% de teste",
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1

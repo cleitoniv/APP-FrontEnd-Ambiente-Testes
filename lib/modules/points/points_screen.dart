@@ -44,7 +44,8 @@ class _PointsScreenState extends State<PointsScreen> {
           size: 30,
           color: Theme.of(context).primaryColor,
         )
-      },
+      }
+      ,
       {
         'title': 'Resgatar Pontos',
         'onTap': _onRescuePoints,

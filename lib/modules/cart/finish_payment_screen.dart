@@ -110,6 +110,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit(List<Map> cartData) async {
+    print(cartData);
     if (_totalToPayNumeric(cartData) <= 0) {
       Dialogs.errorWithWillPopScope(context,
           barrierDismissible: false,
@@ -205,6 +206,35 @@ class _FinishPaymentState extends State<FinishPayment> {
         _totalToPayNumeric(_cart), _paymentMethod.isBoleto);
 
     var seen = Set();
+    
+    print('linha 208');
+    print(_installmentsList);
+    print('total a pagar:');
+    print(_totalPay);
+    print(_cart);
+    print('carrinho:');
+    print(_installmentsList[0]['parcela']);
+    // _cart[0][_cart[0]['current']]['codigo'] = _cart[0][_cart[0]['current']]['codigo'].replaceAll('C', 'T');
+
+    // for (var i = 0; i < _cart.length; i++) {
+    //   if (_cart[i]['tests'] == 'Sim') {
+    //     print(i);
+    //     print('objeto alterado');
+    //     print(_cart[i][_cart[i]['current']]);
+    //     _cart[0][_cart[0]['current']]['codigo'] = _cart[0][_cart[0]['current']]['codigo'].replaceAll('C', 'T');
+    //     print(_cart);
+    //   setState(() {
+    //       _cart[i][_cart[i]['current']].update(
+    //         'codigo', 
+    //         (existingValue) => _cart[i][_cart[i]['current']]['codigo'].replaceAll('C', 'T'),
+    //         ifAbsent: () => _cart[i][_cart[i][_cart[i]['current']]]['codigo'].replaceAll('T', 'C'),
+    //       );
+    //     },);
+    //   } 
+    // }
+
+    
+    //voltar daqui
     _installmentsList =
         _installmentsList.where((item) => seen.add(item['parcela'])).toList();
     if (_installmentsList.length > 0) {

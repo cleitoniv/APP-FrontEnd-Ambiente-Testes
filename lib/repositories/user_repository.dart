@@ -203,7 +203,7 @@ class UserRepository {
             "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
-
+    
       EnderecoEntregaModel endereco =
           EnderecoEntregaModel.fromJson(response.data['data']);
       return Endereco(isEmpty: false, isLoading: false, endereco: endereco);
@@ -302,9 +302,16 @@ class UserRepository {
   }
 
   Future<UserModel> currentUser() async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
+      print('linha 306');
       Response response = await dio.get(
-        '/currentUser',
+        "/api/cliente/current_user", 
+          options: Options(headers: {
+            "Authorization": "Bearer $idToken",
+            "Content-Type": "application/json"
+          }),
       );
 
       return UserModel.fromJson(

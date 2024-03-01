@@ -89,8 +89,12 @@ class ProductRepository {
             "Authorization": "Bearer $idToken"
           }),
           data: jsonEncode({"lens": data}));
+          print('linha 92');
+          print(data);
       return response.data;
     } catch (error) {
+      print('linha 96');
+      print(error.response);
       return {'success': false};
     }
   }
@@ -129,6 +133,9 @@ class ProductRepository {
       return Offers(
           isLoading: false, isEmpty: false, offers: offers, type: "FINAN");
     } catch (error) {
+      // inspect(error);
+      print(error.response);
+      print('passando pelo catch linha 136');
       return Offers(
           isLoading: false, isEmpty: true, offers: null, type: "FINAN");
     }

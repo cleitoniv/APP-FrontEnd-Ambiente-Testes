@@ -54,7 +54,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
   _onAddToCart(
       ProductModel product, int quantity, int value, int percentageTest) async {
     product.setValue(value);
-
+    print(product);
     Map<String, dynamic> _data = {
       'value': value,
       '_cart_item': randomString(15),

@@ -120,15 +120,19 @@ class ProductBloc extends Disposable {
   Stream get productRedirectedStream => _productRedirected.stream;
 
   void setOffers(ProductModel product) async {
+    print('linha 123');
     Offers _offers = await _creditsBloc.fetchCreditOfferSync(product.group);
     _offersRedirected.sink.add(_offers);
   }
 
   void fetchOffers() async {
-    _offersRedirected
-        .add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
+    print('linha 128 product bloc');
+    // offersRedirectedSink
+    //     .add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
     Offers offers = await repository.getOffers();
-    _offersRedirected.add(offers);
+    offersRedirectedSink.add(offers);
+    
+    // return offers;
   }
 
   StreamController _offersRedirected = BehaviorSubject();
@@ -142,6 +146,7 @@ class ProductBloc extends Disposable {
   @override
   void dispose() {
     _creditProductsList.close();
+    _offersRedirected.close();
     _productsList.close();
     _product.close();
     _parametroList.close();

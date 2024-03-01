@@ -50,19 +50,31 @@ class _SecurityScreenState extends State<SecurityScreen> {
       String _data = await _authBloc.updatePasswordOut.first;
       String _message = '';
 
+      print('linha 53');
+      print(_data);
       setState(() {
         _lock = false;
       });
 
-      if (_data.contains('ERROR')) {
+      if (_data == 'requires-recent-login') {
+        
+        Future.delayed(Duration(seconds: 4), () {
+         Modular.to.pop();
+       });
+
+        _message = 'É necessario um login recente!!';
+
+      } else if (_data.contains('ERROR')) {
         _message = Helper.handleFirebaseError(
           _data,
         );
+
       } else {
         _message = 'Senha alterada com sucesso';
-//        Timer(Duration(seconds: 2), () {
-//          Modular.to.pop();
-//        });
+
+       Future.delayed(Duration(seconds: 2), () {
+         Modular.to.pop();
+       });
       }
 
       SnackBar _snackBar = SnackBar(
