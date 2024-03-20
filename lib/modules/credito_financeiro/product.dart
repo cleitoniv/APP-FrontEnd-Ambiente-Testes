@@ -269,7 +269,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               snapshot.data,
                             ),
                             style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.all(0), backgroundColor: snapshot.data
+                                padding: const EdgeInsets.all(0), primary: snapshot.data
                                     ? Theme.of(context).colorScheme.secondary
                                     : Color(0xffA5A5A5),
                                 elevation: 2,
@@ -584,7 +584,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 margin: const EdgeInsets.only(top: 20),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor: item['color'], elevation: 0),
+                                      primary: item['color'], elevation: 0),
                                   onPressed: item['onTap'],
                                   child: Text(
                                     item['title'],

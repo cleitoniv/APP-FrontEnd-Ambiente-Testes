@@ -20,28 +20,24 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   // CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   Future<void> fetchPaymentMethods() async {
-    print('linha 23');
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
     this.cartaoCreditoSink.add(list);
   }
 
   Future<void> fetchPaymentMethodsFinan() async {
-    print('linha 30');
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
     this.cartaoCreditoSink.add(list);
   }
 
   Future<void> fetchPaymentMethodsChange() async {
-    print('linha 37');
     this.cartaoCreditoSink.add(CreditCardList(isLoading: true));
     CreditCardList list = await repository.index();
     this.cartaoCreditoSink.add(list);
   }
 
   Future<List> fetchInstallments(int valor, bool isBoleto) async {
-    print('linha 41');
     return repository.fetchInstallments(valor, isBoleto);
   }
 

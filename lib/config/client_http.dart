@@ -15,8 +15,8 @@ class ClientHttp {
   ClientHttp() {
     dio.interceptors.clear();
     dio.options.baseUrl = API;
-    dio.options.connectTimeout = Duration(milliseconds: 30000);
-    dio.options.receiveTimeout = Duration(milliseconds: 30000);
+    dio.options.connectTimeout = Duration(milliseconds: 30000) as int;
+    dio.options.receiveTimeout = Duration(milliseconds: 30000) as int;
 
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -29,9 +29,7 @@ class ClientHttp {
         },
         onResponse: (Response response, ResponseInterceptorHandler handler) =>
             handler.resolve(response),
-        onError: (DioException error, ErrorInterceptorHandler handler) async {
-          print(error.response);
-          print(error.message);
+        onError: (DioError error, ErrorInterceptorHandler handler) async {
           if (error.response?.statusCode == 401) {
             // dio.interceptors.requestLock.lock();
             // dio.interceptors.responseLock.lock();
@@ -49,8 +47,6 @@ class ClientHttp {
               options: options.data,
             );
           }
-          // print(error.response);
-          // print(error.message);
           handler.reject(error);
         },
       ),
@@ -69,15 +65,11 @@ class VindiHttp {
     this.currentUser = _authBloc.getAuthCurrentUser;
     dio.interceptors.clear();
     dio.options.baseUrl = VindiAPI;
-    dio.options.connectTimeout = Duration(milliseconds: 30000);
-    dio.options.receiveTimeout = Duration(milliseconds: 30000);
+    dio.options.connectTimeout = Duration(milliseconds: 30000) as int;
+    dio.options.receiveTimeout = Duration(milliseconds: 30000) as int;
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
-          print(VindiAPI);
-          print(dio.options);
-          print('token vindo @@@@@@@@@@');
-          print(this.currentUser.data.tokenVindi);
           if (this.currentUser.data.tokenVindi.isNotEmpty) {
             options.headers['Authorization'] =
                 'Basic ${this.currentUser.data.tokenVindi}';
@@ -87,11 +79,10 @@ class VindiHttp {
         },
         onResponse: (Response response, ResponseInterceptorHandler handler) =>
             handler.resolve(response),
-        onError: (DioException error, ErrorInterceptorHandler handler) async {
+        onError: (DioError error, ErrorInterceptorHandler handler) async {
           if (error.response?.statusCode == 401) {
             // dio.interceptors.requestLock.lock();
             // dio.interceptors.responseLock.lock();
-            print('linha 95');
             RequestOptions options = error.response.requestOptions;
             User _user = _auth.currentUser;
             String _currentToken = await _user.getIdToken();
@@ -100,8 +91,6 @@ class VindiHttp {
 
             // dio.interceptors.requestLock.unlock();
             // dio.interceptors.responseLock.unlock();
-            print(options.data);
-            print(error.response);
             return dio.request(
               options.path,
               options: options.data,
