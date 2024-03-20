@@ -9,6 +9,7 @@ import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 // import 'package:central_oftalmica_app_cliente/models/credit_card_model.dart';
 import 'package:central_oftalmica_app_cliente/models/vindi_model.dart';
+import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credit_card_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar_success.dart';
@@ -17,6 +18,8 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+
+import '../../blocs/auth_bloc.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override
@@ -27,8 +30,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
+  AuthBloc _authBloc = Modular.get<AuthBloc>();
   TextEditingController _ccvController;
   MaskedTextController _creditCardNumberController;
+  AuthEvent currentUser;
   GlobalKey<ScaffoldMessengerState> _scaffoldKey =
       GlobalKey<ScaffoldMessengerState>();
   bool _lock = true;
@@ -108,10 +113,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       billing = false;
       _lock = false;
     });
-    inspect(creditCard);
     bool updated = await _cartWidgetBloc.setPaymentMethodCartao(creditCard);
-    print("113");
-    print(updated);
 
     Future.delayed(const Duration(milliseconds: 100), () {
       setState(() {
@@ -148,6 +150,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   void initState() {
     super.initState();
+    this.currentUser = _authBloc.getAuthCurrentUser;
     _creditCardBloc.fetchPaymentMethodsFinan();
     _creditCardBloc.fetchPaymentMethods();
     _creditCardNumberController = new MaskedTextController(
@@ -516,7 +519,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ),
                     ),
                   ),
-                  Padding(
+                  this.currentUser.data.modPagamento == "2" ? Padding(
                     padding: EdgeInsets.all(20),
                     child: GestureDetector(
                       onTap: () async {
@@ -579,7 +582,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ),
                       ),
                     ),
-                  ),
+                  ) : Container(),
                   Padding(
                     padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                     child: ElevatedButton.icon(

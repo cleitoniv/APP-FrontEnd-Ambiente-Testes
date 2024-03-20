@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 // import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
@@ -40,6 +41,7 @@ class VindiRepository {
     this.currentUser = _authBloc.getAuthCurrentUser;
     print('linha 41');
     // inspect(this.currentUser.data);
+    inspect(dio);
     print(this.currentUser.data.tokenVindi);
     try {
       Response response = await dio.post(
@@ -62,8 +64,8 @@ class VindiRepository {
           VindiCardModel.fromJson(response.data['payment_profile']);
       return VindiCreditCard(isEmpty: false, isLoading: false, cartao: card);
     } catch (error) {
-      print('linha 65');
-      print(error);
+      print('linha 67');
+      print(error.message);
       return VindiCreditCard(isEmpty: true, isLoading: false, errorData: {
         "falha": ["Falha ao criar cartão"]
       });

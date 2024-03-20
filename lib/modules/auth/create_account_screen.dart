@@ -114,7 +114,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       _requestCodeController = "Aguarde...";
       _confirmSms.text = '';
     });
-
+    Future.delayed(const Duration(seconds: 10), () {
+      setState(() {
+          _lock = true;
+          _requestCodeController = "Cadastrar";
+        });
+    });
+    
     if (_formKey.currentState.validate()) {
       String phonex = _phoneController.text.replaceAll('-', '');
       phonex = phonex.replaceAll(' ', '');
@@ -126,12 +132,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         return;
       }
 
-      Timer(Duration(seconds: 10), () {
-        setState(() {
-          _lock = true;
-          _requestCodeController = "Cadastrar";
-        });
-      });
+      // Timer(Duration(seconds: 10), () {
+      //   setState(() {
+      //     _lock = true;
+      //     _requestCodeController = "Cadastrar";
+      //   });
+      // });
       //_endLoad();
       await showDialog<String>(
         context: context,

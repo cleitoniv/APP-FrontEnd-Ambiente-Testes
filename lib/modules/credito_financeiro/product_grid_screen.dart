@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/product_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
@@ -37,6 +39,8 @@ class ProductsGridScreen extends StatelessWidget {
               childAspectRatio: 0.7,
             ),
             itemBuilder: (context, index) {
+              print(_products);
+              inspect(_products);
               return ProductWidget(
                 value: _products[index].value,
                 title: _products[index].title,

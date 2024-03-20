@@ -12,6 +12,7 @@ class ClienteModel {
   String phone;
   String diaRemessa;
   String tokenVindi;
+  String modPagamento;
   int confirmationSms;
   int money;
   int status;
@@ -29,7 +30,8 @@ class ClienteModel {
       this.role,
       this.status,
       this.nomeUsuario,
-      this.sitApp});
+      this.sitApp,
+      this.modPagamento});
 
   ClienteModel.fromJson(Map<String, dynamic> json) {
     print('linha 35');
@@ -55,6 +57,7 @@ class ClienteModel {
     role = json['role'];
     status = json['status'];
     nomeUsuario = json['nome_usuario'];
+    modPagamento = json['modpag'];
   }
 
   Map<String, dynamic> toJson() {

@@ -38,6 +38,18 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
     });
   }
 
+  _parcels(valor) {
+    if (valor > 0 && valor <= 300) {
+      return 1;
+    } else if (valor >= 300 && valor <= 600) {
+      return 3;
+    } else if (valor > 1000) {
+      return 6;
+    } else {
+      return 1;
+    }
+  }
+
   void _addCreditoFinanceiro() {
     if (_creditValueController.value.text == "R\$ 0,00") {
       Dialogs.errorWithWillPopScope(context,
@@ -49,7 +61,7 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
     }
     int value = (_creditValueController.numberValue * 100).toInt();
     _creditoFinanceiroBloc.creditoFinaceiroSink
-        .add(CreditoFinanceiro(valor: value, installmentCount: 1, desconto: 0));
+        .add(CreditoFinanceiro(valor: value, installmentCount: _parcels(value), desconto: 0));
     Modular.to.pushNamed('/credito_financeiro/pagamento');
   }
 
@@ -99,6 +111,9 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
         builder: (context, offerSnapshot) {
           var offers = offerSnapshot.data;
           print('linha 102');
+          print(offerSnapshot.hasData);
+          print(offers);
+          inspect(offers);
           return Scaffold(
             appBar: AppBar(
               title: Text('Credito Financeiro',
@@ -126,7 +141,9 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
                       18.0,
                     ),
                     child: Text(
-                        'Desconto com o valor atual:  ${_verifyDiscount(_creditValueController, offers, offerSnapshot.hasData)}%',
+                        offers == null
+                            ? 'Sem desconto no momento.'
+                            : 'Desconto com o valor atual:  ${_verifyDiscount(_creditValueController, offers, offerSnapshot.hasData)}%',
                         style: Theme.of(context)
                             .textTheme
                             .headline5
@@ -138,13 +155,20 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
                 padding: EdgeInsets.all(20.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(elevation: 0),
-                  onPressed: () {
-                    _addCreditoFinanceiro();
-                  },
-                  child: Text(
-                    'Adicionar Crédito',
-                    style: Theme.of(context).textTheme.button,
-                  ),
+                  onPressed: offers == null
+                      ? () {}
+                      : () {
+                          _addCreditoFinanceiro();
+                        },
+                  child: offers == null
+                      ? Text(
+                          'Indisponível no momento',
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      : Text(
+                          'Adicionar Crédito',
+                          style: Theme.of(context).textTheme.button,
+                        ),
                 ),
               )
             ]),

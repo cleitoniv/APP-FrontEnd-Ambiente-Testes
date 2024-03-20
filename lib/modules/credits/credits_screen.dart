@@ -124,20 +124,20 @@ class _CreditsScreenState extends State<CreditsScreen> {
     }
   }
 
-  _onTapSelectCreditProduct(ProductModel product) async {
-    //_creditsBloc.fetchCreditOffers(product.group);
-    setState(() {
-      this._loadingOffers = true;
-    });
+  // _onTapSelectCreditProduct(ProductModel product) async {
+  //   //_creditsBloc.fetchCreditOffers(product.group);
+  //   setState(() {
+  //     this._loadingOffers = true;
+  //   });
 
-    Offers _offers = await _creditsBloc.fetchCreditOfferSync(product.group);
-    setState(() {
-      this._loadingOffers = false;
-      this._offers = _offers;
-      this._currentProduct["selected"] = true;
-      this._currentProduct["product"] = product;
-    });
-  }
+  //   Offers _offers = await _creditsBloc.fetchCreditOfferSync(product.group);
+  //   setState(() {
+  //     this._loadingOffers = false;
+  //     this._offers = _offers;
+  //     this._currentProduct["selected"] = true;
+  //     this._currentProduct["product"] = product;
+  //   });
+  // }
 
   void _addCreditoFinanceiro(OfferModel offer) {
     _creditoFinanceiroBloc.creditoFinaceiroSink.add(CreditoFinanceiro(
@@ -318,14 +318,17 @@ class _CreditsScreenState extends State<CreditsScreen> {
                         _currentProduct = this._currentProduct['product'];
                         _selected = this._currentProduct['selected'];
                       }
-                      return StreamBuilder(
-                          stream: _productsBloc.creditProductListStream,
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Container();
-                            } else if (snapshot.data.isLoading) {
-                              return Center(child: CircularProgressIndicator());
-                            } else if (_selected) {
+                      // return StreamBuilder(
+                      //     stream: _productsBloc.creditProductListStream,
+                      //     builder: (context, snapshot) {
+
+                            // if (!snapshot.hasData) {
+                            //   return Container();
+                            // }
+                             // else if (snapshot.data.isLoading) {
+                            //   return Center(child: CircularProgressIndicator());
+                            // } 
+                             if (_selected) {
                               return Container(
                                 width: double.infinity,
                                 child: Stack(
@@ -400,7 +403,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                 ),
                               );
                             }
-                            ProductList _productCredits = snapshot.data;
                             return Column(
                               children: [
                                 // Container(
@@ -448,7 +450,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                 //     ))
                               ],
                             );
-                          });
+                          // });
                     },
                   );
                 }
@@ -457,7 +459,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   contentPadding: const EdgeInsets.all(0),
                   horizontalTitleGap: -5,
                   leading: Text(
-                    snapshot.data == 'Financeiro' ? '' : 'Cx',
+                    _currentType == 'Financeiro' ? '' : 'Cx',
                     style: Theme.of(context).textTheme.subtitle2.copyWith(
                           fontSize: 18,
                           color: Colors.white54,
@@ -587,36 +589,50 @@ class _CreditsScreenState extends State<CreditsScreen> {
                               );
                             }
 
-                            return StreamBuilder(
-                                builder: (context, offSnapshot) {
                               return StreamBuilder(
                                 stream: _productsBloc.offersRedirectedStream,
                                 builder: (context, offerSnapshot) {
-                                  List<OfferModel> _financialCredits;
-                                  // if (this._loadingOffers) {
-                                    if (_financialCredits != null) {
+                                  // inspect(offerSnapshot);
+                                  if (offerSnapshot.data == null) {
                                     return Center(
                                       child: CircularProgressIndicator(),
                                     );
-                                  } else if (!_currentProduct["selected"] &&
-                                      !offerSnapshot.hasData) {
-                                    return Center(
-                                        child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(" "),
-                                    ));
                                   }
+                                  List<OfferModel> _financialCredits;
+                                  _financialCredits =
+                                        offerSnapshot.data.offers ?? {};
+                                  // if (this._loadingOffers) {
+
+
+
+                                  //   if (_financialCredits != null) {
+                                  //   return Center(
+                                  //     child: CircularProgressIndicator(),
+                                  //   );
+                                  // } else if (!_currentProduct["selected"] &&
+                                  //     !offerSnapshot.hasData) {
+                                  //   return Center(
+                                  //       child: FittedBox(
+                                  //     fit: BoxFit.contain,
+                                  //     child: Text(" "),
+                                  //   ));
+                                  // }
+
+
+
                                   // if (offerSnapshot.data == null && _financialCredits == null) {
                                   //   _productsBloc.fetchOffers();
                                   // }
                                   print('linha 601');
                                   print(offerSnapshot.data);
-                                  // inspect(offerSnapshot.data);
-                                  if (offerSnapshot.hasData && _financialCredits == null) {
-                                    print('entrada 1');
-                                    _financialCredits =
-                                        offerSnapshot.data.offers ?? [];
-                                  } 
+                                  // // inspect(offerSnapshot.data);
+                                  // aqui 
+                                  // if (offerSnapshot.hasData && _financialCredits == null) {
+                                  //   print('entrada 1');
+                                    // _financialCredits =
+                                    //     offerSnapshot.data.offers ?? [];
+                                  // } 
+                                  // aqui ^ 
                                   // else if (this._offers != null) {
                                   //   print('entrada 2');
                                   //   _financialCredits =
@@ -624,11 +640,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                   //   print(_financialCredits);
                                   //   print('result entrada 2');
                                   // } 
-                                  else {
-                                    print('entrada 3');
-                                    _financialCredits =
-                                        this._offersFinan.offers;
-                                  }
+
+
+
+
+                                  // else {
+                                  //   print('entrada 3');
+                                  //   _financialCredits =
+                                  //       this._offersFinan.offers;
+                                  // }
 
                                   return Column(
                                     children: [
@@ -741,13 +761,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                         //       _financialCredits[index].discount,
                                                                         // ),
                                                                       )
-                                                                    : StreamBuilder(
-                                                                        stream:
-                                                                            _productsBloc.productRedirectedStream,
-                                                                        builder:
-                                                                            (context,
-                                                                                productSnapshot) {
-                                                                          return InkWell(
+                                                                    : InkWell(
                                                                               onTap: () {
 //                                                                        bool
 //                                                                            blocked =
@@ -760,9 +774,9 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                                   _addCreditoProduct(productSnapshot.data ?? this._currentProduct["product"], _financialCredits[index]);
                                                                                 }, context, _requestsBloc.cartItems, _requestsBloc, _cartWidgetBloc);
                                                                               },
-                                                                              child: CreditProductCardWidget(precoUnitario: _financialCredits[index].price, caixas: _financialCredits[index].quantity, value: _financialCredits[index].total, percentageTest: _financialCredits[index].percentageTest));
-                                                                        },
-                                                                      );
+                                                                              child: CreditProductCardWidget(precoUnitario: _financialCredits[index].price, caixas: _financialCredits[index].quantity, value: _financialCredits[index].total, percentageTest: _financialCredits[index].percentageTest),
+                                                                              );
+                                                                        
                                                               },
                                                             )
                                                           : Center(
@@ -834,16 +848,22 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                         ? InkWell(
                                                                             onTap:
                                                                                 () async {
-                                                                              print('@@@@@@@@@@@');
-                                                                              print(index);
                                                                               setState(() {
                                                                                 _isLoadingPackage = true;
                                                                               });
-
-                                                                              _addCreditoFinanceiro(_financialCredits[index]);
+                                                                              Helper.whenDifferentOperation(
+                                                                              '13', () {
+                                                                            _addCreditoFinanceiro(_financialCredits[index]);
                                                                               setState(() {
                                                                                 _isLoadingPackage = false;
                                                                               });
+                                                                          },
+                                                                              context,
+                                                                              _requestsBloc
+                                                                                  .cartItems,
+                                                                              _requestsBloc,
+                                                                              _cartWidgetBloc);
+                                                                              
                                                                             },
                                                                             child:
                                                                                 Padding(
@@ -885,7 +905,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                   );
                                 },
                               );
-                            });
+                            
                           },
                         );
                       },

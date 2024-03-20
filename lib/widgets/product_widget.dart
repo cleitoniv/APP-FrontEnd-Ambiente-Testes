@@ -110,13 +110,17 @@ class ProductWidget extends StatelessWidget {
               height: 100,
               fit: BoxFit.fill,
             ),
-            Text(
-              title,
-              textScaleFactor: 1.08,
-              maxLines: 1,
-              style: Theme.of(context).textTheme.subtitle1.copyWith(
-                    fontSize: 14,
-                  ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                title,
+                textScaleFactor: 1.08,
+                maxLines: 2,
+                softWrap: true,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      fontSize: 14,
+                    ),
+              ),
             ),
             value != 0
                 ? FittedBox(

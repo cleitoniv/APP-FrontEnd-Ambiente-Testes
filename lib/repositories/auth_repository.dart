@@ -200,6 +200,8 @@ class AuthRepository {
           }));
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
+      print('linha 203');
+      print(error);
       final error400 = error as DioException;
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",

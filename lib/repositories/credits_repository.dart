@@ -185,6 +185,7 @@ class CreditsRepository {
       }).toList();
       print('linha 185');
       inspect(offers);
+      print(offers);
       return Offers(
           isLoading: false, isEmpty: false, offers: offers, type: "CREDIT");
     } catch (error) {

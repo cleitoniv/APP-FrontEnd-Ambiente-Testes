@@ -2338,7 +2338,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               height: 20,
             ),
             SizedBox(height: 10),
-            currentProduct.product.hasTest && widget.type != "T"
+            currentProduct.product.hasTest && widget.type != "T" && currentProduct.product.tests > 0 || (widget.type == 'A' && currentProduct.product.hasTest)
                 ? _checkForAcessorio(StreamBuilder<Map>(
                     stream: _productWidgetBloc.pacientInfoOut,
                     builder: (context, snapshot) {
@@ -2346,6 +2346,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         _hasTests = "Sim";
                         _onAddParam({'test': 'Sim'});
                       }
+                      print('dados snapshot');
+                      print(currentProduct.product);
+                      print(snapshot.data);
                       return DropdownWidget(
                           items: ['Não', 'Sim'],
                           currentValue:

@@ -86,8 +86,6 @@ class _FinishPaymentState extends State<FinishPayment> {
     _creditCardNumberController = new MaskedTextController(
       mask: '0000 0000 0000 0000',
     );
-    print("87--");
-    inspect(_cartWidgetBloc.currentPaymentFormValue);
     _ccvController = TextEditingController();
     _calcPaymentInstallment();
     _getPaymentMethod();

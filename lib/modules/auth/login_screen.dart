@@ -92,8 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       LoginEvent _login = await _authBloc.loginOut.first;
-      // print(_login.result);
-      // inspect(_login);
       if (!_login.isValid) {
         SnackBar _snackBar = SnackBar(
           content: Text(_login.message),
@@ -108,7 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else if (_login.result.user.emailVerified) {
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
-        inspect(_cliente);
         if (_cliente.data != null && _cliente.data.status == 0) {
           await _auth.signOut();
 
@@ -126,6 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           this._isLoading = false;
         });
+        print('linha 129 login');
         if (_cliente.data.sitApp == "E") {
           _authWidgetBloc.createAccountDataIn
                 .add({'email': _cliente.data.email, 'ddd': '27'});

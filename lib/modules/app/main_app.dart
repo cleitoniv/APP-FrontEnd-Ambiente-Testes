@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import '../auth/login_screen.dart';
+
 class MainApp extends StatefulWidget {
   @override
   _MainAppState createState() => _MainAppState();
@@ -27,9 +29,10 @@ class _MainAppState extends State<MainApp> {
               // return IntroScreen();
               if (snapshot.hasData) {
                 if (snapshot.data.providerData.length == 1) {
-                  return TabsScreen(
-                    index: 0,
-                  );
+                  // return TabsScreen(
+                  //   index: 0,
+                  // );
+                 return LoginScreen();
                 }
                 return IntroScreen();
               } else {

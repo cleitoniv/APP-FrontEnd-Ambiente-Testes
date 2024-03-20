@@ -30,6 +30,8 @@ class ClientHttp {
         onResponse: (Response response, ResponseInterceptorHandler handler) =>
             handler.resolve(response),
         onError: (DioException error, ErrorInterceptorHandler handler) async {
+          print(error.response);
+          print(error.message);
           if (error.response?.statusCode == 401) {
             // dio.interceptors.requestLock.lock();
             // dio.interceptors.responseLock.lock();
@@ -47,6 +49,8 @@ class ClientHttp {
               options: options.data,
             );
           }
+          // print(error.response);
+          // print(error.message);
           handler.reject(error);
         },
       ),
@@ -70,6 +74,10 @@ class VindiHttp {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+          print(VindiAPI);
+          print(dio.options);
+          print('token vindo @@@@@@@@@@');
+          print(this.currentUser.data.tokenVindi);
           if (this.currentUser.data.tokenVindi.isNotEmpty) {
             options.headers['Authorization'] =
                 'Basic ${this.currentUser.data.tokenVindi}';

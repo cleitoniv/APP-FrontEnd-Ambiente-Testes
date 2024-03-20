@@ -71,8 +71,9 @@ class _TabsScreenState extends State<TabsScreen>
   _onChangeCreditType(String type) {
     print('esse botao');
     if (type == "Produto") {
-      _productBloc.offersRedirectedSink.add(null);
-      _productBloc.productRedirectedSink.add(null);
+      _homeWidgetBloc.currentCreditTypeIn.add(type);
+      // _productBloc.offersRedirectedSink.add(null);
+      // _productBloc.productRedirectedSink.add(null);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -80,9 +81,8 @@ class _TabsScreenState extends State<TabsScreen>
         ),
       );
       // CreditsProductScreen();
-
     }
-    _homeWidgetBloc.currentCreditTypeIn.add(type);
+    
   }
 
   _onChangeRequestType(String type) async {
@@ -602,7 +602,6 @@ class _TabsScreenState extends State<TabsScreen>
                               );
                             } else {
                               // _getCurrentStatus();
-                              inspect(authEventSnapshot);
                               return SafeArea(
                                   child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
