@@ -15,8 +15,8 @@ class ClientHttp {
   ClientHttp() {
     dio.interceptors.clear();
     dio.options.baseUrl = API;
-    dio.options.connectTimeout = Duration(milliseconds: 30000) as int;
-    dio.options.receiveTimeout = Duration(milliseconds: 30000) as int;
+    dio.options.connectTimeout = Duration(milliseconds: 30000);
+    dio.options.receiveTimeout = Duration(milliseconds: 30000);
 
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -65,8 +65,8 @@ class VindiHttp {
     this.currentUser = _authBloc.getAuthCurrentUser;
     dio.interceptors.clear();
     dio.options.baseUrl = VindiAPI;
-    dio.options.connectTimeout = Duration(milliseconds: 30000) as int;
-    dio.options.receiveTimeout = Duration(milliseconds: 30000) as int;
+    dio.options.connectTimeout = Duration(milliseconds: 30000);
+    dio.options.receiveTimeout = Duration(milliseconds: 30000);
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler handler) {

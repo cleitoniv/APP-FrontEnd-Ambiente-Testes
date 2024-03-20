@@ -24,7 +24,7 @@ dependencies:
   dio: ^5.3.3
   intl: ^0.18.1
   rxdart: ^0.27.1
-  basic_utils: ^5.5.4
+  basic_utils: ^4.0.0
   flutter_icons: ^1.1.0
   cached_network_image: ^3.0.0
   list_tile_more_customizable: 3.0.0
