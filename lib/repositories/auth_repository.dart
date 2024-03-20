@@ -179,7 +179,7 @@ class AuthRepository {
 
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
-      final error400 = error as DioException;
+      final error400 = error as DioError;
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",
           isValid: false,
@@ -202,7 +202,7 @@ class AuthRepository {
     } catch (error) {
       print('linha 203');
       print(error);
-      final error400 = error as DioException;
+      final error400 = error as DioError;
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",
           isValid: false,
@@ -308,7 +308,7 @@ class AuthRepository {
           data: jsonEncode({"email": email}));
       return ResetPassword(canReset: resp.data['success'], isLoading: false);
     } catch (error) {
-      final error400 = error as DioException;
+      final error400 = error as DioError;
       return ResetPassword(
           canReset: false,
           isLoading: true,
@@ -361,7 +361,7 @@ class AuthRepository {
       );
       return response.data;
     } catch (error) {
-      final error400 = error as DioException;
+      final error400 = error as DioError;
       return error400.response.data;
     }
   }

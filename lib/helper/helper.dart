@@ -158,8 +158,6 @@ class Helper {
   }
 
   static keyList(_data, index) {
-    print('visualização erro:');
-    print(_data);
     if (_data[index].containsKey('Olho direito')) {
       _data[index]['Olho direito']['quantidade'] = _data[index]['quantity'];
       var params = _data[index]['Olho direito'];

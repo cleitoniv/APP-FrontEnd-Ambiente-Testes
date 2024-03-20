@@ -1033,7 +1033,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             actions: <Widget>[
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.cyan,
+                  backgroundColor: Colors.cyan,
                   padding: const EdgeInsets.all(16.0),
                 ),
                 child: Container(
