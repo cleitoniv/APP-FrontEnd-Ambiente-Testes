@@ -57,6 +57,7 @@ class ProductBloc extends Disposable {
   }
 
   void fetchCreditProducts(String filtro) async {
+    print("passando aqui na chamada?");
     creditProductListSink.add(ProductList(isLoading: true, list: []));
     ProductList list = await repository.productList(filtro);
     _creditsBloc.setCurrentProductFromList(list);

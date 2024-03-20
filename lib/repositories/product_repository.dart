@@ -221,7 +221,8 @@ class ProductRepository {
   Future<ProductEvent> productList(String filtro) async {
     User user = await _auth.currentUser;
     String idToken = await user.getIdToken();
-
+    print('filtro utilizado');
+    print(filtro);
     try {
       Response response = await dio.get(
         '/api/cliente/produtos?filtro=$filtro',

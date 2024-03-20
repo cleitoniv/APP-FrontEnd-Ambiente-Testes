@@ -72,8 +72,8 @@ class _TabsScreenState extends State<TabsScreen>
     print('esse botao');
     if (type == "Produto") {
       _homeWidgetBloc.currentCreditTypeIn.add(type);
-      // _productBloc.offersRedirectedSink.add(null);
-      // _productBloc.productRedirectedSink.add(null);
+      _productBloc.offersRedirectedSink.add(null);
+      _productBloc.productRedirectedSink.add(null);
       Navigator.push(
         context,
         MaterialPageRoute(

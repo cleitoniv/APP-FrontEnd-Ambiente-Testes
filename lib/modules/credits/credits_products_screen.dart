@@ -76,10 +76,10 @@ class _CreditProductState extends State<CreditsProductScreen> {
   }
 
   _onTapSelectCreditProduct(ProductModel product) async {
-    // setState(() {
-    //   this._loadingOffers = true;
-    //   _isLoadingPackage = true;
-    // });
+    setState(() {
+      this._loadingOffers = true;
+      _isLoadingPackage = true;
+    });
     Offers _offers = await _creditsBloc.fetchCreditOfferSync(product.group);
     if (_offers != null) {
     setState(() {
@@ -174,6 +174,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
 
   @override
   void initState() {
+    _isLoadingPackage = true;
     if (widget.product != null ) {
       this._loadingOffers = true;
       _ofertas();
@@ -210,6 +211,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
       leftSymbol: 'R\$ ',
       thousandSeparator: '.',
     );
+    _isLoadingPackage = false;
     super.initState();
   }
 
@@ -229,6 +231,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
           body: StreamBuilder(
             stream: _productsBloc.creditProductListStream,
             builder: (context, snapshot) {
+              inspect(snapshot);
               if (!snapshot.hasData == true && snapshot.data == null) {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -251,7 +254,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
                           ])
                     ]);
               }
-              if (_isLoadingPackage) {
+              if (_isLoadingPackage ?? true) {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
