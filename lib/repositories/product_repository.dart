@@ -89,8 +89,12 @@ class ProductRepository {
             "Authorization": "Bearer $idToken"
           }),
           data: jsonEncode({"lens": data}));
+          print('linha 92');
+          print(data);
       return response.data;
     } catch (error) {
+      print('linha 96');
+      print(error.response);
       return {'success': false};
     }
   }
@@ -129,6 +133,9 @@ class ProductRepository {
       return Offers(
           isLoading: false, isEmpty: false, offers: offers, type: "FINAN");
     } catch (error) {
+      // inspect(error);
+      print(error.response);
+      print('passando pelo catch linha 136');
       return Offers(
           isLoading: false, isEmpty: true, offers: null, type: "FINAN");
     }
@@ -184,7 +191,7 @@ class ProductRepository {
       );
       return {};
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       return error400.response.data['data']['errors'];
     }
   }

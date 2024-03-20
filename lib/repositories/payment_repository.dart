@@ -54,6 +54,9 @@ class PaymentRepository {
   }
 
   Map<String, dynamic> generateParams(Map data, PaymentMethod paymentMethod) {
+    print('linha 57');
+    print(data);
+
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01" || e["operation"] == "13") {
         return {
@@ -180,6 +183,24 @@ class PaymentRepository {
           'olho_direito': e['Olho direito'] ?? null,
           'olho_esquerdo': e['Olho esquerdo'] ?? null,
           'olho_ambos': e['Mesmo grau em ambos'] ?? null
+        };
+      } else if (e['operation'] == '06' && e['type'] == 'C') {
+        return {
+          'operation': e['operation'],
+          'type': e['type'],
+          'items': [
+            {
+              'percentage_test': e['percentage_test'] ?? 0,
+              'produto': e['product'].title,
+              'codigo': '${e['product'].group}000000',
+              'grupo': e['product'].group,
+              'quantidade': e['quantity'],
+              'valor_credito_finan': e['product'].valueFinan ?? 0,
+              'valor_credito_prod': e['product'].valueProduto ?? 0,
+              'prc_unitario': e['product'].value,
+              'duracao': e['product'].duracao
+            }
+          ]
         };
       } else {
         return {

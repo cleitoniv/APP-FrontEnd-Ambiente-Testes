@@ -19,11 +19,12 @@ class ProfileScreen extends StatelessWidget {
       'subtitle': 'Altere sua senha de acesso',
       'route': '/profile/security',
     },
-    {
-      'title': 'Usuários do Aplicativo',
-      'subtitle': 'Crie e gerencie usuários da sua conta',
-      'route': '/profile/appUsers',
-    },
+    // app capado
+    // {
+    //   'title': 'Usuários do Aplicativo',
+    //   'subtitle': 'Crie e gerencie usuários da sua conta',
+    //   'route': '/profile/appUsers',
+    // },
   ];
 
   _handleTap(String route) {

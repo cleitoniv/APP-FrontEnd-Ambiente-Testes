@@ -7,6 +7,7 @@ import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 import 'package:central_oftalmica_app_cliente/models/endereco.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class Authentication {
   bool isValid;
@@ -106,6 +107,9 @@ class AuthRepository {
   Future<Cadastro> getDados(String cnpj) async {
     User user = _auth.currentUser;
     String token = await user.getIdToken();
+    print('token abaixo');
+    print(token);
+    print(user);
 
     try {
       Response response = await dio.get(
@@ -175,7 +179,7 @@ class AuthRepository {
 
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",
           isValid: false,
@@ -186,6 +190,7 @@ class AuthRepository {
   Future<LoginEvent> createAccount(Map<String, dynamic> data) async {
     User user = _auth.currentUser;
     String token = await user.getIdToken();
+    print(data);
     try {
       await dio.post('/api/cliente',
           data: jsonEncode({"param": data}),
@@ -195,7 +200,9 @@ class AuthRepository {
           }));
       return LoginEvent(message: "OK", isValid: true);
     } catch (error) {
-      final error400 = error as DioError;
+      print('linha 203');
+      print(error);
+      final error400 = error as DioException;
       return LoginEvent(
           message: "Ocorreu um problema com o seu cadastro",
           isValid: false,
@@ -287,10 +294,9 @@ class AuthRepository {
       }
     } catch (error) {
       _auth.signOut();
-
       return AuthEvent(isValid: false, data: null, loading: false, errorData: {
         "Login": [
-          "Tivemos problema ao tentar fazer o seu login. Se o erro persistir entre em contato com a Central Oftálmica."
+          "Tivemos um problema ao tentar fazer o seu login. Se o erro persistir entre em contato com a Central Oftálmica."
         ]
       });
     }
@@ -302,7 +308,7 @@ class AuthRepository {
           data: jsonEncode({"email": email}));
       return ResetPassword(canReset: resp.data['success'], isLoading: false);
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       return ResetPassword(
           canReset: false,
           isLoading: true,
@@ -355,7 +361,7 @@ class AuthRepository {
       );
       return response.data;
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       return error400.response.data;
     }
   }

@@ -36,9 +36,9 @@ class _IntroScreenState extends State<IntroScreen> {
   ];
 
   _handleContinue() {
-    Modular.to.popUntil((route) => route.isFirst);
-    Modular.to.pushReplacementNamed('/auth/login');
-    // Modular.to.navigate("/auth/login");
+    // Modular.to.popUntil((route) => route.isFirst);
+    // Modular.to.pushReplacementNamed('/auth/login');
+    Modular.to.navigate("/auth/login");
   }
 
   @override
@@ -58,6 +58,7 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 91, 214, 248),
       body: Stack(
         clipBehavior: Clip.none,
         children: <Widget>[

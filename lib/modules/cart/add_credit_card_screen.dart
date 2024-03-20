@@ -73,15 +73,19 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
           ccv: _ccvController.text,
         ),
       );
+      print('passa linha 76');
       if (_storeResult.errorData != null) {
         SnackBar _snackBar = SnackBar(
           content: Text(
             'Cartão inválido',
           ),
         );
-
+      setState(() {
+        isLoading = false;
+      });
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else
+      print('passa linha 88');
         await _creditCardBloc.addCreditCard(
           CreditCardModel(
             token: _storeResult.cartao.token,
@@ -94,6 +98,9 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
             'Falha ao adicionar cartão',
           ),
         );
+      setState(() {
+        isLoading = false;
+      });
 
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } else {

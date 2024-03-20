@@ -88,7 +88,11 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
         onTap: _onSubmitDialog,
       );
     } else {
-      SnackBar _snack = ErrorSnackBar.snackBar(this.context, _order.error);
+      print(_order.error);
+      Map<String, dynamic> error = {
+        "Atenção": _order.error["Pedido"]
+      };
+      SnackBar _snack = ErrorSnackBar.snackBar(this.context, error);
       _scaffoldKey.currentState.showSnackBar(
         _snack,
       );

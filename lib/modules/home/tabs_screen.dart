@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 // import 'dart:developer';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
@@ -70,8 +71,9 @@ class _TabsScreenState extends State<TabsScreen>
   _onChangeCreditType(String type) {
     print('esse botao');
     if (type == "Produto") {
-      _productBloc.offersRedirectedSink.add(null);
-      _productBloc.productRedirectedSink.add(null);
+      _homeWidgetBloc.currentCreditTypeIn.add(type);
+      // _productBloc.offersRedirectedSink.add(null);
+      // _productBloc.productRedirectedSink.add(null);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -79,9 +81,8 @@ class _TabsScreenState extends State<TabsScreen>
         ),
       );
       // CreditsProductScreen();
-
     }
-    _homeWidgetBloc.currentCreditTypeIn.add(type);
+    
   }
 
   _onChangeRequestType(String type) async {
@@ -159,26 +160,60 @@ class _TabsScreenState extends State<TabsScreen>
       case 3:
         _route = '/notifications';
         break;
+      // case 4:
+      //   _route = '/devolution';
+      //   break;
+      // case 5:
+      //   _route = '/points';
+      //   break;
       case 4:
-        _route = '/devolution';
-        break;
-      case 5:
-        _route = '/points';
-        break;
-      case 6:
         _route = '/payments';
         break;
-      case 7:
+      case 5:
         _route = '/extracts';
         break;
-      case 8:
-        _route = '/requests/reposition';
-        break;
-      case 9:
+      // case 8:
+      //   _route = '/requests/reposition';
+      //   break;
+      case 6:
         _route = '/help';
         break;
       default:
     }
+ // app capado, voltar com o map abaixo para retornar as opções na aba de opções com o index correto
+    // {
+    //   case 0:
+    //     _route = '/profile';
+    //     break;
+    //   case 1:
+    //     _tabController.index = 3;
+    //     break;
+    //   case 2:
+    //     _tabController.index = 1;
+    //     break;
+    //   case 3:
+    //     _route = '/notifications';
+    //     break;
+    //   case 4:
+    //     _route = '/devolution';
+    //     break;
+    //   case 5:
+    //     _route = '/points';
+    //     break;
+    //   case 6:
+    //     _route = '/payments';
+    //     break;
+    //   case 7:
+    //     _route = '/extracts';
+    //     break;
+    //   case 8:
+    //     _route = '/requests/reposition';
+    //     break;
+    //   case 9:
+    //     _route = '/help';
+    //     break;
+    //   default:
+    // }
 
     _onCloseDrawer();
 
@@ -588,13 +623,10 @@ class _TabsScreenState extends State<TabsScreen>
                                         FittedBox(
                                           fit: BoxFit.contain,
                                           child: Text(
-                                            authEventSnapshot.data.data
-                                                        .nomeUsuario !=
-                                                    null
-                                                ? authEventSnapshot
-                                                    .data.data.nomeUsuario
-                                                : authEventSnapshot
-                                                    .data.data.apelido,
+                                            authEventSnapshot != null
+                                                ? "${authEventSnapshot
+                                                    .data.data.apelido}"
+                                                : 'Carregando...',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headline4,
@@ -693,58 +725,59 @@ class _TabsScreenState extends State<TabsScreen>
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: 10),
-                                      GestureDetector(
-                                        onTap: _handleMyPoints,
-                                        child: Container(
-                                          width: 76,
-                                          height: 36,
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .scaffoldBackgroundColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            border: Border.all(
-                                              color:
-                                                  Theme.of(context).accentColor,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              CircleAvatar(
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .accentColor,
-                                                radius: 12,
-                                                child: Icon(
-                                                  MaterialCommunityIcons
-                                                      .star_four_points,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              FittedBox(
-                                                fit: BoxFit.contain,
-                                                child: Text(
-                                                  "${authEventSnapshot.data.data.points}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle2
-                                                      .copyWith(
-                                                        color: Theme.of(context)
-                                                            .accentColor,
-                                                      ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                      // app capado
+                                      // SizedBox(width: 10),
+                                      // GestureDetector(
+                                      //   onTap: _handleMyPoints,
+                                      //   child: Container(
+                                      //     width: 76,
+                                      //     height: 36,
+                                      //     decoration: BoxDecoration(
+                                      //       color: Theme.of(context)
+                                      //           .scaffoldBackgroundColor,
+                                      //       borderRadius:
+                                      //           BorderRadius.circular(5),
+                                      //       border: Border.all(
+                                      //         color:
+                                      //             Theme.of(context).accentColor,
+                                      //       ),
+                                      //     ),
+                                      //     child: Row(
+                                      //       mainAxisAlignment:
+                                      //           MainAxisAlignment.center,
+                                      //       crossAxisAlignment:
+                                      //           CrossAxisAlignment.center,
+                                      //       children: <Widget>[
+                                      //         CircleAvatar(
+                                      //           backgroundColor:
+                                      //               Theme.of(context)
+                                      //                   .accentColor,
+                                      //           radius: 12,
+                                      //           child: Icon(
+                                      //             MaterialCommunityIcons
+                                      //                 .star_four_points,
+                                      //             color: Colors.white,
+                                      //             size: 20,
+                                      //           ),
+                                      //         ),
+                                      //         SizedBox(width: 10),
+                                      //         FittedBox(
+                                      //           fit: BoxFit.contain,
+                                      //           child: Text(
+                                      //             "${authEventSnapshot.data.data.points}",
+                                      //             style: Theme.of(context)
+                                      //                 .textTheme
+                                      //                 .subtitle2
+                                      //                 .copyWith(
+                                      //                   color: Theme.of(context)
+                                      //                       .accentColor,
+                                      //                 ),
+                                      //           ),
+                                      //         )
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                   SizedBox(height: 20),

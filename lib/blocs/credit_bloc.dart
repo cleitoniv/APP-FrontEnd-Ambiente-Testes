@@ -29,6 +29,7 @@ class CreditsBloc extends Disposable {
   }
 
   void fetchOffers() async {
+    print('chamando outra função de busca de pacotes offers 1');
     offersSink.add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
     Offers offers = await repository.getOffers();
     offersSink.add(offers);
@@ -36,7 +37,8 @@ class CreditsBloc extends Disposable {
 
   Future<Offers> fetchOffersSync() async {
     // offersSink.add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
-    return this.repository.getOffers();
+    print('chamando outra função de busca de pacotes offers 2');
+    return await this.repository.getOffers();
     // offersSink.add(offers);
   }
 

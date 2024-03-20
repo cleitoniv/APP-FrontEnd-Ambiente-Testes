@@ -187,6 +187,9 @@ class CreditProductCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('valor preco unitario, card_widget.dart, linha 190');
+    print(precoUnitario);
+
     return precoUnitario != null
         ? Stack(
             fit: StackFit.loose,
@@ -251,7 +254,7 @@ class CreditProductCardWidget extends StatelessWidget {
                           FittedBox(
                             fit: BoxFit.contain,
                             child: Text(
-                              "Até ${this.percentageTest}% de teste",
+                              "Até ${this.percentageTest ?? 0}% de teste",
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1
@@ -294,5 +297,75 @@ class CreditProductCardWidget extends StatelessWidget {
             ],
           )
         : Container();
+  }
+}
+
+class CreditProductOtherWidget extends StatelessWidget {
+  final int value;
+  final int parcels;
+  final int caixas;
+  final int precoUnitario;
+  final int percentageTest;
+
+  CreditProductOtherWidget({
+    this.precoUnitario = 0,
+    this.value = 0,
+    this.parcels = 0,
+    this.percentageTest = 0,
+    this.caixas = 0,
+  });
+  
+
+  _verifyTextScaleFactor(double size) {
+    if (size < 1.5) {
+      return 190.0;
+    } else {
+      return 220.0;
+    }
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.loose,
+      clipBehavior: Clip.none,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            width: 190,
+            height:
+                _verifyTextScaleFactor(MediaQuery.of(context).textScaleFactor),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Theme.of(context).accentColor,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // Icon(
+                //   Icons.plus_one,
+                //   size: 60,
+                //   color: Colors.white,
+                // ),
+                FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    "Pacote Personalizado",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    softWrap: true,
+                    maxLines: 2,
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
+      ],
+    );
   }
 }

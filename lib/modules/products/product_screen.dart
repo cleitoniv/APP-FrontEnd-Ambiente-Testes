@@ -1,6 +1,8 @@
 // import 'dart:convert';
 // import 'dart:developer';
 
+import 'dart:developer';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
@@ -19,6 +21,8 @@ import 'package:central_oftalmica_app_cliente/repositories/product_repository.da
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+
+import '../../repositories/credits_repository.dart';
 // import 'package:rxdart/subjects.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -50,7 +54,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
   Function(int) onNavigate;
 
-  _showDialogType(String type) {
+  _showDialogType(String type, ProductModel product) async {
     print(type);
     if (type == "T") {
       Modular.to.pop();
@@ -61,13 +65,22 @@ class _ProductScreenState extends State<ProductScreen> {
     } else {
       _productBloc.offersRedirectedSink.add(null);
       _productBloc.productRedirectedSink.add(null);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => CreditsProductScreen(),
+  
+    Helper.whenDifferentOperation(
+        '06', () {
+          _homeWidgetBloc.currentCreditTypeIn.add("Produto");
+          Navigator.push(
+            context,
+          MaterialPageRoute(
+          builder: (BuildContext context) => CreditsProductScreen(product: product),
         ),
       );
-      _homeWidgetBloc.currentCreditTypeIn.add("Produto");
+        },
+        context,
+        _requestBloc
+            .cartItems,
+        _requestBloc,
+        _cartWidgetBloc);
     }
   }
 
@@ -75,7 +88,7 @@ class _ProductScreenState extends State<ProductScreen> {
     Modular.to.pop();
   }
 
-  _showDialog(String title, String content, String type) {
+  _showDialog(String title, String content, String type, ProductModel product) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -102,7 +115,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    _showDialogType(type);
+                    _showDialogType(type, product);
                   })
             ]);
       },
@@ -113,7 +126,7 @@ class _ProductScreenState extends State<ProductScreen> {
     if (type == 'C') {
       if (value <= 0 || product.valueProduto == 0) {
         _showDialog('Atenção',
-            'Adquira Crédito de Produto para comprar esse item!', type);
+            'Adquira Crédito de Produto para comprar esse item!', type, product);
 
         return;
       }
@@ -121,12 +134,12 @@ class _ProductScreenState extends State<ProductScreen> {
       if (value <= 0 || product.valueFinan == 0) {
         if (value <= 0) {
           _showDialog('Atenção',
-              'Adquira Crédito Financeiro para comprar esse item!', type);
+              'Adquira Crédito Financeiro para comprar esse item!', type, product);
 
           return;
         } else {
           _showDialog('Atenção',
-              'Aguarde o processamento do valor deste produto.', type);
+              'Aguarde o processamento do valor deste produto.', type, product);
 
           return;
         }
@@ -346,7 +359,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.all(0),
-                                primary: snapshot.data
+                                backgroundColor: snapshot.data
                                     ? Theme.of(context).accentColor
                                     : Color(0xffA5A5A5),
                                 elevation: 2,
@@ -463,6 +476,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
                     }
+                    inspect(productSnapshot.data);
                     return Container(
                       height: snapshot.data ? null : 0,
                       width: snapshot.data ? null : 0,
@@ -679,7 +693,9 @@ class _ProductScreenState extends State<ProductScreen> {
                                   }, context, _requestBloc.cartItems,
                                       _requestBloc, _cartWidgetBloc)
                             },
-                          ].map(
+                          ]
+                          .where((element) => element['title'] != 'Solicitar Teste' || productSnapshot.data.product.hasTest)
+                          .map(
                             (item) {
                               return Container(
                                 margin: const EdgeInsets.only(top: 20),

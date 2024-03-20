@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/blocs/credito_financeiro.dart';
 import 'package:central_oftalmica_app_cliente/models/extrato_finan.dart';
@@ -182,6 +183,9 @@ class CreditsRepository {
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
       }).toList();
+      print('linha 185');
+      inspect(offers);
+      print(offers);
       return Offers(
           isLoading: false, isEmpty: false, offers: offers, type: "CREDIT");
     } catch (error) {

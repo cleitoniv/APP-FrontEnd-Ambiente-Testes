@@ -57,6 +57,8 @@ class RequestsRepository {
   }
 
   Map<String, dynamic> generateParams(Map data) {
+    print('linha 60');
+    print(data['cart']);
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01" || e["operation"] == "13") {
         return {
@@ -233,7 +235,7 @@ class RequestsRepository {
       print(response.data);
       return OrderPayment(isValid: response.data["success"], isLoading: false);
     } catch (e) {
-      final error400 = e as DioError;
+      final error400 = e as DioException;
       return OrderPayment(isValid: false, isLoading: false, error: {
         "Pedido": [error400.response.data["data"]]
       });

@@ -158,6 +158,8 @@ class Helper {
   }
 
   static keyList(_data, index) {
+    print('visualização erro:');
+    print(_data);
     if (_data[index].containsKey('Olho direito')) {
       _data[index]['Olho direito']['quantidade'] = _data[index]['quantity'];
       var params = _data[index]['Olho direito'];
@@ -341,15 +343,42 @@ class Helper {
   }
 
   static paramsList(_data, index) {
+    print('dados do paramslist');
+    print(_data);
+    // if (_data[index]['operation'].contains('04')) {
+    //   var testCode = _data[index][_data[index]['current']]['codigo'].replaceAll('C', 'T');
+    //   print('cidigo de teste:');
+    //   print(testCode);
+    //   print(_data[index][_data[index]['current']]);
+    //     _data[index][_data[index]['current']].update('codigo', (value) => testCode);
+    // }
+    // print(_data);
     if (_data[index].containsKey('Olho direito')) {
+      // print('entrou aqui');
+      // if (_data[index]['tests'].contains("Sim") && _data[index]['operation'] == '04') {
+      //   var testCode = _data[index]['Olho direito']['codigo'].replaceAll('C', 'T');
+      //   // _data[index]['Olho direito'].addAll({'codigo': testCode});
+      //   print('abaixo:');
+      //   _data[index] = _data[index];
+      //   print(_data[index]);
+
+        // _data[index][_data[index]['current']].update(
+        //   'codigo', 
+        //   (existingValue) => _data[index]['Olho direito']['codigo'].replaceAll('C', 'T'),
+        //   ifAbsent: () => _data[index]['Olho direito']['codigo'].replaceAll('C', 'T'),
+        // );
+      // }
+      // usar o replaceall la em baixo na hora de gerar a imagem na tela.
       list() =>
           _data[index]['Olho direito'].entries.map((e) => e.value).toList();
       var result = list();
-
+      
       List keyProduct = [];
       for (var i = 0; i < result.length; i++) {
         keyProduct.add(result[i]);
       }
+      // print('linha 369');
+      // print(keyProduct);
       return keyProduct;
     } else if (_data[index]['operation'] == '06') {
       var newlist = _data[index];
@@ -458,6 +487,8 @@ class Helper {
 
   static Widget CartList(List _data, Function hasPrice, Function removeItem,
       Function selectPrice) {
+    print("linha 461");
+    print(_data);
     var translatedKeys = {
       'Olho': 'Olho',
       'cylinder': 'Cilindro',
@@ -672,6 +703,9 @@ class Helper {
                                                 CrossAxisAlignment.start,
                                             children: paramsListResult
                                                 .map<Widget>((e) {
+                                                  if (_data[index]['tests'] == 'Sim' && e.toString().length == 10) {
+                                                    e = e.replaceAll('C', 'T');
+                                                  }
                                               return Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
@@ -696,6 +730,9 @@ class Helper {
                                             children: paramsListResult[
                                                         'direito']
                                                     .map<Widget>((e) {
+                                                  if (_data[index]['tests'] == 'Sim' && e.toString().length == 10) {
+                                                    e = e.replaceAll('C', 'T');
+                                                  }
                                                   return Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.start,
@@ -723,6 +760,9 @@ class Helper {
                                                 ] +
                                                 paramsListResult['esquerdo']
                                                     .map<Widget>((e) {
+                                                  if (_data[index]['tests'] == 'Sim' && e.toString().length == 10) {
+                                                    e = e.replaceAll('C', 'T');
+                                                  }
                                                   return Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.start,

@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field
 
 import 'dart:async';
+import 'dart:developer';
 // import 'dart:developer';
 // import 'dart:developer';
 // import 'dart:html';
@@ -49,12 +50,13 @@ class _CreditProductState extends State<CreditsProductScreen> {
   Offers _offersFinan = Offers(offers: []);
   Offers _offers;
   StreamSubscription _productReset;
+  ProductModel personalizedValueToThisProduct;
   bool _lock = false;
 
   _onAddToCart(
       ProductModel product, int quantity, int value, int percentageTest) async {
     product.setValue(value);
-
+    print(product);
     Map<String, dynamic> _data = {
       'value': value,
       '_cart_item': randomString(15),
@@ -74,18 +76,19 @@ class _CreditProductState extends State<CreditsProductScreen> {
   }
 
   _onTapSelectCreditProduct(ProductModel product) async {
-    setState(() {
-      this._loadingOffers = true;
-      _isLoadingPackage = true;
-    });
+    // setState(() {
+    //   this._loadingOffers = true;
+    //   _isLoadingPackage = true;
+    // });
     Offers _offers = await _creditsBloc.fetchCreditOfferSync(product.group);
+    if (_offers != null) {
     setState(() {
       _isLoadingPackage = false;
       this._loadingOffers = false;
       this._offers = _offers;
       this._currentProduct["selected"] = true;
       this._currentProduct["product"] = product;
-    });
+    });}
   }
 
   _addCreditoProduct(ProductModel product, OfferModel offer) {
@@ -122,7 +125,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
   _onBackToPurchase() {
     _homeBloc.currentCreditTypeIn.add('Financeiro');
     _homeBloc.currentRequestTypeIn.add('Financeiro');
-    _productsBloc.fetchOffers();
+    // _productsBloc.fetchOffers();
     Modular.to.pushNamed('/home/1');
   }
 
@@ -154,15 +157,28 @@ class _CreditProductState extends State<CreditsProductScreen> {
       ),
     );
   }
+  _otherValue(ProductModel product, List<OfferModel> offers) {
+    Modular.to.pushNamed('/credito_financeiro/produto/null',
+    arguments: {'produto': product, 'ofertas': offers });
+  }
+
+  _ofertas() async {
+    _isLoadingPackage = true;
+      Offers _offers = await _creditsBloc.fetchCreditOfferSync(widget.product.group);
+      _isLoadingPackage = false;
+      this._loadingOffers = false;
+      this._offers = _offers;
+      this._currentProduct["selected"] = true;
+      this._currentProduct["product"] = widget.product;
+  }
 
   @override
   void initState() {
-    _isLoadingPackage = false;
-    _currentProduct = {"selected": false};
-    if (widget.product != null) {
-      _currentProduct['product'] = widget.product;
-      _currentProduct['selected'] = true;
+    if (widget.product != null ) {
+      this._loadingOffers = true;
+      _ofertas();
     }
+    _currentProduct = {"selected": false};
     _productsBloc.fetchCreditProducts("Todos");
     _currentUser = _authBloc.getAuthCurrentUser;
     _creditsBloc.indexFinancialIn.add(_currentUser);
@@ -336,7 +352,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                             .offersRedirectedStream,
                                         builder: (context, offerSnapshot) {
                                           List<OfferModel> _financialCredits;
-
+                            
                                           if (offerSnapshot.hasData) {
                                             _financialCredits =
                                                 offerSnapshot.data.offers;
@@ -437,7 +453,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                                     .builder(
                                                                   itemCount:
                                                                       _financialCredits
-                                                                          .length,
+                                                                          .length + 1,
                                                                   padding:
                                                                       const EdgeInsets
                                                                           .all(12),
@@ -457,20 +473,27 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                                   itemBuilder:
                                                                       (context,
                                                                           index) {
+                                                                            if (index >=
+                                                                        _financialCredits
+                                                                            .length) {
+                                                                                    return InkWell(
+                                                                                      onTap: () {
+                                                                                        _otherValue(personalizedValueToThisProduct, _financialCredits);
+                                                                                      },
+                                                                                      child: CreditProductOtherWidget(),
+                                                                                    );
+                                                                    }
                                                                     return InkWell(
                                                                       child:
                                                                           CreditProductCardWidget(
                                                                         precoUnitario:
                                                                             _financialCredits[index].price,
-                                                                        caixas:
-                                                                            _financialCredits[index].quantity,
-                                                                        value: _financialCredits[index]
-                                                                            .total,
-                                                                        percentageTest:
-                                                                            _financialCredits[index].percentageTest,
+                                                                        caixas: _financialCredits[index].quantity,
+                                                                        value: _financialCredits[index].total,
+                                                                        percentageTest:_financialCredits[index].percentageTest,
                                                                       ),
                                                                       onTap:
-                                                                          () async {
+                                                                          () {
                                                                         _addCreditoProduct(
                                                                             this._currentProduct["product"],
                                                                             _financialCredits[index]);
@@ -579,12 +602,17 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                                 int index) {
                                                           return GestureDetector(
                                                             onTap: () {
-                                                              // setState(() {
-                                                              //   _isLoadingPackage =
-                                                              //       true;
-                                                              // });
+                                                              print('teste botao');
+                                                              setState(() {
+                                                                _isLoadingPackage =
+                                                                    true;
+                                                              });
+                                                              setState(() {
+                                                                personalizedValueToThisProduct = _productCredits.list[index];
+                                                              });
                                                               Helper.whenDifferentOperation(
                                                                   '06', () {
+                                                                    
                                                                 _onTapSelectCreditProduct(
                                                                     _productCredits
                                                                             .list[
@@ -595,7 +623,8 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                                       .cartItems,
                                                                   _requestsBloc,
                                                                   _cartWidgetBloc);
-                                                            },
+                                                            }
+                                                            ,
                                                             child:
                                                                 ProductWidget(
                                                               credits:

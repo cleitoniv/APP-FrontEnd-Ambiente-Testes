@@ -613,7 +613,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   Map _putProductCode(_first, result) {
-    List<Map<String, dynamic>> _cart = _requestsBloc.cartItems;
     String current = _first['current'];
     if (current == 'Graus diferentes em cada olho') {
       result['data'].forEach((item) {
@@ -621,9 +620,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       });
       return _first;
     } else {
-      _first[current]['codigo'] =
-          result['data'] != null ? result['data'][0]['codigo']['codigo'] : [];
-      return _first;
+      if (result['data'][0]['codigo'] != null) {
+        _first[current]['codigo'] =
+            result['data'] != null ? result['data'][0]['codigo']['codigo'] : [];
+        return _first;
+      } else {
+        return _first;
+      }
     }
   }
 
@@ -1010,11 +1013,117 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
 
+    //voltar aqui
     var result = await _productBloc.productCode(productCodeList(_first));
     _first = _putProductCode(_first, result);
+
     int itemQuantity =
         _productQuantity(_first['current'] == "Mesmo grau em ambos");
 
+    if (!_first[_first['current']].containsKey('codigo')) {
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title:
+                Text("Erro no sistema!", style: TextStyle(color: Colors.red)),
+            content: Text(
+                'Algo deu errado, esse produto não existe. Por favor contate a Central.'),
+            actions: <Widget>[
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.cyan,
+                  padding: const EdgeInsets.all(16.0),
+                ),
+                child: Container(
+                  // width: 20,
+                  padding:const EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color.fromARGB(255, 24, 22, 22),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    'Cancelar',
+                    // style: TextStyle(fontSize: 24),
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isProcessing = false;
+                    _isLoadingPrimaryButton = false;
+                    _isLoadingSecondButton = false;
+                  });
+                  Modular.to.pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+
+      // Dialogs.confirmWithInfo(context, onCancel: () {
+      //   setState(() {
+      //     _isProcessing = false;
+      //     _isLoadingPrimaryButton = false;
+      //     _isLoadingSecondButton = false;
+      //   });
+      //   Modular.to.pop();
+      // }, onConfirm: () {
+      //   setState(() {
+      //     _isProcessing = false;
+      //     _isLoadingPrimaryButton = false;
+      //     _isLoadingSecondButton = false;
+      //   });
+      //   Modular.to.pop();
+      //   },
+      //     info: Container(
+      //       child: Column(children: [
+      //         Row(
+      //           children: [
+      //             Column(
+      //                 crossAxisAlignment: CrossAxisAlignment.start,
+      //                 children: [
+      //                   Row(
+      //                     mainAxisAlignment: MainAxisAlignment.start,
+      //                     children: [
+      //                       Column(
+      //                         crossAxisAlignment: CrossAxisAlignment.start,
+      //                         children: [
+      //                           SizedBox(
+      //                             // width: 260,
+      //                             child: Text(
+      //                               "Algo deu errado, esse produto não existe",
+      //                               overflow: TextOverflow.visible,
+      //                               maxLines: 2,
+      //                               softWrap: true,
+      //                               style: TextStyle(fontSize: 11),
+      //                             ),
+      //                           ),
+      //                           SizedBox(
+      //                             height: 20,
+      //                           )
+      //                         ],
+      //                       )
+      //                     ],
+      //                   )] )
+      //           ],
+      //         ),
+      //         SizedBox(
+      //           height: 20,
+      //         )
+      //       ]),
+      //     ),
+      //     title: "Erro no sistema!",
+      //     subtitle: "Por favor contate a Central",
+      //     confirmText: "Continuar",
+      //     cancelText: "Cancelar"
+      //     );
+      return;
+    }
     var cartObject = _cartParams(_first, {});
     // return;
     Map resp =
@@ -1049,12 +1158,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(
-                                    width: 260,
+                                    // width: 260,
                                     child: Text(
                                       "${resp['data']['itens'][e - 1]['descricao']}",
-                                      overflow: TextOverflow.clip,
+                                      overflow: TextOverflow.visible,
                                       maxLines: 1,
-                                      softWrap: false,
+                                      softWrap: true,
                                       style: TextStyle(fontSize: 11),
                                     ),
                                   ),
@@ -1094,7 +1203,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 50,
+                  height: 40,
                 ),
               ]),
             ),
@@ -1662,6 +1771,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('testee');
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(
@@ -1775,14 +1885,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.help_outline,
-                        size: 30,
+                    Flexible(
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.help_outline,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          _pacienteInfo(context);
+                        },
                       ),
-                      onPressed: () {
-                        _pacienteInfo(context);
-                      },
                     ),
                   ],
                 )),
@@ -2193,6 +2305,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     height: 10,
                                   ),
                                   itemBuilder: (context, index) {
+                                    print(_productParams[index]['key']);
                                     return _productParams[index]['enabled']
                                         ? TextFieldWidget(
                                             readOnly: true,
@@ -2225,10 +2338,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               height: 20,
             ),
             SizedBox(height: 10),
-            currentProduct.product.hasTest && widget.type != "T"
+            currentProduct.product.hasTest && widget.type != "T" && currentProduct.product.tests > 0 || (widget.type == 'A' && currentProduct.product.hasTest)
                 ? _checkForAcessorio(StreamBuilder<Map>(
                     stream: _productWidgetBloc.pacientInfoOut,
                     builder: (context, snapshot) {
+                      if (widget.type == 'CF' && _hasTests == 'Não') {
+                        _hasTests = "Sim";
+                        _onAddParam({'test': 'Sim'});
+                      }
+                      print('dados snapshot');
+                      print(currentProduct.product);
+                      print(snapshot.data);
                       return DropdownWidget(
                           items: ['Não', 'Sim'],
                           currentValue:

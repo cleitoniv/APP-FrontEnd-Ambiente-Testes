@@ -88,7 +88,7 @@ class UserRepository {
           }));
       return Periodos(isLoading: false, isValid: true, list: resp.data['data']);
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       final message = error400.response.data["data"]['errors'];
       return Periodos(isLoading: false, isValid: true, errorData: message);
     }
@@ -159,7 +159,7 @@ class UserRepository {
             errorMessage: "Erro no cadastro. Talvez o email esteja duplicado");
       }
     } catch (error) {
-      final error400 = error as DioError;
+      final error400 = error as DioException;
       // final message = error400.response.data["data"]["errors"];
 
       return AddUsuarioCliente(
@@ -203,7 +203,7 @@ class UserRepository {
             "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           }));
-
+    
       EnderecoEntregaModel endereco =
           EnderecoEntregaModel.fromJson(response.data['data']);
       return Endereco(isEmpty: false, isLoading: false, endereco: endereco);
@@ -302,9 +302,16 @@ class UserRepository {
   }
 
   Future<UserModel> currentUser() async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
     try {
+      print('linha 306');
       Response response = await dio.get(
-        '/currentUser',
+        "/api/cliente/current_user", 
+          options: Options(headers: {
+            "Authorization": "Bearer $idToken",
+            "Content-Type": "application/json"
+          }),
       );
 
       return UserModel.fromJson(

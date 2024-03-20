@@ -46,8 +46,6 @@ class CreditCardBloc extends Bloc<CreditCardModel> {
   }
 
   Future<VindiCreditCard> addVindiCreditCard(CreditCardModel creditCard) {
-    print('linha 45');
-    inspect(creditCard);
     return vindiRepository.addVindiCreditCard(creditCard);
   }
 

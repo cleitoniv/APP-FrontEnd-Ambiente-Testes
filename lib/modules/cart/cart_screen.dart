@@ -122,8 +122,6 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   String selectPrice(Map<String, dynamic> item) {
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    inspect(item);
     // if (item["operation"] == "01" && item["tests"] == "Sim")
     if (item["operation"] != "03" && item["tests"] == "Sim")
       return 'R\$ ${Helper.intToMoney(item['product'].valueTest)}';

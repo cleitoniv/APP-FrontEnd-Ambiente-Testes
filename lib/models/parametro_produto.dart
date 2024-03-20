@@ -6,6 +6,8 @@ class ParametroProdutoModel {
   List grausEsferico;
 
   ParametroProdutoModel.fromJson(Map<String, dynamic> json) {
+    print('visualização do json');
+    print(json);
     cor = json['cor'];
     grausAdicao = json['graus_adicao'];
     grausEixo = json['graus_eixo'];

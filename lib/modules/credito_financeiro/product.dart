@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
@@ -7,17 +10,21 @@ import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/auth_repository.dart';
+import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
 import 'package:central_oftalmica_app_cliente/repositories/product_repository.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
+import '../../models/offer.dart';
+
 class ProductDetailScreen extends StatefulWidget {
   final int id;
   final ProductModel product;
+  final List<OfferModel> offers;
 
-  ProductDetailScreen({this.id, this.product});
+  ProductDetailScreen({this.id, this.product, this.offers});
 
   @override
   _ProductDetailScreenState createState() => _ProductDetailScreenState();
@@ -36,27 +43,118 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _productWidgetBloc.showInfoIn.add(!value);
   }
 
-  _onAddToCart(Map data) async {
-    Map<String, dynamic> _data = {
-      'quantity': int.parse(_lensController.text),
-      'product': data['product'],
+  _onAddToCart(Map<dynamic, dynamic> data, valor) async {
+    print('mapa manipulado:');
+    // print(_manipulatedMap(data['product'], valor));
+    ProductModel productModel2 = _manipulatedMap(data['product'], valor);
+    print(productModel2);
+    var _data = {
+      'quantity': int.parse(_lensController.text == '' ? '1' : _lensController.text),
+      'product': productModel2 ,
       'type': "C",
-      'operation': "06"
+      'operation': "06",
+      'value': valor
     };
-
+    print(_data);
     int _total = _cartWidgetBloc.currentCartTotalItems;
     _cartWidgetBloc.cartTotalItemsSink.add(_total + 1);
     _requestsBloc.addProductToCart(_data);
     Modular.to.pushNamed("/credito_financeiro/cart");
   }
 
+  _manipulatedMap(instance, valor) {
+  ProductModel  productModel2  = new ProductModel(); 
+  
+    productModel2.assepsia = instance.assepsia;
+    productModel2.boxes = instance.boxes;
+    productModel2.credits = instance.credits;
+    productModel2.curvaBase = instance.curvaBase;
+    productModel2.descarte = instance.descarte;
+    productModel2.descricao = instance.descricao;
+    productModel2.desenho = instance.desenho;
+    productModel2.diametro = instance.diametro;
+    productModel2.dkT = instance.dkT;
+    productModel2.duracao = instance.duracao;
+    productModel2.enderecoEntrega = instance.enderecoEntrega;
+    productModel2.esferico = instance.esferico;
+    productModel2.espessura = instance.espessura;
+    productModel2.factor = instance.factor;
+    productModel2.grausCilindrico = instance.grausCilindrico;
+    productModel2.grausEixo = instance.grausEixo;
+    productModel2.grausEsferico = instance.grausEsferico;
+    productModel2.group = instance.group;
+    productModel2.groupTest = instance.groupTest;
+    productModel2.hasAcessorio = instance.hasAcessorio;
+    productModel2.hasAdicao = instance.hasAdicao;
+    productModel2.hasCilindrico = instance.hasCilindrico;
+    productModel2.hasCor = instance.hasCor;
+    productModel2.hasEixo = instance.hasEixo;
+    productModel2.hasEsferico = instance.hasEsferico;
+    productModel2.hasTest = instance.hasTest;
+    productModel2.hidratacao = instance.hidratacao;
+    productModel2.id = instance.id;
+    productModel2.imageUrl = instance.imageUrl;
+    productModel2.imageUrlTest = instance.imageUrlTest;
+    productModel2.material = instance.material;
+    productModel2.message = instance.message;
+    productModel2.nf = instance.nf;
+    productModel2.numSerie = instance.numSerie;
+    productModel2.previsaoEntrega = instance.previsaoEntrega;
+    productModel2.produto = instance.produto;
+    productModel2.produtoTeste = instance.produtoTeste;
+    productModel2.quantidade = instance.quantidade;
+    productModel2.tests = instance.tests;
+    productModel2.title = instance.title;
+    productModel2.type = instance.type;
+    productModel2.valid = instance.valid;
+    productModel2.value = valor;
+    productModel2.valueFinan = instance.valueFinan;
+    productModel2.valueProduto = valor;
+    productModel2.valueTest = instance.valueTest;
+    productModel2.visint = instance.visint;
+  
+   return productModel2;
+}
+
   _onAddLens() {
-    _lensController.text = '${int.parse(_lensController.text) + 1}';
+    print('valor text:');
+    print(_lensController.text);
+    _lensController.text = '${int.parse(_lensController.text == '' ? '0' : _lensController.text) + 1}';
   }
 
   _onRemoveLens() {
     if (int.parse(_lensController.text) > 1) {
       _lensController.text = '${int.parse(_lensController.text) - 1}';
+    }
+  }
+
+  _verifyDiscount(valor, offers) {
+    var args = ModalRoute.of(context)?.settings?.arguments as Map;
+    if (offers != null) {
+     
+        List<int> quantidadecx = [];
+        List<int> valores = [];
+        for (var i = 0; i < offers.length; i++) {
+          valores.add(offers[i].price);
+        }
+        for (var i = 0; i < offers.length; i++) {
+          quantidadecx.add(offers[i].quantity);
+        }
+        print(quantidadecx);
+        print(valores);
+        if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[0] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[1]) {
+          return valores[1];
+        } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[1] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[2]) {
+          return valores[2];
+        } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[2] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[3]) {
+          return valores[3];
+        } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[3]) {
+          return valores.reduce(min);
+        } else {
+          return valores.reduce(max);
+        }
+    } else {
+      return args['produto'].value;
     }
   }
 
@@ -66,13 +164,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _lensController = TextEditingController(
       text: '1',
     );
-    _productBloc.productSink.add(
-        Product(product: widget.product, isLoading: false, isEmpty: false));
+    _lensController?.addListener(() {
+      setState(() {
+        _lensController.text;
+      });
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    
+    var args = ModalRoute.of(context)?.settings?.arguments as Map;
+    _productBloc.productSink.add(
+        Product(product: args['produto'] as ProductModel, isLoading: false, isEmpty: false));
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhes do Produto'),
@@ -86,6 +191,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
+            // inspect(ModalRoute.of(context)?.settings?.arguments);
+            // print(ModalRoute.of(context)?.settings?.arguments);
+            // print(productSnapshot.data.product);
+            // inspect(productSnapshot.data.product);
+
             return ListView(
               padding: const EdgeInsets.all(20),
               children: <Widget>[
@@ -94,27 +204,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   horizontalTitleGap: 0,
                   title: Text(
                     productSnapshot.data.product.title,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium.copyWith(
                           fontSize: 18,
                         ),
                   ),
                   trailing: Column(
                     children: <Widget>[
                       Text(
-                        'Valor avulso',
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        'Valor Unidade:',
+                        style: Theme.of(context).textTheme.titleMedium.copyWith(
                               fontSize: 14,
                               color: Colors.black38,
                             ),
                       ),
                       Text(
-                        'R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
-                        style: Theme.of(context).textTheme.headline5.copyWith(
+                        // 'R\$ ${Helper.intToMoney(productSnapshot.data.product.valueProduto)}',
+                        'R\$ ${Helper.intToMoney(_verifyDiscount(args['ofertas'][0].price, args['ofertas']))}',
+                        style: Theme.of(context).textTheme.headlineSmall.copyWith(
                               fontSize: 18,
                             ),
                       ),
                     ],
-                  ),
+                  ),  
                 ),
                 Stack(
                   clipBehavior: Clip.none,
@@ -158,9 +269,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               snapshot.data,
                             ),
                             style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.all(0),
-                                primary: snapshot.data
-                                    ? Theme.of(context).accentColor
+                                padding: const EdgeInsets.all(0), backgroundColor: snapshot.data
+                                    ? Theme.of(context).colorScheme.secondary
                                     : Color(0xffA5A5A5),
                                 elevation: 2,
                                 shape: RoundedRectangleBorder(
@@ -170,7 +280,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               '+INFO',
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .titleSmall
                                   .copyWith(
                                     fontSize: 14,
                                   ),
@@ -179,19 +289,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         },
                       ),
                     ),
-                    Positioned(
-                      bottom: -30,
-                      right: 20,
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xffFD6565),
-                        child: Image.asset(
-                          'assets/icons/heart_outline.png',
-                          width: 30,
-                          height: 30,
-                        ),
-                      ),
-                    ),
+                    // Positioned(
+                    //   bottom: -30,
+                    //   right: 20,
+                    //   child: CircleAvatar(
+                    //     radius: 30,
+                    //     backgroundColor: Color(0xffFD6565),
+                    //     child: Image.asset(
+                    //       'assets/icons/heart_outline.png',
+                    //       width: 30,
+                    //       height: 30,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
                 SizedBox(height: 30),
@@ -247,7 +357,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               item['title'],
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
+                                  .titleMedium
                                   .copyWith(
                                     fontSize: 14,
                                   ),
@@ -256,7 +366,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               item['subtitle'],
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5
+                                  .headlineSmall
                                   .copyWith(
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal,
@@ -274,7 +384,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   children: <Widget>[
                     Text(
                       'Quantidade de caixas',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     TextFieldWidget(
                         width: 120,
@@ -315,7 +425,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           Text(
                             'Descrição do produto',
                             style:
-                                Theme.of(context).textTheme.headline5.copyWith(
+                                Theme.of(context).textTheme.headlineSmall.copyWith(
                                       fontSize: 18,
                                     ),
                             textAlign: TextAlign.center,
@@ -324,7 +434,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           Text(
                             "${productSnapshot.data.product.descricao}",
                             style:
-                                Theme.of(context).textTheme.subtitle1.copyWith(
+                                Theme.of(context).textTheme.titleMedium.copyWith(
                                       color: Color(0xffa1a1a1),
                                     ),
                           ),
@@ -332,7 +442,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           Text(
                             'Especificações',
                             style:
-                                Theme.of(context).textTheme.headline5.copyWith(
+                                Theme.of(context).textTheme.headlineSmall.copyWith(
                                       fontSize: 18,
                                     ),
                             textAlign: TextAlign.center,
@@ -342,39 +452,39 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               children: [
                             {
                               'title': 'Material',
-                              'value': productSnapshot.data.product.material,
+                              'value': productSnapshot.data.product.material ?? '???',
                             },
                             {
                               'title': 'DK/t',
-                              'value': productSnapshot.data.product.dkT,
+                              'value': productSnapshot.data.product.dkT ?? '???',
                             },
                             {
                               'title': 'Visint',
-                              'value': productSnapshot.data.product.visint
-                                  ? 'Sim'
-                                  : 'Não',
+                              'value': productSnapshot.data.product.visint ?? '???'
+                                  // ? 'Sim'
+                                  // : 'Não',
                             },
                             {
                               'title': 'Espessura',
                               'value':
-                                  '${productSnapshot.data.product.espessura}mm',
+                                  '${productSnapshot.data.product.espessura ?? '???'}mm',
                             },
                             {
                               'title': 'Hidratação',
                               'value':
-                                  '${productSnapshot.data.product.hidratacao}%',
+                                  '${productSnapshot.data.product.hidratacao ?? '???'}%',
                             },
                             {
                               'title': 'Assepsia',
-                              'value': productSnapshot.data.product.assepsia,
+                              'value': productSnapshot.data.product.assepsia ?? '???',
                             },
                             {
                               'title': 'Descarte',
-                              'value': productSnapshot.data.product.descarte,
+                              'value': productSnapshot.data.product.descarte ?? '???',
                             },
                             {
                               'title': 'Desenho',
-                              'value': productSnapshot.data.product.desenho,
+                              'value': productSnapshot.data.product.desenho ?? '???',
                             },
                           ].map(
                             (e) {
@@ -383,12 +493,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   Text(
                                     "${e['title']}",
                                     style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
                                   Text(
                                     '${e['value']}',
                                     style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
                                 ],
                               );
@@ -398,7 +508,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           Text(
                             'Parâmetros',
                             style:
-                                Theme.of(context).textTheme.headline5.copyWith(
+                                Theme.of(context).textTheme.headlineSmall.copyWith(
                                       fontSize: 18,
                                     ),
                             textAlign: TextAlign.center,
@@ -408,15 +518,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               children: [
                             {
                               'title': 'Diâmetro (mm)',
-                              'value': productSnapshot.data.product.diametro,
+                              'value': productSnapshot.data.product.diametro ?? '???',
                             },
                             {
                               'title': 'Curva base (mm)',
-                              'value': productSnapshot.data.product.curvaBase,
+                              'value': productSnapshot.data.product.curvaBase ?? '???',
                             },
                             {
                               'title': 'Esférico (D)',
-                              'value': productSnapshot.data.product.esferico,
+                              'value': productSnapshot.data.product.esferico ?? '???',
                             },
                           ].map(
                             (e) {
@@ -425,12 +535,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   Text(
                                     e['title'],
                                     style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
                                   Text(
                                     '${e['value']}',
                                     style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
                                 ],
                               );
@@ -452,7 +562,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         child: Text(
                           'Voltar aos Detalhes',
-                          style: Theme.of(context).textTheme.button,
+                          style: Theme.of(context).textTheme.labelLarge,
                         ),
                       );
                     }
@@ -463,9 +573,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           children: [
                             {
                               'title': 'Adicionar ao Carrinho',
-                              'color': Theme.of(context).accentColor,
-                              'onTap': () => _onAddToCart(
-                                  {"product": productSnapshot.data.product}),
+                              'color': Theme.of(context).colorScheme.secondary,
+                              'onTap': () =>
+                              _onAddToCart(
+                                  {"product": productSnapshot.data.product}, _verifyDiscount(args['ofertas'][0].price, args['ofertas'])),
                             },
                           ].map(
                             (item) {
@@ -473,11 +584,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 margin: const EdgeInsets.only(top: 20),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      primary: item['color'], elevation: 0),
+                                      backgroundColor: item['color'], elevation: 0),
                                   onPressed: item['onTap'],
                                   child: Text(
                                     item['title'],
-                                    style: Theme.of(context).textTheme.button,
+                                    style: Theme.of(context).textTheme.labelLarge,
                                   ),
                                 ),
                               );

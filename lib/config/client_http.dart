@@ -15,8 +15,8 @@ class ClientHttp {
   ClientHttp() {
     dio.interceptors.clear();
     dio.options.baseUrl = API;
-    dio.options.connectTimeout = 30000;
-    dio.options.receiveTimeout = 30000;
+    dio.options.connectTimeout = Duration(milliseconds: 30000);
+    dio.options.receiveTimeout = Duration(milliseconds: 30000);
 
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -29,12 +29,12 @@ class ClientHttp {
         },
         onResponse: (Response response, ResponseInterceptorHandler handler) =>
             handler.resolve(response),
-        onError: (DioError error, ErrorInterceptorHandler handler) async {
+        onError: (DioException error, ErrorInterceptorHandler handler) async {
+          print(error.response);
+          print(error.message);
           if (error.response?.statusCode == 401) {
-            print('entrou no erro');
-            print(error.response);
-            dio.interceptors.requestLock.lock();
-            dio.interceptors.responseLock.lock();
+            // dio.interceptors.requestLock.lock();
+            // dio.interceptors.responseLock.lock();
 
             RequestOptions options = error.response.requestOptions;
             User _user = _auth.currentUser;
@@ -42,17 +42,15 @@ class ClientHttp {
 
             options.headers['Authorization'] = _currentToken;
 
-            dio.interceptors.requestLock.unlock();
-            dio.interceptors.responseLock.unlock();
-            print('linha 45');
-            print(options.data);
+            // dio.interceptors.requestLock.unlock();
+            // dio.interceptors.responseLock.unlock();
             return dio.request(
               options.path,
               options: options.data,
             );
           }
-          print('linha 52');
-          print(error.response);
+          // print(error.response);
+          // print(error.message);
           handler.reject(error);
         },
       ),
@@ -65,18 +63,21 @@ class ClientHttp {
 class VindiHttp {
   AuthEvent currentUser;
   Dio dio = Dio();
-
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   VindiHttp() {
     this.currentUser = _authBloc.getAuthCurrentUser;
     dio.interceptors.clear();
     dio.options.baseUrl = VindiAPI;
-    dio.options.connectTimeout = 30000;
-    dio.options.receiveTimeout = 30000;
+    dio.options.connectTimeout = Duration(milliseconds: 30000);
+    dio.options.receiveTimeout = Duration(milliseconds: 30000);
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+          print(VindiAPI);
+          print(dio.options);
+          print('token vindo @@@@@@@@@@');
+          print(this.currentUser.data.tokenVindi);
           if (this.currentUser.data.tokenVindi.isNotEmpty) {
             options.headers['Authorization'] =
                 'Basic ${this.currentUser.data.tokenVindi}';
@@ -86,20 +87,21 @@ class VindiHttp {
         },
         onResponse: (Response response, ResponseInterceptorHandler handler) =>
             handler.resolve(response),
-        onError: (DioError error, ErrorInterceptorHandler handler) async {
+        onError: (DioException error, ErrorInterceptorHandler handler) async {
           if (error.response?.statusCode == 401) {
-            dio.interceptors.requestLock.lock();
-            dio.interceptors.responseLock.lock();
-
+            // dio.interceptors.requestLock.lock();
+            // dio.interceptors.responseLock.lock();
+            print('linha 95');
             RequestOptions options = error.response.requestOptions;
             User _user = _auth.currentUser;
             String _currentToken = await _user.getIdToken();
 
             options.headers['Authorization'] = _currentToken;
 
-            dio.interceptors.requestLock.unlock();
-            dio.interceptors.responseLock.unlock();
-
+            // dio.interceptors.requestLock.unlock();
+            // dio.interceptors.responseLock.unlock();
+            print(options.data);
+            print(error.response);
             return dio.request(
               options.path,
               options: options.data,

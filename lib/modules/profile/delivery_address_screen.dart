@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/blocs/user_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/endereco_entrega.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
@@ -138,6 +140,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
               stream: _userBloc.enderecoEntregaStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData || snapshot.data.isLoading) {
+                  inspect(snapshot.data);
                   return Center(
                     heightFactor: 3,
                     child: CircularProgressIndicator(),
