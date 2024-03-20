@@ -174,6 +174,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
 
   @override
   void initState() {
+    _isLoadingPackage = true;
     if (widget.product != null ) {
       this._loadingOffers = true;
       _ofertas();
@@ -210,6 +211,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
       leftSymbol: 'R\$ ',
       thousandSeparator: '.',
     );
+    _isLoadingPackage = false;
     super.initState();
   }
 
