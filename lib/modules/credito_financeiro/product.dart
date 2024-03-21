@@ -449,7 +449,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             },
                             {
                               'title': 'Espessura',
-                              'value': productSnapshot.data.product.espessura != null ? '${productSnapshot.data.product.espessura}' + 'mm' : '' ,
+                              'value': productSnapshot.data.product.espessura != null ? '${productSnapshot.data.product.espessura}' : '' ,
                             },
                             {
                               'title': 'Hidratação',
