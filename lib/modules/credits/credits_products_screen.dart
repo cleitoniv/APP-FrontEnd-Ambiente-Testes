@@ -126,7 +126,6 @@ class _CreditProductState extends State<CreditsProductScreen> {
   _onBackToPurchase() {
     _homeBloc.currentCreditTypeIn.add('Financeiro');
     _homeBloc.currentRequestTypeIn.add('Financeiro');
-    // _productsBloc.fetchOffers();
     Modular.to.pushNamed('/home/1');
   }
 
