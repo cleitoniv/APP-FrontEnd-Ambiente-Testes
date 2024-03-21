@@ -360,8 +360,6 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                         builder: (context, offerSnapshot) {
                                           List _financialCredits = this._offers?.offers ?? [];
 
-                                          inspect(_financialCredits);
-                                          print(_financialCredits);
                                           if (!snapshot.hasData) {
                                             return Container();
                                           } else if (_isLoadingPackage) {
