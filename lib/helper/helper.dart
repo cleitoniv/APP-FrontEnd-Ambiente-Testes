@@ -132,9 +132,14 @@ class Helper {
     var lookingCartOperations = cartItems.map((e) {
       return e['operation'];
     }).toList();
-
+    print(lookingCartOperations);
+    print(operation);
+    if(!lookingCartOperations.isEmpty && operation == '07' && lookingCartOperations[0] == '06') {
+      function();
+      return;
+    }
     if (!lookingCartOperations.isEmpty &&
-        operation != lookingCartOperations[0]) {
+        operation != lookingCartOperations[0] ) {
       return Dialogs.confirm(
         context,
         title: 'Deseja limpar o carrinho?',

@@ -23,6 +23,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 import 'package:random_string/random_string.dart';
+import 'package:rxdart/rxdart.dart';
 
 class CreditsScreen extends StatefulWidget {
   final ProductModel product;
@@ -227,8 +228,10 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
   @override
   void initState() {
-    super.initState();
-    _productsBloc.fetchOffers();
+    _productsBloc.fetchCreditProducts("Todos");
+    // _productsBloc.fetchOffers();
+    
+    // _productsBloc.fetchOffers();
     _isLoadingPackage = false;
     _currentProduct = {"selected": false};
     if (widget.product != null) {
@@ -236,8 +239,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
       _currentProduct['selected'] = true;
     }
     print('linha 235');
-    // _productsBloc.fetchOffers();
-    _productsBloc.fetchCreditProducts("Todos");
+    
+    
     _currentUser = _authBloc.getAuthCurrentUser;
     _creditsBloc.indexFinancialIn.add(_currentUser);
     _productReset = _creditsBloc.creditProductSelectedStream.listen((event) {
@@ -287,6 +290,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
   void dispose() {
     _productReset.cancel();
     _creditValueController.dispose();
+    // _productsBloc.offersRedirectedSink.close();
+    // _productsBloc.offersRedirectedStream.doOnCancel(() => null);
     // this._offers = null;
     super.dispose();
   }

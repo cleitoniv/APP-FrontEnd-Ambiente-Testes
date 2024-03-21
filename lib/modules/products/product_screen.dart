@@ -69,12 +69,12 @@ class _ProductScreenState extends State<ProductScreen> {
     Helper.whenDifferentOperation(
         '06', () {
           _homeWidgetBloc.currentCreditTypeIn.add("Produto");
-          Navigator.push(
-            context,
-          MaterialPageRoute(
-          builder: (BuildContext context) => CreditsProductScreen(product: product),
-        ),
-      );
+              Navigator.push(
+                context,
+              MaterialPageRoute(
+              builder: (BuildContext context) => CreditsProductScreen(product: product),
+            ),
+          );
         },
         context,
         _requestBloc
@@ -514,39 +514,36 @@ class _ProductScreenState extends State<ProductScreen> {
                               children: [
                             {
                               'title': 'Material',
-                              'value': productSnapshot.data.product.material,
+                              'value': productSnapshot.data.product.material ?? '',
                             },
                             {
                               'title': 'DK/t',
-                              'value': productSnapshot.data.product.dkT,
+                              'value': productSnapshot.data.product.dkT ?? '',
                             },
                             {
                               'title': 'Visint',
-                              'value': productSnapshot.data.product.visint
-                                  ? 'Sim'
-                                  : 'Não',
+                              'value': productSnapshot.data.product.visint ?? '',
                             },
                             {
                               'title': 'Espessura',
-                              'value':
-                                  '${productSnapshot.data.product.espessura}mm',
+                              'value': productSnapshot.data.product.espessura != null ? '${productSnapshot.data.product.espessura}' + 'mm' : '' ,
                             },
                             {
                               'title': 'Hidratação',
                               'value':
-                                  '${productSnapshot.data.product.hidratacao}%',
+                                  productSnapshot.data.product.hidratacao != null ? '${productSnapshot.data.product.hidratacao}' + '' : '' ,
                             },
                             {
                               'title': 'Assepsia',
-                              'value': productSnapshot.data.product.assepsia,
+                              'value': productSnapshot.data.product.assepsia ?? '',
                             },
                             {
                               'title': 'Descarte',
-                              'value': productSnapshot.data.product.descarte,
+                              'value': productSnapshot.data.product.descarte ?? '',
                             },
                             {
                               'title': 'Desenho',
-                              'value': productSnapshot.data.product.desenho,
+                              'value': productSnapshot.data.product.desenho ?? '',
                             },
                           ].map(
                             (e) {
@@ -580,15 +577,15 @@ class _ProductScreenState extends State<ProductScreen> {
                               children: [
                             {
                               'title': 'Diâmetro (mm)',
-                              'value': productSnapshot.data.product.diametro,
+                              'value': productSnapshot.data.product.diametro ?? '',
                             },
                             {
                               'title': 'Curva base (mm)',
-                              'value': productSnapshot.data.product.curvaBase,
+                              'value': productSnapshot.data.product.curvaBase ?? '',
                             },
                             {
                               'title': 'Esférico (D)',
-                              'value': productSnapshot.data.product.esferico,
+                              'value': productSnapshot.data.product.esferico ?? '',
                             },
                           ].map(
                             (e) {

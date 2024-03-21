@@ -121,11 +121,13 @@ class ProductBloc extends Disposable {
   Stream get productRedirectedStream => _productRedirected.stream;
 
   void setOffers(ProductModel product) async {
+    print('linha 123');
     Offers _offers = await _creditsBloc.fetchCreditOfferSync(product.group);
     _offersRedirected.sink.add(_offers);
   }
 
   void fetchOffers() async {
+    print('linha 128 product bloc');
     // offersRedirectedSink
     //     .add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
     Offers offers = await repository.getOffers();
@@ -144,6 +146,7 @@ class ProductBloc extends Disposable {
 
   @override
   void dispose() {
+    offersRedirectedSink.close();
     _creditProductsList.close();
     _offersRedirected.close();
     _productsList.close();

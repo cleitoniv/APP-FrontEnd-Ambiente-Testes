@@ -37,6 +37,7 @@ class CreditsProductScreen extends StatefulWidget {
 class _CreditProductState extends State<CreditsProductScreen> {
   HomeWidgetBloc _homeBloc = Modular.get<HomeWidgetBloc>();
   ProductBloc _productsBloc = Modular.get<ProductBloc>();
+  HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
@@ -174,6 +175,10 @@ class _CreditProductState extends State<CreditsProductScreen> {
 
   @override
   void initState() {
+    _homeWidgetBloc.currentCreditTypeIn.add("Produto");
+    _productsBloc.offersRedirectedSink.add(null);
+    _productsBloc.productRedirectedSink.add(null);
+
     _isLoadingPackage = true;
     if (widget.product != null ) {
       this._loadingOffers = true;
@@ -189,23 +194,22 @@ class _CreditProductState extends State<CreditsProductScreen> {
       }
     });
 
-    _homeBloc.currentCreditTypeOut.listen((event) async {
-      if (event == "Produto") {
-        _creditsBloc.offersSink
-            .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
-        _currentProduct = {"selected": false};
-      } else {
-        _currentProduct = {"selected": true};
-        // setState(() {
-        this._loadingOffers = true;
-        // });
+    // _homeBloc.currentCreditTypeOut.listen((event) async {
+    //   if (event == "Produto") {
+    //     _creditsBloc.offersSink
+    //         .add(Offers(isEmpty: true, type: "CREDIT", isLoading: false));
+    //     _currentProduct = {"selected": false};
+    //   } else {
+    //     _currentProduct = {"selected": true};
+    //     // setState(() {
+    //     this._loadingOffers = true;
+    //     // });
 
-        _productsBloc.offersRedirectedSink.add(null);
-        _productsBloc.productRedirectedSink.add(null);
-      }
-    });
+    //     _productsBloc.offersRedirectedSink.add(null);
+    //     _productsBloc.productRedirectedSink.add(null);
+    //   }
+    // });
 
-    _onNavigate();
     _creditProductValueController = MoneyMaskedTextController(
       decimalSeparator: ',',
       leftSymbol: 'R\$ ',
@@ -249,12 +253,12 @@ class _CreditProductState extends State<CreditsProductScreen> {
                             Text("Carregando aguarde...",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5
+                                    .headlineSmall
                                     .copyWith(fontSize: 16))
                           ])
                     ]);
               }
-              if (_isLoadingPackage ?? true) {
+              if (_isLoadingPackage) {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -354,21 +358,33 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                         stream: _productsBloc
                                             .offersRedirectedStream,
                                         builder: (context, offerSnapshot) {
-                                          List<OfferModel> _financialCredits;
-                            
-                                          if (offerSnapshot.hasData) {
-                                            _financialCredits =
-                                                offerSnapshot.data.offers;
-                                          } else if (this._offers != null) {
-                                            _financialCredits =
-                                                this._offers?.offers ?? [];
-                                          } else {
-                                            _financialCredits =
-                                                this._offersFinan.offers;
-                                          }
+                                          List _financialCredits = this._offers?.offers ?? [];
 
+                                          inspect(_financialCredits);
+                                          print(_financialCredits);
                                           if (!snapshot.hasData) {
                                             return Container();
+                                          } else if (_isLoadingPackage) {
+                                            return Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Center(child: CircularProgressIndicator()),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text("Buscando pacotes...",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline5
+                                                            .copyWith(fontSize: 16))
+                                                  ])
+                                            ]);
                                           } else if (_selected) {
                                             return Container(
                                               width: double.infinity,
@@ -606,10 +622,10 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                           return GestureDetector(
                                                             onTap: () {
                                                               print('teste botao');
-                                                              setState(() {
-                                                                _isLoadingPackage =
-                                                                    true;
-                                                              });
+                                                              // setState(() {
+                                                              //   _isLoadingPackage =
+                                                              //       true;
+                                                              // });
                                                               setState(() {
                                                                 personalizedValueToThisProduct = _productCredits.list[index];
                                                               });

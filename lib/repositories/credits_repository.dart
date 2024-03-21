@@ -19,6 +19,15 @@ class Offers {
   Offers({this.isEmpty, this.isLoading, this.offers, this.type});
 }
 
+class OffersProduct {
+  bool isLoading;
+  bool isEmpty;
+  List<OfferModel> offers;
+  String type;
+
+  OffersProduct({this.isEmpty, this.isLoading, this.offers, this.type});
+}
+
 class ExtratoFinanceiro {
   bool isLoading;
   bool isEmpty;

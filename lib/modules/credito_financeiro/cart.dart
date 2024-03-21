@@ -4,6 +4,7 @@ import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/home_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/modules/credits/credits_products_screen.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -29,7 +30,12 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
     _homeWidgetBloc.currentTabIndexIn.add(1);
     _homeWidgetBloc.currentCreditTypeIn.add('Financeiro');
     _homeWidgetBloc.currentRequestTypeIn.add('Financeiro');
-    Modular.to.pushNamed("/home/1");
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => CreditsProductScreen(),
+        ),
+      );
   }
 
   _onSubmit() {

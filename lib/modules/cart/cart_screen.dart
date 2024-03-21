@@ -260,9 +260,12 @@ class _CartScreenState extends State<CartScreen> {
                             List<Map<String, dynamic>> _data = snapshot.data;
                             List days = [];
                             for (var i = 0; i < _data.length; i++) {
-                              if (_data[i]['operation'] == '06') {
+                              inspect(_data[i]);
+                              if (_data[i]['operation'] == '06' || _data[i]['operation'] == '07') {
                                 days.add(0);
-                              } else {
+                              } else  {
+                                print("------------266");
+                                inspect(_data[i]);
                                 days.add(_data[i]['meta']['days']);
                               }
                             }
