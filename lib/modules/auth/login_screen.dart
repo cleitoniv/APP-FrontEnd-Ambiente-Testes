@@ -105,7 +105,26 @@ class _LoginScreenState extends State<LoginScreen> {
           _snackBar,
         );
       } else if (_login.result.user.emailVerified) {
+        print('chama current user:');
         AuthEvent _cliente = await _authBloc.getCurrentUser(_login);
+        if (_cliente.data == null) {
+          await _auth.signOut();
+
+          setState(() {
+            this._isLoading = false;
+          });
+
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text(_cliente.errorData.values.first[0]),
+            ),
+          );
+          return;
+        }
+        setState(() {
+          this._isLoading = false;
+        });
+
         if (_cliente.data != null && _cliente.data.status == 0) {
           await _auth.signOut();
 
@@ -123,7 +142,10 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           this._isLoading = false;
         });
-        print('linha 129 login');
+        // print(_login.result.user.emailVerified);
+        // inspect(_cliente);
+        // print('linha 129 login');
+        // print(_cliente.data);
         if (_cliente.data.sitApp == "E") {
           _authWidgetBloc.createAccountDataIn
                 .add({'email': _cliente.data.email, 'ddd': '27'});

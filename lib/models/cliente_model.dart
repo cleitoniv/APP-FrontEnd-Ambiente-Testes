@@ -34,8 +34,6 @@ class ClienteModel {
       this.modPagamento});
 
   ClienteModel.fromJson(Map<String, dynamic> json) {
-    print('linha 35');
-    print(json['token_vindi']);
     id = json['id'];
     nome = json['nome'];
     tokenVindi = json['token_vindi'];

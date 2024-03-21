@@ -1,6 +1,11 @@
 class ProductModel {
   int id;
   String produto;
+  String cilindrico;
+  String grau;
+  String adicao;
+  String dstratam;
+  String cor;
   String produtoTeste;
   String title;
   int value;
@@ -15,8 +20,8 @@ class ProductModel {
   String descricao;
   String material;
   String duracao;
-  int dkT;
-  bool visint;
+  String dkT;
+  String visint;
   String espessura;
   String hidratacao;
   String assepsia;
@@ -24,7 +29,7 @@ class ProductModel {
   String desenho;
   String diametro;
   String nf;
-  int curvaBase;
+  String curvaBase;
   int valueProduto;
   int valueFinan;
   String numSerie;
@@ -36,7 +41,7 @@ class ProductModel {
   bool hasEixo;
   bool hasCilindrico;
   List grausEsferico;
-  List grausEixo;
+  String grausEixo;
   List grausCilindrico;
   int previsaoEntrega;
   bool hasCor;
@@ -49,6 +54,11 @@ class ProductModel {
 
   ProductModel(
       {this.id,
+      this.cilindrico,
+      this.grau,
+      this.adicao,
+      this.dstratam,
+      this.cor,
       this.title,
       this.value,
       this.valueTest,
@@ -93,6 +103,7 @@ class ProductModel {
       this.dkT});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     id = json['id'];
     title = json['title'];
     value = json['value'];
@@ -108,6 +119,11 @@ class ProductModel {
     descarte = json['descarte'];
     curvaBase = json['curva_base'];
     esferico = json['esferico'];
+    cilindrico = json['cilindrico'];
+    grau = json['grau'];
+    adicao = json['adicao'];
+    dstratam = json['dstratam'];
+    cor = json['cor'];
     diametro = json['diametro'];
     material = json['material'];
     visint = json['visint'];
@@ -150,6 +166,11 @@ class ProductModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['cilindrico'] = this.cilindrico;
+    data['grau'] = this.grau;
+    data['adicao'] = this.adicao;
+    data['dstratam'] = this.dstratam;
+    data['cor'] = this.cor;
     data['title'] = this.title;
     data['value'] = this.value;
     data['tests'] = this.tests;

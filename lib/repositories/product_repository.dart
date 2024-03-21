@@ -147,7 +147,7 @@ class ProductRepository {
     var currentUser = _authBloc.getAuthCurrentUser;
 
     try {
-      await dio.post(
+      Response response = await dio.post(
         "/api/cliente/favorite",
         options: Options(
           headers: {

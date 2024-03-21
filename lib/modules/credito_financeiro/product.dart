@@ -423,23 +423,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         shrinkWrap: true,
                         children: <Widget>[
                           Text(
-                            'Descrição do produto',
-                            style:
-                                Theme.of(context).textTheme.headlineSmall.copyWith(
-                                      fontSize: 18,
-                                    ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 30),
-                          Text(
-                            "${productSnapshot.data.product.descricao}",
-                            style:
-                                Theme.of(context).textTheme.titleMedium.copyWith(
-                                      color: Color(0xffa1a1a1),
-                                    ),
-                          ),
-                          SizedBox(height: 20),
-                          Text(
                             'Especificações',
                             style:
                                 Theme.of(context).textTheme.headlineSmall.copyWith(
