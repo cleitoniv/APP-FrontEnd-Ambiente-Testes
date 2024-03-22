@@ -104,6 +104,7 @@ class AuthBloc extends Disposable {
   void setLoginEvent(LoginEvent login) => this.login = login;
 
   Future<void> fetchCurrentUser() async {
+    print('atualizando dados de current user');
     try {
       this.clienteDataSink.add(AuthEvent(loading: true));
       this._currentUser = await repository.currentUser(this.login);

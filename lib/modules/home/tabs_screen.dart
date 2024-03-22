@@ -469,6 +469,11 @@ class _TabsScreenState extends State<TabsScreen>
     }
   }
 
+  _refreshCurrentUser() async {
+    print('chama atualização de current user');
+    await _authBloc.fetchCurrentUser();
+  }
+
   _initState() async {
     await _authBloc.fetchCurrentUser();
     String _currentProdFilter = _homeWidgetBloc.currentSightProblem;
@@ -534,10 +539,12 @@ class _TabsScreenState extends State<TabsScreen>
 
     _tabController.addListener(() {
       if (_tabController.indexIsChanging && _tabController.index == 3) {
+        _refreshCurrentUser();
         int filter = _requestsBloc.currentFilter;
 
         _requestsBloc.getPedidosList(filter);
       } else if (_tabController.indexIsChanging && _tabController.index == 0) {
+        _refreshCurrentUser();
         String currentSightProblem = _homeWidgetBloc.currentSightProblem;
         _productBloc.fetchProducts(currentSightProblem);
       }

@@ -499,6 +499,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                                                       child: CreditProductOtherWidget(),
                                                                                     );
                                                                     }
+                                                                    inspect(_financialCredits);
                                                                     return InkWell(
                                                                       child:
                                                                           CreditProductCardWidget(
