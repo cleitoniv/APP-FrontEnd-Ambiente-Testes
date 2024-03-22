@@ -495,39 +495,37 @@ class _ProductScreenState extends State<ProductScreen> {
                           SizedBox(height: 30),
                           Table(
                               children: [
+                            
                             {
                               'title': 'Material',
-                              'value': productSnapshot.data.product.material ?? '',
+                              'value': productSnapshot.data.product.material ?? '-',
                             },
                             {
                               'title': 'DK/t',
-                              'value': productSnapshot.data.product.dkT ?? '',
+                              'value': productSnapshot.data.product.dkT ?? '-',
                             },
                             {
                               'title': 'Visint',
-                              'value': productSnapshot.data.product.visint ?? '',
+                              'value': productSnapshot.data.product.visint ?? '-',
                             },
                             {
                               'title': 'Espessura',
-                              'value': productSnapshot.data.product.espessura != null ? '${productSnapshot.data.product.espessura}' : '' ,
+                              'value': productSnapshot.data.product.espessura != null ? '${productSnapshot.data.product.espessura}' : '-' ,
                             },
                             {
                               'title': 'Hidratação',
                               'value':
-                                  productSnapshot.data.product.hidratacao != null ? '${productSnapshot.data.product.hidratacao}' + '' : '' ,
+                                  productSnapshot.data.product.hidratacao != null ? '${productSnapshot.data.product.hidratacao}' : '-' ,
                             },
                             {
                               'title': 'Assepsia',
-                              'value': productSnapshot.data.product.assepsia ?? '',
+                              'value': productSnapshot.data.product.assepsia ?? '-',
                             },
                             {
                               'title': 'Descarte',
-                              'value': productSnapshot.data.product.descarte ?? '',
+                              'value': productSnapshot.data.product.descarte ?? '-',
                             },
-                            {
-                              'title': 'Desenho',
-                              'value': productSnapshot.data.product.desenho ?? '',
-                            },
+                            
                           ].map(
                             (e) {
                               return TableRow(
@@ -567,8 +565,24 @@ class _ProductScreenState extends State<ProductScreen> {
                               'value': productSnapshot.data.product.curvaBase ?? '',
                             },
                             {
-                              'title': 'Esférico (D)',
-                              'value': productSnapshot.data.product.esferico ?? '',
+                              'title': 'Grau',
+                              'value': productSnapshot.data.product.grau ?? '-',
+                            },
+                            {
+                              'title': 'Cilindrico',
+                              'value': productSnapshot.data.product.cilindrico ?? '-',
+                            },
+                            {
+                              'title': 'eixo',
+                              'value': productSnapshot.data.product.grausEixo ?? '-'
+                            },
+                            {
+                              'title': 'Adicao',
+                              'value': productSnapshot.data.product.adicao ?? '-',
+                            },
+                            {
+                              'title': 'Cor',
+                              'value': productSnapshot.data.product.cor ?? '-'
                             },
                           ].map(
                             (e) {

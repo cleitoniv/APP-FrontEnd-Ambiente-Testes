@@ -103,7 +103,8 @@ class ProductModel {
       this.dkT});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
-    print(json);
+    print('eixoooooooooooo');
+    print(json["graus_eixo"]);
     id = json['id'];
     title = json['title'];
     value = json['value'];
