@@ -1525,19 +1525,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'controller': _nameController,
       },
       {
-        'labelText': 'CPF(opcional)',
-        'icon': MaterialCommunityIcons.numeric,
-        'controller': _numberController,
-        'keyboardType': TextInputType.number,
-        'validator': Helper.cpfValidator
-      },
-      {
-        'labelText': 'Data de nascimento',
-        'icon': MaterialCommunityIcons.cake_layered,
-        'controller': _birthdayController,
-        'keyboardType': TextInputType.number,
-      },
-      {
         'labelText': 'Escolha os olhos',
         'icon': MaterialCommunityIcons.eye,
         'key': 'eyes',
@@ -1907,7 +1894,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             ),
             SizedBox(height: 30),
             Column(
-              children: _fieldData.take(3).map(
+              children: _fieldData.take(1).map(
                 (e) {
                   return Container(
                     margin: const EdgeInsets.only(top: 20),

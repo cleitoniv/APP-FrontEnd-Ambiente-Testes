@@ -9,6 +9,9 @@ import 'package:central_oftalmica_app_cliente/models/offer.dart';
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+
+import '../blocs/cart_widget_bloc.dart';
 
 class Offers {
   bool isLoading;
@@ -57,6 +60,7 @@ class CreditsRepository {
   CreditsRepository(this.dio);
 
   FirebaseAuth _auth = FirebaseAuth.instance;
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
 
   Future<ExtratoProduto> fetchExtratoProduto() async {
     User user = _auth.currentUser;
@@ -158,11 +162,15 @@ class CreditsRepository {
   }
 
   Future<Offers> getOffers() async {
+    var modPag =  _cartWidgetBloc.currentPaymentFormValue;
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/offers',
+          queryParameters: {
+                "modpag": modPag.isBoleto ? 'B' : 'C'
+              },
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $idToken"
@@ -179,11 +187,18 @@ class CreditsRepository {
   }
 
   Future<Offers> getAvulseOffers() async {
+    print('é boleto ? ---------');
+    var modPag = _cartWidgetBloc.currentPaymentFormValue;
+    print('é boleto ? ---------');
+    print(modPag.isBoleto);
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/avulso_offers',
+          queryParameters: {
+                "modpag": modPag.isBoleto ? 'B' : 'C'
+              },
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $idToken"
@@ -203,12 +218,16 @@ class CreditsRepository {
   }
 
   Future<Offers> getOffersCreditProduct(String group) async {
+    var modPag = _cartWidgetBloc.currentPaymentFormValue;
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/get_pacote',
-          queryParameters: {"grupo": group},
+          queryParameters: {
+            "grupo": group,
+            "modpag": modPag.isBoleto ? 'B' : 'C'
+          },
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $idToken"

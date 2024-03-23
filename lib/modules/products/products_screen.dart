@@ -7,6 +7,7 @@ import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductsScreen extends StatefulWidget {
   final BuildContext context;
@@ -101,44 +102,54 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 }).toList();
               }
 
-              // _products.sort((a, b) => a.factor.compareTo(b.factor));
-              // _products = _products.reversed.toList();
               return !_isLoadingProduct
-                  ? GridView.builder(
-                      itemCount: _products.length,
-                      padding: const EdgeInsets.all(10),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 20,
-                        childAspectRatio: 0.7,
-                      ),
-                      itemBuilder: (context, index) {
-                        return ProductWidget(
-                          value: _products[index].value,
-                          title: _products[index].title,
-                          tests: _products[index].tests,
-                          imageUrl: _products[index].imageUrl,
-                          credits: _products[index].boxes,
-                          onTap: () async {
-                            setState(() {
-                              _isLoadingProduct = true;
-                            });
-
-//                      bool blocked =
-//                      await _authBloc.checkBlockedUser(widget.context);
-//
-//                      if (!blocked) {
-//                        onChangeProduct(_products[index], context);
-//                      }
-                            onChangeProduct(_products[index], context);
-                            setState(() {
-                              _isLoadingProduct = false;
-                            });
-                          },
-                        );
-                      },
-                    )
+                  ? Stack(
+                    children: [GridView.builder(
+                        itemCount: _products.length,
+                        padding: const EdgeInsets.all(10),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 20,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemBuilder: (context, index) {
+                          return ProductWidget(
+                            value: _products[index].value,
+                            title: _products[index].title,
+                            tests: _products[index].tests,
+                            imageUrl: _products[index].imageUrl,
+                            credits: _products[index].boxes,
+                            onTap: () async {
+                              setState(() {
+                                _isLoadingProduct = true;
+                              });
+                              onChangeProduct(_products[index], context);
+                              setState(() {
+                                _isLoadingProduct = false;
+                              });
+                              _authBloc.fetchCurrentUser();
+                            },
+                          );
+                        },
+                      ), 
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: IconButton(
+                          iconSize: 50,
+                          onPressed: () {
+                            launch('https://api.whatsapp.com/send?phone=5527997436711');
+                        }, icon: Align(
+                            alignment: Alignment.center,
+                            child: Image.asset(
+                              'assets/images/WhatsApp_Logo.png',
+                              fit: BoxFit.scaleDown,
+                            ),
+                          ),
+                       ),
+                     ),
+                   ]
+                  )
                   : Center(child: CircularProgressIndicator());
             },
           );

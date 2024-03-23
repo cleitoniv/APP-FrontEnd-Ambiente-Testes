@@ -470,7 +470,6 @@ class _TabsScreenState extends State<TabsScreen>
   }
 
   _refreshCurrentUser() async {
-    print('chama atualização de current user');
     await _authBloc.fetchCurrentUser();
   }
 

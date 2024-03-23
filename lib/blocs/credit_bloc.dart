@@ -50,8 +50,6 @@ class CreditsBloc extends Disposable {
 
   Future<Offers> fetchAvulseOffersSync() async {
     var avulseOffers =  await this.repository.getAvulseOffers();
-    print('ofertas avulsas -------------');
-    inspect(avulseOffers);
     return  avulseOffers;
   }
 
