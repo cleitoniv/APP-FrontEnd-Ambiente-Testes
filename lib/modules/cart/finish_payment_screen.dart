@@ -7,12 +7,15 @@ import 'package:central_oftalmica_app_cliente/blocs/payment_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/dialogs.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
+import 'package:central_oftalmica_app_cliente/models/offer.dart';
 // import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';
 // import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
+import '../../blocs/credit_bloc.dart';
 
 class FinishPayment extends StatefulWidget {
   @override
@@ -22,6 +25,7 @@ class FinishPayment extends StatefulWidget {
 class _FinishPaymentState extends State<FinishPayment> {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
+  CreditsBloc _creditsBloc = Modular.get<CreditsBloc>();
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
   PaymentBloc _paymentBloc = Modular.get<PaymentBloc>();
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
@@ -35,6 +39,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   int _totalPay = 0;
   bool _paymentMethod = true;
   List<String> _installments = [];
+  List<String> _installmentsCart = [];
 
   String _totalToPay(List<Map<String, dynamic>> data) {
     int _total = data.fold(0, (previousValue, element) {
@@ -189,63 +194,60 @@ class _FinishPaymentState extends State<FinishPayment> {
     }
   }
 
-  _calcPaymentInstallment() async {
-    final _paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
+  _getInstallmentCount(List cart, List<OfferModel> avulOffers, total) {
+    int creditCount = 1;
+    int avulCont = 1;
+    bool hasAvul = false;
 
+    for(var i = 0; i < cart.length; i++){
+      if(cart[i]['operation'] == '01') hasAvul = true;
+
+      if(cart[i]['installment'] != null) {
+        if(cart[i]['installment'] > creditCount) {
+          creditCount = cart[i]['installment'];
+        }
+      }
+    }
+
+    if(hasAvul) {
+      var minOffer = avulOffers.reduce((acc, offer) {
+        if(acc.value < offer.value) {
+          return acc;
+        } else {
+          return offer;
+        }
+      });
+
+      avulCont = minOffer.installmentCount > 0 ? minOffer.installmentCount : 1;
+
+      for(var i = 0; i < avulOffers.length; i++) {
+        if(total > avulOffers[i].value) {
+          avulCont = avulOffers[i].installmentCount;
+        }
+      }
+    }
+
+    return avulCont > creditCount ? avulCont : creditCount;
+  }
+
+  _calcPaymentInstallment() async {
+    var avulseOffers = await _creditsBloc.fetchAvulseOffersSync();
     final _cart = await _requestBloc.cartOut.first;
 
+    final totalPay =  _totalToPayNumeric(_cart);
+
+    final installmentCount = _getInstallmentCount(_cart, avulseOffers.offers, totalPay);
     setState(() {
-      _totalPay = int.parse(
-        _totalToPay(_cart).replaceAll('.', '').replaceAll(',', ''),
-      );
+      dropdownValue = '1x de ${Helper.intToMoney((totalPay).round())}';
     });
 
-    var _installmentsList = await _creditCardBloc.fetchInstallments(
-        _totalToPayNumeric(_cart), _paymentMethod.isBoleto);
-
-    var seen = Set();
-    
-    print('linha 208');
-    print(_installmentsList);
-    print('total a pagar:');
-    print(_totalPay);
-    print(_cart);
-    print('carrinho:');
-    print(_installmentsList[0]['parcela']);
-    // _cart[0][_cart[0]['current']]['codigo'] = _cart[0][_cart[0]['current']]['codigo'].replaceAll('C', 'T');
-
-    // for (var i = 0; i < _cart.length; i++) {
-    //   if (_cart[i]['tests'] == 'Sim') {
-    //     print(i);
-    //     print('objeto alterado');
-    //     print(_cart[i][_cart[i]['current']]);
-    //     _cart[0][_cart[0]['current']]['codigo'] = _cart[0][_cart[0]['current']]['codigo'].replaceAll('C', 'T');
-    //     print(_cart);
-    //   setState(() {
-    //       _cart[i][_cart[i]['current']].update(
-    //         'codigo', 
-    //         (existingValue) => _cart[i][_cart[i]['current']]['codigo'].replaceAll('C', 'T'),
-    //         ifAbsent: () => _cart[i][_cart[i][_cart[i]['current']]]['codigo'].replaceAll('T', 'C'),
-    //       );
-    //     },);
-    //   } 
-    // }
-
-    
-    //voltar daqui
-    _installmentsList =
-        _installmentsList.where((item) => seen.add(item['parcela'])).toList();
-    if (_installmentsList.length > 0) {
-      setState(() {
-        dropdownValue = _installmentsList[0]['parcela'];
-      });
-      _installments = [];
-      for (var item in _installmentsList) {
-        _installments.add(item['parcela'].toString());
+    if (installmentCount > 1) {
+      for (var i = 1; i < installmentCount + 1; i++) {
+        var value = Helper.intToMoney((totalPay / i).round());
+        _installments.add("$i" + "x de $value");
       }
     } else {
-      dropdownValue = '1x $_totalPay';
-      _installments.add('1x $_totalPay');
+      _installments.add('1x de ${Helper.intToMoney((totalPay).round())}');
     }
   }
 

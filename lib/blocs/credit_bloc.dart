@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:central_oftalmica_app_cliente/models/product_credit_model.dart';
 import 'package:central_oftalmica_app_cliente/models/product_model.dart';
 import 'package:central_oftalmica_app_cliente/repositories/credits_repository.dart';
@@ -38,6 +40,19 @@ class CreditsBloc extends Disposable {
     // offersSink.add(Offers(isLoading: true, type: "FINAN", isEmpty: true));
     return await this.repository.getOffers();
     // offersSink.add(offers);
+  }
+
+  void fetchAvulseOffers() async {
+    offersSink.add(Offers(isLoading: true, type: "Avulse", isEmpty: true));
+    Offers offers = await repository.getAvulseOffers();
+    offersSink.add(offers);
+  }
+
+  Future<Offers> fetchAvulseOffersSync() async {
+    var avulseOffers =  await this.repository.getAvulseOffers();
+    print('ofertas avulsas -------------');
+    inspect(avulseOffers);
+    return  avulseOffers;
   }
 
   Future<Offers> fetchCreditOfferSync(String group) {

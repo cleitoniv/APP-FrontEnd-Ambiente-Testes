@@ -137,9 +137,6 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                       color: Colors.black12,
                     ),
                     itemBuilder: (context, index) {
-                      print('valor vindo zerado');
-                      print(_data);
-                      print(_data[index]['value']);
                       return ListTileMoreCustomizable(
                         contentPadding: const EdgeInsets.all(0),
                         horizontalTitleGap: 10,
@@ -263,8 +260,6 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                   StreamBuilder<List<Map<String, dynamic>>>(
                       stream: _requestsBloc.cartOut,
                       builder: (context, snapshot) {
-                        print('linha 250');
-                        print(snapshot.data);
                         return Text(
                           snapshot.hasData
                               ? 'R\$ ${_totalToPay(snapshot.data)}'

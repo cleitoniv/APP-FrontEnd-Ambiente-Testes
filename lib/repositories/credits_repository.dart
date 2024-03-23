@@ -178,6 +178,30 @@ class CreditsRepository {
     }
   }
 
+  Future<Offers> getAvulseOffers() async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
+
+    try {
+      Response response = await dio.get('/api/cliente/avulso_offers',
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $idToken"
+          }));
+      final offers = response.data['data'].map<OfferModel>((e) {
+        return OfferModel.fromJson(e);
+      }).toList();
+
+      print(offers);
+      inspect(offers);
+      return Offers(
+          isLoading: false, isEmpty: false, offers: offers, type: "Avulse");
+    } catch (error) {
+      return Offers(
+          isLoading: false, isEmpty: true, offers: null, type: "Avulse");
+    }
+  }
+
   Future<Offers> getOffersCreditProduct(String group) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
