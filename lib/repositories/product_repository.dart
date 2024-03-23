@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
+import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/devolution_model.dart';
 import 'package:central_oftalmica_app_cliente/models/offer.dart';
 import 'package:central_oftalmica_app_cliente/models/parametro_produto.dart';
@@ -55,6 +56,7 @@ class ProductRepository {
 
   ProductRepository(this.dio);
 
+  CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
 
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -118,15 +120,23 @@ class ProductRepository {
   }
 
   Future<Offers> getOffers() async {
+    var modPag =  _cartWidgetBloc.currentPaymentFormValue;
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/offers',
+          queryParameters: modPag == null 
+          ? {} 
+          : {
+            "modpag": modPag.isBoleto ? 'B' : 'C'
+          },
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $idToken"
-          }));
+          },
+        ),
+      );
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
       }).toList();
@@ -134,7 +144,7 @@ class ProductRepository {
           isLoading: false, isEmpty: false, offers: offers, type: "FINAN");
     } catch (error) {
       // inspect(error);
-      print(error.response);
+      print(error);
       print('passando pelo catch linha 136');
       return Offers(
           isLoading: false, isEmpty: true, offers: null, type: "FINAN");

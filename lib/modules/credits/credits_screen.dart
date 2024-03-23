@@ -605,7 +605,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                   }
                                   List<OfferModel> _financialCredits;
                                   _financialCredits =
-                                        offerSnapshot.data.offers ?? {};
+                                        offerSnapshot.data.offers ?? [];
                                   // if (this._loadingOffers) {
 
 

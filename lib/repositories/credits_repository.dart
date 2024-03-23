@@ -162,19 +162,23 @@ class CreditsRepository {
   }
 
   Future<Offers> getOffers() async {
-    var modPag =  _cartWidgetBloc.currentPaymentFormValue;
+    var modPag =  await _cartWidgetBloc.currentPaymentFormValue;
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/offers',
-          queryParameters: {
-                "modpag": modPag.isBoleto ? 'B' : 'C'
-              },
+          queryParameters: modPag == null 
+          ? {} 
+          : {
+            "modpag": modPag.isBoleto ? 'B' : 'C'
+          },
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $idToken"
           }));
+      print('retorno do crfi');
+      print(response.data);
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
       }).toList();
@@ -188,7 +192,7 @@ class CreditsRepository {
 
   Future<Offers> getAvulseOffers() async {
     print('é boleto ? ---------');
-    var modPag = _cartWidgetBloc.currentPaymentFormValue;
+    var modPag = await _cartWidgetBloc.currentPaymentFormValue;
     print('é boleto ? ---------');
     print(modPag.isBoleto);
     User user = _auth.currentUser;
@@ -196,9 +200,11 @@ class CreditsRepository {
 
     try {
       Response response = await dio.get('/api/cliente/avulso_offers',
-          queryParameters: {
-                "modpag": modPag.isBoleto ? 'B' : 'C'
-              },
+          queryParameters: modPag == null 
+          ? {} 
+          : {
+            "modpag": modPag.isBoleto ? 'B' : 'C'
+          },
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $idToken"
@@ -218,13 +224,15 @@ class CreditsRepository {
   }
 
   Future<Offers> getOffersCreditProduct(String group) async {
-    var modPag = _cartWidgetBloc.currentPaymentFormValue;
+    var modPag = await _cartWidgetBloc.currentPaymentFormValue;
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/get_pacote',
-          queryParameters: {
+          queryParameters: modPag == null ? {
+            "grupo": group
+          } : {
             "grupo": group,
             "modpag": modPag.isBoleto ? 'B' : 'C'
           },
