@@ -71,6 +71,7 @@ class _TabsScreenState extends State<TabsScreen>
   _onChangeCreditType(String type) {
     print('esse botao');
     if (type == "Produto") {
+      _homeWidgetBloc.currentCreditTypeIn.add('Financeiro');
       // _homeWidgetBloc.currentCreditTypeIn.add(type);
       // _productBloc.offersRedirectedSink.add(null);
       // _productBloc.productRedirectedSink.add(null);

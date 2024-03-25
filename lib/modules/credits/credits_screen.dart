@@ -150,6 +150,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
   _onNavigate() async {
     String _currentType = await _homeBloc.currentCreditType;
+    print('esse botão');
     if (_currentType == "Produto") {
       _creditsBloc.offersSink
           .add(Offers(isEmpty: true, type: "CREDIT", isLoading: true));

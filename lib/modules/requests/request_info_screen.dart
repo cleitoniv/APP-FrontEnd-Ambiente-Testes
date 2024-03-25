@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:central_oftalmica_app_cliente/blocs/request_bloc.dart';
 import 'package:central_oftalmica_app_cliente/helper/helper.dart';
@@ -43,6 +45,7 @@ class RequestInfoScreen extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else {
+              inspect(_requestsBloc.pedidoInfoStream);
               return ListView(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(vertical: 20),

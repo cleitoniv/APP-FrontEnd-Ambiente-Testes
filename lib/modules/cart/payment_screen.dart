@@ -20,6 +20,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 import '../../blocs/auth_bloc.dart';
+import '../../blocs/home_widget_bloc.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override
@@ -30,6 +31,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
   CreditCardBloc _creditCardBloc = Modular.get<CreditCardBloc>();
   RequestsBloc _requestBloc = Modular.get<RequestsBloc>();
+  HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   TextEditingController _ccvController;
   MaskedTextController _creditCardNumberController;
@@ -82,7 +84,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _onDelete(int id) async {
-    print('passando aqui');
     RemoveCard _removeCard = await _creditCardBloc.removeCard(id);
     if (_removeCard.success) {
       Map<String, dynamic> success = {
@@ -91,7 +92,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
       setState(() {
         _isLoading = false;
       });
-      print('passando aqui 1');
       _creditCardBloc.fetchPaymentMethods();
 
       // SnackBar _snackbar = SuccessSnackBar.snackBar(this.context, success);
@@ -167,9 +167,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   _finishPayment(List<Map> cartData) {
-    print('linha 154');
-    inspect(_cartWidgetBloc.currentPaymentFormValue);
-
+    _homeWidgetBloc.currentCreditTypeIn.add('Financeiro');
     if (_valueToPay(cartData) <= 0) {
       Dialogs.errorWithWillPopScope(context,
           barrierDismissible: false,

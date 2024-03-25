@@ -134,6 +134,12 @@ class Helper {
     }).toList();
     print(lookingCartOperations);
     print(operation);
+    
+    if(!lookingCartOperations.isEmpty && (lookingCartOperations[0] == '01' || lookingCartOperations[0] == '04') && (operation == '01')) {
+      function();
+      return;
+    }
+
     if(!lookingCartOperations.isEmpty && operation == '07' && lookingCartOperations[0] == '06') {
       function();
       return;
