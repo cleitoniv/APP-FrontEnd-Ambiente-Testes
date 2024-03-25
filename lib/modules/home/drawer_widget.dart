@@ -18,7 +18,7 @@ class DrawerWidget extends StatelessWidget {
       'title': 'Notificações',
       'image': 'drawer_3.png',
     },
-    //app capado descometar as opções abaixo para retornar para aba de opções
+    //app capado descomentar as opções abaixo para retornar para aba de opções
     // {
     //   'title': 'Devolução para Crédito/Troca',
     //   'image': 'drawer_4.png',

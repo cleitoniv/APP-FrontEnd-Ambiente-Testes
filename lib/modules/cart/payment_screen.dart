@@ -626,7 +626,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   _finishPayment(cartSnapshot.data ?? []);
                                 },
                           child: Text(
-                            'Finalizar Pedido',
+                            'Finalizar Pedi',
                             style: Theme.of(context).textTheme.button,
                             //
                           ),

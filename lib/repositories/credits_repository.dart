@@ -224,17 +224,19 @@ class CreditsRepository {
   }
 
   Future<Offers> getOffersCreditProduct(String group) async {
-    var modPag = await _cartWidgetBloc.currentPaymentFormValue;
+    // var modPag = await _cartWidgetBloc.currentPaymentFormValue;
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 
     try {
       Response response = await dio.get('/api/cliente/get_pacote',
-          queryParameters: modPag == null ? {
-            "grupo": group
-          } : {
+          queryParameters: 
+          //modPag == null ? {
+          //   "grupo": group
+          // } : 
+          {
             "grupo": group,
-            "modpag": modPag.isBoleto ? 'B' : 'C'
+            // "modpag": modPag.isBoleto ? 'B' : 'C'
           },
           options: Options(headers: {
             "Content-Type": "application/json",

@@ -20,11 +20,11 @@ class ProfileScreen extends StatelessWidget {
       'route': '/profile/security',
     },
     // app capado
-    // {
-    //   'title': 'Usuários do Aplicativo',
-    //   'subtitle': 'Crie e gerencie usuários da sua conta',
-    //   'route': '/profile/appUsers',
-    // },
+    {
+      'title': 'Usuários do Aplicativo',
+      'subtitle': 'Crie e gerencie usuários da sua conta',
+      'route': '/profile/appUsers',
+    },
   ];
 
   _handleTap(String route) {

@@ -201,7 +201,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     for(var i = 0; i < cart.length; i++){
       if(cart[i]['operation'] == '01') hasAvul = true;
-
+      print(cart[i]['installment']);
       if(cart[i]['installment'] != null) {
         if(cart[i]['installment'] > creditCount) {
           creditCount = cart[i]['installment'];
@@ -226,17 +226,27 @@ class _FinishPaymentState extends State<FinishPayment> {
         }
       }
     }
-
+    print('parcelas ---------');
+    print(avulCont);
+    print(creditCount);
     return avulCont > creditCount ? avulCont : creditCount;
   }
 
   _calcPaymentInstallment() async {
-    var avulseOffers = await _creditsBloc.fetchAvulseOffersSync();
+    var avulseOffers;
     final _cart = await _requestBloc.cartOut.first;
+    if (_cart[0]['operation'] == '01') {
+      setState(() async {
+        avulseOffers = await _creditsBloc.fetchAvulseOffersSync();
+      });    
+    } 
+    // else if (_cart[0]['operation'] == '06' || _cart[0]['operation'] == '07') {
+    //   _creditsBloc.fetchCreditOfferSync()
+    // } 
 
     final totalPay =  _totalToPayNumeric(_cart);
 
-    final installmentCount = _getInstallmentCount(_cart, avulseOffers.offers, totalPay);
+    final installmentCount = _getInstallmentCount(_cart, avulseOffers?.offers, totalPay);
     setState(() {
       dropdownValue = '1x de ${Helper.intToMoney((totalPay).round())}';
     });
