@@ -265,8 +265,6 @@ class RequestsRepository {
 
   Future<Pedido> getPedido(int id, PedidoModel pedidoData,
       {bool reposicao = false}) async {
-    print('linha 265');
-    inspect(pedidoData);
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
 

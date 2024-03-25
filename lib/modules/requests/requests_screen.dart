@@ -115,8 +115,6 @@ class RequestsScreen extends StatelessWidget {
       onTap: (value) {
         String currentType = _homeWidgetBloc.currentRequestType;
         bool reposicao = false;
-        print('linha 116');
-        inspect(_requests[index]);
         if (currentType == "Reposição") {
           reposicao = true;
         }

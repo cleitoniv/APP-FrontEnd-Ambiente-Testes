@@ -194,17 +194,20 @@ class _FinishPaymentState extends State<FinishPayment> {
     }
   }
 
-  _getInstallmentCount(List cart, List<OfferModel> avulOffers, total) {
+  _getInstallmentCount(List cart, List<OfferModel> avulOffers, total) async {
     int creditCount = 1;
     int avulCont = 1;
     bool hasAvul = false;
+    var mod =  await _cartWidgetBloc.currentPaymentFormValue;
+    var key = mod.isBoleto ? 'installmentB' :  'installmentC';
+    inspect(cart);
 
     for(var i = 0; i < cart.length; i++){
       if(cart[i]['operation'] == '01') hasAvul = true;
-      print(cart[i]['installment']);
-      if(cart[i]['installment'] != null) {
-        if(cart[i]['installment'] > creditCount) {
-          creditCount = cart[i]['installment'];
+      print(cart[i][key]);
+      if(cart[i][key] != null) {
+        if(cart[i][key] > creditCount) {
+          creditCount = cart[i][key];
         }
       }
     }
@@ -217,12 +220,18 @@ class _FinishPaymentState extends State<FinishPayment> {
           return offer;
         }
       });
+      inspect(minOffer);
 
-      avulCont = minOffer.installmentCount > 0 ? minOffer.installmentCount : 1;
+      if(mod.isBoleto) {
+        avulCont = minOffer.installmentCountB > 0 ? minOffer.installmentCountB : 1;
+      } else {
+        avulCont = minOffer.installmentCountC > 0 ? minOffer.installmentCountC : 1;
+      }
+      
 
       for(var i = 0; i < avulOffers.length; i++) {
         if(total > avulOffers[i].value) {
-          avulCont = avulOffers[i].installmentCount;
+          avulCont = mod.isBoleto ? avulOffers[i].installmentCountB : avulOffers[i].installmentCountC;
         }
       }
     }
@@ -236,9 +245,7 @@ class _FinishPaymentState extends State<FinishPayment> {
     var avulseOffers;
     final _cart = await _requestBloc.cartOut.first;
     if (_cart[0]['operation'] == '01') {
-      setState(() async {
-        avulseOffers = await _creditsBloc.fetchAvulseOffersSync();
-      });    
+     avulseOffers = await _creditsBloc.fetchAvulseOffersSync();   
     } 
     // else if (_cart[0]['operation'] == '06' || _cart[0]['operation'] == '07') {
     //   _creditsBloc.fetchCreditOfferSync()
@@ -246,7 +253,7 @@ class _FinishPaymentState extends State<FinishPayment> {
 
     final totalPay =  _totalToPayNumeric(_cart);
 
-    final installmentCount = _getInstallmentCount(_cart, avulseOffers?.offers, totalPay);
+    final installmentCount = await _getInstallmentCount(_cart, avulseOffers?.offers, totalPay);
     setState(() {
       dropdownValue = '1x de ${Helper.intToMoney((totalPay).round())}';
     });

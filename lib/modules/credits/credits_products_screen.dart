@@ -55,7 +55,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
   bool _lock = false;
 
   _onAddToCart(
-      ProductModel product, int quantity, int value, int percentageTest, int installmentCount) async {
+      ProductModel product, int quantity, int value, int percentageTest, int installmentCountB, int installmentCountC ) async {
     product.setValue(value);
     print(product);
     Map<String, dynamic> _data = {
@@ -66,7 +66,8 @@ class _CreditProductState extends State<CreditsProductScreen> {
       'percentage_test': percentageTest,
       'type': "C",
       'operation': "06",
-      'installment': installmentCount
+      'installmentB': installmentCountB,
+      'installmentC': installmentCountC
     };
     int _total = _cartWidgetBloc.currentCartTotalItems;
     _cartWidgetBloc.cartTotalItemsSink.add(_total + 1);
@@ -98,7 +99,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
       _lock = true;
     });
 
-    _onAddToCart(product, offer.quantity, offer.price, offer.percentageTest, offer.installmentCount);
+    _onAddToCart(product, offer.quantity, offer.price, offer.percentageTest, offer.installmentCountB, offer.installmentCountC);
     _creditsBloc.offersSink
         .add(Offers(isEmpty: true, isLoading: false, type: "CREDIT"));
     setState(() {
@@ -235,7 +236,6 @@ class _CreditProductState extends State<CreditsProductScreen> {
           body: StreamBuilder(
             stream: _productsBloc.creditProductListStream,
             builder: (context, snapshot) {
-              inspect(snapshot);
               if (!snapshot.hasData == true && snapshot.data == null) {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -500,7 +500,6 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                                                       child: CreditProductOtherWidget(),
                                                                                     );
                                                                     }
-                                                                    inspect(_financialCredits);
                                                                     return InkWell(
                                                                       child:
                                                                           CreditProductCardWidget(

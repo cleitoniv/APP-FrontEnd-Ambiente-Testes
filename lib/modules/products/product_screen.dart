@@ -476,7 +476,6 @@ class _ProductScreenState extends State<ProductScreen> {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
                     }
-                    inspect(productSnapshot.data);
                     return Container(
                       height: snapshot.data ? null : 0,
                       width: snapshot.data ? null : 0,

@@ -39,8 +39,6 @@ class ProductsGridScreen extends StatelessWidget {
               childAspectRatio: 0.7,
             ),
             itemBuilder: (context, index) {
-              print(_products);
-              inspect(_products);
               return ProductWidget(
                 value: _products[index].value,
                 title: _products[index].title,

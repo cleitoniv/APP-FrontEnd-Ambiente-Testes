@@ -140,7 +140,6 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
               stream: _userBloc.enderecoEntregaStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData || snapshot.data.isLoading) {
-                  inspect(snapshot.data);
                   return Center(
                     heightFactor: 3,
                     child: CircularProgressIndicator(),

@@ -41,7 +41,6 @@ class VindiRepository {
     this.currentUser = _authBloc.getAuthCurrentUser;
     print('linha 41');
     // inspect(this.currentUser.data);
-    inspect(dio);
     print(this.currentUser.data.tokenVindi);
     try {
       Response response = await dio.post(

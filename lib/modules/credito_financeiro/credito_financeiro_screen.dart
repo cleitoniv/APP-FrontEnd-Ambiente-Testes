@@ -111,9 +111,6 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
         builder: (context, offerSnapshot) {
           var offers = offerSnapshot.data;
           print('linha 102');
-          print(offerSnapshot.hasData);
-          print(offers);
-          inspect(offers);
           return Scaffold(
             appBar: AppBar(
               title: Text('Credito Financeiro',
