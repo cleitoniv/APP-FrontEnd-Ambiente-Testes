@@ -68,7 +68,8 @@ class PaymentRepository {
             'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
           },
           'items': [
-            {
+            { 
+              'codigo_teste': e['codigoTeste'],
               'grupo_teste': e['product'].groupTest,
               'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
@@ -100,7 +101,8 @@ class PaymentRepository {
             'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
           },
           'items': [
-            {
+            { 
+              'codigo_teste': e['codigoTeste'],
               'grupo_teste': e['product'].groupTest,
               'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
@@ -132,7 +134,8 @@ class PaymentRepository {
             'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
           },
           'items': [
-            {
+            { 
+              'codigo_teste': e['codigoTeste'],
               'grupo_teste': e['product'].groupTest,
               'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
@@ -164,7 +167,8 @@ class PaymentRepository {
             'data_nascimento': parseDtNascimento(e['pacient']['birthday'])
           },
           'items': [
-            {
+            { 
+              'codigo_teste': e['codigoTeste'],
               'grupo_teste': e['product'].groupTest,
               'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
@@ -189,7 +193,8 @@ class PaymentRepository {
           'operation': e['operation'],
           'type': e['type'],
           'items': [
-            {
+            { 
+              'codigo_teste': e['codigoTeste'],
               'percentage_test': e['percentage_test'] ?? 0,
               'produto': e['product'].title,
               'codigo': '${e['product'].group}000000',
@@ -207,7 +212,8 @@ class PaymentRepository {
           'operation': e['operation'],
           'type': e['type'],
           'items': [
-            {
+            { 
+              'codigo_teste': e['codigoTeste'],
               'percentage_test': e['percentage_test'],
               'produto': e['product'].title,
               'codigo': e['product'].produto,
@@ -222,6 +228,8 @@ class PaymentRepository {
         };
       }
     }).toList();
+    print('linha 231');
+    print(items);
     return {
       'items': items,
       'id_cartao':

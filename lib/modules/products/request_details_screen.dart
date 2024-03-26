@@ -911,8 +911,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   _getProductCodeTest(obj) async {
-    var result = await _productBloc.productCode(productCodeTestList(obj));
-    return Map.from(result)['data'][0]['codigo']['codigo'];
+    if (currentProduct.product.hasTest) {
+      var result = await _productBloc.productCode(productCodeTestList(obj));
+      return Map.from(result)['data'][0]['codigo']['codigo'];
+    } else 
+      return null;
   }
 
   _onPurchase(BuildContext context, ProductModel product, String mode) async {
