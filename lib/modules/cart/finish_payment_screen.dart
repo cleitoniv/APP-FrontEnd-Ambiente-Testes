@@ -244,7 +244,7 @@ class _FinishPaymentState extends State<FinishPayment> {
   _calcPaymentInstallment() async {
     var avulseOffers;
     final _cart = await _requestBloc.cartOut.first;
-    if (_cart[0]['operation'] == '01') {
+    if (_cart[0]['operation'] == '01' || _cart[0]['operation'] == '04') {
      avulseOffers = await _creditsBloc.fetchAvulseOffersSync();   
     } 
     // else if (_cart[0]['operation'] == '06' || _cart[0]['operation'] == '07') {

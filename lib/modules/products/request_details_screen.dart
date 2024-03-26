@@ -612,6 +612,35 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     }
   }
 
+  List<Map> productCodeTestList(_first) {
+    String current = _first['current'];
+    if (current == 'Graus diferentes em cada olho') {
+      return _first[current].entries.map<Map<String, dynamic>>((entry) {
+        return {
+          "olho": entry.key,
+          "esferico": entry.value['degree'],
+          "grupo": currentProduct.product.groupTest,
+          "cilindrico": entry.value['cylinder'],
+          "eixo": entry.value['axis'],
+          "adicao": entry.value['adicao'],
+          "cor": entry.value['cor']
+        };
+      }).toList();
+    } else {
+      return List<Map<String, dynamic>>.of([
+        Map<String, dynamic>.of({
+          "olho": current,
+          "esferico": _first[current]['degree'] ?? "",
+          "grupo": currentProduct.product.groupTest,
+          "cilindrico": _first[current]['cylinder'] ?? "",
+          "eixo": _first[current]['axis'] ?? "",
+          "adicao": _first[current]['adicao'] ?? "",
+          "cor": _first[current]['cor'].toLowerCase() ?? ""
+        })
+      ]);
+    }
+  }
+
   Map _putProductCode(_first, result) {
     String current = _first['current'];
     if (current == 'Graus diferentes em cada olho') {
@@ -629,6 +658,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       }
     }
   }
+
+
 
   _onAddToCart(Map data, String typeButton, Map meta) async {
     _lockCart(true);
@@ -748,113 +779,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       _lockCart(false);
       return;
     }
-    // if (currentProduct.product.boxes <
-    //         int.parse(_lensController.text) + cartTotal &&
-    //     widget.type == "C") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Limite de caixas atingido."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // } else if (currentProduct.product.tests <
-    //         int.parse(_lensController.text) + _cartTotalTest &&
-    //     widget.type == "T") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Limite de caixas atingido."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // } else if (_authBloc.getAuthCurrentUser.data.money <
-    //         (int.parse(_lensController.text) *
-    //                 currentProduct.product.valueFinan) +
-    //             _cartTotalFinancial &&
-    //     widget.type == "CF") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // }
-
-    // if (currentProduct.product.boxes < _qtd + cartTotal && widget.type == "C") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Limite de caixas atingido."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // } else if (currentProduct.product.tests <
-    //         int.parse(_lensEsquerdoController.text) +
-    //             _cartTotalTest +
-    //             int.parse(_lensDireitoController.text) &&
-    //     widget.type == "T") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Limite de caixas atingido."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // } else if (_authBloc.getAuthCurrentUser.data.money <
-    //         ((int.parse(_lensEsquerdoController.text) +
-    //                     int.parse(_lensDireitoController.text)) *
-    //                 currentProduct.product.valueFinan) +
-    //             _cartTotalFinancial &&
-    //     widget.type == "CF") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // }
-
-    // if (currentProduct.product.boxes <
-    //         int.parse(_lensDireitoController.text) +
-    //             cartTotal +
-    //             int.parse(_lensEsquerdoController.text) &&
-    //     widget.type == "C") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Limite de caixas atingido."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // } else if (currentProduct.product.tests <
-    //         int.parse(_lensDireitoController.text) +
-    //             _cartTotalTest +
-    //             int.parse(_lensEsquerdoController.text) &&
-    //     widget.type == "T") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Limite de caixas atingido."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // } else if (_authBloc.getAuthCurrentUser.data.money <
-    //         ((int.parse(_lensEsquerdoController.text) +
-    //                     int.parse(_lensDireitoController.text)) *
-    //                 currentProduct.product.valueFinan) +
-    //             _cartTotalFinancial &&
-    //     widget.type == "CF") {
-    //   SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-    //     "Limite Atingido": ["Seu saldo é inferior a quantidade desejada."]
-    //   });
-    //   _scaffoldKey.currentState.showSnackBar(
-    //     _snack,
-    //   );
-    //   return;
-    // }
 
     final errors = await _checkParameters(
         new Map<String, dynamic>.from(_first[_first['current']]),
@@ -894,6 +818,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'product': data['product'],
         'type': _parseType(widget.type),
         'current': _first['current'],
+        'codigoTeste': await _getProductCodeTest(_first),
         'pacient': {
           'name': _nameController.text,
           'number': _numberController.text,
@@ -901,28 +826,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
         _first['current']: _first[_first['current']],
       };
-      // return;
-//      if (widget.type != "A" &&
-//              _data["tests"] == "Sim" &&
-//              currentProduct.product.tests <= 0 ||
-//          widget.type != "A" &&
-//              _data["tests"] == "Sim" &&
-//              currentProduct.product.tests <
-//                  int.parse(_lensDireitoController.text) +
-//                      _cartTotalTest +
-//                      int.parse(_lensEsquerdoController.text) ||
-//          _data["tests"] == "Sim" &&
-//              currentProduct.product.tests <
-//                  int.parse(_lensController.text) + _cartTotalTest) {
-//        SnackBar _snack = ErrorSnackBar.snackBar(this.context, {
-//          "Limite Atingido": ["Você não possui caixas de teste suficiente"]
-//        });
-//        _scaffoldKey.currentState.showSnackBar(
-//          _snack,
-//        );
-//        return;
-//      }
-
       if (_data['operation'] == "07" && _data["tests"] == "Sim" ||
           _data['operation'] == "01" && _data["tests"] == "Sim" ||
           _data['operation'] == "13" && _data["tests"] == "Sim") {
@@ -996,6 +899,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       'product': data['product'],
       'type': _parseType(widget.type),
       'current': _first['current'],
+      'groupTest':  _first['groupTest'],
       'pacient': {
         'name': _nameController.text,
         'number': _numberController.text,
@@ -1006,6 +910,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     return _data;
   }
 
+  _getProductCodeTest(obj) async {
+    var result = await _productBloc.productCode(productCodeTestList(obj));
+    return Map.from(result)['data'][0]['codigo']['codigo'];
+  }
+
   _onPurchase(BuildContext context, ProductModel product, String mode) async {
     if (isValidDate(_birthdayController.text, context)) {
       return;
@@ -1013,10 +922,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     Map<dynamic, dynamic> _first =
         await _productWidgetBloc.pacientInfoOut.first;
 
-    //voltar aqui
     var result = await _productBloc.productCode(productCodeList(_first));
     _first = _putProductCode(_first, result);
-
+    print('918 -----------');
+    print(_first);
     int itemQuantity =
         _productQuantity(_first['current'] == "Mesmo grau em ambos");
 
@@ -1064,64 +973,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           );
         },
       );
-
-      // Dialogs.confirmWithInfo(context, onCancel: () {
-      //   setState(() {
-      //     _isProcessing = false;
-      //     _isLoadingPrimaryButton = false;
-      //     _isLoadingSecondButton = false;
-      //   });
-      //   Modular.to.pop();
-      // }, onConfirm: () {
-      //   setState(() {
-      //     _isProcessing = false;
-      //     _isLoadingPrimaryButton = false;
-      //     _isLoadingSecondButton = false;
-      //   });
-      //   Modular.to.pop();
-      //   },
-      //     info: Container(
-      //       child: Column(children: [
-      //         Row(
-      //           children: [
-      //             Column(
-      //                 crossAxisAlignment: CrossAxisAlignment.start,
-      //                 children: [
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.start,
-      //                     children: [
-      //                       Column(
-      //                         crossAxisAlignment: CrossAxisAlignment.start,
-      //                         children: [
-      //                           SizedBox(
-      //                             // width: 260,
-      //                             child: Text(
-      //                               "Algo deu errado, esse produto não existe",
-      //                               overflow: TextOverflow.visible,
-      //                               maxLines: 2,
-      //                               softWrap: true,
-      //                               style: TextStyle(fontSize: 11),
-      //                             ),
-      //                           ),
-      //                           SizedBox(
-      //                             height: 20,
-      //                           )
-      //                         ],
-      //                       )
-      //                     ],
-      //                   )] )
-      //           ],
-      //         ),
-      //         SizedBox(
-      //           height: 20,
-      //         )
-      //       ]),
-      //     ),
-      //     title: "Erro no sistema!",
-      //     subtitle: "Por favor contate a Central",
-      //     confirmText: "Continuar",
-      //     cancelText: "Cancelar"
-      //     );
       return;
     }
     var cartObject = _cartParams(_first, {});

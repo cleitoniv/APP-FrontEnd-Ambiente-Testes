@@ -75,6 +75,7 @@ class RequestsRepository {
               'produto_teste': e['product'].produtoTeste,
               'produto': e['product'].title,
               'quantidade': e['quantity'],
+              'codigo_teste': e['codigoTeste'],
               'quantity_for_eye': e['quantity_for_eye'],
               'grupo': e['tests'] == "Não"
                   ? e['product'].group
@@ -112,6 +113,7 @@ class RequestsRepository {
                   ? e['product'].group
                   : e['product'].groupTest,
               'duracao': e['product'].duracao,
+              'codigo_teste': e['codigoTeste'],
               'prc_unitario': e['tests'] == "Não" ? e['product'].value : 0,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
@@ -140,6 +142,7 @@ class RequestsRepository {
               'quantidade': e['quantity'],
               'quantity_for_eye': e['quantity_for_eye'],
               'grupo': e['product'].groupTest,
+              'codigo_teste': e['codigoTeste'],
               'duracao': e['product'].duracao,
               'prc_unitario': e['product'].value,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
@@ -170,6 +173,7 @@ class RequestsRepository {
               'quantity_for_eye': e['quantity_for_eye'],
               'grupo': e['product'].groupTest,
               'duracao': e['product'].duracao,
+              'codigo_teste': e['codigoTeste'],
               'prc_unitario': e['product'].value,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
@@ -192,6 +196,7 @@ class RequestsRepository {
               'codigo': e['product'].produto,
               'grupo': e['product'].group,
               'quantidade': e['quantity'],
+              'codigo_teste': e['codigoTeste'],
               'prc_unitario': e['product'].value,
               'valor_credito_finan': e['product'].valueFinan ?? 0,
               'valor_credito_prod': e['product'].valueProduto ?? 0,
