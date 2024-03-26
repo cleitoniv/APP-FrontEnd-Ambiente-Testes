@@ -288,7 +288,9 @@ class _FinishPaymentState extends State<FinishPayment> {
                       .headline5
                       .copyWith(fontSize: 16))
             ])
-          ]));
+          ],
+        ),
+      );
     }
     return Scaffold(
         key: _scaffoldKey,

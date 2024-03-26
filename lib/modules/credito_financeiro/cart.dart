@@ -137,6 +137,8 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                       color: Colors.black12,
                     ),
                     itemBuilder: (context, index) {
+                      print('linha 140');
+                      print(_data);
                       return ListTileMoreCustomizable(
                         contentPadding: const EdgeInsets.all(0),
                         horizontalTitleGap: 10,

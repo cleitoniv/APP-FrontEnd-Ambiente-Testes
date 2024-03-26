@@ -52,7 +52,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       'quantity': int.parse(_lensController.text == '' ? '1' : _lensController.text),
       'product': productModel2 ,
       'type': "C",
-      'operation': "07",
+      'operation': "06",
       'value': valor
     };
     print(_data);
