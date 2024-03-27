@@ -299,7 +299,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('contagem 296');
     return SafeArea(
       child: Stack(
         clipBehavior: Clip.hardEdge,
@@ -460,7 +459,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     },
                   );
                 }
-                print('contagem 455');
                 return ListTileMoreCustomizable(
                   contentPadding: const EdgeInsets.all(0),
                   horizontalTitleGap: -5,
@@ -499,7 +497,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                               ),
                             );
                           }
-                          print('contagem 494');
                           return Row(
                             children: [
                               Text(

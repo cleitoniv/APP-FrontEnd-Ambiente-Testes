@@ -99,7 +99,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
       // print('linha 90');
       // _scaffoldKey.currentState.showSnackBar(_snackbar);
     } else {
-      print('passando aqui 2 ');
       Map<String, dynamic> success = {
         "Atenção": [_removeCard.message]
       };
@@ -624,7 +623,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   _finishPayment(cartSnapshot.data ?? []);
                                 },
                           child: Text(
-                            'Finalizar Pedi',
+                            'Finalizar Pedido',
                             style: Theme.of(context).textTheme.button,
                             //
                           ),

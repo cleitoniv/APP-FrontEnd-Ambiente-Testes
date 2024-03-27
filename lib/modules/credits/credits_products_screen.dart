@@ -57,7 +57,6 @@ class _CreditProductState extends State<CreditsProductScreen> {
   _onAddToCart(
       ProductModel product, int quantity, int value, int percentageTest, int installmentCountB, int installmentCountC ) async {
     product.setValue(value);
-    print(product);
     Map<String, dynamic> _data = {
       'value': value,
       '_cart_item': randomString(15),
@@ -495,6 +494,10 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                                             .length) {
                                                                                     return InkWell(
                                                                                       onTap: () {
+                                                                                        if (widget.product != null) {
+                                                                                          personalizedValueToThisProduct = widget.product;
+                                                                                        }
+                                                                                        
                                                                                         _otherValue(personalizedValueToThisProduct, _financialCredits);
                                                                                       },
                                                                                       child: CreditProductOtherWidget(),

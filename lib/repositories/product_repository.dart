@@ -257,7 +257,6 @@ class ProductRepository {
       return ProductList(
           list: products, isEmpty: false, isLoading: false, filters: filters);
     } catch (error) {
-      log("error-- ${error}");
       return ProductList(
           list: [], isEmpty: true, isLoading: false, filters: ["Todos"]);
     }

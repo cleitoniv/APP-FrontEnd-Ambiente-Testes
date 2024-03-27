@@ -105,7 +105,6 @@ class _FinishPaymentState extends State<FinishPayment> {
 
   _getPaymentMethod() async {
     final paymentMethod = _cartWidgetBloc.currentPaymentFormValue;
-    print('linha 105');
 
     setState(() {
       _paymentMethod = paymentMethod.isBoleto;
@@ -113,7 +112,6 @@ class _FinishPaymentState extends State<FinishPayment> {
   }
 
   _onSubmit(List<Map> cartData) async {
-    print(cartData);
     if (_totalToPayNumeric(cartData) <= 0) {
       Dialogs.errorWithWillPopScope(context,
           barrierDismissible: false,
@@ -200,11 +198,10 @@ class _FinishPaymentState extends State<FinishPayment> {
     bool hasAvul = false;
     var mod =  await _cartWidgetBloc.currentPaymentFormValue;
     var key = mod.isBoleto ? 'installmentB' :  'installmentC';
-    inspect(cart);
+    // inspect(cart);
 
     for(var i = 0; i < cart.length; i++){
       if(cart[i]['operation'] == '01') hasAvul = true;
-      print(cart[i][key]);
       if(cart[i][key] != null) {
         if(cart[i][key] > creditCount) {
           creditCount = cart[i][key];
@@ -220,7 +217,7 @@ class _FinishPaymentState extends State<FinishPayment> {
           return offer;
         }
       });
-      inspect(minOffer);
+      // inspect(minOffer);
 
       if(mod.isBoleto) {
         avulCont = minOffer.installmentCountB > 0 ? minOffer.installmentCountB : 1;
@@ -235,9 +232,6 @@ class _FinishPaymentState extends State<FinishPayment> {
         }
       }
     }
-    print('parcelas ---------');
-    print(avulCont);
-    print(creditCount);
     return avulCont > creditCount ? avulCont : creditCount;
   }
 
@@ -450,7 +444,6 @@ class _FinishPaymentState extends State<FinishPayment> {
                       StreamBuilder(
                         stream: _requestBloc.cartOut,
                         builder: (context, cartSnapshot) {
-                          print(_lock);
                           return ElevatedButton(
                             onPressed: _lock
                                 ? null

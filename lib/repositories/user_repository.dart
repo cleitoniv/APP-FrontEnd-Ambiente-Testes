@@ -143,8 +143,6 @@ class UserRepository {
   Future<AddUsuarioCliente> addUsuarioCliente(Map<String, dynamic> data) async {
     User user = _auth.currentUser;
     String token = await user.getIdToken();
-    print('dados para sub usuario ------');
-    print(data);
     try {
       Response response = await dio.post("/api/cliente/cliente_user",
           data: jsonEncode({"param": data}),

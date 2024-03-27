@@ -927,8 +927,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
     var result = await _productBloc.productCode(productCodeList(_first));
     _first = _putProductCode(_first, result);
-    print('918 -----------');
-    print(_first);
     int itemQuantity =
         _productQuantity(_first['current'] == "Mesmo grau em ambos");
 

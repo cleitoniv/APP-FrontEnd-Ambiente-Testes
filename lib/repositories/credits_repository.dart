@@ -191,9 +191,7 @@ class CreditsRepository {
   }
 
   Future<Offers> getAvulseOffers() async {
-    print('é boleto ? ---------');
     var modPag = await _cartWidgetBloc.currentPaymentFormValue;
-    print('é boleto ? ---------');
     print(modPag.isBoleto);
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
@@ -213,8 +211,8 @@ class CreditsRepository {
         return OfferModel.fromJson(e);
       }).toList();
 
-      print(offers);
-      inspect(offers);
+      // print(offers);
+      // inspect(offers);
       return Offers(
           isLoading: false, isEmpty: false, offers: offers, type: "Avulse");
     } catch (error) {
@@ -245,9 +243,9 @@ class CreditsRepository {
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
       }).toList();
-      print('linha 185');
-      inspect(offers);
-      print(offers);
+      // print('linha 185');
+      // inspect(offers);
+      // print(offers);
       return Offers(
           isLoading: false, isEmpty: false, offers: offers, type: "CREDIT");
     } catch (error) {

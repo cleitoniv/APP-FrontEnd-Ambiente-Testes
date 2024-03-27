@@ -65,7 +65,6 @@ class _ProductScreenState extends State<ProductScreen> {
     } else {
       _productBloc.offersRedirectedSink.add(null);
       _productBloc.productRedirectedSink.add(null);
-  
     Helper.whenDifferentOperation(
         '06', () {
           _homeWidgetBloc.currentCreditTypeIn.add("Produto");
@@ -123,6 +122,8 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   _onConfirmPurchase(ProductModel product, String type, int value) {
+    print('on confirm purchase');
+    print(product);
     if (type == 'C') {
       if (value <= 0 || product.valueProduto == 0) {
         _showDialog('Atenção',
@@ -291,7 +292,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   contentPadding: const EdgeInsets.all(0),
                   horizontalTitleGap: 0,
                   title: AutoSizeText(
-                    productSnapshot.data.product.title,
+                    productSnapshot.data.product?.title,
                     maxLines: 2,
                     style: Theme.of(context).textTheme.subtitle1.copyWith(
                           fontSize: 18,
@@ -652,7 +653,7 @@ class _ProductScreenState extends State<ProductScreen> {
                               'title':
                                   'Crédito de Produto R\$ ${Helper.intToMoney(productSnapshot.data.product.valueProduto)}',
                               'color': Theme.of(context).accentColor,
-                              'onTap': () => Helper.whenDifferentOperation('07',
+                              'onTap': () => Helper.whenDifferentOperation('06',
                                       () {
                                     _onConfirmPurchase(
                                         productSnapshot.data.product,

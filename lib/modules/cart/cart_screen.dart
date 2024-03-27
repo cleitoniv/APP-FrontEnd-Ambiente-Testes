@@ -199,8 +199,6 @@ class _CartScreenState extends State<CartScreen> {
                   }
 
                   List<Map<String, dynamic>> _data = snapshot.data;
-                  print('linha 197');
-                  print(_data);
                   return Helper.CartList(
                       _data, hasPrice, _removeItem, selectPrice);
                 },

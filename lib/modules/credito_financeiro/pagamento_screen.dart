@@ -83,8 +83,6 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
 
   _onDelete(int id) async {
     RemoveCard _removeCard = await _creditCardBloc.removeCard(id);
-    print('linha 86');
-    inspect(_removeCard);
     if (_removeCard.success) {
       Map<String, dynamic> success = {
         "Cartao Removido": [_removeCard.message]

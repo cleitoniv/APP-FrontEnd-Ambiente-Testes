@@ -45,7 +45,7 @@ class RequestInfoScreen extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else {
-              inspect(_requestsBloc.pedidoInfoStream);
+              // inspect(_requestsBloc.pedidoInfoStream);
               return ListView(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(vertical: 20),

@@ -187,11 +187,7 @@ class CreditProductCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('valor preco unitario, card_widget.dart, linha 190');
-    print(precoUnitario);
-
-    return precoUnitario != null
-        ? Stack(
+    return Stack(
             fit: StackFit.loose,
             clipBehavior: Clip.none,
             children: <Widget>[
@@ -295,8 +291,7 @@ class CreditProductCardWidget extends StatelessWidget {
                 ],
               ),
             ],
-          )
-        : Container();
+          );
   }
 }
 

@@ -16,6 +16,7 @@ import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
+import 'package:random_string/random_string.dart';
 
 import '../../models/offer.dart';
 
@@ -44,18 +45,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   _onAddToCart(Map<dynamic, dynamic> data, valor) async {
-    print('mapa manipulado:');
-    // print(_manipulatedMap(data['product'], valor));
     ProductModel productModel2 = _manipulatedMap(data['product'], valor);
-    print(productModel2);
     var _data = {
       'quantity': int.parse(_lensController.text == '' ? '1' : _lensController.text),
       'product': productModel2 ,
       'type': "C",
       'operation': "06",
+      '_cart_item': randomString(15),
       'value': valor
     };
-    print(_data);
     int _total = _cartWidgetBloc.currentCartTotalItems;
     _cartWidgetBloc.cartTotalItemsSink.add(_total + 1);
     _requestsBloc.addProductToCart(_data);
@@ -191,11 +189,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
-            // inspect(ModalRoute.of(context)?.settings?.arguments);
-            // print(ModalRoute.of(context)?.settings?.arguments);
-            // print(productSnapshot.data.product);
-            // inspect(productSnapshot.data.product);
-
             return ListView(
               padding: const EdgeInsets.all(20),
               children: <Widget>[
@@ -203,7 +196,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   contentPadding: const EdgeInsets.all(0),
                   horizontalTitleGap: 0,
                   title: Text(
-                    productSnapshot.data.product.title,
+                    productSnapshot.data.product?.title,
                     style: Theme.of(context).textTheme.titleMedium.copyWith(
                           fontSize: 18,
                         ),
