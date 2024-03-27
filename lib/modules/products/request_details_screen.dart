@@ -977,15 +977,52 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       return;
     }
     var cartObject = _cartParams(_first, {});
-    // return;
     Map resp =
         // ignore: await_only_futures
         await _requestsBloc.checkStock({"itens": _updateQtdCart(cartObject)});
     if (resp["success"]) {
-      if (resp["data"]["pendencia"] == false) {
-        await _onAddToCart({'product': currentProduct.product}, mode,
-            {'pendencie': false, 'days': 0});
-      } else {
+      if (resp["data"]['itens'][0]['saldo'] < 1 && resp["data"]['itens'][0]['descontinuado'] == 'S') {
+        print('condição 1');
+        Dialogs.onlyConfirmbutton(context, onConfirm: () {
+          Modular.to.pop();
+        },
+            info: Container(
+              child: Column(children: [
+                Row(
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Material(
+                  elevation: 2,
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.white),
+                    padding:
+                        EdgeInsets.only(top: 8, bottom: 8, left: 10, right: 10),
+                    child: Row(
+                      children: [
+                        Icon(Icons.disc_full_outlined),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                            "Codigo do produto: ${resp["data"]['itens'][0]["codigo"]}")
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+              ]),
+            ),
+            title: "OPSS!",
+            subtitle: "Detectamos que esse produto foi descontinuado e não será mais solicitado para reposição de estoque!!",
+            confirmText: "Sair");
+            return;
+      }
+      if (resp["data"]["pendencia"] == true && resp["data"]['itens'][0]["descontinuado"] == 'N' && resp["data"]['itens'][0]["saldo"] < 1 ) {
+        print('condição 2');
         Dialogs.confirmWithInfo(context, onCancel: () {
           setState(() {
             _isProcessing = false;
@@ -1063,6 +1100,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             subtitle: "Falta de produto em estoque",
             confirmText: "Continuar",
             cancelText: "Cancelar");
+            return;
+        
+      } else {
+        await _onAddToCart({'product': currentProduct.product}, mode,
+            {'pendencie': false, 'days': 0});
       }
     }
     // await _onAddToCart({'product': currentProduct.product}, 'onPurchase');

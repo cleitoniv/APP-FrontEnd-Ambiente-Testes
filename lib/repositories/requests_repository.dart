@@ -220,6 +220,8 @@ class RequestsRepository {
             "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
+      print('retorno checkstock:');
+      print(response.data);
       return response.data;
     } catch (e) {
       return {"success": false};
