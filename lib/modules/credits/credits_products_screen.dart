@@ -548,6 +548,7 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                     flex: 2,
                                                     child: InkWell(
                                                       onTap: () {
+                                                        print('back button triggered');
                                                         setState(() {
                                                           _onBackToPurchase();
                                                         });

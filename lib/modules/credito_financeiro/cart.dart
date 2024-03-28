@@ -97,6 +97,15 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
       key: _scaffoldKey,
       child: Scaffold(
         appBar: AppBar(
+          leading: BackButton(color: Colors.blue, onPressed: () {
+                Navigator.push(
+                    context,
+                  MaterialPageRoute(
+                  builder: (BuildContext context) => CreditsProductScreen(),
+                ),
+              );
+            },
+          ),
           title: Text('Carrinho', style: Theme.of(context).textTheme.headline4),
         ),
         body: SafeArea(
