@@ -298,79 +298,79 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ],
                 ),
                 SizedBox(height: 30),
-                Table(
-                  children: [
-                    TableRow(
-                      children: [
-                        {
-                          'title': 'Financeiro',
-                          'subtitle':
-                              'R\$ ${Helper.intToMoney(this.currentUser.data.money)}',
-                          'color': Theme.of(context).primaryColor,
-                          'widget': Icon(
-                            Icons.attach_money,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        },
-                        {
-                          'title': 'Produto',
-                          'subtitle':
-                              '${productSnapshot.data.product.boxes} caixas',
-                          'color': Color(0xffEFC75E),
-                          'widget': Image.asset(
-                            'assets/icons/open_box.png',
-                            width: 15,
-                            height: 15,
-                            color: Colors.white,
-                          ),
-                        },
-                        {
-                          'title': 'Testes',
-                          'subtitle':
-                              '${productSnapshot.data.product.tests} un.',
-                          'color': Colors.black12,
-                          'widget': Icon(
-                            Icons.remove_red_eye,
-                            color: Colors.black54,
-                            size: 15,
-                          ),
-                        }
-                      ].map(
-                        (item) {
-                          return ListTileMoreCustomizable(
-                            contentPadding: const EdgeInsets.all(0),
-                            horizontalTitleGap: -5,
-                            leading: CircleAvatar(
-                              backgroundColor: item['color'],
-                              radius: 12,
-                              child: item['widget'],
-                            ),
-                            title: Text(
-                              item['title'],
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  .copyWith(
-                                    fontSize: 14,
-                                  ),
-                            ),
-                            subtitle: Text(
-                              item['subtitle'],
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  .copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                            ),
-                          );
-                        },
-                      ).toList(),
-                    ),
-                  ],
-                ),
+                // Table(
+                //   children: [
+                //     TableRow(
+                //       children: [
+                //         {
+                //           'title': 'Financeiro',
+                //           'subtitle':
+                //               'R\$ ${Helper.intToMoney(this.currentUser.data.money)}',
+                //           'color': Theme.of(context).primaryColor,
+                //           'widget': Icon(
+                //             Icons.attach_money,
+                //             color: Colors.white,
+                //             size: 20,
+                //           ),
+                //         },
+                //         {
+                //           'title': 'Produto',
+                //           'subtitle':
+                //               '${productSnapshot.data.product.boxes} caixas',
+                //           'color': Color(0xffEFC75E),
+                //           'widget': Image.asset(
+                //             'assets/icons/open_box.png',
+                //             width: 15,
+                //             height: 15,
+                //             color: Colors.white,
+                //           ),
+                //         },
+                //         {
+                //           'title': 'Testes',
+                //           'subtitle':
+                //               '${productSnapshot.data.product.tests} un.',
+                //           'color': Colors.black12,
+                //           'widget': Icon(
+                //             Icons.remove_red_eye,
+                //             color: Colors.black54,
+                //             size: 15,
+                //           ),
+                //         }
+                //       ].map(
+                //         (item) {
+                //           return ListTileMoreCustomizable(
+                //             contentPadding: const EdgeInsets.all(0),
+                //             horizontalTitleGap: -5,
+                //             leading: CircleAvatar(
+                //               backgroundColor: item['color'],
+                //               radius: 12,
+                //               child: item['widget'],
+                //             ),
+                //             title: Text(
+                //               item['title'],
+                //               style: Theme.of(context)
+                //                   .textTheme
+                //                   .titleMedium
+                //                   .copyWith(
+                //                     fontSize: 14,
+                //                   ),
+                //             ),
+                //             subtitle: Text(
+                //               item['subtitle'],
+                //               style: Theme.of(context)
+                //                   .textTheme
+                //                   .headlineSmall
+                //                   .copyWith(
+                //                     fontSize: 14,
+                //                     fontWeight: FontWeight.normal,
+                //                   ),
+                //             ),
+                //           );
+                //         },
+                //       ).toList(),
+                //     ),
+                //   ],
+                // ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

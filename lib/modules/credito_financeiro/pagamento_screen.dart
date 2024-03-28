@@ -101,7 +101,9 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
   }
 
   _colorizeCredCardList(index, idSelected) {
-    if (index == idSelected && !billing) {
+    inspect(index);
+    print(idSelected);
+    if (index.token == idSelected.token && !billing) {
       return true;
     }
     return false;
@@ -133,7 +135,10 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
 
   @override
   void initState() {
-    super.initState();
+    
+    _cartWidgetBloc.currentPaymentFormIn
+        .add(PaymentMethod(isBoleto: false, creditCard: null));
+        super.initState();
     _creditCardBloc.fetchPaymentMethodsFinan();
     _creditCardNumberController = new MaskedTextController(
       mask: '0000 0000 0000 0000',
@@ -274,6 +279,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                               return StreamBuilder(
                                 stream: _cartWidgetBloc.currentPaymentFormOut,
                                 builder: (context, snapshot) {
+                                  inspect(snapshot);
                                   PaymentMethod _currentPaymentForm;
                                   if (!snapshot.hasData) {
                                     _currentPaymentForm =
@@ -296,11 +302,15 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                       horizontal: 20,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: !_currentPaymentForm.isEmpty &&
+                                      color: !_currentPaymentForm
+                                                        .isEmpty &&
+                                                    _currentPaymentForm
+                                                            .creditCard !=
+                                                        null &&
                                               _colorizeCredCardList(
                                                   _currentPaymentForm
-                                                      .creditCard.token,
-                                                  _creditCards[index].token)
+                                                      .creditCard,
+                                                  _creditCards[index])
                                           ? Theme.of(context).accentColor
                                           : Color(0xffF1F1F1),
                                       borderRadius: BorderRadius.circular(5),
@@ -331,14 +341,15 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                                               .copyWith(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
-                                                color: !_currentPaymentForm
-                                                            .isEmpty &&
+                                                color: !_currentPaymentForm.isEmpty &&
+                                                                  !snapshot.data
+                                                                      .isBoleto &&
+                                                                  _currentPaymentForm.creditCard !=
+                                                                      null &&
                                                         _colorizeCredCardList(
                                                             _currentPaymentForm
-                                                                .creditCard
-                                                                .token,
-                                                            _creditCards[index]
-                                                                .token)
+                                                                .creditCard,
+                                                            _creditCards[index])
                                                     ? Colors.white
                                                     : null,
                                               ),
