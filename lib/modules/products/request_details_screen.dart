@@ -643,6 +643,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   Map _putProductCode(_first, result) {
     String current = _first['current'];
+    print('------- 646');
+    print(result);
+    print(_first);
     if (current == 'Graus diferentes em cada olho') {
       result['data'].forEach((item) {
         _first[current][item['olho']]['codigo'] = item['codigo']['codigo'];
@@ -909,29 +912,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     };
     return _data;
   }
-
-  _getProductCodeTest(obj) async {
-    if (currentProduct.product.hasTest) {
-      var result = await _productBloc.productCode(productCodeTestList(obj));
-      return Map.from(result)['data'][0]['codigo']['codigo'];
-    } else 
-      return null;
-  }
-
-  _onPurchase(BuildContext context, ProductModel product, String mode) async {
-    if (isValidDate(_birthdayController.text, context)) {
-      return;
-    }
-    Map<dynamic, dynamic> _first =
-        await _productWidgetBloc.pacientInfoOut.first;
-
-    var result = await _productBloc.productCode(productCodeList(_first));
-    _first = _putProductCode(_first, result);
-    int itemQuantity =
-        _productQuantity(_first['current'] == "Mesmo grau em ambos");
-
-    if (!_first[_first['current']].containsKey('codigo')) {
-      showDialog<void>(
+  _firstDialog() {
+    showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
@@ -943,7 +925,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             actions: <Widget>[
               TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.cyan,
+                  backgroundColor: Colors.white,
                   padding: const EdgeInsets.all(16.0),
                 ),
                 child: Container(
@@ -975,19 +957,43 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         },
       );
       return;
-    }
-    var cartObject = _cartParams(_first, {});
-    Map resp =
-        // ignore: await_only_futures
-        await _requestsBloc.checkStock({"itens": _updateQtdCart(cartObject)});
-    if (resp["success"]) {
-      if (resp["data"]['itens'][0]['saldo'] < 1 && resp["data"]['itens'][0]['descontinuado'] == 'S') {
-        print('condição 1');
-        Dialogs.onlyConfirmbutton(context, onConfirm: () {
+  }
+
+  _secondDialog(resp) {
+    Dialogs.onlyConfirmbutton(context, onConfirm: () {
           Modular.to.pop();
         },
             info: Container(
               child: Column(children: [
+                
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: resp['data']['index'].map<Widget>((e) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    // width: 260,
+                                    child: Text(
+                                      "${resp['data']['itens'][e - 1]['descricao']}",
+                                      overflow: TextOverflow.visible,
+                                      maxLines: 1,
+                                      softWrap: true,
+                                      style: TextStyle(fontSize: 11),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  )
+                                ],
+                              )
+                            ],
+                          );
+                        }).toList())
+                  ,
                 Row(
                 ),
                 SizedBox(
@@ -1017,13 +1023,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               ]),
             ),
             title: "OPSS!",
-            subtitle: "Detectamos que esse produto foi descontinuado e não será mais solicitado para reposição de estoque!!",
+            subtitle: "Detectamos que esse parametro foi descontinuado e não será mais solicitado para reposição de estoque!!",
             confirmText: "Sair");
             return;
-      }
-      if (resp["data"]["pendencia"] == true && resp["data"]['itens'][0]["descontinuado"] == 'N' && resp["data"]['itens'][0]["saldo"] < 1 ) {
-        print('condição 2');
-        Dialogs.confirmWithInfo(context, onCancel: () {
+  }
+
+  _thirdDialog(mode, resp) {
+    Dialogs.confirmWithInfo(context, onCancel: () {
           setState(() {
             _isProcessing = false;
             _isLoadingPrimaryButton = false;
@@ -1101,6 +1107,69 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             confirmText: "Continuar",
             cancelText: "Cancelar");
             return;
+  }
+
+  _getProductCodeTest(obj) async {
+    if (currentProduct.product.hasTest && obj['test'] == "Sim") {
+      var result = await _productBloc.productCode(productCodeTestList(obj));
+      return Map.from(result)['data'][0]['codigo']['codigo'];
+    } else 
+      return null;
+  }
+
+  _onPurchase(BuildContext context, ProductModel product, String mode) async {
+    if (isValidDate(_birthdayController.text, context)) {
+      return;
+    }
+    Map<dynamic, dynamic> _first =
+        await _productWidgetBloc.pacientInfoOut.first;
+
+    var result = await _productBloc.productCode(productCodeList(_first));
+    _first = _putProductCode(_first, result);
+    int itemQuantity =
+        _productQuantity(_first['current'] == "Mesmo grau em ambos");
+    if (_first['current'] == "Graus diferentes em cada olho") {
+      
+      if (!_first[_first['current']]['direito'].containsKey('codigo') && !_first[_first['current']]['esquerdo'].containsKey('codigo')) {
+      _firstDialog();
+      }
+      var cartObject = _cartParams(_first, {});
+      Map resp =
+          // ignore: await_only_futures
+          await _requestsBloc.checkStock({"itens": _updateQtdCart(cartObject)});
+      for (var i = 0; i < resp["data"]['itens'].length; i ++) {
+          if (resp["success"]) {
+          if (resp["data"]['itens'][i]['saldo'] < 1 && resp["data"]['itens'][i]['descontinuado'] == 'S') {
+            print('condição 1');
+            return _secondDialog(resp);
+          }
+          
+          if (resp["data"]["pendencia"] == true && resp["data"]['itens'][i]["saldo"] < 1 ) {
+            print('condição 2');
+            return _thirdDialog(mode, resp);
+            
+          } else {
+          return await _onAddToCart({'product': currentProduct.product}, mode,
+                {'pendencie': false, 'days': 0});
+          }
+        }
+      }  
+    } 
+    if (!_first[_first['current']].containsKey('codigo') && _first['current'] != "Graus diferentes em cada olho") {
+     _firstDialog();
+    }
+    var cartObject = _cartParams(_first, {});
+    Map resp =
+        // ignore: await_only_futures
+        await _requestsBloc.checkStock({"itens": _updateQtdCart(cartObject)});
+    if (resp["success"]) {
+      if (resp["data"]['itens'][0]['saldo'] < 1 && resp["data"]['itens'][0]['descontinuado'] == 'S') {
+        print('condição 1');
+        _secondDialog(resp);
+      }
+      if (resp["data"]["pendencia"] == true &&  resp["data"]['itens'][0]["saldo"] < 1 ) {
+        print('condição 2');
+        _thirdDialog(mode, resp);
         
       } else {
         await _onAddToCart({'product': currentProduct.product}, mode,
@@ -1781,7 +1850,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 )),
             SizedBox(height: 10),
             Text(
-              'Gestão do Paciente & Pontos Controle o período para reavaliação do seu paciente preenchendo o nome e a data de nascimento, opcionalmente completando com o CPF dele, voce acumula pontos para compras futuras.',
+              'Preenchendo o nome você obterá o controle para o periodo de reavaliação do paciente.',
               style: Theme.of(context).textTheme.subtitle1,
               // textScaleFactor: 1.25,
               textAlign: TextAlign.center,
