@@ -67,7 +67,8 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
 
   _verifyDiscount(valor, offers, hasdata) {
     print(hasdata);
-    if (offers != null) {
+    inspect(offers);
+    if (offers != null && offers.offers.length > 0) {
       if (hasdata) {
         List<int> percentage = [];
         List<int> valueTotal = [];

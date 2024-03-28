@@ -232,23 +232,23 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                 thickness: 1,
                 color: Colors.black12,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Taxa de entrega',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                  Text(
-                    'R\$ ${Helper.intToMoney(0)}',
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          fontSize: 14,
-                        ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: <Widget>[
+              //     Text(
+              //       'Taxa de entrega',
+              //       style: Theme.of(context).textTheme.subtitle1.copyWith(
+              //             fontSize: 14,
+              //           ),
+              //     ),
+              //     Text(
+              //       'R\$ ${Helper.intToMoney(0)}',
+              //       style: Theme.of(context).textTheme.subtitle1.copyWith(
+              //             fontSize: 14,
+              //           ),
+              //     ),
+              //   ],
+              // ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

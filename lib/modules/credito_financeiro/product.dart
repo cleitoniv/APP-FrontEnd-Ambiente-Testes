@@ -379,27 +379,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       'Quantidade de caixas',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    TextFieldWidget(
-                        width: 120,
-                        controller: _lensController,
-                        readOnly: false,
-                        keyboardType: TextInputType.number,
-                        inputFormattersActivated: true,
-                        prefixIcon: IconButton(
-                          icon: Icon(
-                            Icons.remove,
-                            color: Colors.black26,
-                            size: 30,
-                          ),
-                          onPressed: _onRemoveLens,
-                        ),
-                        suffixIcon: IconButton(
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: TextFieldWidget(
+                          width: 150,
+                          controller: _lensController,
+                          readOnly: false,
+                          keyboardType: TextInputType.number,
+                          inputFormattersActivated: true,
+                          prefixIcon: IconButton(
                             icon: Icon(
-                              Icons.add,
+                              Icons.remove,
                               color: Colors.black26,
                               size: 30,
                             ),
-                            onPressed: _onAddLens)),
+                            onPressed: _onRemoveLens,
+                          ),
+                          suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.add,
+                                color: Colors.black26,
+                                size: 30,
+                              ),
+                              onPressed: _onAddLens)),
+                    ),
                   ],
                 ),
                 StreamBuilder(
@@ -429,7 +432,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             {
                               'title': 'Material',
                               'value': productSnapshot.data.product.material ?? '-',
-                            },
+                            }, 
                             {
                               'title': 'DK/t',
                               'value': productSnapshot.data.product.dkT ?? '-',
