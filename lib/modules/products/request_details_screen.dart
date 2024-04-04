@@ -1199,7 +1199,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           color: Theme.of(context).accentColor,
         ),
         'onTap': _onBackToPurchase,
-        'text': 'Continue Comprando',
+        'text': 'Voltar a lista de produtos',
       },
       // {
       //   'color': Theme.of(context).primaryColor,
@@ -1483,7 +1483,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
     _fieldData = [
       {
-        'labelText': 'Nome do paciente',
+        'labelText': 'Identificação do paciente (Opcional)',
         'icon': Icons.person,
         'controller': _nameController,
       },
@@ -1721,7 +1721,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('testee');
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(
@@ -1849,12 +1848,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   ],
                 )),
             SizedBox(height: 10),
-            Text(
-              'Preenchendo o nome você obterá o controle para o periodo de reavaliação do paciente.',
-              style: Theme.of(context).textTheme.subtitle1,
-              // textScaleFactor: 1.25,
-              textAlign: TextAlign.center,
-            ),
+            // Text(
+            //   'Preenchendo a identificação você obterá o controle para o periodo de reavaliação do paciente.',
+            //   style: Theme.of(context).textTheme.subtitle1,
+            //   // textScaleFactor: 1.25,
+            //   textAlign: TextAlign.center,
+            // ),
             SizedBox(height: 30),
             Column(
               children: _fieldData.take(1).map(
@@ -2372,7 +2371,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         FittedBox(
                           fit: BoxFit.contain,
                           child: Text(
-                            'Entrega prevista em ${currentProduct.product.previsaoEntrega} dias',
+                            'Entrega prevista, Até ${currentProduct.product.previsaoEntrega} dias',
                             style:
                                 Theme.of(context).textTheme.headline5.copyWith(
                                       fontSize: 16,
@@ -2384,6 +2383,48 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   ),
                 ],
               ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(
+                top: 20,
+              ),
+              child: !_isLoadingSecondButton
+                  ? ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          primary: Theme.of(context).primaryColor,
+                          elevation: 0),
+                      icon: Image.asset(
+                        'assets/icons/cart.png',
+                        width: 20,
+                        height: 20,
+                        color: Colors.white,
+                      ),
+                      onPressed: !_isProcessing
+                          ? () async {
+                              setState(() {
+                                _isLoadingSecondButton = true;
+                                _isProcessing = true;
+                              });
+                              log("${currentProduct.product.value}");
+
+                              await _onPurchase(
+                                  context, widget.product, 'Normal');
+                              setState(() {
+                                _isProcessing = false;
+                                _isLoadingSecondButton = false;
+                              });
+                            }
+                          : null,
+                      label: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'Adicionar ao Carrinho',
+                          style: Theme.of(context).textTheme.button.copyWith(
+                              color: Colors.white, fontSize: _verifyFontSize()),
+                        ),
+                      ),
+                    )
+                  : Center(child: CircularProgressIndicator()),
             ),
             Container(
               margin: const EdgeInsets.only(
@@ -2453,49 +2494,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                           ),
                         ));
                   },
-                ).toList()),
-            Container(
-              margin: const EdgeInsets.only(
-                top: 20,
-              ),
-              child: !_isLoadingSecondButton
-                  ? ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                          primary: Theme.of(context).primaryColor,
-                          elevation: 0),
-                      icon: Image.asset(
-                        'assets/icons/cart.png',
-                        width: 20,
-                        height: 20,
-                        color: Colors.white,
-                      ),
-                      onPressed: !_isProcessing
-                          ? () async {
-                              setState(() {
-                                _isLoadingSecondButton = true;
-                                _isProcessing = true;
-                              });
-                              log("${currentProduct.product.value}");
-
-                              await _onPurchase(
-                                  context, widget.product, 'Normal');
-                              setState(() {
-                                _isProcessing = false;
-                                _isLoadingSecondButton = false;
-                              });
-                            }
-                          : null,
-                      label: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          'Adicionar ao Carrinho',
-                          style: Theme.of(context).textTheme.button.copyWith(
-                              color: Colors.white, fontSize: _verifyFontSize()),
-                        ),
-                      ),
-                    )
-                  : Center(child: CircularProgressIndicator()),
-            )
+                ).toList())
           ],
         ),
       ),

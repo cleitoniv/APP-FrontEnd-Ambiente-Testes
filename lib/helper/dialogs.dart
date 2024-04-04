@@ -107,9 +107,9 @@ class Dialogs {
 
   static pacienteInfo(
     BuildContext context, {
-    String title = 'Controle de paciente',
+    String title = 'Identificação do paciente',
     String subtitle =
-        '''Quando voce insere o nome e o CPF(opcional) do seu paciente, nos permite te auxiliar no controle da data de reavaliação!''',
+        '''Quando você  preenche a identificação do paciente, você receberá o seu pedido com esta referência''',
     Function onTap,
     String buttonText = 'Entendi',
   }) {
@@ -134,15 +134,97 @@ class Dialogs {
               ),
             ),
             SizedBox(height: 10),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.headline5,
-            ),
+              FittedBox(child: Text(
+                title,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            ), 
             SizedBox(height: 10),
             Text(
               subtitle,
               textAlign: TextAlign.justify,
               style: Theme.of(context).textTheme.subtitle1,
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: onTap,
+              child: Text(
+                buttonText,
+                style: Theme.of(context).textTheme.button,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  static creditsInfo(
+    BuildContext context, {
+    String financeiroInfo = '',
+    String produtoInfo = '',
+    Function onTap,
+    String buttonText = 'Entendi',
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Column(
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      radius: 12,
+                      child: Icon(
+                        Icons.attach_money,
+                        color: Colors.white,
+                        )
+                      ),
+                      SizedBox(width: 5,),
+                    Text('Crédito Financeiro:', style: TextStyle(color: Colors.cyan),),
+                  ],
+                ),
+                Text(
+                  financeiroInfo,
+                  // textAlign: TextAlign.justify,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+            SizedBox(height: 30),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                              backgroundColor: Color(0xffEFC75E),
+                              radius: 12,
+                              child: Image.asset(
+                              'assets/icons/open_box.png',
+                              width: 15,
+                              height: 15,
+                              color: Colors.white,
+                            ),
+                    ),
+                    SizedBox(width: 5,),
+                    Text('Crédito de Produto:', style: TextStyle(color: Colors.cyan),),
+                  ],
+                ),
+                Text(
+                  produtoInfo,
+                  // textAlign: TextAlign.justify,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
             ),
             SizedBox(height: 30),
             ElevatedButton(

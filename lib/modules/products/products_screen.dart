@@ -111,9 +111,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           crossAxisCount: 2,
                           mainAxisSpacing: 5,
                           crossAxisSpacing: 20,
-                          childAspectRatio: 0.7,
+                          childAspectRatio: 0.9,
                         ),
                         itemBuilder: (context, index) {
+                          print('valor dos produtos grid');
+                          print(_products[index].value);
                           return ProductWidget(
                             value: _products[index].value,
                             title: _products[index].title,

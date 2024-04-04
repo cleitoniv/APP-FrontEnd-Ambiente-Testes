@@ -267,7 +267,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       },
       {
         'textCapitalization': TextCapitalization.words,
-        'maxLength': 15,
+        'maxLength': 24,
         'maxLengthEnforce': MaxLengthEnforcement.enforced,
         'labelText': 'Como gostaria de ser chamado?',
         'prefixIcon': Icon(

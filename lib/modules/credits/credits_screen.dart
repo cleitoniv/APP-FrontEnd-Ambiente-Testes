@@ -25,6 +25,8 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 import 'package:random_string/random_string.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../helper/dialogs.dart';
+
 class CreditsScreen extends StatefulWidget {
   final ProductModel product;
   CreditsScreen({this.product});
@@ -572,7 +574,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                               ? 3.3
                               : 4.0),
                   child: Container(
-                    padding: const EdgeInsets.only(top: 30, bottom: 20),
+                    // padding: const EdgeInsets.only(top: 30, bottom: 20),
+                    padding: const EdgeInsets.only(bottom: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -801,96 +804,120 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                               null
                                                           ? Column(
                                                               children: [
+                                                                Container(
+                                                                      // height: 350,
+                                                                        alignment: Alignment.topCenter,
+                                                                        child: IconButton(
+                                                                          iconSize: 35,
+                                                                          onPressed: () {
+                                                                            Dialogs.creditsInfo(context, 
+                                                                            financeiroInfo: 'Selecione um valor e obtenha seu Credito Financeiro! Congelaremos a tabela de preço atual e lhe daremos um desconto pré definido na compra de qualquer item do nosso portifólio, quando utilizar o seu crédito financeiro.',
+                                                                            produtoInfo: 'Escolha o seu pacote de Crédito de Produto! Recebendo descontos incriveis para utilizar seu credito de produto de acordo com a sua conveniência',
+                                                                            onTap: () {
+                                                                              Modular.to.pop();
+                                                                              }
+                                                                            );
+                                                                          }, icon: Align(
+                                                                            alignment: Alignment.center,
+                                                                            child: Icon(Icons.help)
+                                                                          ),
+                                                                      ),
+                                                                    ),
                                                                 FittedBox(
                                                                   fit: BoxFit
                                                                       .contain,
                                                                   child: Text(
-                                                                    "Selecione o Pacote",
+                                                                    "Selecione o Pacote Financeiro",
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
                                                                         .headline5,
                                                                   ),
                                                                 ),
-                                                                GridView
-                                                                    .builder(
-                                                                  gridDelegate:
-                                                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                                                          crossAxisCount:
-                                                                              2),
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left: 20,
-                                                                      right:
-                                                                          20),
-                                                                  shrinkWrap:
-                                                                      true,
-                                                                  scrollDirection: _currentType ==
-                                                                          'Financeiro'
-                                                                      ? Axis
-                                                                          .vertical
-                                                                      : Axis
-                                                                          .horizontal,
-                                                                  itemCount: _currentType ==
-                                                                          'Financeiro'
-                                                                      ? _financialCredits
-                                                                              .length +
-                                                                          1
-                                                                      : _financialCredits
-                                                                          .length,
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          index) {
-                                                                    if (index >=
-                                                                        _financialCredits
-                                                                            .length) {
-                                                                      return _otherValue();
-                                                                    }
-                                                                    return _currentType ==
-                                                                            'Financeiro'
-                                                                        ? InkWell(
-                                                                            onTap:
-                                                                                () async {
-                                                                              setState(() {
-                                                                                _isLoadingPackage = true;
-                                                                              });
-                                                                              Helper.whenDifferentOperation(
-                                                                              '13', () {
-                                                                            _addCreditoFinanceiro(_financialCredits[index]);
-                                                                              setState(() {
-                                                                                _isLoadingPackage = false;
-                                                                              });
-                                                                          },
-                                                                              context,
-                                                                              _requestsBloc
-                                                                                  .cartItems,
-                                                                              _requestsBloc,
-                                                                              _cartWidgetBloc);
-                                                                              
-                                                                            },
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: EdgeInsets.all(5),
-                                                                              child: CardWidget(
-                                                                                parcels: _financialCredits[index].installmentCount,
-                                                                                value: _financialCredits[index].value,
-                                                                                discount: _financialCredits[index].discount,
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                        : InkWell(
-                                                                            onTap:
-                                                                                () async {
-                                                                              _addCreditoProduct(this._currentProduct["product"], _financialCredits[index]);
-                                                                            },
-                                                                            child:
-                                                                                CreditProductCardWidget(
-                                                                              precoUnitario: _financialCredits[index].price,
-                                                                              caixas: _financialCredits[index].quantity,
-                                                                              value: _financialCredits[index].total,
-                                                                            ),
-                                                                          );
-                                                                  },
+                                                                
+                                                                Stack(
+                                                                  children: [
+                                                                    GridView
+                                                                        .builder(
+                                                                      gridDelegate:
+                                                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                                                              crossAxisCount:
+                                                                                  2),
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left: 20,
+                                                                          right:
+                                                                              20),
+                                                                      shrinkWrap:
+                                                                          true,
+                                                                      scrollDirection: _currentType ==
+                                                                              'Financeiro'
+                                                                          ? Axis
+                                                                              .vertical
+                                                                          : Axis
+                                                                              .horizontal,
+                                                                      itemCount: _currentType ==
+                                                                              'Financeiro'
+                                                                          ? _financialCredits
+                                                                                  .length +
+                                                                              1
+                                                                          : _financialCredits
+                                                                              .length,
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                        if (index >=
+                                                                            _financialCredits
+                                                                                .length) {
+                                                                          return _otherValue();
+                                                                        }
+                                                                        return _currentType ==
+                                                                                'Financeiro'
+                                                                            ? InkWell(
+                                                                                onTap:
+                                                                                    () async {
+                                                                                  setState(() {
+                                                                                    _isLoadingPackage = true;
+                                                                                  });
+                                                                                  Helper.whenDifferentOperation(
+                                                                                  '13', () {
+                                                                                _addCreditoFinanceiro(_financialCredits[index]);
+                                                                                  setState(() {
+                                                                                    _isLoadingPackage = false;
+                                                                                  });
+                                                                              },
+                                                                                  context,
+                                                                                  _requestsBloc
+                                                                                      .cartItems,
+                                                                                  _requestsBloc,
+                                                                                  _cartWidgetBloc);
+                                                                                  
+                                                                                },
+                                                                                child:
+                                                                                    Padding(
+                                                                                  padding: EdgeInsets.all(5),
+                                                                                  child: CardWidget(
+                                                                                    parcels: _financialCredits[index].installmentCount,
+                                                                                    value: _financialCredits[index].value,
+                                                                                    discount: _financialCredits[index].discount,
+                                                                                  ),
+                                                                                ),
+                                                                              )
+                                                                            : InkWell(
+                                                                                onTap:
+                                                                                    () async {
+                                                                                  _addCreditoProduct(this._currentProduct["product"], _financialCredits[index]);
+                                                                                },
+                                                                                child:
+                                                                                    CreditProductCardWidget(
+                                                                                  precoUnitario: _financialCredits[index].price,
+                                                                                  caixas: _financialCredits[index].quantity,
+                                                                                  value: _financialCredits[index].total,
+                                                                                ),
+                                                                              );
+                                                                      },
+                                                                    ),
+                                                                  ],
                                                                 )
                                                               ],
                                                             )
@@ -908,7 +935,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                   );
                                 },
                               );
-                            
                           },
                         );
                       },

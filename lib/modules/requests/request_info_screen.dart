@@ -56,6 +56,7 @@ class RequestInfoScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
+                  pedidoInfo.data.pedido.items[0].items[0]['tipoVenda'] != "A" ? Container() :
                   Table(
                     children: [
                       TableRow(
@@ -103,6 +104,7 @@ class RequestInfoScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20),
+                  pedidoInfo.data.pedido.items[0].items[0]['tipoVenda'] != "A" ? Container() :
                   Center(
                     child: Column(
                       children: [
@@ -139,8 +141,7 @@ class RequestInfoScreen extends StatelessWidget {
                         shrinkWrap: true,
                         itemCount: pedidoInfo.data.pedido.items.length,
                         itemBuilder: (context, index) {
-                          List<ItemPedidoModel> items =
-                              pedidoInfo.data.pedido.items;
+                          List<ItemPedidoModel> items = pedidoInfo.data.pedido.items;
                           return Container(
                             margin: const EdgeInsets.symmetric(
                               vertical: 20,
@@ -150,12 +151,15 @@ class RequestInfoScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
+                                items[index].items[0]['tipoVenda'] != "A" ? 
+                                Container()
+                                :
                                 Table(
                                   children: [
                                     TableRow(
                                       children: [
                                         Text(
-                                          'Paciente',
+                                          'Identificação do paciente',
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline5
@@ -165,28 +169,28 @@ class RequestInfoScreen extends StatelessWidget {
                                               ),
                                           textAlign: TextAlign.center,
                                         ),
-                                        Text(
-                                          'Nº de Ref.',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              .copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Text(
-                                          'Nascimento',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              .copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                          textAlign: TextAlign.center,
-                                        )
+                                        // Text(
+                                        //   'Nº de Ref.',
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .headline5
+                                        //       .copyWith(
+                                        //         fontSize: 14,
+                                        //         fontWeight: FontWeight.normal,
+                                        //       ),
+                                        //   textAlign: TextAlign.center,
+                                        // ),
+                                        // Text(
+                                        //   'Nascimento',
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .headline5
+                                        //       .copyWith(
+                                        //         fontSize: 14,
+                                        //         fontWeight: FontWeight.normal,
+                                        //       ),
+                                        //   textAlign: TextAlign.center,
+                                        // )
                                       ],
                                     ),
                                     TableRow(
@@ -201,26 +205,26 @@ class RequestInfoScreen extends StatelessWidget {
                                               ),
                                           textAlign: TextAlign.center,
                                         ),
-                                        Text(
-                                          "${items[index].numPac ?? "-"}",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle1
-                                              .copyWith(
-                                                fontSize: 14,
-                                              ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Text(
-                                          "${Helper.sqlToDate(items[index].dataNascimento)}",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle1
-                                              .copyWith(
-                                                fontSize: 14,
-                                              ),
-                                          textAlign: TextAlign.center,
-                                        )
+                                        // Text(
+                                        //   "${items[index].numPac ?? "-"}",
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .subtitle1
+                                        //       .copyWith(
+                                        //         fontSize: 14,
+                                        //       ),
+                                        //   textAlign: TextAlign.center,
+                                        // ),
+                                        // Text(
+                                        //   "${Helper.sqlToDate(items[index].dataNascimento)}",
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .subtitle1
+                                        //       .copyWith(
+                                        //         fontSize: 14,
+                                        //       ),
+                                        //   textAlign: TextAlign.center,
+                                        // )
                                       ],
                                     ),
                                   ],
@@ -237,8 +241,216 @@ class RequestInfoScreen extends StatelessWidget {
                                             null &&
                                         items[index].items[index2]['tests'] ==
                                             "S";
+                                    print('linha 240');
+                                    print(items[index].items[index2]);
                                     return Column(
-                                      children: [
+                                      children:
+                                      items[index].items[index2]['tipoVenda'] != "A" ? 
+                                      [
+                                        // ListTileMoreCustomizable(
+                                        //     dense: true,
+                                        //     contentPadding:
+                                        //         const EdgeInsets.all(0),
+                                        //     horizontalTitleGap: 0,
+                                        //     leading: Image.asset(
+                                        //       'assets/icons/info.png',
+                                        //       width: 25,
+                                        //       height: 25,
+                                        //     ),
+                                        //     title: Text.rich(
+                                        //       TextSpan(
+                                        //         children: [
+                                        //           TextSpan(
+                                        //             text:
+                                        //                 'Quantidade selecionada tem duração recomendada de ',
+                                        //             style: Theme.of(context)
+                                        //                 .textTheme
+                                        //                 .subtitle1
+                                        //                 .copyWith(
+                                        //                   fontSize: 14,
+                                        //                 ),
+                                        //           ),
+                                        //           TextSpan(
+                                        //             text:
+                                        //                 '${items[index].items[index2]['duracao']}',
+                                        //             style: Theme.of(context)
+                                        //                 .textTheme
+                                        //                 .headline5
+                                        //                 .copyWith(
+                                        //                   fontSize: 14,
+                                        //                 ),
+                                        //           ),
+                                        //         ],
+                                        //       ),
+                                        //     )),
+                                        SizedBox(height: 10),
+                                        ListTileMoreCustomizable(
+                                            contentPadding:
+                                                const EdgeInsets.all(0),
+                                            horizontalTitleGap: 8,
+                                            leading: SizedBox(
+                                              child: CachedNetworkImage(
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    Image.asset(
+                                                        'assets/images/no_image_product.jpeg'),
+                                                imageUrl: items[index]
+                                                    .items[index2]['imageUrl'],
+                                                width: 80,
+                                                height: 80,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            
+                                            title: Row(
+                                              children: [
+                                                items[index].items[index2]
+                                                                ['operation'] !=
+                                                            "07" &&
+                                                        items[index].items[
+                                                                    index2]
+                                                                ['tests'] ==
+                                                            "N"
+                                                    ? Expanded(
+                                                        child: FittedBox(
+                                                          fit: BoxFit.contain,
+                                                          child: Text(
+                                                            "${items[index].items[index2]['produto']}",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .subtitle1
+                                                                .copyWith(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : items[index].items[index2]['produto_teste'] != null &&
+                                                            items[index].items[
+                                                                        index2]
+                                                                    ['tests'] ==
+                                                                "S"
+                                                        ? Expanded(
+                                                            child: FittedBox(
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                              child: Text(
+                                                                "${items[index].items[index2]['produto_teste']}",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Expanded(
+                                                            child: FittedBox(
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                              child: Text(
+                                                                "Sem informações disponiveis",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .subtitle1
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          1,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                SizedBox(width: 20),
+                                              ],
+                                            ),
+                                            subtitle: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Container(
+                                                  width: 110,
+                                                  height: 20,
+                                                  decoration: BoxDecoration(
+                                                    color: items[index].items[index2]['operation'] == "04" ? Color.fromARGB(255, 178, 174, 174) : Color(0xffFAF4E4),
+                                                    borderRadius: BorderRadius.circular(5),
+                                                  ),
+                                                  child: Text(
+                                                    '${items[index].items[index2]['quantidade']} Unidades.',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle1
+                                                        .copyWith(
+                                                          fontSize: 14,
+                                                          color: Colors.black38,
+                                                        ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 20),
+                                                // CircleAvatar(
+                                                //     radius: 10,
+                                                //     backgroundColor:
+                                                //         Helper.buyTypeBuildRequestInfo(
+                                                //                 context,
+                                                //                 items[index]
+                                                //                         .items[index2]
+                                                //                     ['operation'],
+                                                //                 items[index]
+                                                //                         .items[index2]
+                                                //                     ['tests'])[
+                                                //             'background'],
+                                                //     child: Helper.buyTypeBuildRequestInfo(
+                                                //         context,
+                                                //         items[index]
+                                                //                 .items[index2]
+                                                //             ['operation'],
+                                                //         items[index]
+                                                //                 .items[index2]
+                                                //             ['tests'])['icon']
+                                                // ),
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  items[index].items[index2]['operation'] == null ? "" : "Crédito de ${Helper.buyTypeBuildRequestInfo(context, items[index].items[index2]['operation'], items[index].items[index2]['tests'])['title']}",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle1
+                                                      .copyWith(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.black54,
+                                                      ),
+                                                ),
+                                                SizedBox(height: 34),
+                                              ],
+                                            ),
+                                            trailing: FittedBox(
+                                              fit: BoxFit.contain,
+                                              child: Text(
+                                                'R\$ ${isTest ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5
+                                                    .copyWith(
+                                                      fontSize: 16,
+                                                    ),
+                                              ),
+                                            ))
+                                      ] :
+                                       
+                                       [
                                         ListTileMoreCustomizable(
                                             dense: true,
                                             contentPadding:

@@ -1,5 +1,6 @@
 // import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/blocs/auth_bloc.dart';
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
@@ -23,6 +24,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   GlobalKey<ScaffoldMessengerState> _scaffoldKey =
       GlobalKey<ScaffoldMessengerState>();
   CartWidgetBloc _cartWidgetBloc = Modular.get<CartWidgetBloc>();
+  var listToTakeOperations = [];
   int _taxaEntrega = 0;
   bool _lock = false;
   StreamSubscription _productCartReset;
@@ -159,6 +161,18 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     super.dispose();
   }
 
+  _getTextByTypeOperation(list) {
+      if (list.contains('01')) {
+        return 'Avulso';
+      } else if (list.contains('06') || list.contains('07')) {
+        return 'de Crédito de Produto';
+      } else if (list.contains('13')) {
+        return 'de Crédito Financeiro';
+      } else {
+        return 'de Remessa de Testes';
+      } 
+  }
+
   _getMaxDaysCart(data) {
     var ver = data.map((e) {
       if (e['operation'] == '06') {
@@ -186,8 +200,9 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
         key: _scaffoldKey,
         child: Scaffold(
           appBar: AppBar(
-            title:
-                Text('Carrinho', style: Theme.of(context).textTheme.headline4),
+            title: listToTakeOperations.length > 0 
+            ? Text('Pedido ${_getTextByTypeOperation(listToTakeOperations)}', style: Theme.of(context).textTheme.headline4)
+            : Text('Carrinho', style: Theme.of(context).textTheme.headline4),
             automaticallyImplyLeading: false,
             centerTitle: true,
           ),
@@ -216,6 +231,16 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                       );
                     }
                     List<Map<String, dynamic>> _data = snapshot.data;
+                    var operations = _data.map((e) {
+                      return e['operation'];
+                    }).toList();
+                    if (listToTakeOperations.length != operations.length) {
+                      Future.delayed(const Duration(milliseconds: 1), () {
+                      setState(() {
+                       listToTakeOperations = operations;
+                      });
+                    });
+                    }
                     return Helper.CartList(
                         _data, hasPrice, _removeItem, selectPrice);
                   },

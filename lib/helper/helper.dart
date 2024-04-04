@@ -132,8 +132,6 @@ class Helper {
     var lookingCartOperations = cartItems.map((e) {
       return e['operation'];
     }).toList();
-    print(lookingCartOperations);
-    print(operation);
     
     if(!lookingCartOperations.isEmpty && (lookingCartOperations[0] == '01' || lookingCartOperations[0] == '04') && (operation == '01')) {
       function();
@@ -172,7 +170,6 @@ class Helper {
     if (_data[index].containsKey('Olho direito')) {
       _data[index]['Olho direito']['quantidade'] = _data[index]['quantity'];
       var params = _data[index]['Olho direito'];
-
       if (params['cylinder'] == '') {
         _data[index]['Olho direito'].remove('cylinder');
       }
@@ -202,7 +199,6 @@ class Helper {
     } else if (_data[index].containsKey('Olho esquerdo')) {
       _data[index]['Olho esquerdo']['quantidade'] = _data[index]['quantity'];
       var params = _data[index]['Olho esquerdo'];
-
       if (params['cylinder'] == '') {
         _data[index]['Olho esquerdo'].remove('cylinder');
       }
@@ -233,7 +229,6 @@ class Helper {
       _data[index]['Mesmo grau em ambos']['quantidade'] =
           _data[index]['quantity'];
       var params = _data[index]['Mesmo grau em ambos'];
-
       if (params['cylinder'] == '') {
         _data[index]['Mesmo grau em ambos'].remove('cylinder');
       }
@@ -270,7 +265,6 @@ class Helper {
               ['quantidade'] = _data[index]['quantity_for_eye']['direito'];
 
           var params = _data[index]['Graus diferentes em cada olho']['direito'];
-
           if (params['cylinder'] == '') {
             _data[index]['Graus diferentes em cada olho']['direito']
                 .remove('cylinder');
@@ -306,7 +300,6 @@ class Helper {
               ['quantidade'] = _data[index]['quantity_for_eye']['esquerdo'];
           var params =
               _data[index]['Graus diferentes em cada olho']['esquerdo'];
-
           if (params['cylinder'] == '') {
             _data[index]['Graus diferentes em cada olho']['esquerdo']
                 .remove('cylinder');
@@ -352,32 +345,7 @@ class Helper {
   }
 
   static paramsList(_data, index) {
-    print('dados do paramslist');
-    print(_data);
-    // if (_data[index]['operation'].contains('04')) {
-    //   var testCode = _data[index][_data[index]['current']]['codigo'].replaceAll('C', 'T');
-    //   print('cidigo de teste:');
-    //   print(testCode);
-    //   print(_data[index][_data[index]['current']]);
-    //     _data[index][_data[index]['current']].update('codigo', (value) => testCode);
-    // }
-    // print(_data);
     if (_data[index].containsKey('Olho direito')) {
-      // print('entrou aqui');
-      // if (_data[index]['tests'].contains("Sim") && _data[index]['operation'] == '04') {
-      //   var testCode = _data[index]['Olho direito']['codigo'].replaceAll('C', 'T');
-      //   // _data[index]['Olho direito'].addAll({'codigo': testCode});
-      //   print('abaixo:');
-      //   _data[index] = _data[index];
-      //   print(_data[index]);
-
-        // _data[index][_data[index]['current']].update(
-        //   'codigo', 
-        //   (existingValue) => _data[index]['Olho direito']['codigo'].replaceAll('C', 'T'),
-        //   ifAbsent: () => _data[index]['Olho direito']['codigo'].replaceAll('C', 'T'),
-        // );
-      // }
-      // usar o replaceall la em baixo na hora de gerar a imagem na tela.
       list() =>
           _data[index]['Olho direito'].entries.map((e) => e.value).toList();
       var result = list();
@@ -386,8 +354,6 @@ class Helper {
       for (var i = 0; i < result.length; i++) {
         keyProduct.add(result[i]);
       }
-      // print('linha 369');
-      // print(keyProduct);
       return keyProduct;
     } else if (_data[index]['operation'] == '06') {
       var newlist = _data[index];
@@ -496,8 +462,6 @@ class Helper {
 
   static Widget CartList(List _data, Function hasPrice, Function removeItem,
       Function selectPrice) {
-    print("linha 461");
-    print(_data);
     var translatedKeys = {
       'Olho': 'Olho',
       'cylinder': 'Cilindro',
@@ -506,7 +470,7 @@ class Helper {
       'degree': 'Grau',
       'codigo': 'Codigo',
       'adicao': 'Adição',
-      'quantidade': 'Qtd.',
+      'quantidade': 'Quantidade',
       'valor': 'Valor',
       'cor': 'Cor'
     };
@@ -528,19 +492,32 @@ class Helper {
             Row(
               children: [
                 SizedBox(
-                  width: 142,
+                  width: 115,
                 ),
                 Center(
-                    child: Container(
+                    child: Column(
                   // height: 50,
-                  child: Text(
+                  // mainAxisAlignment: MainAxisAlignment.start
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [ Text(
                     '${_data[index]['product'].title}',
                     style: Theme.of(context).textTheme.headline5.copyWith(
                           fontSize: 12,
                         ),
-                    maxLines: 1,
-                  ),
-                )),
+                    maxLines: 1,),
+                    hasPrice(_data[index])
+                            ? Text(
+                                'Valor Unitario: ${selectPrice(_data[index])}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .copyWith(
+                                      fontSize: 12,
+                                    ),
+                              )
+                            : Container(),
+                    ],
+                ),),
               ],
             ),
             Row(
@@ -581,20 +558,20 @@ class Helper {
                           )
                         ],
                       ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        child: hasPrice(_data[index])
-                            ? Text(
-                                selectPrice(_data[index]),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    .copyWith(
-                                      fontSize: 12,
-                                    ),
-                              )
-                            : Container(),
-                      )
+                      // Container(
+                      //   alignment: Alignment.topCenter,
+                      //   child: hasPrice(_data[index])
+                      //       ? Text(
+                      //           selectPrice(_data[index]),
+                      //           style: Theme.of(context)
+                      //               .textTheme
+                      //               .headline5
+                      //               .copyWith(
+                      //                 fontSize: 12,
+                      //               ),
+                      //         )
+                      //       : Container(),
+                      // )
                     ],
                   ),
                 ),
@@ -609,7 +586,7 @@ class Helper {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Material(
-                                elevation: 2,
+                                // elevation: 2,
                                 child: Container(
                                   width: 62,
                                   decoration:
@@ -625,6 +602,9 @@ class Helper {
                                               CrossAxisAlignment.start,
                                           children:
                                               keyListResult.map<Widget>((e) {
+                                            if (e == 'codigo') {
+                                              return Container();
+                                            }
                                             return Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
@@ -651,6 +631,9 @@ class Helper {
                                               CrossAxisAlignment.start,
                                           children: keyListResult['direito']
                                                   .map<Widget>((e) {
+                                                if (e == 'codigo') {
+                                                 return Container();
+                                                }
                                                 return Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
@@ -677,6 +660,9 @@ class Helper {
                                               ] +
                                               keyListResult['esquerdo']
                                                   .map<Widget>((e) {
+                                                if (e == 'codigo') {
+                                                 return Container();
+                                                }
                                                 return Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
@@ -698,7 +684,7 @@ class Helper {
                               ),
                               Expanded(
                                 child: Material(
-                                  elevation: 2,
+                                  // elevation: 2,
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     decoration:
@@ -708,16 +694,14 @@ class Helper {
                                     child: _data[index]['current'] !=
                                             'Graus diferentes em cada olho'
                                         ? Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
                                             children: paramsListResult
                                                 .map<Widget>((e) {
-                                                  if (_data[index]['tests'] == 'Sim' && e.toString().length == 10) {
-                                                    e = e.replaceAll('C', 'T');
+                                                  if (e.toString().length == 10 && e.toString().contains('C')) {
+                                                    return Container();
                                                   }
                                               return Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   Flexible(
                                                       child: Column(
@@ -739,12 +723,12 @@ class Helper {
                                             children: paramsListResult[
                                                         'direito']
                                                     .map<Widget>((e) {
-                                                  if (_data[index]['tests'] == 'Sim' && e.toString().length == 10) {
-                                                    e = e.replaceAll('C', 'T');
+                                                  if (e.toString().length == 10 && e.toString().contains('C')) {
+                                                    return Container();
                                                   }
                                                   return Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.start,
+                                                        MainAxisAlignment.center,
                                                     children: [
                                                       Flexible(
                                                           child: Column(
@@ -769,12 +753,12 @@ class Helper {
                                                 ] +
                                                 paramsListResult['esquerdo']
                                                     .map<Widget>((e) {
-                                                  if (_data[index]['tests'] == 'Sim' && e.toString().length == 10) {
-                                                    e = e.replaceAll('C', 'T');
+                                                  if (e.toString().length == 10 && e.toString().contains('C')) {
+                                                    return Container();
                                                   }
                                                   return Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.start,
+                                                        MainAxisAlignment.center,
                                                     children: [
                                                       Flexible(
                                                           child: Column(
@@ -833,30 +817,30 @@ class Helper {
                                   SizedBox(
                                     height: 5,
                                   ),
-                                  Row(
-                                    children: [
-                                      CircleAvatar(
-                                          backgroundColor: Helper.buyTypeBuild(
-                                              context,
-                                              _data[index]['operation'],
-                                              _data[index]['tests'])['color'],
-                                          radius: 10,
-                                          child: Helper.buyTypeBuild(
-                                              context,
-                                              _data[index]['operation'],
-                                              _data[index]['tests'])['icon']),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            .copyWith(
-                                              fontSize: 12,
-                                            ),
-                                      ),
-                                    ],
-                                  )
+                                  // Row(
+                                  //   children: [
+                                  //     CircleAvatar(
+                                  //         backgroundColor: Helper.buyTypeBuild(
+                                  //             context,
+                                  //             _data[index]['operation'],
+                                  //             _data[index]['tests'])['color'],
+                                  //         radius: 10,
+                                  //         child: Helper.buyTypeBuild(
+                                  //             context,
+                                  //             _data[index]['operation'],
+                                  //             _data[index]['tests'])['icon']),
+                                  //     SizedBox(width: 10),
+                                      // Text(
+                                      //   '${Helper.buyTypeBuild(context, _data[index]['operation'], _data[index]['tests'])['title']}',
+                                      //   style: Theme.of(context)
+                                      //       .textTheme
+                                      //       .subtitle1
+                                      //       .copyWith(
+                                      //         fontSize: 12,
+                                      //       ),
+                                      // ),
+                                  //   ],
+                                  // )
                                 ],
                               ))
                               // SizedBox(width: 20)
@@ -879,11 +863,11 @@ class Helper {
                           _data[index]['removeItem'] == 'Sim' ||
                                   _data[index]['removeItem'] == null
                               ? IconButton(
-                                  icon: Icon(
-                                    Icons.close,
-                                    size: 30,
-                                    color: Colors.red,
-                                  ),
+                                iconSize: 5,
+                                  icon: Image.asset(
+                              'assets/images/Lata_de_lixo.png',
+                              fit: BoxFit.scaleDown,
+                            ),
                                   onPressed: () {
                                     removeItem(_data[index]);
                                   },

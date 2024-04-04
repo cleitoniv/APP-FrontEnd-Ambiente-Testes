@@ -33,35 +33,35 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     _profileWidgetBloc.visitHourIn.add(value);
   }
 
-  _onSaveNewSchedule(BuildContext context) async {
-    setState(() {
-      _lock = true;
-    });
-    String _hour = _profileWidgetBloc.currentVisitHour;
+  // _onSaveNewSchedule(BuildContext context) async {
+  //   setState(() {
+  //     _lock = true;
+  //   });
+  //   String _hour = _profileWidgetBloc.currentVisitHour;
 
-    _hour = _hour.replaceAll("ã", 'a').toLowerCase();
+  //   _hour = _hour.replaceAll("ã", 'a').toLowerCase();
 
-    AtendPref result = await _profileWidgetBloc.updateVisitHour(_hour);
-    setState(() {
-      _lock = false;
-    });
-    if (result.isValid) {
-      Dialogs.success(context,
-          title: "Período para Atendimento",
-          buttonText: "Voltar",
-          subtitle: "Seu periodo de atendimento foi alterado!", onTap: () {
-        Modular.to.pop();
-      });
-    } else {
-      Dialogs.error(context, onTap: () {
-        Modular.to.pop();
-      },
-          title: "Erro",
-          buttonText: "Entendi",
-          subtitle:
-              '''Houve um erro inesperado na alteração, tente denovo em alguns instantes ou entre em contato com a Central.''');
-    }
-  }
+  //   AtendPref result = await _profileWidgetBloc.updateVisitHour(_hour);
+  //   setState(() {
+  //     _lock = false;
+  //   });
+  //   if (result.isValid) {
+  //     Dialogs.success(context,
+  //         title: "Período para Atendimento",
+  //         buttonText: "Voltar",
+  //         subtitle: "Seu periodo de atendimento foi alterado!", onTap: () {
+  //       Modular.to.pop();
+  //     });
+  //   } else {
+  //     Dialogs.error(context, onTap: () {
+  //       Modular.to.pop();
+  //     },
+  //         title: "Erro",
+  //         buttonText: "Entendi",
+  //         subtitle:
+  //             '''Houve um erro inesperado na alteração, tente denovo em alguns instantes ou entre em contato com a Central.''');
+  //   }
+  // }
 
   _initData() async {
     AuthEvent _user = _authBloc.getAuthCurrentUser;
@@ -167,14 +167,14 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                               ),
                           textAlign: TextAlign.center,
                         ),
-                        Text(
-                          'Dia da Remessa',
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                color: Theme.of(context).accentColor,
-                                fontSize: 14,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
+                        // Text(
+                        //   'Dia da Remessa',
+                        //   style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        //         color: Theme.of(context).accentColor,
+                        //         fontSize: 14,
+                        //       ),
+                        //   textAlign: TextAlign.center,
+                        // ),
                       ],
                     ),
                     TableRow(
@@ -189,31 +189,31 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                             );
                           },
                         ),
-                        StreamBuilder<UserModel>(
-                          stream: _userBloc.currentUserOut,
-                          builder: (context, snapshot) {
-                            return Text(
-                              "${userSnapshot.data.data.diaRemessa}",
-                              style: Theme.of(context).textTheme.subtitle1,
-                              textAlign: TextAlign.center,
-                            );
-                          },
-                        ),
+                        // StreamBuilder<UserModel>(
+                        //   stream: _userBloc.currentUserOut,
+                        //   builder: (context, snapshot) {
+                        //     return Text(
+                        //       "${userSnapshot.data.data.diaRemessa}",
+                        //       style: Theme.of(context).textTheme.subtitle1,
+                        //       textAlign: TextAlign.center,
+                        //     );
+                        //   },
+                        // ),
                       ],
                     )
                   ],
                 ),
                 SizedBox(height: 30),
-                Text(
-                  'Selecione o melhor período para atende-lo',
-                  style: Theme.of(context).textTheme.headline5,
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  'Informe o período mais adequado para que possamos atende-lo.',
-                  style: Theme.of(context).textTheme.subtitle1,
-                  textAlign: TextAlign.center,
-                ),
+                // Text(
+                //   'Selecione o melhor período para atende-lo',
+                //   style: Theme.of(context).textTheme.headline5,
+                //   textAlign: TextAlign.center,
+                // ),
+                // Text(
+                //   'Informe o período mais adequado para que possamos atende-lo.',
+                //   style: Theme.of(context).textTheme.subtitle1,
+                //   textAlign: TextAlign.center,
+                // ),
                 SizedBox(height: 20),
                 // StreamBuilder<String>(
                 //   stream: _profileWidgetBloc.visitHourOut,
@@ -225,47 +225,47 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 //     );
                 //   },
                 // ),
-                StreamBuilder(
-                  stream: _userBloc.periodoAtendimentoStream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.data.isLoading) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasData && !snapshot.data.isValid) {
-                      return Center(child: Text("Falha no carregamento."));
-                    }
+                // StreamBuilder(
+                //   stream: _userBloc.periodoAtendimentoStream,
+                //   builder: (context, snapshot) {
+                //     if (!snapshot.hasData || snapshot.data.isLoading) {
+                //       return Center(child: CircularProgressIndicator());
+                //     } else if (snapshot.hasData && !snapshot.data.isValid) {
+                //       return Center(child: Text("Falha no carregamento."));
+                //     }
 
-                    return StreamBuilder(
-                      stream: _profileWidgetBloc.visitHourOut,
-                      builder: (context, visitSnapshot) {
-                        if (!snapshot.hasData) {
-                          return Container();
-                        }
-                        return DropdownWidget(
-                          items: snapshot.data.list,
-                          hint: Text('Manhã e Tarde'),
-                          currentValue:
-                              snapshot.hasData && snapshot.data.isValid
-                                  ? visitSnapshot.data
-                                  : null,
-                          onChanged: _onChangeVisitHour,
-                        );
-                      },
-                    );
-                  },
-                ),
+                //     return StreamBuilder(
+                //       stream: _profileWidgetBloc.visitHourOut,
+                //       builder: (context, visitSnapshot) {
+                //         if (!snapshot.hasData) {
+                //           return Container();
+                //         }
+                //         return DropdownWidget(
+                //           items: snapshot.data.list,
+                //           hint: Text('Manhã e Tarde'),
+                //           currentValue:
+                //               snapshot.hasData && snapshot.data.isValid
+                //                   ? visitSnapshot.data
+                //                   : null,
+                //           onChanged: _onChangeVisitHour,
+                //         );
+                //       },
+                //     );
+                //   },
+                // ),
                 SizedBox(height: 30),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(elevation: 0),
-                  onPressed: _lock
-                      ? null
-                      : () {
-                          _onSaveNewSchedule(context);
-                        },
-                  child: Text(
-                    'Salvar Novo Período',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
+                // ElevatedButton(
+                //   style: ElevatedButton.styleFrom(elevation: 0),
+                //   onPressed: _lock
+                //       ? null
+                //       : () {
+                //           _onSaveNewSchedule(context);
+                //         },
+                //   child: Text(
+                //     'Salvar Novo Período',
+                //     style: Theme.of(context).textTheme.button,
+                //   ),
+                // ),
                 SizedBox(height: 30),
                 Text(
                   'Informações Pessoais',

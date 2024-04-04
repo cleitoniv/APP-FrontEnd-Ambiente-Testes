@@ -300,17 +300,18 @@ class _ProductScreenState extends State<ProductScreen> {
                   ),
                   trailing: Column(
                     children: <Widget>[
-                      FittedBox(
-                        fit: BoxFit.contain,
-                        child: AutoSizeText(
-                          'Valor avulso',
-                          maxLines: 2,
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 14,
-                                color: Colors.black38,
-                              ),
-                        ),
-                      ),
+                      // FittedBox(
+                      //   fit: BoxFit.contain,
+                      //   child: AutoSizeText(
+                      //     'Valor avulso',
+                      //     maxLines: 2,
+                      //     style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      //           fontSize: 14,
+                      //           color: Colors.black38,
+                      //         ),
+                      //   ),
+                      // ),
+                      SizedBox(height: 13,),
                       FittedBox(
                         fit: BoxFit.contain,
                         child: Text(
@@ -329,16 +330,16 @@ class _ProductScreenState extends State<ProductScreen> {
                     Container(
                       padding: EdgeInsets.only(top: 10),
                       margin: const EdgeInsets.only(top: 30),
-                      height: 208,
+                      height: 200,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border(
-                          top: BorderSide(
-                            width: 0.5,
-                            color: Colors.black26,
-                          ),
-                        ),
+                        // border: Border(
+                        //   top: BorderSide(
+                        //     width: 0.5,
+                        //     color: Colors.black26,
+                        //   ),
+                        // ),
                       ),
                       child: CachedNetworkImage(
                         errorWidget: (context, url, error) =>
@@ -357,46 +358,64 @@ class _ProductScreenState extends State<ProductScreen> {
                           if (!snapshot.hasData) {
                             return Center(child: CircularProgressIndicator());
                           }
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.all(0),
-                                primary: snapshot.data
-                                    ? Theme.of(context).accentColor
-                                    : Color(0xffA5A5A5),
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                )),
-                            onPressed: () => _onShowInfo(
-                              snapshot.data,
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                '+INFO',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle2
-                                    .copyWith(
-                                      fontSize: 14,
-                                    ),
+                          return Row(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.all(0),
+                                    primary: snapshot.data
+                                        ? Theme.of(context).accentColor
+                                        : Color(0xffA5A5A5),
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                    )),
+                                onPressed: () => _onShowInfo(
+                                  snapshot.data,
+                                ),
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    '+INFO',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2
+                                        .copyWith(
+                                          fontSize: 14,
+                                        ),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           );
                         },
                       ),
                     ),
+                    Positioned(
+                      width: 55,
+                      right: 25,
+                      child: Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                          onTap: () {
+                            _favoriteProduct();
+                          },
+                          child: _likeButton()
+                        ),
+                      ),
+                    )
                   ],
                 ),
-                SizedBox(height: 30),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                      onTap: () {
-                        _favoriteProduct();
-                      },
-                      child: _likeButton()),
-                ),
+                // SizedBox(height: 30),
+                // Coração corrigir
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: GestureDetector(
+                //       onTap: () {
+                //         _favoriteProduct();
+                //       },
+                //       child: _likeButton()),
+                // ),
                 Table(
                   children: [
                     TableRow(
@@ -470,7 +489,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 StreamBuilder(
                   stream: _productWidgetBloc.showInfoOut,
                   builder: (context, snapshot) {
@@ -639,7 +658,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             {
                               'title':
                                   'Pedido Avulso R\$ ${Helper.intToMoney(productSnapshot.data.product.value)}',
-                              'color': Color(0xff707070),
+                              'color': Theme.of(context).accentColor,
                               'onTap': () {
                                 Helper.whenDifferentOperation('01', () {
                                   _handleSingleOrder(
@@ -665,7 +684,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             {
                               'title':
                                   'Crédito Financeiro R\$ ${Helper.intToMoney(productSnapshot.data.product.valueFinan)}',
-                              'color': Theme.of(context).primaryColor,
+                              'color': Theme.of(context).accentColor,
                               'onTap': () => Helper.whenDifferentOperation('13',
                                       () {
                                     _onConfirmPurchase(
@@ -677,7 +696,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             },
                             {
                               'title': 'Solicitar Teste',
-                              'color': Color(0xff707070),
+                              'color': Theme.of(context).accentColor,
                               'onTap': () => Helper.whenDifferentOperation('03',
                                       () {
                                     _onConfirmPurchase(

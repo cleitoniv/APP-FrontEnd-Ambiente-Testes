@@ -652,7 +652,9 @@ class _TabsScreenState extends State<TabsScreen>
                                               Positioned(
                                                 right: -2,
                                                 top: -2,
-                                                child: CircleAvatar(
+                                                child:
+                                                 authEventSnapshot.data.data.notifications["opens"] < 1 ? Text('')  :                                                
+                                                 CircleAvatar(
                                                   backgroundColor:
                                                       Theme.of(context)
                                                           .accentColor,

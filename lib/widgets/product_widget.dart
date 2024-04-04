@@ -32,9 +32,10 @@ class ProductWidget extends StatelessWidget {
       child: Container(
         width: width,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 credits != 0
@@ -59,7 +60,10 @@ class ProductWidget extends StatelessWidget {
                               fit: BoxFit.contain,
                               child: Text(
                                 '$credits',
-                                style: Theme.of(context).textTheme.subtitle1,
+                                
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)
+                                // texStyle: Theme.of(context).textTheme.subtitle1), 
+                                
                               ),
                             )
                           ],
@@ -69,7 +73,8 @@ class ProductWidget extends StatelessWidget {
                         width: 70,
                         height: 36,
                       ),
-                tests != 0
+                      SizedBox(width: 35,),
+                  tests != 0
                     ? Container(
                         width: 64,
                         height: 36,
@@ -90,13 +95,13 @@ class ProductWidget extends StatelessWidget {
                               fit: BoxFit.contain,
                               child: Text(
                                 '$tests',
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)
                               ),
                             )
                           ],
                         ),
                       )
-                    : Container()
+                    : Container(), 
               ],
             ),
             SizedBox(
@@ -106,7 +111,7 @@ class ProductWidget extends StatelessWidget {
               errorWidget: (context, url, error) =>
                   Image.asset('assets/images/no_image_product.jpeg'),
               imageUrl: imageUrl,
-              width: 120,
+              width: 170,
               height: 100,
               fit: BoxFit.fill,
             ),
@@ -134,7 +139,8 @@ class ProductWidget extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: Helper.intToMoney(value),
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 16),
+                             
                           ),
                         ],
                       ),

@@ -106,7 +106,18 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
               );
             },
           ),
-          title: Text('Carrinho', style: Theme.of(context).textTheme.headline4),
+          title: Row(
+            children: [
+              Image.asset(
+                  'assets/icons/cart.png',
+                  width: 20,
+                  height: 20,
+                  color: Color.fromARGB(255, 2, 96, 247),
+                ),
+              SizedBox(width: 5,),
+              Text('Credito de Produto', style: Theme.of(context).textTheme.headline4),
+            ],
+          ),
         ),
         body: SafeArea(
           child: ListView(
@@ -218,16 +229,14 @@ class _CreditCartScreenState extends State<CreditCartScreen> {
                             Align(
                                 alignment: Alignment.center,
                                 child: IconButton(
-                                  icon: Icon(
-                                    Icons.close,
-                                    size: 30,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: _lock
-                                      ? null
-                                      : () {
-                                          _removeItem(_data[index]);
-                                        },
+                                iconSize: 5,
+                                  icon: Image.asset(
+                              'assets/images/Lata_de_lixo.png',
+                              fit: BoxFit.scaleDown,
+                            ),
+                                  onPressed: () {
+                                    _removeItem(_data[index]);
+                                  },
                                 ))
                           ],
                         ),

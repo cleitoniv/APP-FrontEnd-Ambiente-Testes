@@ -23,6 +23,7 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 import 'package:random_string/random_string.dart';
 // import 'package:rxdart/rxdart.dart';
 import '../../blocs/product_bloc.dart';
+import '../../helper/dialogs.dart';
 import '../../models/product_model.dart';
 import '../../repositories/product_repository.dart';
 
@@ -384,11 +385,11 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                             ]);
                                           } else if (_selected) {
                                             return Container(
-                                              width: double.infinity,
+                                              // width: double.infinity,
                                               child: Stack(
                                                 children: [
                                                   Container(
-                                                    width: double.infinity,
+                                                    // width: double.infinity,
                                                     child: Column(
                                                       children: [
                                                         Row(
@@ -432,24 +433,20 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                               ),
                                                             ),
                                                             Expanded(
-                                                              flex: 11,
+                                                              flex: 9,
                                                               child: Center(
                                                                 child:
-                                                                    Container(
-                                                                        margin: EdgeInsets.only(
-                                                                            top:
-                                                                                25,
-                                                                            bottom:
-                                                                                25),
-                                                                        child:
-                                                                            Text(
-                                                                          _currentProduct
-                                                                              .title,
+                                                                    Column(
+                                                                      children: [
+                                                                        FittedBox(
+                                                                          child: Text('Selecione o Pacote de Produto',
                                                                           style: Theme.of(context)
-                                                                              .textTheme
-                                                                              .headline5
-                                                                              .copyWith(color: Colors.black38, fontSize: 18),
-                                                                        )),
+                                                                                  .textTheme
+                                                                                  .headline5
+                                                                                  .copyWith(color: Colors.cyan, fontSize: 18),),
+                                                                        ),
+                                                                      ],
+                                                                    ),
                                                               ),
                                                             ),
                                                           ],
@@ -457,70 +454,91 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                         _financialCredits
                                                                     .length >
                                                                 0
-                                                            ? Container(
-                                                                width: double
-                                                                    .infinity,
-                                                                height: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .height *
-                                                                    0.87,
-                                                                child: GridView
-                                                                    .builder(
-                                                                  itemCount:
-                                                                      _financialCredits
-                                                                          .length + 1,
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .all(12),
-                                                                  gridDelegate:
-                                                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                                                    crossAxisCount:
-                                                                        2,
-                                                                    mainAxisSpacing:
-                                                                        15,
-                                                                    crossAxisSpacing:
-                                                                        20,
-                                                                    childAspectRatio:
-                                                                        0.7,
-                                                                    mainAxisExtent:
-                                                                        170,
-                                                                  ),
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          index) {
-                                                                            if (index >=
-                                                                        _financialCredits
-                                                                            .length) {
-                                                                                    return InkWell(
-                                                                                      onTap: () {
-                                                                                        if (widget.product != null) {
-                                                                                          personalizedValueToThisProduct = widget.product;
-                                                                                        }
-                                                                                        
-                                                                                        _otherValue(personalizedValueToThisProduct, _financialCredits);
-                                                                                      },
-                                                                                      child: CreditProductOtherWidget(),
-                                                                                    );
-                                                                    }
-                                                                    return InkWell(
-                                                                      child:
-                                                                          CreditProductCardWidget(
-                                                                        precoUnitario:
-                                                                            _financialCredits[index].price,
-                                                                        caixas: _financialCredits[index].quantity,
-                                                                        value: _financialCredits[index].total,
-                                                                        percentageTest:_financialCredits[index].percentageTest,
+                                                            ? Column(
+                                                              children: [
+                                                                Container(
+                                                                            margin: EdgeInsets.only(
+                                                                                // top:
+                                                                                //     25,
+                                                                                // bottom:
+                                                                                //     25
+                                                                                    ),
+                                                                            child:
+                                                                                Text(
+                                                                              _currentProduct
+                                                                                  .title,
+                                                                              style: Theme.of(context)
+                                                                                  .textTheme
+                                                                                  .headline5
+                                                                                  .copyWith(color: Colors.black38, fontSize: 18),
+                                                                            )
+                                                                         ),
+                                                                Container(
+                                                                    width: double
+                                                                        .infinity,
+                                                                    height: MediaQuery.of(
+                                                                                context)
+                                                                            .size
+                                                                            .height *
+                                                                        0.87,
+                                                                    child: GridView
+                                                                        .builder(
+                                                                      itemCount:
+                                                                          _financialCredits
+                                                                              .length + 1,
+                                                                      padding:
+                                                                          const EdgeInsets
+                                                                              .all(12),
+                                                                      gridDelegate:
+                                                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                                                        crossAxisCount:
+                                                                            2,
+                                                                        mainAxisSpacing:
+                                                                            15,
+                                                                        crossAxisSpacing:
+                                                                            20,
+                                                                        childAspectRatio:
+                                                                            0.7,
+                                                                        mainAxisExtent:
+                                                                            170,
                                                                       ),
-                                                                      onTap:
-                                                                          () {
-                                                                        _addCreditoProduct(
-                                                                            this._currentProduct["product"],
-                                                                            _financialCredits[index]);
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                                if (index >=
+                                                                            _financialCredits
+                                                                                .length) {
+                                                                                        return InkWell(
+                                                                                          onTap: () {
+                                                                                            if (widget.product != null) {
+                                                                                              personalizedValueToThisProduct = widget.product;
+                                                                                            }
+                                                                                            
+                                                                                            _otherValue(personalizedValueToThisProduct, _financialCredits);
+                                                                                          },
+                                                                                          child: CreditProductOtherWidget(),
+                                                                                        );
+                                                                        }
+                                                                        return InkWell(
+                                                                          child:
+                                                                              CreditProductCardWidget(
+                                                                            precoUnitario:
+                                                                                _financialCredits[index].price,
+                                                                            caixas: _financialCredits[index].quantity,
+                                                                            value: _financialCredits[index].total,
+                                                                            percentageTest:_financialCredits[index].percentageTest,
+                                                                          ),
+                                                                          onTap:
+                                                                              () {
+                                                                            _addCreditoProduct(
+                                                                                this._currentProduct["product"],
+                                                                                _financialCredits[index]);
+                                                                          },
+                                                                        );
                                                                       },
-                                                                    );
-                                                                  },
-                                                                ))
+                                                                    )),
+                                                              ],
+                                                            )
                                                             : Center(
                                                                 heightFactor:
                                                                     40,
@@ -541,8 +559,8 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                               Container(
                                                 width: double.infinity,
                                                 color: Colors.white,
-                                                margin: EdgeInsets.only(
-                                                    top: 30, bottom: 30),
+                                                // margin: EdgeInsets.only(
+                                                //     top: 30, bottom: 30),
                                                 child: Row(children: [
                                                   Expanded(
                                                     flex: 2,
@@ -571,18 +589,19 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                   ),
                                                   Expanded(
                                                     flex: 9,
-                                                    child: Center(
+                                                    child: FittedBox(
                                                       child: Container(
                                                           margin:
                                                               EdgeInsets.only(
                                                                   top: 0,
                                                                   bottom: 0),
                                                           child: Text(
-                                                            "Selecione o Produto",
+                                                            "Clique no produto, Escolha a oferta",
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
-                                                            maxLines: 1,
+                                                                    softWrap: true,
+                                                            maxLines: 2,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -596,83 +615,105 @@ class _CreditProductState extends State<CreditsProductScreen> {
                                                 ]),
                                               ),
                                               _products.length > 0
-                                                  ? Container(
-                                                      width: double.infinity,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.799,
-                                                      child: GridView.builder(
-                                                        itemCount:
-                                                            _products.length,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(12),
-                                                        gridDelegate:
-                                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                                          mainAxisExtent: 168,
-                                                          crossAxisCount: 2,
-                                                          mainAxisSpacing: 5,
-                                                          crossAxisSpacing: 10,
-                                                          childAspectRatio: 0.7,
-                                                        ),
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          return GestureDetector(
-                                                            onTap: () {
-                                                              print('teste botao');
-                                                              // setState(() {
-                                                              //   _isLoadingPackage =
-                                                              //       true;
-                                                              // });
-                                                              setState(() {
-                                                                personalizedValueToThisProduct = _productCredits.list[index];
-                                                              });
-                                                              Helper.whenDifferentOperation(
-                                                                  '06', () {
-                                                                    
-                                                                _onTapSelectCreditProduct(
-                                                                    _productCredits
-                                                                            .list[
-                                                                        index]);
-                                                              },
-                                                                  context,
-                                                                  _requestsBloc
-                                                                      .cartItems,
-                                                                  _requestsBloc,
-                                                                  _cartWidgetBloc);
-                                                            }
-                                                            ,
-                                                            child:
-                                                                ProductWidget(
-                                                              credits:
-                                                                  _productCredits
-                                                                      .list[
-                                                                          index]
-                                                                      .boxes,
-                                                              tests:
-                                                                  _productCredits
-                                                                      .list[
-                                                                          index]
-                                                                      .tests,
-                                                              imageUrl:
-                                                                  _productCredits
-                                                                      .list[
-                                                                          index]
-                                                                      .imageUrl,
-                                                              title:
-                                                                  _productCredits
-                                                                      .list[
-                                                                          index]
-                                                                      .title,
+                                                  ? Column(
+                                                    children: [
+                                                      Container(
+                                                                alignment: Alignment.topCenter,
+                                                                child: IconButton(
+                                                                  iconSize: 35,
+                                                                  onPressed: () {
+                                                                    Dialogs.creditsInfo(context, 
+                                                                    financeiroInfo: 'Selecione um valor e obtenha seu Credito Financeiro! Congelaremos a tabela de preço atual e lhe daremos um desconto pré definido na compra de qualquer item do nosso portifólio, quando utilizar o seu crédito financeiro.',
+                                                                    produtoInfo: 'Escolha o seu pacote de Crédito de Produto! Recebendo descontos incriveis para utilizar seu credito de produto de acordo com a sua conveniência',
+                                                                    onTap: () {
+                                                                      Modular.to.pop();
+                                                                      }
+                                                                    );
+                                                                  }, icon: Align(
+                                                                    alignment: Alignment.center,
+                                                                    child: Icon(Icons.help)
+                                                                  ),
+                                                              ),
                                                             ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    )
+                                                      Container(
+                                                          width: double.infinity,
+                                                          height:
+                                                              MediaQuery.of(context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.799,
+                                                          child: GridView.builder(
+                                                            itemCount:
+                                                                _products.length,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(12),
+                                                            gridDelegate:
+                                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                              mainAxisExtent: 168,
+                                                              crossAxisCount: 2,
+                                                              mainAxisSpacing: 5,
+                                                              crossAxisSpacing: 10,
+                                                              childAspectRatio: 0.7,
+                                                            ),
+                                                            itemBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    int index) {
+                                                              return GestureDetector(
+                                                                onTap: () {
+                                                                  print('teste botao');
+                                                                  // setState(() {
+                                                                  //   _isLoadingPackage =
+                                                                  //       true;
+                                                                  // });
+                                                                  setState(() {
+                                                                    personalizedValueToThisProduct = _productCredits.list[index];
+                                                                  });
+                                                                  Helper.whenDifferentOperation(
+                                                                      '06', () {
+                                                                        
+                                                                    _onTapSelectCreditProduct(
+                                                                        _productCredits
+                                                                                .list[
+                                                                            index]);
+                                                                  },
+                                                                      context,
+                                                                      _requestsBloc
+                                                                          .cartItems,
+                                                                      _requestsBloc,
+                                                                      _cartWidgetBloc);
+                                                                }
+                                                                ,
+                                                                child:
+                                                                    ProductWidget(
+                                                                  credits:
+                                                                      _productCredits
+                                                                          .list[
+                                                                              index]
+                                                                          .boxes,
+                                                                  tests:
+                                                                      _productCredits
+                                                                          .list[
+                                                                              index]
+                                                                          .tests,
+                                                                  imageUrl:
+                                                                      _productCredits
+                                                                          .list[
+                                                                              index]
+                                                                          .imageUrl,
+                                                                  title:
+                                                                      _productCredits
+                                                                          .list[
+                                                                              index]
+                                                                          .title,
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  )
                                                   : Center(
                                                       heightFactor: 40,
                                                       child: Text(

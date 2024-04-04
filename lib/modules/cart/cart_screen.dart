@@ -27,7 +27,7 @@ class _CartScreenState extends State<CartScreen> {
   AuthBloc _authBloc = Modular.get<AuthBloc>();
   GlobalKey<ScaffoldMessengerState> _scaffoldKey =
       GlobalKey<ScaffoldMessengerState>();
-
+  var listToTakeOperations = [];
   bool _lock = false;
 
   _onBackToPurchase() {
@@ -148,7 +148,17 @@ class _CartScreenState extends State<CartScreen> {
 //    }
 //    return "";
 //  }
-
+  _getTextByTypeOperation(list) {
+      if (list.contains('01')) {
+        return 'Avulso';
+      } else if (list.contains('06') || list.contains('07')) {
+        return 'de Crédito de Produto';
+      } else if (list.contains('13')) {
+        return 'de Crédito Financeiro';
+      } else {
+        return 'de Remessa de Testes';
+      } 
+  }
   _getMaxDaysCart(data) {
     var ver = data.map((e) {
       if (e['operation'] == '06') {
@@ -197,10 +207,26 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                     );
                   }
-
                   List<Map<String, dynamic>> _data = snapshot.data;
-                  return Helper.CartList(
-                      _data, hasPrice, _removeItem, selectPrice);
+                  var operations = _data.map((e) {
+                      return e['operation'];
+                    }).toList();
+                    if (listToTakeOperations.length != operations.length) {
+                      Future.delayed(const Duration(milliseconds: 1), () {
+                      setState(() {
+                       listToTakeOperations = operations;
+                      });
+                    });
+                    }
+                  return Column(
+                    children: [
+                      listToTakeOperations.length > 0 
+                      ? Text('Pedido ${_getTextByTypeOperation(listToTakeOperations)}', style: Theme.of(context).textTheme.headline4)
+                      : Text(''),
+                      Helper.CartList(
+                          _data, hasPrice, _removeItem, selectPrice),
+                    ],
+                  );
                 },
               ),
               Divider(
