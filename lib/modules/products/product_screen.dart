@@ -704,7 +704,8 @@ class _ProductScreenState extends State<ProductScreen> {
                                         'T',
                                         productSnapshot.data.product.tests);
                                   }, context, _requestBloc.cartItems,
-                                      _requestBloc, _cartWidgetBloc)
+                                      _requestBloc, _cartWidgetBloc
+                              )
                             },
                           ]
                           .where((element) => element['title'] != 'Solicitar Teste' || productSnapshot.data.product.hasTest)

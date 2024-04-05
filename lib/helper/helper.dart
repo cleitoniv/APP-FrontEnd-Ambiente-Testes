@@ -696,7 +696,7 @@ class Helper {
                                         ? Column(
                                             children: paramsListResult
                                                 .map<Widget>((e) {
-                                                  if (e.toString().length == 10 && e.toString().contains('C')) {
+                                                  if (e.toString().length == 10 && e.toString().contains('C') || e.toString().length == 10 && e.toString().contains('T')) {
                                                     return Container();
                                                   }
                                               return Row(
@@ -723,7 +723,7 @@ class Helper {
                                             children: paramsListResult[
                                                         'direito']
                                                     .map<Widget>((e) {
-                                                  if (e.toString().length == 10 && e.toString().contains('C')) {
+                                                  if (e.toString().length == 10 && e.toString().contains('C') || e.toString().length == 10 && e.toString().contains('T')) {
                                                     return Container();
                                                   }
                                                   return Row(
@@ -753,7 +753,7 @@ class Helper {
                                                 ] +
                                                 paramsListResult['esquerdo']
                                                     .map<Widget>((e) {
-                                                  if (e.toString().length == 10 && e.toString().contains('C')) {
+                                                  if (e.toString().length == 10 && e.toString().contains('C') || e.toString().length == 10 && e.toString().contains('T')) {
                                                     return Container();
                                                   }
                                                   return Row(

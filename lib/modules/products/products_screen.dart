@@ -114,8 +114,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           childAspectRatio: 0.9,
                         ),
                         itemBuilder: (context, index) {
-                          print('valor dos produtos grid');
-                          print(_products[index].value);
                           return ProductWidget(
                             value: _products[index].value,
                             title: _products[index].title,

@@ -5,7 +5,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 class CardWidget extends StatelessWidget {
   final int value;
   final int parcels;
-  final int discount;
+  final discount;
 
   CardWidget({
     this.value = 20000,

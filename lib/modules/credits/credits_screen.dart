@@ -871,6 +871,8 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                                 .length) {
                                                                           return _otherValue();
                                                                         }
+                                                                        print('desconto recebido');
+                                                                        print(_financialCredits[index].discount);
                                                                         return _currentType ==
                                                                                 'Financeiro'
                                                                             ? InkWell(
@@ -899,7 +901,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                                   child: CardWidget(
                                                                                     parcels: _financialCredits[index].installmentCount,
                                                                                     value: _financialCredits[index].value,
-                                                                                    discount: _financialCredits[index].discount,
+                                                                                    discount: _financialCredits[index].discount ~/ 100,
                                                                                   ),
                                                                                 ),
                                                                               )

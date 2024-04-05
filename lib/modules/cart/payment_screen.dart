@@ -601,7 +601,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         color: Theme.of(context).primaryColor,
                       ),
                       label: Text(
-                        'Adicionar Cartão',
+                        'Adicionar Cartã',
                         style: Theme.of(context).textTheme.button.copyWith(
                               color: Theme.of(context).primaryColor,
                             ),

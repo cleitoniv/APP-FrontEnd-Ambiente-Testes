@@ -10,6 +10,8 @@ class OfferModel {
   int percentageTest;
 
   OfferModel.fromJson(Map<String, dynamic> json) {
+    print('desconto vindo do backend');
+    print(json['discount']);
     value = json['value'];
     installmentCount = json['installmentCount'];
     installmentCountB = json['installmentCountB'];

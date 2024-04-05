@@ -30,7 +30,7 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
       GlobalKey<ScaffoldMessengerState>();
   bool _onRefresh = false;
   bool billing = false;
-  bool _lock = false;
+  bool _lock = true;
   MaskedTextController _creditCardNumberController;
 
   // PaymentMethod _currentPaymentForm;
@@ -488,7 +488,16 @@ class _CreditoPagamentoScreenState extends State<CreditoPagamentoScreen> {
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(245, 35),
                 ),
-                onPressed: _lock ? null : _finishPayment,
+                onPressed: _lock ? 
+                
+                () {
+                  Map<String, dynamic> success = {
+                    "Atenção": ['Selecione um Cartão!']
+                  };
+                  SnackBar _snackbar = ErrorSnackBar.snackBar(this.context, success);
+                  _scaffoldKey.currentState.showSnackBar(_snackbar);
+                } 
+                : _finishPayment,
                 child: Text(
                   'Finalizar Pedido',
                   style: Theme.of(context).textTheme.button,

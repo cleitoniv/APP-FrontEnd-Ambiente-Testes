@@ -140,6 +140,7 @@ class ProductRepository {
       final offers = response.data['data'].map<OfferModel>((e) {
         return OfferModel.fromJson(e);
       }).toList();
+      inspect(offers);
       return Offers(
           isLoading: false, isEmpty: false, offers: offers, type: "FINAN");
     } catch (error) {

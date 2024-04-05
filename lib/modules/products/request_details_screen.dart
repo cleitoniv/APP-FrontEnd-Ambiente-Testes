@@ -598,6 +598,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       }).toList();
     } else {
       print(_first[current]);
+      if (widget.type == 'T') {
+        return List<Map<String, dynamic>>.of([
+        Map<String, dynamic>.of({
+          "olho": current,
+          "esferico": _first[current]['degree'] ?? "",
+          "grupo": currentProduct.product.groupTest,
+          "cilindrico": _first[current]['cylinder'] ?? "",
+          "eixo": _first[current]['axis'] ?? "",
+          "adicao": _first[current]['adicao'] ?? "",
+          "cor": _first[current]['cor'].toLowerCase() ?? ""
+        })
+      ]);
+      } else
       return List<Map<String, dynamic>>.of([
         Map<String, dynamic>.of({
           "olho": current,
@@ -668,7 +681,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     _lockCart(true);
 
     Map<dynamic, dynamic> _first =
-        await _productWidgetBloc.pacientInfoOut.first;
+        await _productWidgetBloc.pacientInfoOut.first;  
     var result = await _productBloc.productCode(productCodeList(_first));
     _first = _putProductCode(_first, result);
     // return;
@@ -1566,11 +1579,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   }
 
   List<Map<String, dynamic>> generateProductParams(Parametros parametro) {
+    // print(parametro.parametro.grausEsferico);
     return [
       {
         'labelText': 'Escolha o Grau',
         'key': 'degree',
-        'items': parametro.parametro.grausEsferico,
+        'items': parametro.parametro.grausEsferico.reversed.toList(),
         'enabled': currentProduct.product.hasEsferico
       },
       {
@@ -2254,7 +2268,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     height: 10,
                                   ),
                                   itemBuilder: (context, index) {
-                                    print(_productParams[index]['key']);
+                                    // print(_productParams[index]['key']);
                                     return _productParams[index]['enabled']
                                         ? TextFieldWidget(
                                             readOnly: true,
@@ -2287,17 +2301,31 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               height: 20,
             ),
             SizedBox(height: 10),
+
+            widget.type == 'CF' && currentProduct.product.hasTest ? 
+            _checkForAcessorio(StreamBuilder<Map>(
+                    stream: _productWidgetBloc.pacientInfoOut,
+                    builder: (context, snapshot) {
+                        print(_hasTests);
+                        print('dados snapshot');
+                        print(currentProduct.product);
+                        inspect(snapshot.data);
+                        print(widget.type);
+                      return DropdownWidget(
+                          items: ['Não', 'Sim'],
+                          currentValue:
+                              snapshot.hasData ? snapshot.data['test'] : null,
+                          labelText: 'Teste?',
+                          onChanged: _onChangedTest
+                      );
+                    },
+                  )
+                )
+            :
             currentProduct.product.hasTest && widget.type != "T" && currentProduct.product.tests > 0 || (widget.type == 'A' && currentProduct.product.hasTest)
                 ? _checkForAcessorio(StreamBuilder<Map>(
                     stream: _productWidgetBloc.pacientInfoOut,
-                    builder: (context, snapshot) {
-                      if (widget.type == 'CF' && _hasTests == 'Não') {
-                        _hasTests = "Sim";
-                        _onAddParam({'test': 'Sim'});
-                      }
-                      print('dados snapshot');
-                      print(currentProduct.product);
-                      print(snapshot.data);
+                    builder: (context, snapshot) {               
                       return DropdownWidget(
                           items: ['Não', 'Sim'],
                           currentValue:
