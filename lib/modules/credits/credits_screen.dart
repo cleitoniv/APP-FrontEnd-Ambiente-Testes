@@ -804,6 +804,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                               null
                                                           ? Column(
                                                               children: [
+                                                                SizedBox(height: 25),
                                                                 Container(
                                                                       // height: 350,
                                                                         alignment: Alignment.topCenter,
