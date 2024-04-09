@@ -501,7 +501,7 @@ class RequestInfoScreen extends StatelessWidget {
                                             contentPadding:
                                                 const EdgeInsets.all(0),
                                             horizontalTitleGap: 0,
-                                            leading: (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoD'] == '-') ? Icon(null) : Image.asset(
+                                            leading: (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoE'] == '-') ? Icon(null) : Image.asset(
                                               'assets/icons/info.png',
                                               width: 25,
                                               height: 25,
@@ -509,7 +509,7 @@ class RequestInfoScreen extends StatelessWidget {
                                             title: Text.rich(
                                               TextSpan(
                                                 children:
-                                                  (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoD'] == '-') ? [] :                                                
+                                                  (items[index].items[index2]['esfericoD'] == '-') && (items[index].items[index2]['esfericoE'] == '-') ? [] :                                                
                                                  [
                                                   TextSpan(
                                                     text:
@@ -728,7 +728,7 @@ class RequestInfoScreen extends StatelessWidget {
                                         //       ),
                                         //     )),
                                         // SizedBox(height: 50),
-                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoD'] == '-') ? Container() :
+                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoE'] == '-') ? Container() :
                                         Text(
                                           'Parâmetros',
                                           style: Theme.of(context)
@@ -741,7 +741,7 @@ class RequestInfoScreen extends StatelessWidget {
                                           textAlign: TextAlign.center,
                                         ),
                                         SizedBox(height: 10),
-                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoD'] == '-') ? Container() :
+                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoE'] == '-') ? Container() :
                                         Table(
                                           children: [
                                             TableRow(
@@ -771,7 +771,7 @@ class RequestInfoScreen extends StatelessWidget {
                                           ],
                                         ),
                                         SizedBox(height: 2),
-                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoD'] == '-') ? Container() :
+                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoE'] == '-') ? Container() :
                                         Row(
                                           children: [
                                             Expanded(

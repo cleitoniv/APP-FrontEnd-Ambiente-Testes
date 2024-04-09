@@ -8,25 +8,25 @@ class DrawerWidget extends StatelessWidget {
       'image': 'drawer_0.png',
     },
     {'title': 'Meus Pedidos', 'image': 'drawer_1.png'},
-    {
-      'title': 'Créditos',
-      'image': 'drawer_2.png',
-      'is_icon': true,
-      'icon': Icons.add
-    },
+    // {
+    //   'title': 'Créditos',
+    //   'image': 'drawer_2.png',
+    //   'is_icon': true,
+    //   'icon': Icons.add
+    // },
     {
       'title': 'Notificações',
       'image': 'drawer_3.png',
     },
     //app capado descomentar as opções abaixo para retornar para aba de opções
-    // {
-    //   'title': 'Devolução para Crédito/Troca',
-    //   'image': 'drawer_4.png',
-    // },
-    // {
-    //   'title': 'Meus Pontos',
-    //   'image': 'drawer_5.png',
-    // },
+    {
+      'title': 'Devolução para Crédito/Troca',
+      'image': 'drawer_4.png',
+    },
+    {
+      'title': 'Meus Pontos',
+      'image': 'drawer_5.png',
+    },
     {
       'title': 'Pagamentos',
       'image': 'drawer_6.png',

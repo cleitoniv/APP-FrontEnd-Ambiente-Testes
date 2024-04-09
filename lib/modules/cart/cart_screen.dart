@@ -31,7 +31,8 @@ class _CartScreenState extends State<CartScreen> {
   bool _lock = false;
 
   _onBackToPurchase() {
-    _homeWidgetBloc.currentTabIndexIn.add(0);
+    // _homeWidgetBloc.currentTabIndexIn.add(0);
+    Modular.to.pop();
   }
 
   _removeItem(Map<String, dynamic> data) {

@@ -544,8 +544,7 @@ class Helper {
                                     height: 80,
                                   )
                                 : _data[index]['product'].imageUrlTest == null
-                                    ? Image.asset(
-                                        'assets/images/no_image_product.jpeg')
+                                    ? CachedNetworkImage(imageUrl: 'https://centraloftalmica.herokuapp.com/product_image/${_data[index]['product'].groupTest}.webp')
                                     : CachedNetworkImage(
                                         errorWidget: (context, url, error) =>
                                             Image.asset(
