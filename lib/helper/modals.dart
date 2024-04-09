@@ -53,8 +53,8 @@ class Modals {
                     shrinkWrap: true,
                     itemCount: items['items'].length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 5,
+                      crossAxisCount: 1,
+                      childAspectRatio: 8,
                     ),
                     itemBuilder: (context, index) {
                       return GestureDetector(
