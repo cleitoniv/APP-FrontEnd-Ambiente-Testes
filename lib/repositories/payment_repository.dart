@@ -127,7 +127,7 @@ class PaymentRepository {
       } else if (e["operation"] == "07") {
         return {
           'type': e['type'],
-          'operation': e['operation'],
+          'operation': e['tests'] == "Sim" ? "03" : e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
             'numero': e['pacient']['number'],
