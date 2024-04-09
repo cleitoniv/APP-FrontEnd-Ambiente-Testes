@@ -5,7 +5,7 @@ import 'package:rxdart/subjects.dart';
 class CreditoFinanceiro {
   int valor;
   int installmentCount;
-  int desconto;
+  double desconto;
   CreditoFinanceiro({this.valor, this.installmentCount, this.desconto});
 
   void set installment(int installment) {

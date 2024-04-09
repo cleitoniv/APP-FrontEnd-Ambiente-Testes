@@ -3,7 +3,7 @@ class OfferModel {
   int installmentCount;
   int installmentCountB;
   int installmentCountC;
-  int discount;
+  double discount;
   int quantity;
   int price;
   int total;

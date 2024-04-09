@@ -902,7 +902,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                                                                   child: CardWidget(
                                                                                     parcels: _financialCredits[index].installmentCount,
                                                                                     value: _financialCredits[index].value,
-                                                                                    discount: _financialCredits[index].discount ~/ 100,
+                                                                                    discount: _financialCredits[index].discount,
                                                                                   ),
                                                                                 ),
                                                                               )

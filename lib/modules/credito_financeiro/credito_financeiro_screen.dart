@@ -77,7 +77,7 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
           valueTotal.add(list[i].value);
         }
         for (var i = 0; i < list.length; i++) {
-          percentage.add(list[i].discount);
+          percentage.add(list[i].discount as int);
         }
 
         if (valor.numberValue.truncate() * 100 > 0 &&
