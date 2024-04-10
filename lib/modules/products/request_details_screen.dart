@@ -1154,10 +1154,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           if (resp["success"]) {
           if (resp["data"]['itens'][i]['saldo'] < 1 && resp["data"]['itens'][i]['descontinuado'] == 'S') {
             print('condição 1');
-            return _secondDialog(resp);
+             _secondDialog(resp);
+             return;
           }
           
-          if (resp["data"]["pendencia"] == true && resp["data"]['itens'][i]["saldo"] < 1 ) {
+          if (resp["data"]["pendencia"] == true && resp["data"]['itens'][i]["saldo"] < 1 && resp["data"]['itens'][i]['descontinuado'] == 'N') {
             print('condição 2');
             return _thirdDialog(mode, resp);
             
@@ -1179,11 +1180,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       if (resp["data"]['itens'][0]['saldo'] < 1 && resp["data"]['itens'][0]['descontinuado'] == 'S') {
         print('condição 1');
         _secondDialog(resp);
+        return;
       }
-      if (resp["data"]["pendencia"] == true &&  resp["data"]['itens'][0]["saldo"] < 1 ) {
+      if (resp["data"]["pendencia"] == true &&  resp["data"]['itens'][0]["saldo"] < 1 && resp["data"]['itens'][0]['descontinuado'] == 'N') {
         print('condição 2');
-        _thirdDialog(mode, resp);
-        
+        _thirdDialog(mode, resp); 
       } else {
         await _onAddToCart({'product': currentProduct.product}, mode,
             {'pendencie': false, 'days': 0});

@@ -240,6 +240,45 @@ class Dialogs {
     );
   }
 
+  static patientControlInfo(
+    BuildContext context, {
+    String message = '',
+    Function onTap,
+    String buttonText = 'OK',
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Column(
+              children: [
+                Text(
+                  message,
+                  // textAlign: TextAlign.justify,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+            ElevatedButton(
+              onPressed: onTap,
+              child: Text(
+                buttonText,
+                style: Theme.of(context).textTheme.button,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   static errorWithWillPopScope(
     BuildContext context, {
     String title = 'Tudo certo!',

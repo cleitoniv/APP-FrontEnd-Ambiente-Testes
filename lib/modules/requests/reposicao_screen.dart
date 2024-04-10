@@ -28,26 +28,25 @@ class _RepositionScreenState extends State<RepositionScreen> {
   int _start = 5;
 
   @override
-  void initState() {
-    super.initState();
-    startTimer();
+  // void initState() {
+    // super.initState();
+    // startTimer();
     // _homeWidgetBloc.currentRequestTypeIn.add("Reposição");
-    _requestsBloc.getPedidosRepoList(2);
-    _nameController = TextEditingController();
-    _numberController = TextEditingController();
-    _serialController = TextEditingController();
-    _birthdayController = MaskedTextController(
-      mask: '00/00/0000',
-    );
-  }
+    // _requestsBloc.getPedidosRepoList(2);
+    // _nameController = TextEditingController();
+    // _numberController = TextEditingController();
+    // _serialController = TextEditingController();
+    // _birthdayController = MaskedTextController(
+    //   mask: '00/00/0000',
+    // );
+  // }
 
   _pacienteInfo(BuildContext context) {
-    Dialogs.pacienteInfo(context, onTap: () {
+    Dialogs.patientControlInfo(context,   
+    onTap: () {
       Modular.to.pop();
     },
-        title: "Pontuação",
-        subtitle:
-            '''Inserindo os dados do seu paciente referente ao produto, voce recebe pontos que podem ser convertidos em créditos para compras futuras!''');
+    message: '\nControle de Pacientes, Tem o objetivo de organizar, Via APP de forma dinamica os cuidados com o usuario de L.C. do cliente, Sugerindo uma data para reavaliação e reposição  das L.C., Baseado na quantidade e no regime de uso e data de entrega das L.C. ao paciente. Voce pode inserir e controlar L.C. de qualquer fabricante, As L.C. solicitadas na Central Oftalmica nas quais você identifica o paciente (Nome, Numero, Etc), Entrará automaticamente neste controle a Central oftalmica não utiliza estes dados para qualquer finalidade, Eles podem ser copiados, Editados ou excluidos a qualquer momento a criterio exclusivo do cliente.');
   }
 
   _onShowRequest(int id, PedidoModel pedidoData, bool reposicao) {
@@ -62,13 +61,13 @@ class _RepositionScreenState extends State<RepositionScreen> {
     return ListTileMoreCustomizable(
       contentPadding: const EdgeInsets.all(0),
       onTap: (value) {
-        String currentType = _homeWidgetBloc.currentRequestType;
-        bool reposicao = false;
-        if (currentType == "Reposição") {
-          reposicao = true;
-        }
-        _onShowRequest(
-            _requests[index].numeroPedido, _requests[index], reposicao);
+        // String currentType = _homeWidgetBloc.currentRequestType;
+        // bool reposicao = false;
+        // if (currentType == "Reposição") {
+        //   reposicao = true;
+        // }
+        // _onShowRequest(
+        //     _requests[index].numeroPedido, _requests[index], reposicao);
       },
       horizontalTitleGap: 10,
       leading: Container(
@@ -80,9 +79,10 @@ class _RepositionScreenState extends State<RepositionScreen> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Text(
-          Helper.dateToMonth(
-            _requests[index].dataInclusao,
-          ).substring(0, 8),
+          '09/04/2024',
+          // Helper.dateToMonth(
+          //   _requests[index].dataInclusao,
+          // ).substring(0, 8),
           style: Theme.of(context).textTheme.subtitle1.copyWith(
                 fontSize: 14,
               ),
@@ -97,7 +97,8 @@ class _RepositionScreenState extends State<RepositionScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Pedido ${_requests[index].numeroPedido}',
+                'Pedido: 2651',
+                // 'Pedido ${_requests[index].numeroPedido}',
                 style: Theme.of(context).textTheme.subtitle1.copyWith(
                       color: Colors.black26,
                       fontSize: 14,
@@ -113,7 +114,8 @@ class _RepositionScreenState extends State<RepositionScreen> {
                   ),
                   SizedBox(width: 10),
                   Text(
-                    'R\$ ${Helper.intToMoney(_requests[index].valor)}',
+                    'R\$ 20,00',
+                    // 'R\$ ${Helper.intToMoney(_requests[index].valor)}',
                     style: Theme.of(context).textTheme.headline5.copyWith(
                           fontSize: 14,
                         ),
@@ -127,7 +129,8 @@ class _RepositionScreenState extends State<RepositionScreen> {
             ],
           ),
           Text(
-            'Previsão de entrega: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
+            'Previsão de entrega: 17/04/2024',
+            // 'Previsão de entrega: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
             style: Theme.of(context).textTheme.subtitle1.copyWith(
                   color: Colors.black26,
                   fontSize: 14,
@@ -140,90 +143,406 @@ class _RepositionScreenState extends State<RepositionScreen> {
 
   Widget _showPedidoReposicao(
       BuildContext context, List<PedidoModel> _requests, int index) {
-    return ListTileMoreCustomizable(
-      contentPadding: const EdgeInsets.all(0),
-      onTap: (value) {
-        String currentType = _homeWidgetBloc.currentRequestType;
-        bool reposicao = false;
-        if (currentType == "Reposição") {
-          reposicao = true;
-        }
-        _onShowRequest(
-            _requests[index].numeroPedido, _requests[index], reposicao);
-      },
-      horizontalTitleGap: 10,
-      leading: Container(
-        width: 50,
-        height: 50,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Color(0xffECECEC),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Text(
-          Helper.dateToMonth(
-            _requests[index].dataInclusao,
-          ).substring(0, 8),
-          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                fontSize: 14,
-              ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
+    return Column(
+      children: [
+        Row(children: [
+          Text('Copiar'),
+          SizedBox(width: 10,),
+          Text('Editar'),
+          SizedBox(width: 10,),
+          Text('Excluir')
+        ],),
+        ListTileMoreCustomizable(
+          contentPadding: const EdgeInsets.all(0),
+          onTap: (value) {
+            // String currentType = _homeWidgetBloc.currentRequestType;
+            // bool reposicao = false;
+            // if (currentType == "Reposição") {
+            //   reposicao = true;
+            // }
+            // _onShowRequest(
+            //     _requests[index].numeroPedido, _requests[index], reposicao);
+          },
+          horizontalTitleGap: 10,
+          leading: Container(
+            width: 50,
+            height: 50,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Color(0xffECECEC),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              '09/04/2024',
+              // Helper.dateToMonth(
+              //   _requests[index].dataInclusao,
+              // ).substring(0, 8),
+              style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    fontSize: 14,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                '${_requests[index].paciente}',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Colors.black26,
-                      fontSize: 14,
-                    ),
-              ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    'Repor até',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    'Cleiton Meireles',
+                    // '${_requests[index].paciente}',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),
                   ),
-                  Icon(
-                    Icons.keyboard_arrow_right,
-                    color: Theme.of(context).accentColor,
-                    size: 30,
-                  )
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        'Repor até',
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1
+                            .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_right,
+                        color: Theme.of(context).accentColor,
+                        size: 30,
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pedido n°: 2651',
+                    // 'Pedido ${_requests[index].numeroPedido}',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(right: 25),
+                      child: Text(
+                        '15/04/2024',
+                        // '${Helper.sqlToDate(_requests[index].dataReposicao)}',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 16,
+                            ),
+                      ))
                 ],
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Pedido ${_requests[index].numeroPedido}',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      color: Colors.black26,
-                      fontSize: 14,
-                    ),
+        ),
+        Row(
+          children: [
+            Column(
+              children: [
+                Text('034C'),
+                Text('070C')
+              ],
+            ),
+            SizedBox(width: 15,),
+            Column(
+              children: [
+                    Text('OD: Grau: -2.0 Eixo: 180', style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),),
+                    Text('OE: Grau: -0.5 Eixo: 150', style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),)
+                  ],
               ),
-              Padding(
-                  padding: EdgeInsets.only(right: 25),
-                  child: Text(
-                    '${Helper.sqlToDate(_requests[index].dataReposicao)}',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 16,
+            SizedBox(width: 15,),
+            Column(
+              children: [
+                FittedBox(child: Text('Quantidade: 10')),
+                Text('Quantidade: 3')
+              ],
+            )
+          ],
+        ),
+          SizedBox(height: 30,)
+      ],
+    );
+  }
+
+  Widget _showPedidoReposicao2(
+      BuildContext context, List<PedidoModel> _requests, int index) {
+    return Column(
+      children: [
+        Row(children: [
+          Text('Copiar'),
+          SizedBox(width: 10,),
+          Text('Editar'),
+          SizedBox(width: 10,),
+          Text('Excluir')
+        ],),
+        ListTileMoreCustomizable(
+          contentPadding: const EdgeInsets.all(0),
+          onTap: (value) {
+            // String currentType = _homeWidgetBloc.currentRequestType;
+            // bool reposicao = false;
+            // if (currentType == "Reposição") {
+            //   reposicao = true;
+            // }
+            // _onShowRequest(
+            //     _requests[index].numeroPedido, _requests[index], reposicao);
+          },
+          horizontalTitleGap: 10,
+          leading: Container(
+            width: 50,
+            height: 50,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Color(0xffECECEC),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              '09/04/2024',
+              // Helper.dateToMonth(
+              //   _requests[index].dataInclusao,
+              // ).substring(0, 8),
+              style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    fontSize: 14,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Paulo Maidera',
+                    // '${_requests[index].paciente}',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
                         ),
-                  ))
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        'Repor até',
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1
+                            .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_right,
+                        color: Theme.of(context).accentColor,
+                        size: 30,
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pedido n°: 2652',
+                    // 'Pedido ${_requests[index].numeroPedido}',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(right: 25),
+                      child: Text(
+                        '29/04/2024',
+                        // '${Helper.sqlToDate(_requests[index].dataReposicao)}',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 16,
+                            ),
+                      ))
+                ],
+              ),
             ],
           ),
-        ],
-      ),
+        ),
+        Row(
+          children: [
+            Column(
+              children: [
+                Text('060C'),
+                Text('061C')
+              ],
+            ),
+            SizedBox(width: 15,),
+            Column(
+              children: [
+                    Text('OD: Grau: +2.0 Eixo: 160', style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),),
+                    Text('OE: Grau: +1.0 Eixo: 180', style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),)
+                  ],
+              ),
+            SizedBox(width: 15,),
+            Column(
+              children: [
+                FittedBox(child: Text('Quantidade: 6')),
+                Text('Quantidade: 10')
+              ],
+            )
+          ],
+        ),
+          SizedBox(height: 30,)
+      ],
+    );
+  }
+
+  Widget _showPedidoReposicao3(
+      BuildContext context, List<PedidoModel> _requests, int index) {
+    return Column(
+      children: [
+        Row(children: [
+          Text('Copiar'),
+          SizedBox(width: 10,),
+          Text('Editar'),
+          SizedBox(width: 10,),
+          Text('Excluir')
+        ],),
+        ListTileMoreCustomizable(
+          contentPadding: const EdgeInsets.all(0),
+          onTap: (value) {
+            // String currentType = _homeWidgetBloc.currentRequestType;
+            // bool reposicao = false;
+            // if (currentType == "Reposição") {
+            //   reposicao = true;
+            // }
+            // _onShowRequest(
+            //     _requests[index].numeroPedido, _requests[index], reposicao);
+          },
+          horizontalTitleGap: 10,
+          leading: Container(
+            width: 50,
+            height: 50,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Color(0xffECECEC),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              '09/04/2024',
+              // Helper.dateToMonth(
+              //   _requests[index].dataInclusao,
+              // ).substring(0, 8),
+              style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    fontSize: 14,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Alberto Bittencourt',
+                    // '${_requests[index].paciente}',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        'Repor até',
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1
+                            .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_right,
+                        color: Theme.of(context).accentColor,
+                        size: 30,
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pedido n°: 2653',
+                    // 'Pedido ${_requests[index].numeroPedido}',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(right: 25),
+                      child: Text(
+                        '17/04/2024',
+                        // '${Helper.sqlToDate(_requests[index].dataReposicao)}',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 16,
+                            ),
+                      ))
+                ],
+              ),
+            ],
+          ),
+        ),
+        Row(
+          children: [
+            Column(
+              children: [
+                Text('033C'),
+                Text('050C')
+              ],
+            ),
+            SizedBox(width: 15,),
+            Column(
+              children: [
+                    Text('OD: Grau: -1.0 Eixo: 100', style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),),
+                    Text('OE: Grau: -0.25 Eixo: 110', style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),)
+                  ],
+              ),
+            SizedBox(width: 15,),
+            Column(
+              children: [
+                FittedBox(child: Text('Quantidade: 5')),
+                Text('Quantidade: 2')
+              ],
+            )
+          ],
+        ),
+          SizedBox(height: 30,)
+      ],
     );
   }
 
@@ -260,95 +579,82 @@ class _RepositionScreenState extends State<RepositionScreen> {
         title: Text('Adicionar Paciente'),
         centerTitle: false,
       ),
-      body: Form(
-          key: _formKey,
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: <Widget>[
-                Container(
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Controle de pacientes',
-                            style: Theme.of(context).textTheme.headline5,
-                            // textScaleFactor: 1.25,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.help_outline,
-                            size: 30,
-                          ),
-                          onPressed: () {
-                            _pacienteInfo(context);
-                          },
-                        ),
-                      ],
-                    )),
-                SizedBox(height: 20),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1
-                          .copyWith(fontWeight: FontWeight.bold),
-                      text:
-                          'Ao identificar seus pacientes nos pedidos, você acumula pontos.\n',
-                      children: [
-                        TextSpan(
-                          style: Theme.of(context).textTheme.subtitle1,
-                          text:
-                              '\nInforme o número de série que consta na embalagem das lentes a serem entregues ao seu paciente; controle o dia da reavaliação preenchendo: nome, data de nascimento e, se quiser acumular pontos para compras futuras, o CPF.',
-                        ),
-                      ]),
-                ),
-                SizedBox(height: 30),
-                Container(
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    child: StreamBuilder(
-                      stream: _requestsBloc.pedidoReposicaoStream,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        List<PedidoModel> _requests = snapshot.data.list ?? [];
-
-                        if (_requests.isEmpty) {
-                          return Center(
-                            child:
-                                Text('Não há pacientes a serem visualizados'),
-                          );
-                        }
-                        return ListView.separated(
-                          padding: const EdgeInsets.all(20),
-                          itemCount: _requests.length,
-                          separatorBuilder: (context, index) => SizedBox(
-                            height: 20,
-                          ),
-                          itemBuilder: (context, index) {
-                            // String currentType =
-                            //     _homeWidgetBloc.currentRequestType;
-                            // if (currentType == "Reposição") {
-                            return _showPedidoReposicao(
-                                context, _requests, index);
-                            // }
-                            // return _showPedido(context, _requests, index);
-                          },
-                        );
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: <Widget>[
+            Container(
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Controle de pacientes',
+                        style: Theme.of(context).textTheme.headline5,
+                        // textScaleFactor: 1.25,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.help_outline,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        _pacienteInfo(context);
                       },
-                    ))
-              ],
-            ),
-          )),
+                    ),
+                  ],
+                )),
+            Container(
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: StreamBuilder(
+                  stream: _requestsBloc.pedidoReposicaoStream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    List<PedidoModel> _requests = snapshot.data.list ?? [];
+
+                    // if (_requests.isEmpty) {
+                    //   return Center(
+                    //     child:
+                    //         Text('Não há pacientes a serem visualizados'),
+                    //   );
+                    // }
+                    return ListView.separated(
+                      // padding: const EdgeInsets.all(20),
+                      itemCount: 1,
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: 20,
+                      ),
+                      itemBuilder: (context, index) {
+                        // String currentType =
+                        //     _homeWidgetBloc.currentRequestType;
+                        // if (currentType == "Reposição") {
+                        return Column(
+                          children: [
+                            _showPedidoReposicao(
+                                context, _requests, index),
+                                _showPedidoReposicao2(
+                                context, _requests, index),
+                                _showPedidoReposicao3(
+                                context, _requests, index),
+                          ],
+                        );
+                        // }
+                        // return _showPedido(context, _requests, index);
+                      },
+                    );
+                  },
+                ))
+          ],
+        ),
+      ),
     );
   }
 }
