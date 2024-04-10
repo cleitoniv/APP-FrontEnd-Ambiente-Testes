@@ -70,14 +70,14 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
     inspect(offers);
     if (offers != null && offers.offers.length > 0) {
       if (hasdata) {
-        List<int> percentage = [];
+        List<double> percentage = [];
         List<int> valueTotal = [];
         List<OfferModel> list = offers.offers;
         for (var i = 0; i < list.length; i++) {
           valueTotal.add(list[i].value);
         }
         for (var i = 0; i < list.length; i++) {
-          percentage.add(list[i].discount as int);
+          percentage.add(list[i].discount);
         }
 
         if (valor.numberValue.truncate() * 100 > 0 &&
