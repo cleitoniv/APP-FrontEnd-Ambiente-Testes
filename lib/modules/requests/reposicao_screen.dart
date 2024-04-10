@@ -613,12 +613,12 @@ class _RepositionScreenState extends State<RepositionScreen> {
                 child: StreamBuilder(
                   stream: _requestsBloc.pedidoReposicaoStream,
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    List<PedidoModel> _requests = snapshot.data.list ?? [];
+                    // if (!snapshot.hasData) {
+                    //   return Center(
+                    //     child: CircularProgressIndicator(),
+                    //   );
+                    // }
+                    List<PedidoModel> _requests = [];
 
                     // if (_requests.isEmpty) {
                     //   return Center(
