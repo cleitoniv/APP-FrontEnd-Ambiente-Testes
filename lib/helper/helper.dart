@@ -133,8 +133,6 @@ class Helper {
     var lookingCartOperations = cartItems.map((e) {
       return e['operation'];
     }).toList();
-    print(lookingCartOperations[0]);
-    print(operation);
     if(!lookingCartOperations.isEmpty && (lookingCartOperations[0] == '01' || lookingCartOperations[0] == '04') && (operation == '01')) {
       function();
       return;
