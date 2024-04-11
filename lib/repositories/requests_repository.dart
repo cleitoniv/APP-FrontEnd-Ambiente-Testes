@@ -159,7 +159,7 @@ class RequestsRepository {
         };
       } else if (e["operation"] == "03") {
         return {
-          'type': e['tests'] == "Sim" ? "C" : e['type'],
+          'type': e['tests'] == "Não" ? "C" : e['type'],
           'operation': e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
@@ -189,7 +189,7 @@ class RequestsRepository {
         };
       } else if (e["operation"] == "04") {
         return {
-          'type': e['tests'] == "Sim" ? "C" : e['type'],
+          'type': e['tests'] == "Não" ? "C" : e['type'],
           'operation': "03",
           'paciente': {
             'nome': e['pacient']['name'],
@@ -262,6 +262,8 @@ class RequestsRepository {
   Future<OrderPayment> orderPayment(List<Map<String, dynamic>> _data) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
+    print('obejeto');
+    print(generateParams({'cart': _data}));
     try {
       Response response = await dio.post('/api/cliente/pedido_produto',
           data: jsonEncode(generateParams({'cart': _data})),

@@ -54,9 +54,6 @@ class PaymentRepository {
   }
 
   Map<String, dynamic> generateParams(Map data, PaymentMethod paymentMethod) {
-    print('linha 57');
-    print(data);
-
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01") {
         return {
@@ -126,7 +123,7 @@ class PaymentRepository {
         };
       } else if (e["operation"] == "07") {
         return {
-          'type': e['type'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
           'operation': e['tests'] == "Sim" ? "03" : e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
