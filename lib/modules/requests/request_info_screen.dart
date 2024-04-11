@@ -1294,7 +1294,7 @@ class RequestInfoScreen extends StatelessWidget {
                                         )
                                       ]
                                       :
-                                      (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") && (items[index].items[0]['tipoVenda'] != "C" && items[index].items[0]['operation'] != "07")
+                                      (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") 
                                       ? 
                                       [
                                         SizedBox(height: 10),

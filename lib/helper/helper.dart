@@ -129,16 +129,22 @@ class Helper {
 
   static whenDifferentOperation(
       operation, function, context, cartItems, requestsBloc, cartWidgetBloc) {
+        
     var lookingCartOperations = cartItems.map((e) {
       return e['operation'];
     }).toList();
-    
+    print(lookingCartOperations[0]);
+    print(operation);
     if(!lookingCartOperations.isEmpty && (lookingCartOperations[0] == '01' || lookingCartOperations[0] == '04') && (operation == '01')) {
       function();
       return;
     }
 
     if(!lookingCartOperations.isEmpty && operation == '07' && lookingCartOperations[0] == '06') {
+      function();
+      return;
+    }
+    if(!lookingCartOperations.isEmpty && operation == '06' && lookingCartOperations[0] == '07') {
       function();
       return;
     }
