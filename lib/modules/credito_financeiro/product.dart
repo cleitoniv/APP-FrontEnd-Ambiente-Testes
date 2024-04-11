@@ -129,21 +129,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   _verifyDiscount(valor, offers) {
     var args = ModalRoute.of(context)?.settings?.arguments as Map;
     if (offers != null) {
-     
+        inspect(offers);
         List<int> quantidadecx = [];
         List<int> valores = [];
-        int valor = 0;
+        int valor = args['produto'].value;
         int acc = 0;
         for (var i = 0; i < offers.length; i++) {
           valores.add(offers[i].price);
         }
         for (var i = 0; i < offers.length; i++) {
           quantidadecx.add(offers[i].quantity);
-          if (int.parse(_lensController.text == '' ? '0' : _lensController.text) <= offers[i].quantity) {
-            acc = offers[i].quantity;
+          if (int.parse(_lensController.text == '' ? '0' : _lensController.text) >= offers[i].quantity) {
             valor = offers[i].price;
-            break;
-          }
+          } 
         }
         return valor;
         // print(quantidadecx);

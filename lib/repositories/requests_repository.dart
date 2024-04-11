@@ -60,7 +60,7 @@ class RequestsRepository {
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01") {
         return {
-          'type': e['type'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
           'operation': e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
@@ -126,7 +126,7 @@ class RequestsRepository {
         };
       } else if (e["operation"] == "07") {
         return {
-          'type': e['type'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
           'operation': e['tests'] == "Sim" ? "03" : e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
@@ -159,7 +159,7 @@ class RequestsRepository {
         };
       } else if (e["operation"] == "03") {
         return {
-          'type': e['type'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
           'operation': e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
@@ -189,8 +189,8 @@ class RequestsRepository {
         };
       } else if (e["operation"] == "04") {
         return {
-          'type': "03",
-          'operation': e['operation'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
+          'operation': "03",
           'paciente': {
             'nome': e['pacient']['name'],
             'numero': e['pacient']['number'],
@@ -220,7 +220,7 @@ class RequestsRepository {
       } else {
         return {
           'operation': e['operation'],
-          'type': e['type'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
           'items': [
             {
               'produto': e['product'].title,

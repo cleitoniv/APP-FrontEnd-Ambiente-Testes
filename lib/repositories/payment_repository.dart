@@ -93,7 +93,7 @@ class PaymentRepository {
         };
       } else if (e["operation"] == "13") {
         return {
-          'type': e['type'],
+          'type': e['type'] ,
           'operation': e['tests'] == "Sim" ? "03" : e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
@@ -159,8 +159,7 @@ class PaymentRepository {
         };
       } else if (e["operation"] == "04") {
         return {
-          'type': e['type'],
-          // 'operation': e['operation'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
           'operation': "03",
           'paciente': {
             'nome': e['pacient']['name'],
@@ -193,7 +192,7 @@ class PaymentRepository {
         };
       } else if (e['operation'] == '03') {
         return {
-          'type': e['type'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
           'operation': e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
@@ -225,7 +224,7 @@ class PaymentRepository {
       } else if (e['operation'] == '06' && e['type'] == 'C') {
         return {
           'operation': e['operation'],
-          'type': e['type'],
+          'type': e['tests'] == "Sim" ? "C" : e['type'],
           'items': [
             { 
               'codigo_teste': e['codigoTeste'],
