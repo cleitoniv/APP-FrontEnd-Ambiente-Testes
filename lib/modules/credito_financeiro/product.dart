@@ -132,25 +132,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
      
         List<int> quantidadecx = [];
         List<int> valores = [];
+        int valor = 0;
+        int acc = 0;
         for (var i = 0; i < offers.length; i++) {
           valores.add(offers[i].price);
         }
         for (var i = 0; i < offers.length; i++) {
           quantidadecx.add(offers[i].quantity);
+          if (int.parse(_lensController.text == '' ? '0' : _lensController.text) <= offers[i].quantity) {
+            acc = offers[i].quantity;
+            valor = offers[i].price;
+            break;
+          }
         }
-        print(quantidadecx);
-        print(valores);
-        if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[0] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[1]) {
-          return valores[1];
-        } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[1] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[2]) {
-          return valores[2];
-        } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[2] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[3]) {
-          return valores[3];
-        } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[3]) {
-          return valores.reduce(min);
-        } else {
-          return valores.reduce(max);
-        }
+        return valor;
+        // print(quantidadecx);
+        // print(valores);
+        // if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[0] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[1]) {
+        //   return valores[1];
+        // } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[1] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[2]) {
+        //   return valores[2];
+        // } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[2] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[3]) {
+        //   return valores[3];
+        // } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[3]) {
+        //   return valores.reduce(min);
+        // } else {
+        //   return valores.reduce(max);
+        // }
     } else {
       return args['produto'].value;
     }
