@@ -129,34 +129,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   _verifyDiscount(valor, offers) {
     var args = ModalRoute.of(context)?.settings?.arguments as Map;
     if (offers != null) {
-        inspect(offers);
-        List<int> quantidadecx = [];
-        List<int> valores = [];
         int valor = args['produto'].value;
-        int acc = 0;
         for (var i = 0; i < offers.length; i++) {
-          valores.add(offers[i].price);
-        }
-        for (var i = 0; i < offers.length; i++) {
-          quantidadecx.add(offers[i].quantity);
           if (int.parse(_lensController.text == '' ? '0' : _lensController.text) >= offers[i].quantity) {
             valor = offers[i].price;
           } 
         }
         return valor;
-        // print(quantidadecx);
-        // print(valores);
-        // if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[0] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[1]) {
-        //   return valores[1];
-        // } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[1] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[2]) {
-        //   return valores[2];
-        // } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[2] && int.parse(_lensController.text == '' ? '0' : _lensController.text) <= quantidadecx[3]) {
-        //   return valores[3];
-        // } else if (int.parse(_lensController.text == '' ? '0' : _lensController.text) > quantidadecx[3]) {
-        //   return valores.reduce(min);
-        // } else {
-        //   return valores.reduce(max);
-        // }
     } else {
       return args['produto'].value;
     }

@@ -156,7 +156,7 @@ class PaymentRepository {
         };
       } else if (e["operation"] == "04") {
         return {
-          'type': e['tests'] == "Sim" ? "C" : e['type'],
+          'type': e['type'],
           'operation': "03",
           'paciente': {
             'nome': e['pacient']['name'],
@@ -189,7 +189,7 @@ class PaymentRepository {
         };
       } else if (e['operation'] == '03') {
         return {
-          'type': e['tests'] == "Sim" ? "C" : e['type'],
+          'type': e['type'],
           'operation': e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
@@ -258,8 +258,6 @@ class PaymentRepository {
         };
       }
     }).toList();
-    print('linha 231');
-    print(items);
     return {
       'items': items,
       'id_cartao':

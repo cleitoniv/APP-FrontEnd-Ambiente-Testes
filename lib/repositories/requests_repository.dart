@@ -57,10 +57,12 @@ class RequestsRepository {
   }
 
   Map<String, dynamic> generateParams(Map data) {
+    print('linha 60');
+    print(data);
     List items = data['cart'].map<Map>((e) {
       if (e["operation"] == "01") {
         return {
-          'type': e['tests'] == "Sim" ? "C" : e['type'],
+          'type': e['type'],
           'operation': e['operation'],
           'paciente': {
             'nome': e['pacient']['name'],
@@ -189,7 +191,7 @@ class RequestsRepository {
         };
       } else if (e["operation"] == "04") {
         return {
-          'type': e['tests'] == "Não" ? "C" : e['type'],
+          'type': e['type'],
           'operation': "03",
           'paciente': {
             'nome': e['pacient']['name'],
@@ -271,7 +273,7 @@ class RequestsRepository {
             "Authorization": "Bearer $idToken",
             "Content-Type": "application/json"
           }));
-      print('linha 231');
+      print('linha 276');
       print(response.data);
       return OrderPayment(isValid: response.data["success"], isLoading: false);
     } catch (e) {
