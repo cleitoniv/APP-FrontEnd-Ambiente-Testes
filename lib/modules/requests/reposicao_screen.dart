@@ -27,7 +27,7 @@ class _RepositionScreenState extends State<RepositionScreen> {
   bool loading = true;
   int _start = 5;
 
-  @override
+  // @override
   // void initState() {
     // super.initState();
     // startTimer();
@@ -562,15 +562,15 @@ class _RepositionScreenState extends State<RepositionScreen> {
             }));
   }
 
-  @override
-  void dispose() {
-    _timer.cancel();
-    _nameController.dispose();
-    _numberController.dispose();
-    _birthdayController.dispose();
-    _serialController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+    // _timer.cancel();
+    // _nameController.dispose();
+    // _numberController.dispose();
+    // _birthdayController.dispose();
+    // _serialController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

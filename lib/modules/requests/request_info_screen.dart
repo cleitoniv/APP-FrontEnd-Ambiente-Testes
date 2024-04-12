@@ -230,7 +230,7 @@ class RequestInfoScreen extends StatelessWidget {
                                     ),
                                   ],
                                 )
-                                : (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") && (items[index].items[0]['operation'] != "07") ? 
+                                : (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") && (items[index].items[0]['operation'] != "07") && (items[index].items[0]['operation'] != "03" && items[index].items[0]['tipoVenda'] != "C") ? 
                                 Container()
                                 :
                                 Table(
@@ -326,7 +326,7 @@ class RequestInfoScreen extends StatelessWidget {
                                       children:
                                       items[index].items.length > 1 
                                       ? 
-                                        (items[index].items[1]['tipoVenda'] != "A" && items[index].items[1]['tipoVenda'] != "T") && (items[index].items[1]['operation'] != "07")
+                                        (items[index].items[1]['tipoVenda'] != "A" && items[index].items[1]['tipoVenda'] != "T") && (items[index].items[1]['operation'] != "07") && (items[index].items[1]['operation'] != "03" && items[index].items[1]['tipoVenda'] != "C")
                                         ? 
                                         [
                                         SizedBox(height: 10),
@@ -494,8 +494,9 @@ class RequestInfoScreen extends StatelessWidget {
                                                     ),
                                               ),
                                             ))
-                                      ] 
-                                      : [
+                                       ] 
+                                      : 
+                                      [
                                         ListTileMoreCustomizable(
                                             dense: true,
                                             contentPadding:
@@ -1294,7 +1295,7 @@ class RequestInfoScreen extends StatelessWidget {
                                         )
                                       ]
                                       :
-                                      (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") 
+                                      (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") && (items[index].items[0]['operation'] != "03" && items[index].items[0]['tipoVenda'] != "C")
                                       ? 
                                       [
                                         SizedBox(height: 10),

@@ -38,19 +38,18 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
     });
   }
 
-  _parcels(valor) {
-    if (valor > 0 && valor <= 300) {
-      return 1;
-    } else if (valor >= 300 && valor <= 600) {
-      return 3;
-    } else if (valor > 1000) {
-      return 6;
-    } else {
-      return 1;
-    }
+  _parcels(valor, offers) {
+    var installment = 1;
+    List<OfferModel> list = offers.offers ?? [];
+    for (var i = 0; i < list.length; i++) {
+      if (valor >= list[i].value) {
+        installment = list[i].installmentCount;
+      }
+    } 
+    return installment;
   }
 
-  void _addCreditoFinanceiro() {
+  void _addCreditoFinanceiro(offers) {
     if (_creditValueController.value.text == "R\$ 0,00") {
       Dialogs.errorWithWillPopScope(context,
           title: "Valor incorreto",
@@ -61,36 +60,21 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
     }
     int value = (_creditValueController.numberValue * 100).toInt();
     _creditoFinanceiroBloc.creditoFinaceiroSink
-        .add(CreditoFinanceiro(valor: value, installmentCount: _parcels(value), desconto: 0));
+        .add(CreditoFinanceiro(valor: value, installmentCount: _parcels(value, offers), desconto: 0));
     Modular.to.pushNamed('/credito_financeiro/pagamento');
   }
 
   _verifyDiscount(valor, offers, hasdata) {
-    print(hasdata);
-    inspect(offers);
     if (offers != null && offers.offers.length > 0) {
       if (hasdata) {
-        List<double> percentage = [];
-        List<int> valueTotal = [];
-        List<OfferModel> list = offers.offers;
+        double percentage = 0;
+        List<OfferModel> list = offers.offers ?? [];
         for (var i = 0; i < list.length; i++) {
-          valueTotal.add(list[i].value);
-        }
-        for (var i = 0; i < list.length; i++) {
-          percentage.add(list[i].discount);
-        }
-
-        if (valor.numberValue.truncate() * 100 > 0 &&
-            valor.numberValue.truncate() * 100 < valueTotal[1]) {
-          return percentage[0];
-        } else if (valor.numberValue.truncate() * 100 >= valueTotal[1] &&
-            valor.numberValue.truncate() * 100 < valueTotal[2]) {
-          return percentage[1];
-        } else if (valor.numberValue.truncate() * 100 >= valueTotal[2]) {
-          return percentage[2];
-        } else {
-          return 0;
-        }
+          if (valor.numberValue.truncate() * 100 >= list[i].value) {
+           percentage = list[i].discount;
+          }
+        } 
+        return percentage ?? 0;
       } else
         return 0;
     } else {
@@ -111,7 +95,6 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
         stream: _productsBloc.offersRedirectedStream,
         builder: (context, offerSnapshot) {
           var offers = offerSnapshot.data;
-          print('linha 102');
           return Scaffold(
             appBar: AppBar(
               title: Text('Credito Financeiro',
@@ -156,7 +139,7 @@ class _CreditoFinanceiroState extends State<CreditoFinanceiroScreen> {
                   onPressed: offers == null
                       ? () {}
                       : () {
-                          _addCreditoFinanceiro();
+                          _addCreditoFinanceiro(offers);
                         },
                   child: offers == null
                       ? Text(
