@@ -33,7 +33,7 @@ class RequestsModule extends Module {
     ChildRoute(
       '/:id',
       child: (_, args) => RequestInfoScreen(
-        id: int.parse(args.params['id']),
+        id: args.params['id'],
         pedidoData: args.data["pedidoData"],
         reposicao: args.data["reposicao"],
       ),

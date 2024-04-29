@@ -242,12 +242,12 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                     });
                     }
                     return Helper.CartList(
-                        _data, hasPrice, _removeItem, selectPrice);
+                        _data.reversed.toList(), hasPrice, _removeItem, selectPrice);
                   },
                 ),
                 Divider(
                   height: 25,
-                  thickness: 1,
+                  thickness: 3,
                   color: Colors.black12,
                 ),
                 SizedBox(height: 20),

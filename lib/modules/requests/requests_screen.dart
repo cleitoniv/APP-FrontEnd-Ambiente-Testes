@@ -12,7 +12,7 @@ class RequestsScreen extends StatelessWidget {
   final RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
   final HomeWidgetBloc _homeWidgetBloc = Modular.get<HomeWidgetBloc>();
 
-  _onShowRequest(int id, PedidoModel pedidoData, bool reposicao) {
+  _onShowRequest(id, PedidoModel pedidoData, bool reposicao) {
     Modular.to.pushNamed('/requests/$id', arguments: {
       "pedidoData": pedidoData,
       "reposicao": reposicao,
@@ -217,7 +217,6 @@ class RequestsScreen extends StatelessWidget {
           }
 
           List<PedidoModel> _requests = snapshot.data.list ?? [];
-
           if (_requests.isEmpty) {
             return Center(
               child: Text('Não há pedidos a serem visualizados'),

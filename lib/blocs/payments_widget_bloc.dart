@@ -19,9 +19,19 @@ class PaymentsWidgetBloc extends Disposable {
     paymentsListSink.add(list);
   }
 
+  void fetchPagamentos() async {
+    // pagamentosListSink.add(PagamentosList(isLoading: true));
+    PagamentosList list = await repository.fetchPagamentos();
+    pagamentosListSink.add(list);
+  }
+
   BehaviorSubject _paymentsFilter = BehaviorSubject.seeded(0);
   Sink get paymentsFilter => _paymentsFilter.sink;
   int get currentFilter => _paymentsFilter.value;
+
+  BehaviorSubject _pagamentosListController = BehaviorSubject();
+  Sink get pagamentosListSink => _pagamentosListController.sink;
+  Stream get pagamentosListStream => _pagamentosListController.stream;
 
   BehaviorSubject _paymentsListController = BehaviorSubject();
   Sink get paymentsListSink => _paymentsListController.sink;
@@ -29,6 +39,7 @@ class PaymentsWidgetBloc extends Disposable {
 
   @override
   void dispose() {
+    _pagamentosListController.close();
     _paymentsFilter.close();
     _paymentsListController.close();
     _paymentTypeController.close();

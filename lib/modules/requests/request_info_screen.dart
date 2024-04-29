@@ -10,7 +10,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 class RequestInfoScreen extends StatelessWidget {
-  final int id;
+  final String id;
   final PedidoModel pedidoData;
   final bool reposicao;
   final RequestsBloc _requestsBloc = Modular.get<RequestsBloc>();
@@ -40,12 +40,13 @@ class RequestInfoScreen extends StatelessWidget {
         body: StreamBuilder(
           stream: _requestsBloc.pedidoInfoStream,
           builder: (context, pedidoInfo) {
+            // inspect(_requestsBloc.pedidoInfoStream);
             if (!pedidoInfo.hasData || pedidoInfo.data.isLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             } else {
-              // inspect(_requestsBloc.pedidoInfoStream);
+              
               return ListView(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(vertical: 20),
@@ -152,7 +153,8 @@ class RequestInfoScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 items[index].items.length > 1 ? 
-                                (items[index].items[1]['tipoVenda'] != "A") && (items[index].items[1]['operation'] != "07") ? 
+                                // (items[index].items[1]['tipoVenda'] != "A") && (items[index].items[1]['operation'] != "07") && (items[index].items[0]['operation'] != "07") ? 
+                                (items[index].items[1]['operation'] == '06' && items[index].items[1]['tipoVenda'] == 'C') || (items[index].items[1]['tipoVenda'] == 'C' && items[index].items[1]['operation'] == '13') ?
                                 Container()
                                 :
                                 Table(
@@ -230,8 +232,9 @@ class RequestInfoScreen extends StatelessWidget {
                                     ),
                                   ],
                                 )
-                                : (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") && (items[index].items[0]['operation'] != "07") && (items[index].items[0]['operation'] != "03" && items[index].items[0]['tipoVenda'] != "C") ? 
-                                Container()
+                                : (items[index].items[0]['operation'] == '06' && items[index].items[0]['tipoVenda'] == 'C') || (items[index].items[0]['tipoVenda'] == 'C' && items[index].items[0]['operation'] == '13')
+                                // (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") && (items[index].items[0]['operation'] != "07") && (items[index].items[0]['operation'] != "03" && items[index].items[0]['tipoVenda'] != "C") ? 
+                                ? Container()
                                 :
                                 Table(
                                   children: [
@@ -315,11 +318,7 @@ class RequestInfoScreen extends StatelessWidget {
                                   scrollDirection: Axis.vertical,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index2) {
-                                    bool isTest = items[index].items[index2]
-                                                ['produto_teste'] !=
-                                            null &&
-                                        items[index].items[index2]['tests'] ==
-                                            "S";
+                                    bool isTest = items[index].items[index2]['operation'] == "03";
                                     print('linha 323');
                                     print(items[index].items[index2]);
                                     return Column(
@@ -485,7 +484,7 @@ class RequestInfoScreen extends StatelessWidget {
                                             trailing: FittedBox(
                                               fit: BoxFit.contain,
                                               child: Text(
-                                                'R\$ ${isTest ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
+                                                'R\$ ${items[index].items[index2]['valorProduto'] == null ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorProduto'])}',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline5
@@ -509,8 +508,7 @@ class RequestInfoScreen extends StatelessWidget {
                                             ),
                                             title: Text.rich(
                                               TextSpan(
-                                                children:
-                                                  (items[index].items[index2]['esfericoD'] == '-') && (items[index].items[index2]['esfericoE'] == '-') ? [] :                                                
+                                                children:                                            
                                                  [
                                                   TextSpan(
                                                     text:
@@ -682,7 +680,7 @@ class RequestInfoScreen extends StatelessWidget {
                                             trailing: FittedBox(
                                               fit: BoxFit.contain,
                                               child: Text(
-                                                'R\$ ${isTest ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
+                                                'R\$ ${items[index].items[index2]['valorProduto'] == null ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorProduto'])}',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline5
@@ -729,7 +727,7 @@ class RequestInfoScreen extends StatelessWidget {
                                         //       ),
                                         //     )),
                                         // SizedBox(height: 50),
-                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoE'] == '-') ? Container() :
+                                        (items[index].items[index2]['operation'] == '06' && items[index].items[index2]['tipoVenda'] == 'C') || (items[index].items[index2]['operation'] == '13' && items[index].items[index2]['tipoVenda'] == 'C') ? Container() :
                                         Text(
                                           'Parâmetros',
                                           style: Theme.of(context)
@@ -742,7 +740,7 @@ class RequestInfoScreen extends StatelessWidget {
                                           textAlign: TextAlign.center,
                                         ),
                                         SizedBox(height: 10),
-                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoE'] == '-') ? Container() :
+                                        (items[index].items[index2]['operation'] == '06' && items[index].items[index2]['tipoVenda'] == 'C') || (items[index].items[index2]['operation'] == '13' && items[index].items[index2]['tipoVenda'] == 'C') ? Container() :
                                         Table(
                                           children: [
                                             TableRow(
@@ -772,7 +770,7 @@ class RequestInfoScreen extends StatelessWidget {
                                           ],
                                         ),
                                         SizedBox(height: 2),
-                                        (items[index].items[index2]['esfericoD'] == '-' && items[index].items[index2]['esfericoE'] == '-') ? Container() :
+                                        (items[index].items[index2]['operation'] == '06' && items[index].items[index2]['tipoVenda'] == 'C') || (items[index].items[index2]['tipoVenda'] == 'C' && items[index].items[index2]['operation'] == '13') ? Container() :
                                         Row(
                                           children: [
                                             Expanded(
@@ -1295,7 +1293,8 @@ class RequestInfoScreen extends StatelessWidget {
                                         )
                                       ]
                                       :
-                                      (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") && (items[index].items[0]['operation'] != "03" && items[index].items[0]['tipoVenda'] != "C")
+                                      // (items[index].items[0]['tipoVenda'] != "A" && items[index].items[0]['tipoVenda'] != "T") && (items[index].items[0]['operation'] != "03" && items[index].items[0]['tipoVenda'] != "C" )
+                                      (items[index].items[index2]['operation'] == '06' && items[index].items[index2]['tipoVenda'] == 'C') || (items[index].items[index2]['tipoVenda'] == 'C' && items[index].items[index2]['operation'] == '13')
                                       ? 
                                       [
                                         SizedBox(height: 10),
@@ -1320,12 +1319,8 @@ class RequestInfoScreen extends StatelessWidget {
                                             title: Row(
                                               children: [
                                                 items[index].items[index2]
-                                                                ['operation'] !=
-                                                            "07" &&
-                                                        items[index].items[
-                                                                    index2]
-                                                                ['tests'] ==
-                                                            "N"
+                                                                ['operation'] ==
+                                                            "07" 
                                                     ? Expanded(
                                                         child: FittedBox(
                                                           fit: BoxFit.contain,
@@ -1399,7 +1394,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                   width: 110,
                                                   height: 20,
                                                   decoration: BoxDecoration(
-                                                    color: items[index].items[index2]['operation'] == "04" ? Color.fromARGB(255, 178, 174, 174) : Color(0xffFAF4E4),
+                                                    color: items[index].items[index2]['operation'] == "03" ? Color.fromARGB(255, 178, 174, 174) : Color(0xffFAF4E4),
                                                     borderRadius: BorderRadius.circular(5),
                                                   ),
                                                   child: Text(
@@ -1454,7 +1449,7 @@ class RequestInfoScreen extends StatelessWidget {
                                             trailing: FittedBox(
                                               fit: BoxFit.contain,
                                               child: Text(
-                                                'R\$ ${isTest ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
+                                                'R\$ ${items[index].items[index2]['valorProduto'] == null ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorProduto'])}',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline5
@@ -1642,7 +1637,7 @@ class RequestInfoScreen extends StatelessWidget {
                                             trailing: FittedBox(
                                               fit: BoxFit.contain,
                                               child: Text(
-                                                'R\$ ${isTest ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorTotal'])}',
+                                                'R\$ ${items[index].items[index2]['valorProduto'] == null ? '0,00' : Helper.intToMoney(items[index].items[index2]['valorProduto'])}',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline5
@@ -1689,6 +1684,7 @@ class RequestInfoScreen extends StatelessWidget {
                                         //       ),
                                         //     )),
                                         // SizedBox(height: 50),
+                                        (items[index].items[index2]['operation'] == '06' && items[index].items[index2]['tipoVenda'] == 'C') || (items[index].items[index2]['operation'] == '13' && items[index].items[index2]['tipoVenda'] == 'C') ? Container() :
                                         Text(
                                           'Parâmetros',
                                           style: Theme.of(context)
@@ -1701,6 +1697,7 @@ class RequestInfoScreen extends StatelessWidget {
                                           textAlign: TextAlign.center,
                                         ),
                                         SizedBox(height: 10),
+                                        (items[index].items[index2]['operation'] == '06' && items[index].items[index2]['tipoVenda'] == 'C') || (items[index].items[index2]['operation'] == '13' && items[index].items[index2]['tipoVenda'] == 'C') ? Container() :
                                         Table(
                                           children: [
                                             TableRow(
@@ -1730,6 +1727,7 @@ class RequestInfoScreen extends StatelessWidget {
                                           ],
                                         ),
                                         SizedBox(height: 2),
+                                        (items[index].items[index2]['operation'] == '06' && items[index].items[index2]['tipoVenda'] == 'C') || (items[index].items[index2]['operation'] == '13' && items[index].items[index2]['tipoVenda'] == 'C') ? Container() :
                                         Row(
                                           children: [
                                             Expanded(
@@ -2283,7 +2281,7 @@ class RequestInfoScreen extends StatelessWidget {
                                 //       ),
                                 // ),
                                 Text(
-                                  'Total + Frete',
+                                  'Total',
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline5

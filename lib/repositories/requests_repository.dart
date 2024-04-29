@@ -305,11 +305,12 @@ class RequestsRepository {
     }
   }
 
-  Future<Pedido> getPedido(int id, PedidoModel pedidoData,
+  Future<Pedido> getPedido(id, PedidoModel pedidoData,
       {bool reposicao = false}) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
-
+    print("MEU IDDDDDDDDDDDDDDDDDD");
+    print(id);
     try {
       Response response = await dio.get(
         '/api/cliente/pedido/$id',
@@ -325,10 +326,13 @@ class RequestsRepository {
           },
         ),
       );
-
+      print('pedido:');
+      print(response.data['data']);
       PedidoModel pedido = PedidoModel.fromJson(response.data['data']);
       return Pedido(isEmpty: false, isLoading: false, pedido: pedido);
     } catch (error) {
+      print('entra no catch');
+      inspect(error);
       return Pedido(isEmpty: true, isLoading: false, pedido: null);
     }
   }
@@ -355,6 +359,7 @@ class RequestsRepository {
       return PedidosList(
           isEmpty: pedidos.length <= 0, isLoading: false, list: pedidos);
     } catch (error) {
+      inspect(error);
       return PedidosList(isEmpty: true, isLoading: false, list: null);
     }
   }

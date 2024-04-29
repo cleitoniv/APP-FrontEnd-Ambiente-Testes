@@ -5,12 +5,22 @@ import 'package:central_oftalmica_app_cliente/models/payments_model.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../models/pagamentos_model.dart';
+
 class PaymentsList {
   bool isLoading;
   bool isEmpty;
   List<PaymentModel> list;
 
   PaymentsList({this.isEmpty, this.isLoading, this.list});
+}
+
+class PagamentosList {
+  bool isLoading;
+  bool isEmpty;
+  List<PagamentosModel> list;
+
+  PagamentosList({this.isEmpty, this.isLoading, this.list});
 }
 
 class PaymentRepository {
@@ -26,6 +36,30 @@ class PaymentRepository {
       return "${dtSplited[2]}-${dtSplited[1]}-${dtSplited[0]}";
     } catch (error) {
       return null;
+    }
+  }
+
+  Future<PagamentosList> fetchPagamentos() async {
+    User user = _auth.currentUser;
+    String idToken = await user.getIdToken();
+
+    try {
+      Response response = await dio.get(
+        "/api/cliente/pagamentos",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $idToken",
+            "Content-Type": "application/json"
+          },
+        ),
+      );
+     List<PagamentosModel> list = response.data['resources'][0]['dados'].map<PagamentosModel>((e) {
+        return PagamentosModel.fromJson(e);
+      }).toList();
+      return PagamentosList(
+          isLoading: false, isEmpty: list.length <= 0, list: list);
+    } catch (error) {
+      return PagamentosList(isEmpty: false, isLoading: false);
     }
   }
 

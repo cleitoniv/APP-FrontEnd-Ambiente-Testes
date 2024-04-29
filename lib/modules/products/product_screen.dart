@@ -454,7 +454,9 @@ class _ProductScreenState extends State<ProductScreen> {
                             size: 15,
                           ),
                         }
-                      ].map(
+                      ]
+                      .where((element) => element['title'] != 'Testes' || productSnapshot.data.product.hasTest)
+                      .map(
                         (item) {
                           return ListTileMoreCustomizable(
                             contentPadding: const EdgeInsets.all(0),

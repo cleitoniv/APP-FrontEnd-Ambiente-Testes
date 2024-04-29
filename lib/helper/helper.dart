@@ -484,7 +484,7 @@ class Helper {
       shrinkWrap: true,
       itemCount: _data.length,
       separatorBuilder: (context, index) => Divider(
-        height: 25,
+        height: 1,
         thickness: 1,
         color: Colors.black12,
       ),
@@ -500,8 +500,6 @@ class Helper {
                 ),
                 Center(
                     child: Column(
-                  // height: 50,
-                  // mainAxisAlignment: MainAxisAlignment.start
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [ Text(
                     '${_data[index]['product'].title}',
@@ -516,6 +514,7 @@ class Helper {
                                     .textTheme
                                     .headline5
                                     .copyWith(
+                                      color: Colors.black,
                                       fontSize: 12,
                                     ),
                               )
@@ -849,37 +848,48 @@ class Helper {
                               // SizedBox(width: 20)
                             ],
                           ),
+                          _data[index]['pacient']['name'] != '' ? 
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Paciente: ${_data[index]['pacient']['name']}',
+                                  style: TextStyle(
+                                    fontSize: 11),
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow:
+                                    TextOverflow.ellipsis),
+                              ],
+                            ) : 
+                            Container()
                         ],
                       ),
                     ],
                   ),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          _data[index]['removeItem'] == 'Sim' ||
-                                  _data[index]['removeItem'] == null
-                              ? IconButton(
-                                iconSize: 5,
-                                  icon: Image.asset(
-                              'assets/images/Lata_de_lixo.png',
-                              fit: BoxFit.scaleDown,
-                            ),
-                                  onPressed: () {
-                                    removeItem(_data[index]);
-                                  },
-                                )
-                              : Container()
-                        ],
-                      ),
-                    ],
-                  ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        _data[index]['removeItem'] == 'Sim' ||
+                                _data[index]['removeItem'] == null
+                            ? IconButton(
+                              iconSize: 5,
+                                icon: Image.asset(
+                            'assets/images/Lata_de_lixo.png',
+                            fit: BoxFit.scaleDown,
+                          ),
+                                onPressed: () {
+                                  removeItem(_data[index]);
+                                },
+                              )
+                            : Container()
+                      ],
+                    ),
+                  ],
                 )
               ],
             ),
@@ -1012,9 +1022,7 @@ class Helper {
             size: 20,
           )
         };
-      case '04':
-        switch (tests) {
-          case 'S':
+      case '03':
             return {
               'title': 'Teste',
               'color': Colors.white,
@@ -1025,24 +1033,9 @@ class Helper {
                 size: 23,
               )
             };
-        }
         break;
       case '01':
-        switch (tests) {
-          case 'S':
-            return {
-              'title': 'Teste',
-              'color': Colors.white,
-              'background': Color(0xffF1F1F1),
-              'icon': Icon(
-                Icons.remove_red_eye,
-                color: Colors.black54,
-                size: 23,
-              )
-            };
-
-          case 'N':
-            return {
+        return {
               'title': 'Avulso',
               'color': Color(0xff707070),
               'background': Color(0xff707070),
@@ -1052,24 +1045,8 @@ class Helper {
                 size: 20,
               )
             };
-        }
         break;
-
       case '07':
-        switch (tests) {
-          case 'S':
-            return {
-              'title': 'Teste',
-              'color': Colors.white,
-              'background': Color(0xffF1F1F1),
-              'icon': Icon(
-                Icons.remove_red_eye,
-                color: Colors.black54,
-                size: 23,
-              )
-            };
-
-          case 'N':
             return {
               'title': 'Produto',
               'color': Theme.of(context).splashColor,
@@ -1081,7 +1058,6 @@ class Helper {
                 color: Colors.white,
               )
             };
-        }
         break;
       case '03':
         return {

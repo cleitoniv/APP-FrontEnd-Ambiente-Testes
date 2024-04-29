@@ -133,7 +133,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
     _data = [
       {
         'labelText': 'Nome impresso no cartão',
-        'capitalization': TextCapitalization.words,
+        'capitalization': TextCapitalization.characters,
         'icon': Icons.person,
         'controller': _ownerController,
         'validator': (text) => Helper.lengthValidatorContainsNumber(
@@ -230,6 +230,7 @@ class _AddCreditCardScreenState extends State<AddCreditCardScreen> {
                 itemBuilder: (context, index) {
                   return TextFieldWidget(
                     labelText: _data[index]['labelText'],
+                    textCapitalization: _data[index]['capitalization'],
                     prefixIcon: Icon(
                       _data[index]['icon'],
                       color: Color(0xffA1A1A1),

@@ -173,7 +173,7 @@ class CreditProductCardWidget extends StatelessWidget {
     this.precoUnitario = 20000,
     this.value = 20000,
     this.parcels = 1,
-    this.percentageTest,
+    this.percentageTest = 0,
     this.caixas = 20,
   });
 
@@ -247,10 +247,13 @@ class CreditProductCardWidget extends StatelessWidget {
                                   ),
                             ),
                           ),
+                        this.percentageTest != null && this.percentageTest > 0 
+                          ?
                           FittedBox(
                             fit: BoxFit.contain,
-                            child: Text(
-                              "Até ${this.percentageTest ?? 0}% de teste",
+                            child: 
+                            Text(
+                              "Até ${this.percentageTest}% de teste",
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1
@@ -260,7 +263,8 @@ class CreditProductCardWidget extends StatelessWidget {
                                     fontSize: 14,
                                   ),
                             ),
-                          ),
+                          ) 
+                          : Container(),
                           FittedBox(
                             fit: BoxFit.contain,
                             child: Text(

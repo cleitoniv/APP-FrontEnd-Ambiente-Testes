@@ -221,7 +221,7 @@ class ProductProfileWidget extends StatelessWidget {
                         width: 70,
                         height: 36,
                       ),
-                tests != 0 || this.screen != 'grid'
+                tests > 0 && this.screen != 'grid'
                     ? Container(
                         width: 64,
                         height: 36,

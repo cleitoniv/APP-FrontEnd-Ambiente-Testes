@@ -10,7 +10,7 @@ class RequestsBloc extends Disposable {
 
   RequestsBloc(this.repository);
 
-  void getPedido(int id, PedidoModel pedidoData, bool reposicao) async {
+  void getPedido(String id, PedidoModel pedidoData, bool reposicao) async {
     pedidoInfoSink.add(Pedido(isLoading: true));
     Pedido pedido =
         await repository.getPedido(id, pedidoData, reposicao: reposicao);
@@ -44,6 +44,8 @@ class RequestsBloc extends Disposable {
   }
 
   void getPedidosList(int filtro) async {
+    print('meu filtro:');
+    print(filtro);
     pedidoSink.add(PedidosList(isLoading: true));
     PedidosList list = await repository.getPedidos(filtro);
     pedidoSink.add(list);

@@ -836,9 +836,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'current': _first['current'],
         'codigoTeste': await _getProductCodeTest(_first),
         'pacient': {
-          'name': _nameController.text,
-          'number': _numberController.text,
-          'birthday': _birthdayController.text,
+          'name': _nameController.text
         },
         _first['current']: _first[_first['current']],
       };
@@ -917,9 +915,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       'current': _first['current'],
       'groupTest':  _first['groupTest'],
       'pacient': {
-        'name': _nameController.text,
-        'number': _numberController.text,
-        'birthday': _birthdayController.text,
+        'name': _nameController.text
       },
       _first['current']: _first[_first['current']],
     };
@@ -1733,6 +1729,27 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
       ),
     );
   }
+  parseNumero(dynamic numero, product) {
+    print('entrando na func');
+    if (numero is double) {
+      if (numero > 0) {
+        return "+$numero";
+      } else if (numero == 0) {
+        return "$numero";
+      }
+      return "$numero";
+    } else if (numero is String && !numero.contains('-') && numero != '' && numero != '0.0' && !product.hasCor && !product.hasEixo) {
+      return "+$numero";
+    } else if (numero is String) {
+      return numero;
+    }
+  }
+
+  ifTestType() {
+   double value = (currentProduct.product.valueTest * 100);
+   var valueInt = value.toInt();
+   return valueInt ~/ 100;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1764,27 +1781,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       ProductProfileWidget(
-                        value: currentProduct.product.value,
+                        value: widget.type == "T" ? ifTestType() : currentProduct.product.value,
                         title: currentProduct.product.title,
                         tests: currentProduct.product.tests -
                             _calculateCreditTest(),
-                        imageUrl: currentProduct.product.imageUrl,
+                        imageUrl: widget.type == "T" ? 'https://centraloftalmica.herokuapp.com/product_image/${currentProduct.product.groupTest}.webp' : currentProduct.product.imageUrl,
                         credits: currentProduct.product.boxes,
                         screen: 'request_details_screen',
                         onTap: () async {},
-                      ),
-                      //                    CachedNetworkImage(
-                      //                      errorWidget: (context, url, error) =>
-                      //                          Image.asset('assets/images/no_image_product.jpeg'),
-                      //                      imageUrl: currentProduct.product.imageUrl,
-                      //                      width: 120,
-                      //                      height: 100,
-                      //                      alignment: Alignment.center,
-                      //                      fit: BoxFit.contain,
-                      //                    ),
-
-                      //   Text("${_getBuyValue(widget.type)}", style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 17),)
-                    ]),
+                      ),              
+                    ]
+                  ),
                 SizedBox(width: 20),
                 Expanded(
                     child: Column(
@@ -1876,6 +1883,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                   return Container(
                     margin: const EdgeInsets.only(top: 20),
                     child: TextFieldWidget(
+                      textCapitalization: TextCapitalization.characters,
                       labelText: e['labelText'],
                       prefixIcon: Icon(
                         e['icon'],
@@ -2082,6 +2090,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 height: 10,
                               ),
                               itemBuilder: (context, index) {
+                                print(_productParams);
                                 return _productParams[index]['enabled']
                                     ? TextFieldWidget(
                                         readOnly: true,
@@ -2091,7 +2100,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         ),
                                         controller: TextEditingController()
                                           ..text =
-                                              "${snapshot.data[snapshot.data['current']][_productParams[index]['key']].toString()}",
+                                              "${parseNumero(snapshot.data[snapshot.data['current']][_productParams[index]['key']].toString(), currentProduct.product)}",
                                         labelText: _productParams[index]
                                             ['labelText'],
                                         onTap: () => _onShowOptions(

@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
+import '../../helper/dialogs.dart';
+import '../../models/pagamentos_model.dart';
+
 class PaymentsScreen extends StatefulWidget {
   @override
   _PaymentsScreenState createState() => _PaymentsScreenState();
@@ -26,107 +29,119 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       _filtro = "2";
     }
 
-    _paymentsWidgetBloc.fetchPayments(_filtro);
+    _paymentsWidgetBloc.fetchPagamentos();
   }
 
-  _onExpandItem() {}
+  // _onExpandItem() {}
 
-  _showSnackBar() {
-    SnackBar _snackBar = SnackBar(
-      content: Text(
-        'Texto copiado para área de transferência',
-      ),
-    );
+  // _showSnackBar() {
+  //   SnackBar _snackBar = SnackBar(
+  //     content: Text(
+  //       'Texto copiado para área de transferência',
+  //     ),
+  //   );
 
-    _scaffoldKey.currentState.showSnackBar(
-      _snackBar,
-    );
-  }
+  //   _scaffoldKey.currentState.showSnackBar(
+  //     _snackBar,
+  //   );
+  // }
 
-  Image _getIcon(String method) {
-    switch (method) {
-      case "CREDIT_CARD":
-        return Image.asset(
-          "assets/icons/credit_card.png",
-          width: 30,
-          height: 30,
-        );
-      case "BOLETO":
-        return Image.asset(
-          "assets/icons/barcode.png",
-          width: 30,
-          height: 30,
-        );
-      case "CREDIT_FINAN":
-        return Image.asset(
-          "assets/icons/credito-financeiro.png",
-          width: 30,
-          height: 30,
-        );
-      case "CREDIT_PRODUCT":
-        return Image.asset(
-          "assets/icons/credito-produto.png",
-          width: 30,
-          height: 30,
-        );
-      default:
-        return Image.asset(
-          "assets/icons/credit_card.png",
-          width: 30,
-          height: 30,
-        );
+  // Image _getIcon(String method) {
+  //   switch (method) {
+  //     case "CREDIT_CARD":
+  //       return Image.asset(
+  //         "assets/icons/credit_card.png",
+  //         width: 30,
+  //         height: 30,
+  //       );
+  //     case "BOLETO":
+  //       return Image.asset(
+  //         "assets/icons/barcode.png",
+  //         width: 30,
+  //         height: 30,
+  //       );
+  //     case "CREDIT_FINAN":
+  //       return Image.asset(
+  //         "assets/icons/credito-financeiro.png",
+  //         width: 30,
+  //         height: 30,
+  //       );
+  //     case "CREDIT_PRODUCT":
+  //       return Image.asset(
+  //         "assets/icons/credito-produto.png",
+  //         width: 30,
+  //         height: 30,
+  //       );
+  //     default:
+  //       return Image.asset(
+  //         "assets/icons/credit_card.png",
+  //         width: 30,
+  //         height: 30,
+  //       );
+  //   }
+  // }
+
+  // _onCopyBarcode(String code) {
+  //   ClipboardData data = ClipboardData(text: code);
+  //   Clipboard.setData(data);
+
+  //   _showSnackBar();
+  // }
+
+  // Widget _renderBarCode(PagamentosModel e) {
+    // if (e.method == "BOLETO") {
+    //   return Text(
+    //     "${e.codigoBarra}",
+    //     style: Theme.of(context).textTheme.subtitle1.copyWith(
+    //           fontWeight: FontWeight.w600,
+    //           color: Colors.black38,
+    //           fontSize: 12,
+    //         ),
+    //   );
+    // } else {
+    //   return Container();
+    // }
+  // }
+
+  // Widget _renderCopyBarCode(PagamentosModel e) {
+    // if (e.method == "BOLETO") {
+    //   return ElevatedButton(
+    //     onPressed: () => _onCopyBarcode("${e.codigoBarra}"),
+    //     child: Text(
+    //       'Copiar Código de Barra',
+    //       style: Theme.of(context).textTheme.button,
+    //     ),
+    //   );
+    // } else {
+    //   return Container();
+    // }
+  // }
+  _separador(PagamentosModel e, botao) {
+    var dataHoje = "${DateTime.now().year}" + "${_mes()}" + "${DateTime.now().day}";
+    if (int.parse(e.vencimentoReal) > int.parse(dataHoje) && e.dataPagamento == " " && botao == "À Vencer") {
+      return e;
+    } else if (e.dataPagamento != " " && botao == "Pagos") {
+      return e;
+    } else if (int.parse(e.vencimentoReal) < int.parse(dataHoje) && e.dataPagamento.length < 2 && botao == "Vencidas") {
+      return e;
     }
   }
 
-  _onCopyBarcode(String code) {
-    ClipboardData data = ClipboardData(text: code);
-    Clipboard.setData(data);
-
-    _showSnackBar();
-  }
-
-  Widget _renderBarCode(PaymentModel e) {
-    if (e.method == "BOLETO") {
-      return Text(
-        "${e.codigoBarra}",
-        style: Theme.of(context).textTheme.subtitle1.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Colors.black38,
-              fontSize: 12,
-            ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget _renderCopyBarCode(PaymentModel e) {
-    if (e.method == "BOLETO") {
-      return ElevatedButton(
-        onPressed: () => _onCopyBarcode("${e.codigoBarra}"),
-        child: Text(
-          'Copiar Código de Barra',
-          style: Theme.of(context).textTheme.button,
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget dataWidget(PaymentModel e) {
+  Widget dataWidget(PagamentosModel e, botao) {
+    var realItens = _separador(e, botao);
+    if (realItens == null) {
+       
+      ; 
+      return Container(); 
+    } else
     return ListTile(
-      leading: Container(
-        width: 50,
-        height: 50,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Color(0xfff),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: _getIcon(e.method),
-      ),
       title: Table(
+        // border: TableBorder(verticalInside: BorderSide(width: 1, color: Colors.black, style: BorderStyle.solid),
+        // top: BorderSide(width: 1, color: Colors.black, style: BorderStyle.solid),
+        // bottom: BorderSide(width: 1, color: Colors.black, style: BorderStyle.solid),
+        // right: BorderSide(width: 1, color: Colors.black, style: BorderStyle.solid),
+        // left: BorderSide(width: 1, color: Colors.black, style: BorderStyle.solid)
+        // ),
         children: [
           TableRow(
             children: [
@@ -137,137 +152,93 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       fontSize: 12,
                     ),
               ),
-              Text(
-                'NF',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-              ),
-              Text(
-                'Valor',
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-              )
-            ],
-          ),
-          TableRow(
-            children: [
-              Text(
-                "${e.vencimento}",
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black38,
-                      fontSize: 13,
-                    ),
-              ),
-              Text(
-                "${e.nf}",
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black38,
-                      fontSize: 13,
-                    ),
-              ),
-              Text(
-                'R\$ ${Helper.intToMoney(e.valor)}',
-                style: Theme.of(context).textTheme.headline5.copyWith(
-                      fontSize: 13,
-                    ),
-              )
-            ],
-          )
-        ],
-      ),
-      trailing: Container(
-        height: 5,
-        width: 10,
-      ),
-    );
-  }
-
-  Widget boletoWidget(PaymentModel e) {
-    return ExpansionTile(
-        onExpansionChanged: (value) => _onExpandItem(),
-        children: <Widget>[
-          SizedBox(height: 10),
-          _renderBarCode(e),
-          SizedBox(height: 30),
-          _renderCopyBarCode(e)
-        ],
-        leading: Container(
-            width: 50,
-            height: 50,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Color(0xfff),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: _getIcon(e.method)),
-        title: Table(
-          children: [
-            TableRow(
-              children: [
-                Text(
-                  'Venc.',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                      ),
-                ),
-                Text(
+              Center(
+                child: Text(
                   'NF',
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
                       ),
                 ),
-                Text(
+              ),
+              Center(
+                child: Text(
                   'Valor',
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
                       ),
-                )
-              ],
-            ),
-            TableRow(
-              children: [
-                Text(
-                  "${e.vencimento}",
+                ),
+              ),
+              Center(
+                child: Text(
+                  'Parcelas',
+                  style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
+                ),
+              )
+            ],
+          ),
+          TableRow(
+            children: [
+              Text(
+                "${realItens.vencimentoReal}",
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black38,
+                      fontSize: 13,
+                    ),
+              ),
+              Text(
+                "${realItens.notaFiscal}",
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black38,
+                      fontSize: 13,
+                    ),
+              ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                'R\$ ${Helper.intToMoney((realItens.valor * 10000) ~/ 100)}',
+                style: Theme.of(context).textTheme.headline5.copyWith(
+                      fontSize: 13,
+                    ),
+              ),
+              ),
+              Center(
+                child: Text(
+                  "${realItens.parcelas}",
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.black38,
                         fontSize: 13,
                       ),
                 ),
-                Text(
-                  "${e.nf}",
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black38,
-                        fontSize: 13,
-                      ),
-                ),
-                Text(
-                  'R\$ ${Helper.intToMoney(e.valor)}',
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                        fontSize: 13,
-                      ),
-                )
-              ],
-            )
-          ],
-        ));
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  _mes() {
+    int data = DateTime.now().month;
+    if (data < 10) {
+      return "0$data";
+    } else {
+      return data;
+    }
   }
 
   @override
   void initState() {
     super.initState();
     int filter = _paymentsWidgetBloc.currentFilter;
-    _paymentsWidgetBloc.fetchPayments("$filter");
+    _paymentsWidgetBloc.fetchPagamentos();
   }
 
   @override
@@ -358,7 +329,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 stream: _paymentsWidgetBloc.paymentTypeOut,
                 builder: (context, typeSnapshot) {
                   return StreamBuilder(
-                      stream: _paymentsWidgetBloc.paymentsListStream,
+                      stream: _paymentsWidgetBloc.pagamentosListStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData || snapshot.data.isLoading) {
                           return Center(
@@ -370,16 +341,9 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                                 "Não há pagamentos a serem visualizados no momento."),
                           );
                         }
-
                         return Column(
-                          children: snapshot.data.list.map<Widget>((e) {
-                            if (typeSnapshot.data == "Pagos") {
-                              return dataWidget(e);
-                            } else if (e.method == "BOLETO") {
-                              return boletoWidget(e);
-                            } else {
-                              return dataWidget(e);
-                            }
+                          children: snapshot.data.list.reversed.toList().map<Widget>((e) {
+                              return dataWidget(e, typeSnapshot.data);
                           }).toList(),
                         );
                       });

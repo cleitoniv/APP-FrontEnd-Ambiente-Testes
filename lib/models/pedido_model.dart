@@ -6,7 +6,7 @@ class PedidoModel {
   String paciente;
   String dataNascimento;
   String dataReposicao;
-  int numeroPedido;
+  String numeroPedido;
   int frete;
   int valorTotal;
   int itemPedido;
