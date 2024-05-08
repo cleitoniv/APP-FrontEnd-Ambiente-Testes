@@ -1087,6 +1087,85 @@ class Helper {
     return {};
   }
 
+   static Map<String, dynamic> buyTypeBuildRequestInfo2(
+      BuildContext context, String operation, String tests) {
+    switch (operation) {
+      case '13':
+        return {
+          'title': 'Credito Financeiro',
+          'color': Theme.of(context).primaryColor,
+          'background': Colors.green[300],
+          'icon': Icon(
+            Icons.attach_money,
+            color: Colors.white,
+            size: 20,
+          )
+        };
+      case '03':
+            return {
+              'title': 'Teste',
+              'color': Colors.white,
+              'background': Color(0xffF1F1F1),
+              'icon': Icon(
+                Icons.remove_red_eye,
+                color: Colors.black54,
+                size: 23,
+              )
+            };
+        break;
+      case '01':
+        return {
+              'title': 'Compra Avulsa',
+              'color': Color(0xff707070),
+              'background': Color(0xff707070),
+              'icon': Icon(
+                Icons.attach_money,
+                color: Colors.white,
+                size: 20,
+              )
+            };
+        break;
+      case '07':
+            return {
+              'title': 'Credito de Produto',
+              'color': Theme.of(context).splashColor,
+              'background': Color(0xffEFC75E),
+              'icon': Image.asset(
+                'assets/icons/open_box.png',
+                width: 15,
+                height: 15,
+                color: Colors.white,
+              )
+            };
+        break;
+      case '03':
+        return {
+          'title': 'Teste',
+          'color': Colors.white,
+          'background': Colors.white10,
+          'icon': Icon(
+            Icons.remove_red_eye,
+            color: Colors.black54,
+            size: 23,
+          )
+        };
+      case '06':
+        return {
+          'title': 'Credito de Produto',
+          'color': Theme.of(context).splashColor,
+          'background': Color(0xffEFC75E),
+          'icon': Image.asset(
+            'assets/icons/open_box.png',
+            width: 15,
+            height: 15,
+            color: Colors.white,
+          )
+        };
+    }
+
+    return {};
+  }
+
   static Map<String, dynamic> buyTypeBuild(
       BuildContext context, String operation, String tests) {
     switch (operation) {

@@ -70,10 +70,12 @@ class _FinishPaymentState extends State<FinishPayment> {
   _onSubmitDialog() {
     _requestBloc.getPedidosList(0);
     _authBloc.fetchCurrentUser();
-    Modular.to.pushNamedAndRemoveUntil(
+    Future.delayed(const Duration(seconds: 2), () {
+      Modular.to.pushNamedAndRemoveUntil(
       '/home/3',
       (route) => route.isFirst,
     );
+    });
   }
 
   _onBack() {

@@ -26,11 +26,11 @@ class ProductExtractScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 20),
-                  Text(
-                    "${snapshot.data.date}",
-                    style: Theme.of(context).textTheme.headline5,
-                    textAlign: TextAlign.center,
-                  ),
+                  // Text(
+                  //   "${snapshot.data.date}",
+                  //   style: Theme.of(context).textTheme.headline5,
+                  //   textAlign: TextAlign.center,
+                  // ),
                   Expanded(
                     child: ListView(
                         padding: const EdgeInsets.all(20),

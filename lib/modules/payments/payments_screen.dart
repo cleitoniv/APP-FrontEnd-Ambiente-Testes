@@ -172,7 +172,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
               ),
               Center(
                 child: Text(
-                  'Parcelas',
+                  realItens.parcelas == " " ? "Pagamento" : "Parcela",
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
@@ -210,7 +210,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
               ),
               Center(
                 child: Text(
-                  "${realItens.parcelas}",
+                  realItens.parcelas == " " ? "Unico" : realItens.parcelas,
                   style: Theme.of(context).textTheme.subtitle1.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.black38,

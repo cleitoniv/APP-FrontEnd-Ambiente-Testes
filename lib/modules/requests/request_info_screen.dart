@@ -57,7 +57,7 @@ class RequestInfoScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
-                  pedidoInfo.data.pedido.items[0].items[0]['tipoVenda'] != "A" ? Container() :
+                  pedidoInfo.data.pedido.items[0].items[0]['esfericoD']  != "-" && pedidoInfo.data.pedido.items[0].items[0]['esfericoE']  != "-" ? Container() :
                   Table(
                     children: [
                       TableRow(
@@ -105,7 +105,7 @@ class RequestInfoScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20),
-                  pedidoInfo.data.pedido.items[0].items[0]['tipoVenda'] != "A" ? Container() :
+                  pedidoInfo.data.pedido.items[0].items[0]['qtdD']  != 0 && pedidoInfo.data.pedido.items[0].items[0]['qtdE']  != 0 ? Container() :
                   Center(
                     child: Column(
                       children: [
@@ -126,14 +126,14 @@ class RequestInfoScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Produtos Comprados',
-                    style: Theme.of(context).textTheme.headline5.copyWith(
-                          fontSize: 18,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
+                  // SizedBox(height: 20),
+                  // Text(
+                  //   'Produtos Comprados',
+                  //   style: Theme.of(context).textTheme.headline5.copyWith(
+                  //         fontSize: 18,
+                  //       ),
+                  //   textAlign: TextAlign.center,
+                  // ),
                   SingleChildScrollView(
                       physics: ScrollPhysics(),
                       child: ListView.builder(
@@ -794,7 +794,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .subtitle1
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     color: Colors
                                                                         .black38,
                                                                   ))),
@@ -836,7 +836,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -853,7 +853,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -877,7 +877,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -885,7 +885,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              '${items[index].items[index2]["eixoE"]}',
+                                                              items[index].items[index2]["eixoE"] != '-' ? '${items[index].items[index2]["eixoE"]} °' : '${items[index].items[index2]["eixoE"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -894,7 +894,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -919,7 +919,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -927,7 +927,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              '${items[index].items[index2]["adicaoE"] ?? "-"}',
+                                                              items[index].items[index2]["adicaoE"] != '-' || items[index].items[index2]["adicaoD"] == ' ' ? 'ADD ${items[index].items[index2]["adicaoE"]}' : '${items[index].items[index2]["adicaoE"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -936,7 +936,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -960,7 +960,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -977,7 +977,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1001,7 +1001,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1018,7 +1018,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1050,7 +1050,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .subtitle1
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     color: Colors
                                                                         .black38,
                                                                   ))),
@@ -1066,7 +1066,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .textTheme
                                                                 .headline5
                                                                 .copyWith(
-                                                                  fontSize: 14,
+                                                                  fontSize: 12,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .normal,
@@ -1092,7 +1092,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1109,7 +1109,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1133,7 +1133,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1141,7 +1141,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              '${items[index].items[index2]["eixoD"]}',
+                                                              items[index].items[index2]["eixoD"] != '-' ? '${items[index].items[index2]["eixoD"]} °' : '${items[index].items[index2]["eixoD"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -1150,7 +1150,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1175,7 +1175,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1183,7 +1183,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              '${items[index].items[index2]["adicaoD"] ?? "-"}',
+                                                              items[index].items[index2]["adicaoD"] != '-' || items[index].items[index2]["adicaoD"] == ' ' ? 'ADD ${items[index].items[index2]["adicaoD"]}' : '${items[index].items[index2]["adicaoD"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -1192,7 +1192,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1216,7 +1216,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1233,7 +1233,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1257,7 +1257,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1274,7 +1274,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1601,7 +1601,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                 CircleAvatar(
                                                     radius: 10,
                                                     backgroundColor:
-                                                        Helper.buyTypeBuildRequestInfo(
+                                                        Helper.buyTypeBuildRequestInfo2(
                                                                 context,
                                                                 items[index]
                                                                         .items[index2]
@@ -1610,7 +1610,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                         .items[index2]
                                                                     ['tests'])[
                                                             'background'],
-                                                    child: Helper.buyTypeBuildRequestInfo(
+                                                    child: Helper.buyTypeBuildRequestInfo2(
                                                         context,
                                                         items[index]
                                                                 .items[index2]
@@ -1619,17 +1619,24 @@ class RequestInfoScreen extends StatelessWidget {
                                                                 .items[index2]
                                                             ['tests'])['icon']),
                                                 SizedBox(width: 10),
-                                                Text(
-                                                  "${Helper.buyTypeBuildRequestInfo(context, items[index].items[index2]['operation'], items[index].items[index2]['tests'])['title']}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle1
-                                                      .copyWith(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.black54,
-                                                      ),
+                                                FittedBox(
+                                                  // clipBehavior: Clip.none,
+                                                  fit: BoxFit.scaleDown,
+                                                  child: 
+                                                  Text(
+                                                  //  "testeeeeeeee"
+                                                    "${Helper.buyTypeBuildRequestInfo2(context, items[index].items[index2]['operation'], items[index].items[index2]['tests'])['title']}",
+                                                    // style: Theme.of(context)
+                                                    //     .textTheme
+                                                    //     .subtitle1
+                                                    //     .copyWith(
+                                                    //       fontSize: 14,
+                                                          
+                                                    //       color: Colors.black54,
+                                                    //     ),
+                                                     style: TextStyle(fontSize: 12 ,fontWeight:
+                                                              FontWeight.w600,), overflow: TextOverflow.fade, maxLines: 1, softWrap: true, 
+                                                  ),
                                                 ),
                                                 SizedBox(height: 34),
                                               ],
@@ -1686,7 +1693,7 @@ class RequestInfoScreen extends StatelessWidget {
                                         // SizedBox(height: 50),
                                         (items[index].items[index2]['operation'] == '06' && items[index].items[index2]['tipoVenda'] == 'C') || (items[index].items[index2]['operation'] == '13' && items[index].items[index2]['tipoVenda'] == 'C') ? Container() :
                                         Text(
-                                          'Parâmetros',
+                                          'Parâmetro',
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline5
@@ -1751,27 +1758,30 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .subtitle1
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     color: Colors
                                                                         .black38,
                                                                   ))),
                                                       Align(
                                                           alignment: Alignment
                                                               .centerRight,
-                                                          child: Text(
-                                                            '${items[index].items[index2]["esfericoE"]}',
-                                                            textScaleFactor:
-                                                                1.25,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .headline5
-                                                                .copyWith(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .normal,
-                                                                ),
+                                                          child: FittedBox(
+                                                            fit: BoxFit.fitWidth,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["esfericoE"]}',
+                                                              textScaleFactor:
+                                                                  1.25,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize: 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ),
                                                           ))
                                                     ],
                                                   ),
@@ -1793,7 +1803,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1810,7 +1820,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1834,7 +1844,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1842,7 +1852,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              '${items[index].items[index2]["eixoE"]}',
+                                                              items[index].items[index2]["eixoE"] != '-' ? '${items[index].items[index2]["eixoE"]} °' : '${items[index].items[index2]["eixoE"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -1851,7 +1861,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1876,7 +1886,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1884,7 +1894,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              '${items[index].items[index2]["adicaoE"] ?? "-"}',
+                                                              items[index].items[index2]["adicaoE"] != '-' || items[index].items[index2]["adicaoD"] == ' ' ? 'ADD ${items[index].items[index2]["adicaoE"]}' : '${items[index].items[index2]["adicaoE"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -1893,7 +1903,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1917,7 +1927,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1934,7 +1944,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -1958,7 +1968,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -1975,7 +1985,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -2007,27 +2017,30 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .subtitle1
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     color: Colors
                                                                         .black38,
                                                                   ))),
                                                       Align(
                                                           alignment: Alignment
                                                               .centerRight,
-                                                          child: Text(
-                                                            '${items[index].items[index2]["esfericoD"]}',
-                                                            textScaleFactor:
-                                                                1.25,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .headline5
-                                                                .copyWith(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .normal,
-                                                                ),
+                                                          child: FittedBox(
+                                                            fit: BoxFit.scaleDown,
+                                                            child: Text(
+                                                              '${items[index].items[index2]["esfericoD"]}',
+                                                              textScaleFactor:
+                                                                  1.25,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  .copyWith(
+                                                                    fontSize: 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                            ),
                                                           ))
                                                     ],
                                                   ),
@@ -2049,7 +2062,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -2066,7 +2079,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -2090,7 +2103,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -2098,7 +2111,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              '${items[index].items[index2]["eixoD"]}',
+                                                              items[index].items[index2]["eixoD"] != '-' ? '${items[index].items[index2]["eixoD"]} °' : '${items[index].items[index2]["eixoD"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -2107,7 +2120,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -2132,7 +2145,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -2140,7 +2153,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              '${items[index].items[index2]["adicaoD"] ?? "-"}',
+                                                               items[index].items[index2]["adicaoD"] != '-' || items[index].items[index2]["adicaoD"] == ' ' ?  'ADD ${items[index].items[index2]["adicaoD"]}' : '${items[index].items[index2]["adicaoD"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -2149,7 +2162,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -2173,7 +2186,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -2190,7 +2203,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,
@@ -2214,7 +2227,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                     .subtitle1
                                                                     .copyWith(
                                                                       fontSize:
-                                                                          14,
+                                                                          12,
                                                                       color: Colors
                                                                           .black38,
                                                                     ))),
@@ -2231,7 +2244,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                                   .headline5
                                                                   .copyWith(
                                                                     fontSize:
-                                                                        14,
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .normal,

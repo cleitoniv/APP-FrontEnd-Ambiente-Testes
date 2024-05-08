@@ -98,11 +98,14 @@ class CreditsRepository {
           }));
       ExtratoFinanceiroModel extrato =
           ExtratoFinanceiroModel.fromJson(response.data["data"]);
+      print('linha 101');
+      inspect(extrato);
       return ExtratoFinanceiro(
           isLoading: false,
           isEmpty: extrato.data.length <= 0,
           financeiro: extrato);
     } catch (error) {
+      inspect(error);
       return ExtratoFinanceiro(isLoading: false, isEmpty: true);
     }
   }
