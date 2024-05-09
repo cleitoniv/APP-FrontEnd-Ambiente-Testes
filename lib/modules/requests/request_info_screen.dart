@@ -885,7 +885,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              items[index].items[index2]["eixoE"] != '-' ? '${items[index].items[index2]["eixoE"]} °' : '${items[index].items[index2]["eixoE"]}',
+                                                              items[index].items[index2]["eixoE"] != '-' ? '${items[index].items[index2]["eixoE"]}°' : '${items[index].items[index2]["eixoE"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -927,7 +927,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              items[index].items[index2]["adicaoE"] != '-' || items[index].items[index2]["adicaoD"] == ' ' ? 'ADD ${items[index].items[index2]["adicaoE"]}' : '${items[index].items[index2]["adicaoE"]}',
+                                                              items[index].items[index2]["adicaoE"] != '-' ? 'ADD ${items[index].items[index2]["adicaoE"]}' : '${items[index].items[index2]["adicaoE"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -1141,7 +1141,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              items[index].items[index2]["eixoD"] != '-' ? '${items[index].items[index2]["eixoD"]} °' : '${items[index].items[index2]["eixoD"]}',
+                                                              items[index].items[index2]["eixoD"] != '-' ? '${items[index].items[index2]["eixoD"]}°' : '${items[index].items[index2]["eixoD"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -1183,7 +1183,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              items[index].items[index2]["adicaoD"] != '-' || items[index].items[index2]["adicaoD"] == ' ' ? 'ADD ${items[index].items[index2]["adicaoD"]}' : '${items[index].items[index2]["adicaoD"]}',
+                                                              items[index].items[index2]["adicaoD"] != '-' ? 'ADD ${items[index].items[index2]["adicaoD"]}' : '${items[index].items[index2]["adicaoD"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -1852,7 +1852,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              items[index].items[index2]["eixoE"] != '-' ? '${items[index].items[index2]["eixoE"]} °' : '${items[index].items[index2]["eixoE"]}',
+                                                              items[index].items[index2]["eixoE"] != '-' ? '${items[index].items[index2]["eixoE"]}°' : '${items[index].items[index2]["eixoE"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -1894,7 +1894,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              items[index].items[index2]["adicaoE"] != '-' || items[index].items[index2]["adicaoD"] == ' ' ? 'ADD ${items[index].items[index2]["adicaoE"]}' : '${items[index].items[index2]["adicaoE"]}',
+                                                              items[index].items[index2]["adicaoE"] != '-' ? 'ADD ${items[index].items[index2]["adicaoE"]}' : '${items[index].items[index2]["adicaoE"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -2111,7 +2111,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                              items[index].items[index2]["eixoD"] != '-' ? '${items[index].items[index2]["eixoD"]} °' : '${items[index].items[index2]["eixoD"]}',
+                                                              items[index].items[index2]["eixoD"] != '-' ? '${items[index].items[index2]["eixoD"]}°' : '${items[index].items[index2]["eixoD"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(
@@ -2153,7 +2153,7 @@ class RequestInfoScreen extends StatelessWidget {
                                                             alignment: Alignment
                                                                 .centerRight,
                                                             child: Text(
-                                                               items[index].items[index2]["adicaoD"] != '-' || items[index].items[index2]["adicaoD"] == ' ' ?  'ADD ${items[index].items[index2]["adicaoD"]}' : '${items[index].items[index2]["adicaoD"]}',
+                                                               items[index].items[index2]["adicaoD"] != '-' ? 'ADD ${items[index].items[index2]["adicaoD"]}' : '${items[index].items[index2]["adicaoD"]}',
                                                               textScaleFactor:
                                                                   1.25,
                                                               style: Theme.of(

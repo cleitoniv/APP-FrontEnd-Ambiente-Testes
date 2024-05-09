@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/blocs/cart_widget_bloc.dart';
 import 'package:central_oftalmica_app_cliente/models/payments_model.dart';
@@ -56,9 +57,12 @@ class PaymentRepository {
      List<PagamentosModel> list = response.data['resources'][0]['dados'].map<PagamentosModel>((e) {
         return PagamentosModel.fromJson(e);
       }).toList();
+      print('parametros de pagamentos');
+      inspect(list);
       return PagamentosList(
           isLoading: false, isEmpty: list.length <= 0, list: list);
     } catch (error) {
+      inspect(error);
       return PagamentosList(isEmpty: false, isLoading: false);
     }
   }

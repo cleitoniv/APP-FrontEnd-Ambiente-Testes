@@ -4,6 +4,7 @@ import 'package:central_oftalmica_app_cliente/models/payments_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:intl/intl.dart';
 
 import '../../helper/dialogs.dart';
 import '../../models/pagamentos_model.dart';
@@ -117,23 +118,34 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     // }
   // }
   _separador(PagamentosModel e, botao) {
-    var dataHoje = "${DateTime.now().year}" + "${_mes()}" + "${DateTime.now().day}";
-    if (int.parse(e.vencimentoReal) > int.parse(dataHoje) && e.dataPagamento == " " && botao == "À Vencer") {
+    var dataHoje = "${DateTime.now().year}" + "${_mes()}" + "${DateTime.now().day < 10 ? '0${DateTime.now().day}' : DateTime.now().day}";
+    print('minhas datas');
+    print(e.vencimentoReal);
+    print(e.dataPagamento);
+    if (int.parse(e.vencimentoReal) > int.parse(dataHoje) && e.dataPagamento == "        " && botao == "À Vencer") {
       return e;
-    } else if (e.dataPagamento != " " && botao == "Pagos") {
+    } else if (e.dataPagamento != "        " && botao == "Pagos") {
       return e;
-    } else if (int.parse(e.vencimentoReal) < int.parse(dataHoje) && e.dataPagamento.length < 2 && botao == "Vencidas") {
+    } else if (int.parse(e.vencimentoReal) < int.parse(dataHoje) && e.dataPagamento == "        " && botao == "Vencidas") {
       return e;
     }
+  }
+  parseData(data) {
+    var minhaData2 = DateTime.parse(data);
+    print(data);
+    // DateTime minhaData2 =  DateFormat('dd-MM-yyyy').parse(data);
+    return "${minhaData2.day < 10 ? "0${minhaData2.day}" : minhaData2.day}/${minhaData2.month < 10 ? "0${minhaData2.month}" : minhaData2.month}/${minhaData2.year}";
   }
 
   Widget dataWidget(PagamentosModel e, botao) {
     var realItens = _separador(e, botao);
+    
     if (realItens == null) {
        
       ; 
       return Container(); 
     } else
+    
     return ListTile(
       title: Table(
         // border: TableBorder(verticalInside: BorderSide(width: 1, color: Colors.black, style: BorderStyle.solid),
@@ -184,7 +196,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
           TableRow(
             children: [
               Text(
-                "${realItens.vencimentoReal}",
+                parseData(realItens.vencimentoReal),
                 style: Theme.of(context).textTheme.subtitle1.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Colors.black38,
