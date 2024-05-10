@@ -167,7 +167,7 @@ class RequestsScreen extends StatelessWidget {
                     child: Text(
                       'Valor',
                       style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            fontSize: 14,
+                            fontSize: 12,
                           ),
                     ),
                   ),
@@ -177,7 +177,7 @@ class RequestsScreen extends StatelessWidget {
                     child: Text(
                       'R\$ ${Helper.intToMoney(_requests[index].valor)}',
                       style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 14,
+                            fontSize: 12,
                           ),
                     ),
                   ),
