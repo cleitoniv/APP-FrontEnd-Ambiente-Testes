@@ -308,7 +308,7 @@ class _CompleteCreateAccountScreenState
       {
         'labelText': 'Número',
         'controller': _houseNumberController,
-        'validator': Helper.lengthValidator,
+        'validator': null, 
         'keyboardType': TextInputType.number,
         'enabled': this.numeroEnabled
       },
@@ -415,10 +415,11 @@ class _CompleteCreateAccountScreenState
         ),
         'suffixIcon': null,
         'controller': _dataNascimentoController,
-        'validator': (String text) => Helper.lengthValidator(
-              text,
-              length: 10,
-            ),
+        'validator': null,
+        // (String text) => Helper.lengthValidator(
+        //       text,
+        //       length: 10,
+        //     ),
         'keyboardType': TextInputType.number,
         'enabled': this.dataNascimentoEnabled
       },
@@ -430,7 +431,8 @@ class _CompleteCreateAccountScreenState
         ),
         'suffixIcon': null,
         'controller': _emailFiscalController,
-        'validator': Helper.emailValidator,
+        'validator': null,
+        //  Helper.emailValidator,
         'keyboardType': TextInputType.emailAddress,
         'enabled': this.emailFiscalEnabled
       },
@@ -442,10 +444,11 @@ class _CompleteCreateAccountScreenState
         ),
         'suffixIcon': null,
         'controller': _cnaeController,
-        'validator': (String text) => Helper.lengthValidator(
-              text,
-              length: 9,
-            ),
+        'validator': null,
+        // (String text) => Helper.lengthValidator(
+        //       text,
+        //       length: 9,
+        //     ),
         'keyboardType': TextInputType.text,
         'enabled': this.cnaeCrmEnabled
       },
@@ -476,26 +479,23 @@ class _CompleteCreateAccountScreenState
       _ufController.text = cadastro.dados.estado;
       _emailFiscalController.text = cadastro.dados.emailFiscal;
       setState(() {
-        if (cadastro.dados.crmCnae != '000000000') {
-          this.cnaeCrmEnabled = true;
-        }
-        if (cadastro.dados.dataNascimento != null) {
-          this.dataNascimentoEnabled = false;
-        }
-        if (cadastro.dados.emailFiscal != null) {
-          this.emailFiscalEnabled = false;
-        }
-        if (cadastro.dados.emailFiscal != null) {
-          this.emailFiscalEnabled = false;
-        }
-        if (cadastro.dados.numero != null) {
-          this.numeroEnabled = false;
-        }
-        if (cadastro.dados.complemento != null) {
-          this.complementEnabled = false;
-        }
-        this.textRegister = 'Completar Cadastro';
-        this.enabled = false;
+        // if (cadastro.dados.crmCnae != '000000000') {
+        //   this.cnaeCrmEnabled = true;
+        // }
+        // if (cadastro.dados.dataNascimento != "") {
+        //   this.dataNascimentoEnabled = false;
+        // }
+        // if (cadastro.dados.emailFiscal != null) {
+        //   this.emailFiscalEnabled = false;
+        // }
+        // if (cadastro.dados.numero != null) {
+        //   this.numeroEnabled = false;
+        // }
+        // if (cadastro.dados.complemento != null) {
+        //   this.complementEnabled = false;
+        // }
+        // this.textRegister = 'Completar Cadastro';
+        // this.enabled = false;
       });
     }
   }

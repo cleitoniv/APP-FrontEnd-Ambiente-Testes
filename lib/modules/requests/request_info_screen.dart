@@ -110,7 +110,7 @@ class RequestInfoScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'Previsão de Entrega',
+                          'Status',
                           style: Theme.of(context).textTheme.headline5.copyWith(
                                 fontSize: 14,
                                 fontWeight: FontWeight.normal,

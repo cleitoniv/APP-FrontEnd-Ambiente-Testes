@@ -51,6 +51,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   List<Map> _fieldData;
   bool isInvalid = false;
   TextEditingController _nameController;
+  TextEditingController _nameController2;
   TextEditingController _lensDireitoController;
   TextEditingController _lensEsquerdoController;
   TextEditingController _lensController;
@@ -836,7 +837,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'current': _first['current'],
         'codigoTeste': await _getProductCodeTest(_first),
         'pacient': {
-          'name': _nameController.text
+          'name': _nameController.text, 'name2': _nameController2.text 
         },
         _first['current']: _first[_first['current']],
       };
@@ -1468,6 +1469,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController();
+    _nameController2 = TextEditingController();
     _numberController = MaskedTextController(
       mask: '000.000.000-00',
     );
@@ -1496,6 +1498,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         'labelText': 'Identificação do paciente (Opcional)',
         'icon': Icons.person,
         'controller': _nameController,
+      },
+      {
+        'labelText': 'Nome do paciente (Opcional)',
+        'icon': Icons.person,
+        'controller': _nameController2,
       },
       {
         'labelText': 'Escolha os olhos',
@@ -1878,7 +1885,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             // ),
             SizedBox(height: 30),
             Column(
-              children: _fieldData.take(1).map(
+              children: _fieldData.take(2).map(
                 (e) {
                   return Container(
                     margin: const EdgeInsets.only(top: 20),
@@ -1899,7 +1906,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             ),
             SizedBox(height: 20),
             Text(
-              'Parâmetros',
+              'Defina os parâmetros',
               style: Theme.of(context).textTheme.headline5,
               textAlign: TextAlign.center,
             ),
@@ -1943,11 +1950,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 ),
               ),
             )),
-            _checkForAcessorio(Text(
-              'Defina os parâmetros do produto',
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.center,
-            )),
+            // _checkForAcessorio(Text(
+            //   'Defina os parâmetros do produto',
+            //   style: Theme.of(context).textTheme.subtitle1,
+            //   textAlign: TextAlign.center,
+            // )),
             SizedBox(height: 30),
             _checkForAcessorio(StreamBuilder<Map<dynamic, dynamic>>(
               stream: _productWidgetBloc.pacientInfoOut,
