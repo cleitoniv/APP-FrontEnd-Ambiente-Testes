@@ -19,6 +19,7 @@ import 'package:central_oftalmica_app_cliente/widgets/product_widget.dart';
 import 'package:central_oftalmica_app_cliente/widgets/snackbar.dart';
 import 'package:central_oftalmica_app_cliente/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -1495,12 +1496,12 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
     _fieldData = [
       {
-        'labelText': 'Identificação do paciente (Opcional)',
+        'labelText': 'Numero (CPF, Nascimento, Etc) (Opcional)',
         'icon': Icons.person,
         'controller': _nameController,
       },
       {
-        'labelText': 'Nome do paciente (Opcional)',
+        'labelText': 'Nome completo (Opcional)',
         'icon': Icons.person,
         'controller': _nameController2,
       },
@@ -1888,8 +1889,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               children: _fieldData.take(2).map(
                 (e) {
                   return Container(
-                    margin: const EdgeInsets.only(top: 20),
+                    // margin: const EdgeInsets.only(top: 20),
                     child: TextFieldWidget(
+                      maxLengthEnforce: MaxLengthEnforcement.none,
                       textCapitalization: TextCapitalization.characters,
                       labelText: e['labelText'],
                       prefixIcon: Icon(

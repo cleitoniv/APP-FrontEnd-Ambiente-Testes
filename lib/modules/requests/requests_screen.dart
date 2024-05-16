@@ -147,57 +147,81 @@ class RequestsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FittedBox(
-                fit: BoxFit.contain,
-                child: Text(
-                  'Pedido ${_requests[index].numeroPedido}',
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: Colors.black26,
-                        fontSize: 14,
-                      ),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Pedido ${_requests[index].numeroPedido}',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 14,
+                        ),
+                  ),
                 ),
               ),
-              Row(
-                children: <Widget>[
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                      'Valor',
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            fontSize: 12,
-                          ),
-                    ),
+              SizedBox(width: 20),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Valor ',
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                              fontSize: 14,
+                            ),
+                      ),
+                      Text(
+                        'R\$ ${Helper.intToMoney(_requests[index].valor)}',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              fontSize: 14,
+                            ),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_right,
+                        color: Theme.of(context).accentColor,
+                      )
+                    ],
                   ),
-                  SizedBox(width: 10),
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                      'R\$ ${Helper.intToMoney(_requests[index].valor)}',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                            fontSize: 12,
-                          ),
-                    ),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_right,
-                    color: Theme.of(context).accentColor,
-                  )
-                ],
+                ),
               ),
             ],
           ),
-          FittedBox(
-            fit: BoxFit.contain,
-            child: Text(
-              'Previsão de entrega: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
-              style: Theme.of(context).textTheme.subtitle1.copyWith(
-                    color: Colors.black26,
-                    fontSize: 14,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Previsão: ${Helper.sqlToDate(_requests[index].dataInclusao)}',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black26,
+                          fontSize: 13,
+                        ),
                   ),
-            ),
+                ),
+              ),
+              Container(
+                width: 5,
+              ),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Status: não informado',
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          color: Colors.black,
+                          fontSize: 13,
+                        ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

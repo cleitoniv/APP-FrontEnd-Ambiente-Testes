@@ -1,6 +1,7 @@
 // import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
+import 'dart:developer';
 
 import 'package:central_oftalmica_app_cliente/models/cadastro_model.dart';
 import 'package:central_oftalmica_app_cliente/models/cliente_model.dart';

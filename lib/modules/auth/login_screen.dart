@@ -142,10 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           this._isLoading = false;
         });
-        // print(_login.result.user.emailVerified);
-        // inspect(_cliente);
-        // print('linha 129 login');
-        // print(_cliente.data);
+       
         if (_cliente.data.sitApp == "E") {
           _authWidgetBloc.createAccountDataIn
                 .add({'email': _cliente.data.email, 'ddd': '27'});

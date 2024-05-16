@@ -46,7 +46,8 @@ class RequestInfoScreen extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else {
-              
+              print('linha 49 ---------');
+              inspect(pedidoInfo.data.pedido);
               return ListView(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(vertical: 20),
@@ -106,25 +107,48 @@ class RequestInfoScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   pedidoInfo.data.pedido.items[0].items[0]['qtdD']  != 0 && pedidoInfo.data.pedido.items[0].items[0]['qtdE']  != 0 ? Container() :
-                  Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          'Status',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                              ),
-                        ),
-                        Text(
-                          pedidoInfo.data.pedido.previsaoEntrega ??
-                              "Não informado.",
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
-                                fontSize: 14,
-                              ),
-                        ),
-                      ],
-                    ),
+                  Table(
+                    children: [
+                      TableRow(
+                        children: [
+                          Text(
+                            'Previsão',
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            'Status',
+                            style: Theme.of(context).textTheme.headline5.copyWith(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                textAlign: TextAlign.center,
+                          )
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Text(Helper.sqlToDate(pedidoInfo.data.pedido.previsaoEntrega) ??
+                                "Não informado.",
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            Helper.sqlToDate(pedidoInfo.data.pedido.previsaoEntrega) ??
+                                "Não informado.",
+                            style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.center,
+                          )
+                        ],
+                      ),
+                    ],
                   ),
                   // SizedBox(height: 20),
                   // Text(

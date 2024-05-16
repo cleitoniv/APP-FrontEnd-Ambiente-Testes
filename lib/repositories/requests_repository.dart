@@ -309,8 +309,6 @@ class RequestsRepository {
       {bool reposicao = false}) async {
     User user = _auth.currentUser;
     String idToken = await user.getIdToken();
-    print("MEU IDDDDDDDDDDDDDDDDDD");
-    print(id);
     try {
       Response response = await dio.get(
         '/api/cliente/pedido/$id',
@@ -326,8 +324,6 @@ class RequestsRepository {
           },
         ),
       );
-      print('pedido:');
-      print(response.data['data']);
       PedidoModel pedido = PedidoModel.fromJson(response.data['data']);
       return Pedido(isEmpty: false, isLoading: false, pedido: pedido);
     } catch (error) {
