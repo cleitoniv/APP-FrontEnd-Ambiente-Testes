@@ -62,7 +62,7 @@ class DrawerWidget extends StatelessWidget {
   });
 
   _handleTap(int index) {
-    if (index <= 6) {
+    if (index <= 8) {
       onNavigate(index);
     } else {
       onExitApp();
