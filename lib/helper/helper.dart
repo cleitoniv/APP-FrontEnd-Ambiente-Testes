@@ -137,7 +137,13 @@ class Helper {
       function();
       return;
     }
-
+    if (!lookingCartOperations.isEmpty && (lookingCartOperations.contains('03') || !lookingCartOperations.contains('03')) && (lookingCartOperations.contains('04') || !lookingCartOperations.contains('04')) && lookingCartOperations.contains(operation)) {
+      function();
+      return;
+    } else if (!lookingCartOperations.isEmpty && (operation == '03' || operation == '04')) {
+      function();
+      return;
+    }
     if(!lookingCartOperations.isEmpty && operation == '07' && lookingCartOperations[0] == '06') {
       function();
       return;
