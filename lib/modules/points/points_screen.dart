@@ -24,8 +24,11 @@ class _PointsScreenState extends State<PointsScreen> {
       ontap();
     } else {
       Dialogs.errorWithWillPopScope(context,
-          barrierDismissible: false,
+          barrierDismissible: true,
           buttonText: "OK",
+          onTap: () {
+            Modular.to.pop();
+          },
           title: "Usuario bloqueado.",
           subtitle: "No momento voce não pode realizar esse tipo de operação.");
     }
